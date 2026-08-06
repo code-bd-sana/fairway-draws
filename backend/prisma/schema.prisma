@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["app"]
 }
 
 model User {
@@ -28,6 +29,7 @@ model User {
   winners      Winner[]
 
   @@map("users")
+  @@schema("app")
 }
 
 model HostProfile {
@@ -48,6 +50,7 @@ model HostProfile {
   withdrawals   Withdrawal[]
 
   @@map("host_profiles")
+  @@schema("app")
 }
 
 model SubscriptionPlan {
@@ -61,6 +64,7 @@ model SubscriptionPlan {
   subscriptions HostSubscription[]
 
   @@map("subscription_plans")
+  @@schema("app")
 }
 
 model HostSubscription {
@@ -76,6 +80,7 @@ model HostSubscription {
   plan SubscriptionPlan @relation(fields: [planId], references: [id])
 
   @@map("host_subscriptions")
+  @@schema("app")
 }
 
 model Raffle {
@@ -109,6 +114,7 @@ model Raffle {
   winners     Winner[]
 
   @@map("raffles")
+  @@schema("app")
 }
 
 model InstantWin {
@@ -124,6 +130,7 @@ model InstantWin {
   raffle Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
 
   @@map("instant_wins")
+  @@schema("app")
 }
 
 model Transaction {
@@ -141,6 +148,7 @@ model Transaction {
   tickets Ticket[]
 
   @@map("transactions")
+  @@schema("app")
 }
 
 model Ticket {
@@ -157,6 +165,7 @@ model Ticket {
   winners     Winner[]
 
   @@map("tickets")
+  @@schema("app")
 }
 
 model Winner {
@@ -177,6 +186,7 @@ model Winner {
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 
   @@map("winners")
+  @@schema("app")
 }
 
 model Withdrawal {
@@ -195,6 +205,7 @@ model Withdrawal {
   host HostProfile @relation(fields: [hostId], references: [id])
 
   @@map("withdrawals")
+  @@schema("app")
 }
 
 model Category {
@@ -208,4 +219,5 @@ model Category {
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("categories")
+  @@schema("app")
 }
