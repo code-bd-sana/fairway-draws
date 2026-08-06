@@ -41,7 +41,7 @@ export default function RaffleComingSoonPage() {
       </main>
 
       {/* Global website footer */}
-      <WebsiteFooter />
+      {/* <WebsiteFooter /> */}
     </>
   );
 }
