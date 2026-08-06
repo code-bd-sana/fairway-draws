@@ -4,8 +4,8 @@ import UserAuthLayout from "../../components/user-auth/UserAuthLayout";
 import UserLoginForm from "../../components/user-auth/UserLoginForm";
 
 export const metadata: Metadata = {
-  title: "Player Login | Charity Draws",
-  description: "Log in to your Charity Draws account to view live raffles, purchase tickets, and view winners.",
+  title: "Player Login | Airsoft Draws",
+  description: "Log in to your Airsoft Draws account to view live raffles, purchase tickets, and view winners.",
 };
 
 /**

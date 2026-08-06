@@ -6,8 +6,8 @@ import WebsiteNavbar from "../../components/website/layout/WebsiteNavbar";
 import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
 
 export const metadata: Metadata = {
-  title: "Verified Hosts | Charity Draws",
-  description: "Browse verified hosts running premium charity competitions.",
+  title: "Verified Hosts | Airsoft Draws",
+  description: "Browse verified hosts running premium airsoft competitions.",
 };
 
 export default async function VerifiedHostsPage() {
@@ -35,7 +35,7 @@ export default async function VerifiedHostsPage() {
               All Verified Hosts
             </h1>
             <p className="font-sans text-[14px] md:text-[16px] text-[#72943A] leading-relaxed max-w-[600px]">
-              Explore our directory of fully vetted partners. Every host on Charity Draws undergoes rigorous background and business checks to ensure your competitions are secure, fair, and legally compliant.
+              Explore our directory of fully vetted partners. Every host on Airsoft Draws undergoes rigorous background and business checks to ensure your competitions are secure, fair, and legally compliant.
             </p>
           </div>
           

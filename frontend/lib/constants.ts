@@ -1,6 +1,6 @@
 import { NavLink, SocialLink } from "../types/common.types";
 
-export const BRAND_NAME = "Charity Draws";
+export const BRAND_NAME = "Airsoft Draws";
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
@@ -13,10 +13,8 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { platform: "Facebook", href: "https://facebook.com", iconName: "facebook" },
-  { platform: "Twitter", href: "https://twitter.com", iconName: "twitter" },
-  { platform: "Instagram", href: "https://instagram.com", iconName: "instagram" },
-  { platform: "Discord", href: "https://discord.com", iconName: "discord" },
+  { platform: "Facebook", href: "https://www.facebook.com/share/18zThK3JPJ/?mibextid=wwXIfr", iconName: "facebook" },
+  { platform: "Instagram", href: "https://instagram.com/airsoftdraws", iconName: "instagram" },
 ];
 
 export const FOOTER_SECTIONS = [
@@ -35,20 +33,18 @@ export const FOOTER_SECTIONS = [
     links: [
       { label: "Start Hosting", href: "/#host-info" },
       { label: "Pricing & Fees", href: "/pricing" },
-      { label: "Host Guidelines", href: "/#host-info" },
-      { label: "Escrow Protection", href: "/#host-info" },
-      { label: "Payout Calculator", href: "/#host-info" },
+      { label: "Verified Hosts", href: "/verified-hosts" },
     ],
   },
   {
     title: "Support & Legal",
     links: [
-      { label: "Help & FAQ", href: "/pricing#faq" },
+      { label: "FAQ", href: "/#faq" },
       { label: "Contact Support", href: "/contact" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Responsible Play", href: "#" },
-      { label: "GamCare", href: "https://www.gamcare.org.uk" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Cookie Policy", href: "/cookie-policy" },
+      { label: "Free Entry Method", href: "/terms#free-entry" },
     ],
   },
 ];

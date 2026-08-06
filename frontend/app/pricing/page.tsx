@@ -7,9 +7,9 @@ import PricingComparisonSection from "../../components/website/pricing/PricingCo
 import PricingFaqSection from "../../components/website/pricing/PricingFaqSection";
 
 export const metadata: Metadata = {
-  title: "Pricing & Plans | Charity Draws",
+  title: "Pricing & Plans | Airsoft Draws",
   description:
-    "Choose the right hosting plan for your charity competitions. Start free or unlock advanced host dashboard access, custom branding, and priority payouts.",
+    "Choose the right hosting plan for your airsoft competitions. Start free or unlock advanced host dashboard access, custom branding, and priority payouts.",
 };
 
 /**
@@ -22,7 +22,7 @@ export default function PricingPage() {
       {/* Sticky top navbar */}
       <WebsiteNavbar />
 
-      <main className="min-h-screen flex flex-col bg-bg pt-20 lg:pt-[66px]">
+      <main className="min-h-screen flex flex-col bg-bg">
         {/* Hero Section & Plan Grid switcher */}
         <PricingHero />
 

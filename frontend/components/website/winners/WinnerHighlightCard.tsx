@@ -44,7 +44,7 @@ export default function WinnerHighlightCard() {
             <div className="shrink-0">{quoteIcon}</div>
             
             <p className="font-heading font-medium text-lg sm:text-xl md:text-2xl text-text-primary leading-relaxed">
-              &quot;I honestly didn&apos;t think I&apos;d win — but I did! The whole process was so smooth. Charity Draws is the real deal. My VFC HK416 arrived perfectly packaged within 5 days of winning.&quot;
+              &quot;I honestly didn&apos;t think I&apos;d win — but I did! The whole process was so smooth. Airsoft Draws is the real deal. My VFC HK416 arrived perfectly packaged within 5 days of winning.&quot;
             </p>
 
             <div className="flex flex-col gap-1">

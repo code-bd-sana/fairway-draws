@@ -6,7 +6,7 @@ export const testimonialsData: Testimonial[] = [
     name: "David K.",
     role: "Player & Winner",
     rating: 5,
-    quote: "Outstanding service! I won a Krytac Trident AEG within my first three entries. The escrow delivery process was smooth, and the gun arrived in perfect condition. Super pleased!",
+    quote: "Outstanding service! I won a Krytac Trident AEG within my first three entries. The delivery process was smooth, and the gun arrived in perfect condition. Super pleased!",
     location: "Bristol, UK",
   },
   {
@@ -14,7 +14,7 @@ export const testimonialsData: Testimonial[] = [
     name: "Alex M.",
     role: "Verified Host",
     rating: 5,
-    quote: "As a gear seller, hosting draws on this platform has been incredible. I set the ticket price, and Charity Draws handles the payments and ticketing. Payout was fast and secure.",
+    quote: "As a gear seller, hosting draws on this platform has been incredible. I set the ticket price, and Airsoft Draws handles the payments and ticketing. Payout was fast and secure.",
     location: "Cardiff, UK",
   },
   {

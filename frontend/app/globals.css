@@ -1,29 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  /* Semantic Colors - Fairway Draws Theme */
-  --color-bg: #F8FAF6;
-  --color-surface: #FFFFFF;
-  --color-elevated: #F1F5EE;
-  --color-accent-bg: #ECF5EE;
+  /* Semantic Colors */
+  --color-bg: #0D0D0B;
+  --color-surface: #111210;
+  --color-elevated: #161810;
+  --color-accent-bg: #1A230A;
   
-  --color-primary: #0b4d35;
-  --color-primary-hover: #073826;
-  --color-primary-text: #ffffff;
+  --color-primary: #8CB34A;
+  --color-primary-hover: #A0D056;
+  --color-primary-text: #0D0D0B;
   
-  --color-text-primary: #0e1e17;
-  --color-text-secondary: #334e43;
-  --color-text-muted: #5e766c;
-  --color-text-brand: #0b4d35;
-  --color-text-accent: #dc2626;
+  --color-text-primary: #E8EDD4;
+  --color-text-secondary: #72943A;
+  --color-text-muted: #B3B8AA;
+  --color-text-brand: #A0D056;
   
-  --color-border: #E2EADF;
-  --color-border-medium: #CBD8C8;
-  --color-divider: #EFF4ED;
+  --color-border: #2D3C13;
+  --color-border-medium: #43581E;
+  --color-divider: #1A230A;
   
   --color-success: #16A34A;
-  --color-success-text: #15803D;
-  --color-success-bg: #DCFCE7;
+  --color-success-text: #4ADE80;
+  --color-success-bg: #083B18;
   
   /* Radii */
   --radius-card: 16px;
@@ -31,8 +30,8 @@
   --radius-badge: 9999px;
   
   /* Shadows */
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 25px rgba(11, 77, 53, 0.22);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 20px rgba(140, 179, 74, 0.15);
   
   /* Fonts */
   --font-sans: var(--font-inter), sans-serif;
@@ -53,7 +52,6 @@
   --color-text-secondary: var(--color-text-secondary);
   --color-text-muted: var(--color-text-muted);
   --color-text-brand: var(--color-text-brand);
-  --color-text-accent: var(--color-text-accent);
   
   --color-border: var(--color-border);
   --color-border-medium: var(--color-border-medium);
@@ -129,4 +127,19 @@ body {
 
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+/* Print / PDF Export Styles */
+@media print {
+  body {
+    background-color: #0D0D0B !important;
+    color: #E8EDD4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print,
+  nav,
+  aside {
+    display: none !important;
+  }
 }

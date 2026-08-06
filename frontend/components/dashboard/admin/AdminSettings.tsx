@@ -26,7 +26,7 @@ export default function AdminSettings() {
             <label className="font-sans font-medium text-[13px] text-[#A0D056]">Email Address</label>
             <input 
               type="email" 
-              defaultValue="admin@charitydraws.co.uk" 
+              defaultValue="admin@airsoftdraws.co.uk" 
               className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
             />
           </div>

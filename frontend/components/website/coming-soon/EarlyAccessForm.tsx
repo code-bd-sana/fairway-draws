@@ -7,7 +7,7 @@ import { cn } from "../../../lib/utils";
 
 /**
  * Early Access Lead Form allowing interested users to register.
- * Saves lead details to PostgreSQL via Prisma and displays instant confirmation.
+ * Saves lead details to PostgreSQL and handles duplicate error check alerts.
  */
 export default function EarlyAccessForm() {
   const [fullName, setFullName] = useState("");
@@ -83,49 +83,40 @@ export default function EarlyAccessForm() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-white border border-[#0b4d35]/20 rounded-[20px] p-6 sm:p-8 shadow-xl relative z-10 my-6">
+    <div className="w-full max-w-md mx-auto bg-surface border border-border rounded-[16px] p-6 md:p-8 shadow-card relative z-10 my-8">
       {isSuccess ? (
-        <div className="flex flex-col items-center text-center py-6 animate-fadeIn">
-          <div className="w-14 h-14 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center mb-4">
+        <div className="flex flex-col items-center text-center py-4 animate-fadeIn">
+          <div className="w-12 h-12 rounded-full bg-success-bg border border-success flex items-center justify-center mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={2.5}
               stroke="currentColor"
-              className="w-7 h-7 text-[#0b4d35]"
+              className="w-6 h-6 text-[#4ade80]"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>
           </div>
-          <h3 className="font-serif font-bold text-2xl text-[#0b4d35] mb-2">
-            You&apos;re on the VIP List!
+          <h3 className="font-heading font-bold text-lg text-text-primary mb-2">
+            You&apos;re on the List!
           </h3>
-          <p className="font-sans text-xs sm:text-sm text-text-secondary leading-relaxed max-w-sm mb-4">
-            Thank you for joining Fairway Draws. Your early-access pass has been recorded in our official database. Keep an eye on your inbox for launch day tokens!
+          <p className="font-sans text-xs md:text-sm text-text-muted leading-relaxed">
+            Thank you for registering. We will notify you as soon as the early-access launch begins. Keep an eye on your inbox!
           </p>
-          <button
-            type="button"
-            onClick={() => setIsSuccess(false)}
-            className="text-xs font-semibold text-[#0b4d35] hover:text-[#dc2626] underline transition-colors"
-          >
-            Register another email
-          </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="text-center mb-2">
-            <h3 className="font-serif font-extrabold text-xl sm:text-2xl text-[#0b4d35] tracking-wide">
-              Secure Early Access
-            </h3>
-            <p className="font-sans text-xs text-text-muted mt-1">
-              Join 1,200+ golfers on the official Fairway Draws waitlist.
-            </p>
-          </div>
+          <h3 className="font-heading font-bold text-base md:text-lg text-text-primary mb-1 text-center">
+            Join the Waitlist
+          </h3>
+          <p className="font-sans text-xs text-text-muted text-center mb-4">
+            Register below to secure your early-access spot.
+          </p>
 
           {/* General Error Notice */}
           {generalError && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg p-3 text-center font-medium">
+            <div className="bg-red-950/40 border border-red-500/30 text-red-400 text-xs rounded-button p-3 text-center">
               {generalError}
             </div>
           )}
@@ -135,7 +126,7 @@ export default function EarlyAccessForm() {
             label="Full Name"
             id="fullName"
             name="fullName"
-            placeholder="e.g. Rory McIlroy"
+            placeholder="John Smith"
             value={fullName}
             onChange={(e) => {
               setFullName(e.target.value);
@@ -152,7 +143,7 @@ export default function EarlyAccessForm() {
             id="email"
             name="email"
             type="email"
-            placeholder="rory@example.com"
+            placeholder="john@example.com"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -165,7 +156,7 @@ export default function EarlyAccessForm() {
 
           {/* Role Selection */}
           <div className="flex flex-col gap-1.5 w-full">
-            <label className="font-sans font-semibold text-xs text-text-secondary select-none self-start mb-0.5">
+            <label className="font-sans font-medium text-xs md:text-sm text-text-secondary select-none self-start mb-0.5">
               I want to:
             </label>
             <div className="flex gap-3 w-full">
@@ -174,55 +165,52 @@ export default function EarlyAccessForm() {
                 onClick={() => setRole("CUSTOMER")}
                 disabled={isSubmitting}
                 className={cn(
-                  "flex-1 font-sans text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer disabled:opacity-50 select-none",
+                  "flex-1 font-sans text-xs md:text-sm font-semibold py-2.5 rounded-button border text-center transition-all duration-200 cursor-pointer disabled:opacity-50 select-none",
                   role === "CUSTOMER"
-                    ? "bg-[#0b4d35] border-[#0b4d35] text-white shadow-md"
-                    : "bg-surface border-border text-text-muted hover:text-text-primary hover:border-[#0b4d35]/40"
+                    ? "bg-accent-bg border-primary text-text-brand shadow-glow"
+                    : "bg-bg border-border text-text-muted hover:text-text-primary"
                 )}
               >
-                ⛳ Enter Draws (Player)
+                Enter Draws (Player)
               </button>
               <button
                 type="button"
                 onClick={() => setRole("HOST")}
                 disabled={isSubmitting}
                 className={cn(
-                  "flex-1 font-sans text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-xl border text-center transition-all duration-200 cursor-pointer disabled:opacity-50 select-none",
+                  "flex-1 font-sans text-xs md:text-sm font-semibold py-2.5 rounded-button border text-center transition-all duration-200 cursor-pointer disabled:opacity-50 select-none",
                   role === "HOST"
-                    ? "bg-[#0b4d35] border-[#0b4d35] text-white shadow-md"
-                    : "bg-surface border-border text-text-muted hover:text-text-primary hover:border-[#0b4d35]/40"
+                    ? "bg-accent-bg border-primary text-text-brand shadow-glow"
+                    : "bg-bg border-border text-text-muted hover:text-text-primary"
                 )}
               >
-                🏆 Host Draws (Club/Host)
+                Host Draws (Host)
               </button>
             </div>
           </div>
 
           {/* Submit Button */}
-          <button
+          <PrimaryButton
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 mt-2 bg-[#0b4d35] hover:bg-[#073826] text-white font-sans text-sm font-bold tracking-wider uppercase rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-          >
-            {isSubmitting ? (
-              <>
-                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            className="w-full py-3 mt-2 font-semibold tracking-wide"
+            icon={
+              isSubmitting ? (
+                <svg className="animate-spin h-4 w-4 text-primary-text" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                <span>Registering...</span>
-              </>
-            ) : (
-              <>
-                <span>JOIN VIP WAITLIST</span>
-                <span className="text-base leading-none text-[#dc2626] font-bold">&#8594;</span>
-              </>
-            )}
-          </button>
+              ) : (
+                <span className="leading-none">&#8594;</span>
+              )
+            }
+          >
+            {isSubmitting ? "Registering..." : "Join Waitlist"}
+          </PrimaryButton>
 
           {/* Trust Text */}
-          <p className="font-sans text-[11px] text-text-muted text-center mt-2">
-            🔒 Direct database registration. Guaranteed privacy & zero spam.
+          <p className="font-sans text-[10px] text-text-muted/50 text-center mt-2">
+            🔒 Your details are secure. No spam. Unsubscribe anytime.
           </p>
         </form>
       )}

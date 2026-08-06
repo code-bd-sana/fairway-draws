@@ -94,7 +94,7 @@ export default function OverviewPage() {
               Platform Architecture & Flow
             </h1>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Interactive high-level overview of the Charity Draws lifecycle. 
+              Interactive high-level overview of the Airsoft Draws lifecycle. 
               Understand how Hosts, Admins, and Clients interact with the platform.
             </p>
           </div>

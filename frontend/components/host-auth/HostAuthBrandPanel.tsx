@@ -100,7 +100,7 @@ export default function HostAuthBrandPanel({
       <div>
         <Link href="/" className="inline-block transition-transform duration-200 hover:scale-105 select-none relative w-[85px] h-[85px]">
           <Image
-            alt="Charity Draws Logo"
+            alt="Airsoft Draws Logo"
             src={logo}
             fill
             priority
@@ -124,7 +124,7 @@ export default function HostAuthBrandPanel({
           <div className="flex flex-col items-start w-full">
             <h1 className="font-heading font-bold text-[36px] md:text-[48px] text-text-primary leading-[1.1] md:leading-[80px] tracking-[0.24px] select-none">
               {mode === "login"
-                ? "Run Your Own Charity Competitions"
+                ? "Run Your Own Airsoft Competitions"
                 : "Become a Verified Host"}
             </h1>
           </div>
@@ -222,7 +222,7 @@ export default function HostAuthBrandPanel({
       {/* Bottom Footer Copy */}
       <div className="mt-8 lg:mt-0">
         <p className="font-sans font-normal text-[11px] leading-[16.5px] text-border-medium whitespace-nowrap">
-          © {new Date().getFullYear()} Charity Draws · Privacy Policy · Terms
+          © {new Date().getFullYear()} Airsoft Draws · Privacy Policy · Terms
         </p>
       </div>
     </div>

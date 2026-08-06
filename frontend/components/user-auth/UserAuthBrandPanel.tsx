@@ -62,7 +62,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
       <div>
         <Link href="/" className="inline-block transition-transform duration-200 hover:scale-105 select-none">
           <Image
-            alt="Charity Draws Logo"
+            alt="Airsoft Draws Logo"
             src={logo}
             height={85}
             width={85}
@@ -84,7 +84,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
         {/* Hero Headlines */}
         <div className="flex flex-col gap-4">
           <h1 className="font-heading font-bold text-3xl md:text-[48px] text-text-primary leading-[1.1] md:leading-[1.2] tracking-wide select-none">
-            Win Premium Charity Gear
+            Win Premium Airsoft Gear
           </h1>
           <p className="font-sans font-normal text-sm md:text-xl text-text-secondary leading-relaxed">
             Create your free account to enter draws, track ticket purchases, and view winners.
@@ -109,7 +109,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
       {/* Bottom Footer Copy */}
       <div className="mt-8 lg:mt-0 pt-6 border-t border-divider/40 lg:border-t-0">
         <p className="font-sans font-normal text-[10px] md:text-[11px] text-border-medium">
-          © {new Date().getFullYear()} Charity Draws · Privacy Policy · Terms
+          © {new Date().getFullYear()} Airsoft Draws · Privacy Policy · Terms
         </p>
       </div>
     </div>

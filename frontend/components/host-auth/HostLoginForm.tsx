@@ -125,7 +125,7 @@ export default function HostLoginForm() {
           </h2>
           <div className="flex items-center gap-1.5 pt-[8px]">
             <span className="font-sans font-normal text-[14px] leading-[19.5px] text-text-secondary">
-              New to Charity Draws?
+              New to Airsoft Draws?
             </span>
             <Link
               href="/host/register"

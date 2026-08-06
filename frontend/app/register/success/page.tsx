@@ -5,7 +5,7 @@ import UserAuthLayout from "../../../components/user-auth/UserAuthLayout";
 import PrimaryButton from "../../../components/website/shared/PrimaryButton";
 
 export const metadata: Metadata = {
-  title: "Registration Successful | Charity Draws",
+  title: "Registration Successful | Airsoft Draws",
   description: "Your account has been created successfully.",
 };
 
@@ -32,7 +32,7 @@ export default function RegisterSuccessPage() {
           Account Created!
         </h2>
         <p className="text-neutral-400 max-w-sm">
-          Welcome to Charity Draws. Your account is fully set up. You can now browse live competitions and purchase tickets.
+          Welcome to Airsoft Draws. Your account is fully set up. You can now browse live competitions and purchase tickets.
         </p>
         <Link href="/login" className="w-full">
           <PrimaryButton className="w-full">Go to Login</PrimaryButton>

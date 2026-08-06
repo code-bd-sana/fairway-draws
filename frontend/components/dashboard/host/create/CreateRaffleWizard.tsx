@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMySubscription } from "../../../../hooks/useSubscriptionHooks";
 import { useCreateRaffle, useUploadRaffleImage } from "../../../../hooks/useRaffleHooks";
+import { extractApiError } from "../../../../lib/utils";
 
 export interface RaffleFormData {
   // Step 1
@@ -19,6 +20,7 @@ export interface RaffleFormData {
   category: string;
   description: string;
   // Step 2
+  mainPrizeValue: string;
   totalTickets: string;
   ticketPrice: string;
   minTickets: string;
@@ -27,20 +29,20 @@ export interface RaffleFormData {
   gallery: string[];
   // Step 4 (Instant Wins)
   hasInstantWins: boolean;
-  instantWins: { prizeName: string; imageFile: File | null; imageUrl: string | null }[];
+  instantWins: { prizeName: string; imageFile: File | null; imageUrl: string | null; rrpValue: string; }[];
   // Step 5
   startDate: string;
   endDate: string;
   isAutoDraw: boolean;
   autoDrawDate: boolean;
   autoDrawSoldOut: boolean;
-  guaranteedDraw: boolean;
 }
 
 const initialData: RaffleFormData = {
   title: "",
-  category: "Charity Rifles",
+  category: "Airsoft Rifles",
   description: "",
+  mainPrizeValue: "",
   totalTickets: "",
   ticketPrice: "",
   minTickets: "1",
@@ -53,7 +55,6 @@ const initialData: RaffleFormData = {
   isAutoDraw: true,
   autoDrawDate: true,
   autoDrawSoldOut: false,
-  guaranteedDraw: false,
 };
 
 export default function CreateRaffleWizard() {
@@ -80,6 +81,7 @@ export default function CreateRaffleWizard() {
       // 1. Upload instant win images first
       const processedInstantWins = [];
       for (const iw of formData.instantWins) {
+        const numericRrp = iw.rrpValue ? Number(iw.rrpValue) : undefined;
         if (iw.imageFile) {
           const res = await fetch('/api/v1/raffles/image', {
             method: 'POST',
@@ -94,12 +96,12 @@ export default function CreateRaffleWizard() {
           });
           if (res.ok) {
             const data = await res.json();
-            processedInstantWins.push({ prizeName: iw.prizeName, image: data.url });
+            processedInstantWins.push({ prizeName: iw.prizeName, image: data.url, rrpValue: numericRrp });
           } else {
-            processedInstantWins.push({ prizeName: iw.prizeName, image: iw.imageUrl });
+            processedInstantWins.push({ prizeName: iw.prizeName, image: iw.imageUrl, rrpValue: numericRrp });
           }
         } else {
-          processedInstantWins.push({ prizeName: iw.prizeName, image: iw.imageUrl });
+          processedInstantWins.push({ prizeName: iw.prizeName, image: iw.imageUrl, rrpValue: numericRrp });
         }
       }
 
@@ -107,8 +109,9 @@ export default function CreateRaffleWizard() {
       const created = await createRaffle.mutateAsync({
         title: formData.title,
         description: formData.description,
-        ticketPrice: formData.ticketPrice,
-        totalTickets: formData.totalTickets,
+        mainPrizeValue: formData.mainPrizeValue ? Number(formData.mainPrizeValue) : undefined,
+        pricePerTicket: Number(formData.ticketPrice) || 0,
+        totalTickets: Number(formData.totalTickets) || 0,
         startDate: formData.startDate,
         endDate: formData.endDate,
         isAutoDraw: formData.isAutoDraw,
@@ -125,7 +128,7 @@ export default function CreateRaffleWizard() {
       toast.success("Competition Created and Pending Approval!");
       router.push("/dashboard/host/competitions");
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to create competition");
+      toast.error(extractApiError(err, "Failed to create competition"));
     } finally {
       setIsSubmitting(false);
     }

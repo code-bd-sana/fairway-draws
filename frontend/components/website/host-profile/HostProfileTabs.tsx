@@ -102,7 +102,7 @@ export default function HostProfileTabs({ raffles = [] }: { raffles?: any[] }) {
           <div className="animate-in fade-in duration-300 flex flex-col gap-4 max-w-[800px]">
             <h3 className="font-heading font-medium text-[18px] text-[#E8EDD4]">About TacticalGear UK</h3>
             <p className="font-sans text-[14px] text-[#72943A] leading-relaxed">
-              We are a premium charity retailer based in Manchester, supplying the community with the highest quality gear, from rare gas blowback rifles to tactical apparel. 
+              We are a premium airsoft retailer based in Manchester, supplying the community with the highest quality gear, from rare gas blowback rifles to tactical apparel. 
               Our competitions give you the chance to win top-tier equipment for a fraction of the cost, fully audited and guaranteed.
             </p>
             <div className="flex gap-4 mt-2">

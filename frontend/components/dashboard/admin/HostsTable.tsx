@@ -36,6 +36,68 @@ export default function HostsTable() {
     },
   });
 
+  const approveHostMutation = useMutation({
+    mutationFn: (hostId: string) => adminService.approveHost(hostId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-hosts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-hosts-stats'] });
+      setIsModalOpen(false);
+      setSelectedHost(null);
+    },
+  });
+
+  const rejectHostMutation = useMutation({
+    mutationFn: (hostId: string) => adminService.rejectHost(hostId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-hosts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-hosts-stats'] });
+      setIsModalOpen(false);
+      setSelectedHost(null);
+    },
+  });
+
+  const handleExportCSV = () => {
+    const hosts = data?.hosts || [];
+    if (hosts.length === 0) return;
+
+    const headers = [
+      "ID",
+      "Business Name",
+      "Email",
+      "Plan",
+      "Active Raffles",
+      "Revenue (£)",
+      "Status",
+      "Verified"
+    ];
+
+    const rows = hosts.map((host: HostData) => [
+      host.id,
+      host.businessName || "N/A",
+      host.email,
+      host.plan || "Free",
+      host.raffles || 0,
+      (host.revenue || 0).toFixed(2),
+      host.isBlocked ? "Blocked" : "Active",
+      host.isVerified ? "Yes" : "No"
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `hosts_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleReview = (host: HostData) => {
     // Construct detailed data for the modal based on the selected row
     setSelectedHost({
@@ -46,6 +108,7 @@ export default function HostsTable() {
       contact: "N/A", // This could be fetched from host profile if available
       payoutMethod: "N/A",
       social: "N/A",
+      isVerified: host.isVerified,
     });
     setIsModalOpen(true);
   };
@@ -88,7 +151,7 @@ export default function HostsTable() {
 
           {/* Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            {["All", "Active", "Blocked"].map((filter) => (
+            {["All", "Active", "Blocked", "Pending"].map((filter) => (
               <button
                 key={filter}
                 onClick={() => { setActiveFilter(filter); setPage(1); }}
@@ -103,6 +166,18 @@ export default function HostsTable() {
             ))}
           </div>
         </div>
+
+        {/* Right: Export CSV */}
+        <button 
+          onClick={handleExportCSV}
+          disabled={!data?.hosts || data.hosts.length === 0}
+          className="h-[40px] px-4 bg-[#111210] border border-[#2D3C13] hover:border-[#5A752A] hover:bg-[#1A230A] rounded-[8px] flex items-center justify-center gap-2 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+        >
+          <svg className="w-4 h-4 text-[#8CB34A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">Export CSV</span>
+        </button>
       </div>
 
       {/* Table Container */}
@@ -121,11 +196,38 @@ export default function HostsTable() {
           </thead>
           <tbody>
             {isLoading ? (
-              <tr>
-                <td colSpan={7} className="py-8 text-center text-[#5A752A] font-sans text-sm">
-                  Loading hosts...
-                </td>
-              </tr>
+              Array.from({ length: 5 }).map((_, idx) => (
+                <tr key={idx} className="border-b border-[#2D3C13] last:border-b-0">
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3 animate-pulse">
+                      <div className="w-8 h-8 rounded-full bg-[#1C2012] shrink-0" />
+                      <div className="h-4 w-28 bg-[#1C2012] rounded" />
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="h-4 w-40 bg-[#1C2012] rounded animate-pulse" />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <div className="h-6 w-24 bg-[#1C2012] rounded-full animate-pulse mx-auto" />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <div className="h-4 w-10 bg-[#1C2012] rounded animate-pulse mx-auto" />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <div className="h-4 w-16 bg-[#1C2012] rounded animate-pulse mx-auto" />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <div className="h-6 w-16 bg-[#1C2012] rounded-full animate-pulse mx-auto" />
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex items-center justify-end gap-3">
+                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
+                    </div>
+                  </td>
+                </tr>
+              ))
             ) : data?.hosts?.length === 0 ? (
               <tr>
                 <td colSpan={7} className="py-8 text-center text-[#5A752A] font-sans text-sm">
@@ -161,7 +263,41 @@ export default function HostsTable() {
                     {getStatusPill(host.isBlocked)}
                   </td>
                   <td className="py-4 px-6">
-                    <div className="flex items-center justify-end gap-3">
+                    <div className="flex items-center justify-end gap-3 font-sans">
+                      {!host.isVerified && (
+                        <>
+                          <button 
+                            onClick={() => approveHostMutation.mutate(host.id)}
+                            disabled={approveHostMutation.isPending || rejectHostMutation.isPending}
+                            className="text-[#4ADE80] hover:text-[#22c55e] hover:scale-125 active:scale-95 transition-all duration-200 mr-1 flex items-center justify-center shrink-0" 
+                            title="Approve Host"
+                          >
+                            {approveHostMutation.isPending && approveHostMutation.variables === host.id ? (
+                              <div className="w-4.5 h-4.5 border-2 border-[#4ADE80] border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                              </svg>
+                            )}
+                          </button>
+
+                          <button 
+                            onClick={() => rejectHostMutation.mutate(host.id)}
+                            disabled={approveHostMutation.isPending || rejectHostMutation.isPending}
+                            className="text-[#EF4444] hover:text-[#dc2626] hover:scale-125 active:scale-95 transition-all duration-200 mr-2 flex items-center justify-center shrink-0" 
+                            title="Reject Host"
+                          >
+                            {rejectHostMutation.isPending && rejectHostMutation.variables === host.id ? (
+                              <div className="w-4.5 h-4.5 border-2 border-[#EF4444] border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                              </svg>
+                            )}
+                          </button>
+                        </>
+                      )}
+
                       <button 
                         onClick={() => handleReview(host)}
                         className="text-[#5A752A] hover:text-[#8CB34A] transition-colors" 
@@ -198,10 +334,35 @@ export default function HostsTable() {
         </table>
       </div>
 
+      {/* Pagination Controls */}
+      {data && data.totalPages > 1 && (
+        <div className="flex justify-between items-center bg-[#161810] border border-[#2D3C13] rounded-[16px] px-6 py-4">
+          <button 
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="text-[13px] font-sans font-medium text-[#E8EDD4] disabled:text-[#5A752A] hover:text-[#8CB34A] transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            Previous
+          </button>
+          <span className="text-[13px] font-sans text-[#72943A]">Page {page} of {data.totalPages}</span>
+          <button 
+            onClick={() => setPage(p => Math.min(data.totalPages, p + 1))}
+            disabled={page === data.totalPages}
+            className="text-[13px] font-sans font-medium text-[#E8EDD4] disabled:text-[#5A752A] hover:text-[#8CB34A] transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
       <ReviewHostModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         data={selectedHost} 
+        onApprove={(hostId) => approveHostMutation.mutate(hostId)}
+        isApproveLoading={approveHostMutation.isPending}
+        onReject={(hostId) => rejectHostMutation.mutate(hostId)}
+        isRejectLoading={rejectHostMutation.isPending}
       />
 
       <ConfirmBlockModal 

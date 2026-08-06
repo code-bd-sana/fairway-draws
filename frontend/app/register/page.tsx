@@ -4,8 +4,8 @@ import UserAuthLayout from "../../components/user-auth/UserAuthLayout";
 import UserRegistrationForm from "../../components/user-auth/UserRegistrationForm";
 
 export const metadata: Metadata = {
-  title: "Player Registration | Charity Draws",
-  description: "Create an account to join the Charity Draws community, purchase tickets, and win premium prizes.",
+  title: "Player Registration | Airsoft Draws",
+  description: "Create an account to join the Airsoft Draws community, purchase tickets, and win premium prizes.",
 };
 
 export default function UserRegisterPage() {

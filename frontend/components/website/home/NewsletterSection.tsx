@@ -36,7 +36,7 @@ export default function NewsletterSection() {
             </h2>
 
             <p className="font-sans text-xs md:text-sm text-text-muted leading-relaxed mb-8">
-              Sign up to receive weekly notifications when new high-tier charity bundles, cash draws, or special instant win events go live. Unsubscribe at any time.
+              Sign up to receive weekly notifications when new high-tier airsoft bundles, cash draws, or special instant win events go live. Unsubscribe at any time.
             </p>
 
             {subscribed ? (

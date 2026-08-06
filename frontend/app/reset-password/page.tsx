@@ -4,8 +4,8 @@ import UserAuthLayout from "../../components/user-auth/UserAuthLayout";
 import ResetPasswordForm from "../../components/user-auth/ResetPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Reset Password | Charity Draws",
-  description: "Enter your new password to access your Charity Draws account.",
+  title: "Reset Password | Airsoft Draws",
+  description: "Enter your new password to access your Airsoft Draws account.",
 };
 
 export default function ResetPasswordPage() {

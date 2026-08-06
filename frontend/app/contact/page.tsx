@@ -7,7 +7,7 @@ import ContactForm from "../../components/website/contact/ContactForm";
 import ContactInfoCards from "../../components/website/contact/ContactInfoCards";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Charity Draws",
+  title: "Contact Us | Airsoft Draws",
   description:
     "Have questions about draw competitions, hosting fees, or verification? Send us a message and our support crew will reach out within 24 hours.",
 };
@@ -22,7 +22,7 @@ export default function ContactPage() {
       {/* Sticky top navbar */}
       <WebsiteNavbar />
 
-      <main className="min-h-screen flex flex-col bg-bg pt-20 lg:pt-[66px]">
+      <main className="min-h-screen flex flex-col bg-bg">
         {/* Page Hero subheaders */}
         <ContactHero />
 

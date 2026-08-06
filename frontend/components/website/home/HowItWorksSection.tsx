@@ -97,7 +97,7 @@ export default function HowItWorksSection() {
         {/* Section Header */}
         <SectionHeader
           badgeText="SIMPLE PROCESS"
-          headingText="How Charity Draws Works"
+          headingText="How Airsoft Draws Works"
           paragraphText="Enter draws in three straightforward steps and win high-end gear. Transparent draws, secure payouts."
         />
 

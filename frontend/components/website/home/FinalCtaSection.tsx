@@ -58,11 +58,11 @@ export default function FinalCtaSection() {
             </div>
             
             <h2 className="font-heading font-bold text-3xl md:text-4xl text-text-primary leading-tight mb-6">
-              Run Your Own Charity Competition
+              Run Your Own Airsoft Competition
             </h2>
             
             <p className="font-sans text-sm md:text-base text-text-muted leading-relaxed mb-6">
-              Turn your surplus charity gear into cash or launch competitions as an established retailer. We handle everything from secure payment collections to automated random draws.
+              Turn your surplus airsoft gear into cash or launch competitions as an established retailer. We handle everything from secure payment collections to automated random draws.
             </p>
 
             {/* Benefits Bullet Grid */}
@@ -71,7 +71,7 @@ export default function FinalCtaSection() {
                 "Set your own ticket price & ticket volumes",
                 "Secure, industry-leading payment integrations",
                 "Escrow-protected payouts for total peace of mind",
-                "Instant exposure to our active charity player base",
+                "Instant exposure to our active airsoft player base",
               ].map((bullet, idx) => (
                 <li key={idx} className="flex items-center gap-3 font-sans text-xs md:text-sm text-text-primary">
                   {bulletCheck}

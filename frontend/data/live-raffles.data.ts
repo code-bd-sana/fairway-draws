@@ -81,7 +81,7 @@ export const liveRafflesData: Draw[] = [
   {
     id: "raffle-6",
     title: "Tokyo Marui Hi-Capa 5.1 GBB",
-    description: "The gold standard for charity sidearms. Extreme accuracy, customizable, rapid cycle rate, and high gas efficiency.",
+    description: "The gold standard for airsoft sidearms. Extreme accuracy, customizable, rapid cycle rate, and high gas efficiency.",
     image: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?q=80&w=600&auto=format&fit=crop",
     ticketPrice: 1.50,
     totalTickets: 300,
@@ -168,7 +168,7 @@ export const liveRafflesData: Draw[] = [
   {
     id: "raffle-12",
     title: "£1,000 Store Credit Cash Draw",
-    description: "Get £1,000 to spend on any charity guns or tactical gear from major online retailers. Delivered as gift vouchers or cash transfer.",
+    description: "Get £1,000 to spend on any airsoft guns or tactical gear from major online retailers. Delivered as gift vouchers or cash transfer.",
     image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=600&auto=format&fit=crop",
     ticketPrice: 2.00,
     totalTickets: 800,

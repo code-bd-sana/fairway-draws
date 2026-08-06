@@ -15,7 +15,7 @@ interface TextareaFieldProps {
 }
 
 /**
- * Reusable form textarea element matching the Charity Draws styling system.
+ * Reusable form textarea element matching the Airsoft Draws styling system.
  */
 export default function TextareaField({
   label,

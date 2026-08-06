@@ -45,7 +45,7 @@ export default function HowItWorksVideoSection() {
           {/* Card background 3D illustration image */}
           <Image
             src="http://localhost:3845/assets/526657551df58b8e03d621873eaa6a0575eb6137.png"
-            alt="Watch How Charity Draws Works"
+            alt="Watch How Airsoft Draws Works"
             fill
             sizes="(max-width: 768px) 100vw, 1010px"
             className="object-cover opacity-80 group-hover:scale-[1.02] group-hover:opacity-95 transition-all duration-700 ease-out"

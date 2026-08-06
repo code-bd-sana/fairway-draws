@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface WinAnimationModalProps {
   isOpen: boolean;
@@ -8,8 +9,39 @@ interface WinAnimationModalProps {
   prizes: Array<{ title: string; ticketNumber: number }>;
 }
 
+function FastRollingNumbers() {
+  const [numbers, setNumbers] = useState(["0", "0", "0", "0"]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNumbers([
+        Math.floor(Math.random() * 10).toString(),
+        Math.floor(Math.random() * 10).toString(),
+        Math.floor(Math.random() * 10).toString(),
+        Math.floor(Math.random() * 10).toString(),
+      ]);
+    }, 40);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex gap-2 items-center justify-center font-heading text-[40px] text-[#8CB34A] blur-[0.5px] opacity-80">
+      {numbers.map((num, i) => (
+        <div key={i} className="w-[50px] text-center bg-[#1A230A] rounded-lg py-2 border border-[#8CB34A]/30 shadow-inner">
+          {num}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function WinAnimationModal({ isOpen, onClose, prizes }: WinAnimationModalProps) {
+  const [mounted, setMounted] = useState(false);
   const [stage, setStage] = useState<"rolling" | "revealed">("rolling");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -22,11 +54,11 @@ export default function WinAnimationModal({ isOpen, onClose, prizes }: WinAnimat
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative bg-[#111210] border border-[#72943A]/50 p-1 rounded-[24px] shadow-[0_0_40px_rgba(114,148,58,0.2)] max-w-md w-[90%] overflow-hidden animate-in zoom-in-95 duration-500">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="relative bg-[#111210] border border-[#72943A]/50 p-1 rounded-[24px] shadow-[0_0_40px_rgba(114,148,58,0.2)] max-w-md w-[90%] overflow-hidden animate-in zoom-in-95 duration-500 z-[10000]">
         
         {/* Animated Glowing Border Background */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#8CB34A] via-[#E8EDD4] to-[#5A752A] opacity-20 animate-[spin_4s_linear_infinite]" />
@@ -53,9 +85,8 @@ export default function WinAnimationModal({ isOpen, onClose, prizes }: WinAnimat
             
             {/* The Slot Machine "Spinning" Effect */}
             {stage === "rolling" ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center animate-[pulse_0.5s_ease-in-out_infinite] opacity-50">
-                <div className="text-[#8CB34A] font-heading text-4xl blur-[1px]">???</div>
-                <div className="text-[#8CB34A] font-heading text-4xl blur-[2px] mt-4">???</div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <FastRollingNumbers />
               </div>
             ) : (
               <div className="w-full flex flex-col gap-3 max-h-[100px] overflow-y-auto custom-scrollbar animate-in slide-in-from-bottom-4 duration-500 fade-in">
@@ -91,4 +122,6 @@ export default function WinAnimationModal({ isOpen, onClose, prizes }: WinAnimat
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

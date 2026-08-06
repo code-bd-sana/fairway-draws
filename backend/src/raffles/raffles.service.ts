@@ -1,10 +1,11 @@
 import {
-  Injectable,
   BadRequestException,
-  NotFoundException,
   ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RafflesService {
@@ -31,18 +32,8 @@ export class RafflesService {
     const activeSub = hostProfile.subscriptions[0];
     if (!activeSub) {
       throw new ForbiddenException(
-        'You must have an active subscription to create a competition.',
+        'You must have an active paid subscription to create a competition.',
       );
-    }
-
-    // Check free tier limits (assuming plan price == 0 means free)
-    if (Number(activeSub.plan.price) === 0) {
-      const maxFreeRaffles = 3;
-      if (hostProfile.raffles.length >= maxFreeRaffles) {
-        throw new ForbiddenException(
-          `Free plan is limited to ${maxFreeRaffles} competitions. Please upgrade your plan.`,
-        );
-      }
     }
 
     // Generate unique slug
@@ -64,6 +55,9 @@ export class RafflesService {
         title: data.title,
         slug,
         description: data.description || '',
+        mainPrizeValue: data.mainPrizeValue
+          ? Number(data.mainPrizeValue)
+          : null,
         pricePerTicket: data.ticketPrice || 0,
         totalTickets,
         startDate,
@@ -96,6 +90,7 @@ export class RafflesService {
             raffleId: raffle.id,
             ticketNumber: ticketNumbers[index],
             prizeName: iw.prizeName,
+            rrpValue: iw.rrpValue ? Number(iw.rrpValue) : null,
             image: iw.image || null,
           }),
         );
@@ -135,19 +130,27 @@ export class RafflesService {
       category,
       statusFilter,
       sort,
+      hasInstantWins,
     } = query;
     const skip = (Number(page) - 1) * Number(limit);
 
     const now = new Date();
 
-    // Base where clause (only ACTIVE)
+    // Base where clause
     const whereClause: any = {
       status: 'ACTIVE',
     };
 
     // Category filter
-    if (category && category !== 'All') {
+    if (category && category !== 'All' && category !== 'all') {
       whereClause.category = category;
+    }
+
+    // Instant Win filter
+    if (hasInstantWins === 'true') {
+      whereClause.instantWins = {
+        some: {}, // At least one instant win attached
+      };
     }
 
     // Status filter
@@ -161,23 +164,43 @@ export class RafflesService {
     }
 
     if (search) {
-      whereClause.title = { contains: search, mode: 'insensitive' };
+      whereClause.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { host: { businessName: { contains: search, mode: 'insensitive' } } },
+        {
+          host: {
+            user: { firstName: { contains: search, mode: 'insensitive' } },
+          },
+        },
+        {
+          host: {
+            user: { lastName: { contains: search, mode: 'insensitive' } },
+          },
+        },
+      ];
     }
 
     // Sort logic
     let orderBy: any = { createdAt: 'desc' }; // default Latest
-    if (sort === 'Ending Soon') {
+    if (sort === 'Ending Soon' || sort === 'ending-soon') {
       orderBy = { endDate: 'asc' };
-    } else if (sort === 'Price: Low to High') {
+    } else if (sort === 'Price: Low to High' || sort === 'price-asc') {
       orderBy = { pricePerTicket: 'asc' };
-    } else if (sort === 'Price: High to Low') {
+    } else if (sort === 'Price: High to Low' || sort === 'price-desc') {
       orderBy = { pricePerTicket: 'desc' };
+    } else if (sort === 'Most Popular' || sort === 'popular') {
+      orderBy = { ticketsSold: 'desc' };
+    } else if (sort === 'featured') {
+      orderBy = { createdAt: 'desc' };
     }
 
     const [raffles, total] = await Promise.all([
       this.prisma.raffle.findMany({
         where: whereClause,
-        include: { host: { include: { user: true } } },
+        include: {
+          host: { include: { user: true } },
+          _count: { select: { instantWins: true } },
+        },
         skip,
         take: Number(limit),
         orderBy,
@@ -190,6 +213,136 @@ export class RafflesService {
       meta: {
         total,
         page: Number(page),
+        lastPage: Math.ceil(total / Number(limit)),
+      },
+    };
+  }
+
+  async getRecentWinners() {
+    const winners = await this.prisma.winner.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 4,
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            location: true,
+            avatarUrl: true,
+          },
+        },
+        raffle: {
+          select: {
+            title: true,
+            prizeName: true,
+          },
+        },
+      },
+    });
+
+    return winners.map((w) => ({
+      id: w.id,
+      name: w.user.firstName
+        ? `${w.user.firstName} ${w.user.lastName?.charAt(0) || ''}.`
+        : 'Anonymous User',
+      initials: w.user.firstName
+        ? `${w.user.firstName.charAt(0)}${w.user.lastName?.charAt(0) || ''}`
+        : 'AU',
+      location: w.user.location || '',
+      avatarUrl: w.user.avatarUrl,
+      prizeWon: w.prizeName || w.raffle.prizeName,
+      status: w.deliveryStatus,
+      statusText:
+        w.deliveryStatus === 'DELIVERED'
+          ? 'DELIVERED'
+          : w.deliveryStatus === 'SHIPPED'
+            ? 'SHIPPED'
+            : 'VERIFIED',
+      whenWon: w.createdAt.toISOString(),
+    }));
+  }
+
+  async getPublicWinnersList(query: any) {
+    const {
+      page = 1,
+      limit = 8,
+      activeTab = 'all',
+      winnerType = 'all',
+      sortBy = 'newest',
+    } = query;
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const whereClause: any = {};
+    const now = new Date();
+
+    if (activeTab === 'week') {
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      whereClause.createdAt = { gte: weekAgo };
+    } else if (activeTab === 'month') {
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      whereClause.createdAt = { gte: monthStart };
+    }
+
+    if (winnerType === 'instant') {
+      whereClause.winType = 'INSTANT_WIN';
+    } else if (winnerType === 'main_draw') {
+      whereClause.winType = 'MAIN_DRAW';
+    }
+
+    const orderBy: Prisma.WinnerOrderByWithRelationInput =
+      sortBy === 'oldest' ? { createdAt: 'asc' } : { createdAt: 'desc' };
+
+    const [winners, total] = await Promise.all([
+      this.prisma.winner.findMany({
+        where: whereClause,
+        orderBy,
+        skip,
+        take: Number(limit),
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              avatarUrl: true,
+              location: true,
+            },
+          },
+          raffle: { select: { title: true, mainImage: true, prizeName: true } },
+          ticket: { select: { ticketNumber: true } },
+        },
+      }),
+      this.prisma.winner.count({ where: whereClause }),
+    ]);
+
+    const data = winners.map((w) => ({
+      id: w.id,
+      name: w.user.firstName
+        ? `${w.user.firstName} ${w.user.lastName?.charAt(0) || ''}.`
+        : 'Anonymous',
+      location: w.user.location || '',
+      avatar: w.user.avatarUrl || w.raffle?.mainImage || '',
+      competitionImage: w.raffle?.mainImage || '',
+      winnerType: w.winType === 'INSTANT_WIN' ? 'instant' : 'main_draw',
+      initials: w.user.firstName
+        ? `${w.user.firstName.charAt(0)}${w.user.lastName?.charAt(0) || ''}`
+        : 'AU',
+      prizeTitle: w.prizeName || w.raffle?.prizeName || 'Unknown Prize',
+      drawDate: w.createdAt.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+      dateString: w.createdAt.toISOString(),
+      ticketNumber: w.ticket?.ticketNumber?.toString() || '0000',
+      status: w.deliveryStatus?.toLowerCase() || 'pending',
+    }));
+
+    return {
+      data,
+      meta: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
         lastPage: Math.ceil(total / Number(limit)),
       },
     };
@@ -294,8 +447,11 @@ export class RafflesService {
 
     if (!raffle) throw new NotFoundException('Raffle not found');
 
-    return this.prisma.raffle.delete({
-      where: { id },
+    return this.prisma.$transaction(async (tx) => {
+      await tx.winner.deleteMany({ where: { raffleId: id } });
+      await tx.ticket.deleteMany({ where: { raffleId: id } });
+      await tx.instantWin.deleteMany({ where: { raffleId: id } });
+      return tx.raffle.delete({ where: { id } });
     });
   }
 
@@ -309,7 +465,7 @@ export class RafflesService {
     });
   }
 
-  async drawWinner(raffleId: string) {
+  async drawWinner(raffleId: string, winningTicketNumber?: number) {
     return this.prisma.$transaction(async (tx) => {
       // 1. Get the raffle and check its status
       const raffle = await tx.raffle.findUnique({
@@ -336,9 +492,23 @@ export class RafflesService {
         );
       }
 
-      // 2. Select a random ticket
-      const randomIndex = Math.floor(Math.random() * raffle.tickets.length);
-      const winningTicket = raffle.tickets[randomIndex];
+      let winningTicket: any;
+
+      if (winningTicketNumber !== undefined && winningTicketNumber !== null && !isNaN(Number(winningTicketNumber))) {
+        const targetNum = Number(winningTicketNumber);
+        winningTicket = raffle.tickets.find(
+          (t) => t.ticketNumber === targetNum,
+        );
+        if (!winningTicket) {
+          throw new BadRequestException(
+            `Ticket #${targetNum} was not sold in this competition. Please enter a valid sold ticket number.`,
+          );
+        }
+      } else {
+        // Pick random winning ticket
+        const randomIndex = Math.floor(Math.random() * raffle.tickets.length);
+        winningTicket = raffle.tickets[randomIndex];
+      }
 
       // 3. Create the Winner record
       const winner = await tx.winner.create({
@@ -359,6 +529,156 @@ export class RafflesService {
       });
 
       return winner;
+    });
+  }
+
+  async getRaffleSoldTickets(raffleId: string) {
+    const raffle = await this.prisma.raffle.findUnique({
+      where: { id: raffleId },
+      include: {
+        host: { include: { user: true } },
+        instantWins: true,
+      },
+    });
+
+    const tickets = await this.prisma.ticket.findMany({
+      where: { raffleId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            location: true,
+            avatarUrl: true,
+          },
+        },
+        transaction: {
+          select: {
+            id: true,
+            amount: true,
+            paymentGateway: true,
+            gatewayTransactionId: true,
+            status: true,
+          },
+        },
+        winners: true,
+      },
+      orderBy: { ticketNumber: 'asc' },
+    });
+
+    const instantWinsMap = new Map<number, any>();
+    if (raffle?.instantWins) {
+      raffle.instantWins.forEach((iw) => {
+        instantWinsMap.set(iw.ticketNumber, iw);
+      });
+    }
+
+    return tickets.map((t) => {
+      const mainWin = t.winners?.find((w) => w.winType === 'MAIN_DRAW');
+      const instantWin = instantWinsMap.get(t.ticketNumber);
+
+      let winStatus = 'Regular Entry';
+      if (mainWin) {
+        winStatus = `Main Draw Winner (${mainWin.prizeName || 'Main Prize'})`;
+      } else if (instantWin) {
+        winStatus = `Instant Winner (${instantWin.prizeName})`;
+      }
+
+      return {
+        id: t.id,
+        ticketNumber: t.ticketNumber,
+        raffleId: t.raffleId,
+        raffleTitle: raffle?.title || 'Unknown Competition',
+        raffleCategory: raffle?.category || 'N/A',
+        pricePerTicket: raffle?.pricePerTicket ? Number(raffle.pricePerTicket) : 0,
+        hostName: raffle?.host?.businessName || (raffle?.host?.user ? `${raffle.host.user.firstName || ''} ${raffle.host.user.lastName || ''}`.trim() : 'Unknown Host'),
+        hostEmail: raffle?.host?.user?.email || 'N/A',
+        userId: t.userId,
+        buyerName: (t.user?.firstName || t.user?.lastName)
+          ? `${t.user.firstName || ''} ${t.user.lastName || ''}`.trim()
+          : (t.user?.email ? t.user.email : 'N/A'),
+        userName: (t.user?.firstName || t.user?.lastName)
+          ? `${t.user.firstName || ''} ${t.user.lastName || ''}`.trim()
+          : (t.user?.email ? t.user.email : 'N/A'),
+        userEmail: t.user?.email || 'N/A',
+        userPhone: t.user?.phone || 'N/A',
+        userLocation: t.user?.location || 'N/A',
+        avatarUrl: t.user?.avatarUrl,
+        transactionId: t.transactionId,
+        gatewayTransactionId: t.transaction?.gatewayTransactionId || t.transactionId || 'N/A',
+        paymentGateway: t.transaction?.paymentGateway || 'N/A',
+        paymentStatus: t.transaction?.status || 'COMPLETED',
+        winStatus,
+        createdAt: t.createdAt,
+      };
+    });
+  }
+
+  async updateWinnerDeliveryStatus(
+    winnerId: string,
+    deliveryStatus: string,
+    trackingNumber?: string,
+  ) {
+    if (!winnerId || winnerId === 'null' || winnerId === 'undefined') {
+      throw new BadRequestException('Invalid winner ID provided');
+    }
+
+    // 1. Try finding Winner by id directly
+    let winner = await this.prisma.winner.findUnique({
+      where: { id: winnerId },
+    });
+
+    // 2. If not found by winner.id, check if winnerId is an InstantWin ID
+    if (!winner) {
+      const instantWin = await this.prisma.instantWin.findUnique({
+        where: { id: winnerId },
+      });
+
+      if (instantWin) {
+        // Find ticket purchased for this instantWin ticketNumber
+        const ticket = await this.prisma.ticket.findFirst({
+          where: {
+            raffleId: instantWin.raffleId,
+            ticketNumber: instantWin.ticketNumber,
+          },
+        });
+
+        if (ticket) {
+          winner = await this.prisma.winner.findFirst({
+            where: { ticketId: ticket.id },
+          });
+
+          if (!winner) {
+            winner = await this.prisma.winner.create({
+              data: {
+                userId: ticket.userId,
+                raffleId: ticket.raffleId,
+                ticketId: ticket.id,
+                winType: 'INSTANT_WIN',
+                prizeName: instantWin.prizeName,
+                deliveryStatus: deliveryStatus,
+                trackingNumber: trackingNumber || null,
+              },
+            });
+            return winner;
+          }
+        }
+      }
+    }
+
+    if (!winner) {
+      throw new NotFoundException(`Winner record not found for ID ${winnerId}`);
+    }
+
+    return this.prisma.winner.update({
+      where: { id: winner.id },
+      data: {
+        deliveryStatus,
+        trackingNumber: trackingNumber || winner.trackingNumber,
+      },
     });
   }
 
@@ -421,20 +741,38 @@ export class RafflesService {
       },
     });
 
-    // Map instant wins with the user who bought that ticket
+    // Map instant wins with the user who bought that ticket & delivery status
     const mappedInstantWins = raffle.instantWins.map((iw) => {
       const winningTicket = instantWinTickets.find(
         (t) => t.ticketNumber === iw.ticketNumber,
       );
+      const winnerRec = winningTicket
+        ? raffle.winners.find((w) => w.ticketId === winningTicket.id)
+        : null;
+
       return {
         ...iw,
-        winner: winningTicket ? winningTicket.user : null,
+        winner: winningTicket
+          ? {
+              ...winningTicket.user,
+              winnerRecordId: winnerRec?.id || null,
+              deliveryStatus: winnerRec?.deliveryStatus || 'PENDING',
+              trackingNumber: winnerRec?.trackingNumber || null,
+            }
+          : null,
         ticket: winningTicket ? winningTicket : null,
       };
     });
 
+    const mainDrawWinners = raffle.winners
+      .filter((w) => w.winType === 'MAIN_DRAW')
+      .map((w) => ({
+        ...w,
+        winnerRecordId: w.id,
+      }));
+
     return {
-      mainDraw: raffle.winners.filter((w) => w.winType === 'MAIN_DRAW'),
+      mainDraw: mainDrawWinners,
       instantWins: mappedInstantWins,
     };
   }
@@ -492,12 +830,16 @@ export class RafflesService {
       this.prisma.raffle.count({ where: whereClause }),
     ]);
 
+    const lastPage = Math.ceil(total / Number(limit)) || 1;
+
     return {
       data: raffles,
       meta: {
         total,
         page: Number(page),
-        lastPage: Math.ceil(total / Number(limit)) || 1,
+        limit: Number(limit),
+        lastPage,
+        totalPages: lastPage,
       },
     };
   }
@@ -506,8 +848,83 @@ export class RafflesService {
     const raffle = await this.prisma.raffle.findUnique({ where: { id } });
     if (!raffle) throw new NotFoundException('Raffle not found');
 
-    return this.prisma.raffle.delete({
-      where: { id },
+    return this.prisma.$transaction(async (tx) => {
+      await tx.winner.deleteMany({ where: { raffleId: id } });
+      await tx.ticket.deleteMany({ where: { raffleId: id } });
+      await tx.instantWin.deleteMany({ where: { raffleId: id } });
+      return tx.raffle.delete({ where: { id } });
     });
+  }
+
+  async getPublicStats() {
+    // 1. Draws Completed (Count of ENDED raffles)
+    const drawsCompleted = await this.prisma.raffle.count({
+      where: { status: 'ENDED' },
+    });
+
+    // 2. Minimum Entry (Lowest pricePerTicket across ACTIVE/ENDED)
+    const minEntryAgg = await this.prisma.raffle.aggregate({
+      where: { status: { in: ['ACTIVE', 'ENDED'] } },
+      _min: { pricePerTicket: true },
+    });
+
+    // Parse the decimal value, default to 1 if none found
+    const minimumEntry = minEntryAgg._min.pricePerTicket
+      ? Number(minEntryAgg._min.pricePerTicket)
+      : 1;
+
+    return [
+      {
+        id: 1,
+        value: `${drawsCompleted}+`,
+        label: 'Draws Completed',
+      },
+      {
+        id: 2,
+        value: `£${minimumEntry}`,
+        label: 'Minimum Entry',
+      },
+      {
+        id: 3,
+        value: 'Verified',
+        label: 'Fair Draws',
+      },
+    ];
+  }
+
+  async getPublicWinnerStats() {
+    const totalWinners = await this.prisma.winner.count();
+
+    // For "Verified Draws", we can count raffles with status 'ENDED' or 'COMPLETED'
+    // Since 'ENDED' is the status in the enum
+    const verifiedDraws = await this.prisma.raffle.count({
+      where: { status: 'ENDED' },
+    });
+
+    // For "Prizes Awarded" value, since we don't have a specific monetary value field,
+    // we'll calculate the total potential revenue of all ENDED draws as a proxy,
+    // or we can sum totalTickets * pricePerTicket of ENDED draws.
+    const endedRaffles = await this.prisma.raffle.findMany({
+      where: { status: 'ENDED' },
+      select: { totalTickets: true, pricePerTicket: true },
+    });
+
+    let totalValue = 0;
+    endedRaffles.forEach((r) => {
+      totalValue += r.totalTickets * Number(r.pricePerTicket);
+    });
+
+    // Formatting currency for UK (£)
+    const formattedValue = new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency: 'GBP',
+      maximumFractionDigits: 0,
+    }).format(totalValue);
+
+    return {
+      prizesAwarded: formattedValue,
+      totalWinners,
+      verifiedDraws: verifiedDraws > 0 ? `${verifiedDraws}+` : '0',
+    };
   }
 }

@@ -69,7 +69,7 @@ export const liveDrawsData: Draw[] = [
   {
     id: "draw-6",
     title: "£500 Cash Prize",
-    description: "Pure cash prize deposited directly to your bank account. Spend it on whatever charity gear, entry fees, or travel you want.",
+    description: "Pure cash prize deposited directly to your bank account. Spend it on whatever airsoft gear, entry fees, or travel you want.",
     image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=600&auto=format&fit=crop",
     ticketPrice: 1.00,
     totalTickets: 750,

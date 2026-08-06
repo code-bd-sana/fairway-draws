@@ -15,7 +15,7 @@ interface InputFieldProps {
 }
 
 /**
- * Reusable form input element matching the Charity Draws styling system.
+ * Reusable form input element matching the Airsoft Draws styling system.
  */
 export default function InputField({
   label,

@@ -92,7 +92,7 @@ export const raffleDetailsData: RaffleDetail[] = [
     soldTickets: 310,
     remainingTickets: 40,
     drawEndDate: "4h 30m",
-    description: "Out of the box precision charity sniper rifle. Designed for maximum range and reliability with upgraded carbon fiber outer barrel, precision hop up, and SSG bolt assembly.",
+    description: "Out of the box precision airsoft sniper rifle. Designed for maximum range and reliability with upgraded carbon fiber outer barrel, precision hop up, and SSG bolt assembly.",
     highlights: [
       "Main Prize: Novritsch SSG10 A3 Sniper",
       "Valued at £650",
@@ -161,7 +161,7 @@ export const raffleDetailsData: RaffleDetail[] = [
     ],
     instantWinPrizes: [],
     isFeatured: false,
-    hostName: "CharityZone",
+    hostName: "AirsoftZone",
     hostLogo: "A",
     hostDrawsCount: 12,
     hostVerified: true,

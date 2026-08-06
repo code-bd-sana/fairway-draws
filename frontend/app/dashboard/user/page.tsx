@@ -250,7 +250,7 @@ export default function UserDashboardPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-sans text-[14px] font-medium text-[#E8EDD4]">VFC BCM MCMR</span>
-                  <span className="font-sans text-[12px] text-[#72943A]">Hosted by Charity Hub</span>
+                  <span className="font-sans text-[12px] text-[#72943A]">Hosted by Airsoft Hub</span>
                 </div>
               </div>
               <div className="col-span-3 flex items-center">
@@ -273,7 +273,7 @@ export default function UserDashboardPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-sans text-[14px] font-medium text-[#E8EDD4]">Novritsch SSP5</span>
-                  <span className="font-sans text-[12px] text-[#72943A]">Hosted by Precision Charity</span>
+                  <span className="font-sans text-[12px] text-[#72943A]">Hosted by Precision Airsoft</span>
                 </div>
               </div>
               <div className="col-span-3 flex items-center">
@@ -312,7 +312,7 @@ export default function UserDashboardPage() {
                 </div>
                 <h4 className="font-sans font-medium text-[14px] text-[#E8EDD4] mb-1">No wins just yet</h4>
                 <p className="font-sans text-[13px] text-[#72943A] max-w-[200px]">
-                   Enter competitions for a chance to win premium charity gear.
+                   Enter competitions for a chance to win premium airsoft gear.
                 </p>
              </div>
           </div>

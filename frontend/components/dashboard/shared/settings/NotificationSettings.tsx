@@ -11,7 +11,7 @@ export default function NotificationSettings() {
     <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-8 flex flex-col gap-8 animate-fadeIn">
       <div>
         <h2 className="font-heading font-medium text-[20px] text-[#E8EDD4]">Notifications</h2>
-        <p className="font-sans text-[13px] text-[#72943A] mt-1">Manage how and when you receive alerts from Charity Draws.</p>
+        <p className="font-sans text-[13px] text-[#72943A] mt-1">Manage how and when you receive alerts from Airsoft Draws.</p>
       </div>
 
       <div className="h-px w-full bg-[#2D3C13]/50" />

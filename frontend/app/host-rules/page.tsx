@@ -5,7 +5,7 @@ import WebsiteNavbar from "../../components/website/layout/WebsiteNavbar";
 import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
 
 export const metadata: Metadata = {
-  title: "Host Rules & Guidelines | Charity Draws",
+  title: "Host Rules & Guidelines | Airsoft Draws",
 };
 
 export default function HostRulesPage() {
@@ -25,7 +25,7 @@ export default function HostRulesPage() {
             
             <div className="space-y-6 text-sm text-text-muted leading-relaxed font-sans">
               <p>
-                As a Verified Host on Charity Draws, you are expected to maintain the highest standards of integrity, transparency, and customer service. Please review our mandatory guidelines below.
+                As a Verified Host on Airsoft Draws, you are expected to maintain the highest standards of integrity, transparency, and customer service. Please review our mandatory guidelines below.
               </p>
 
               <div className="bg-accent-bg border border-border p-5 rounded-md my-6">
@@ -41,7 +41,7 @@ export default function HostRulesPage() {
                 1. Prize Authenticity
               </h3>
               <p>
-                All items offered as prizes must be exactly as described in the competition listing. If an item is second-hand or has minor defects, this must be stated explicitly. All Charity Replicas must comply with the VCRA and the winner must provide a valid UKARA or equivalent defense.
+                All items offered as prizes must be exactly as described in the competition listing. If an item is second-hand or has minor defects, this must be stated explicitly. All Airsoft Replicas must comply with the VCRA and the winner must provide a valid UKARA or equivalent defense.
               </p>
 
               <h3 className="font-heading font-bold text-lg text-text-primary mt-8 mb-4">

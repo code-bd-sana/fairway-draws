@@ -4,8 +4,8 @@ import UserAuthLayout from "../../components/user-auth/UserAuthLayout";
 import VerifyEmailForm from "../../components/user-auth/VerifyEmailForm";
 
 export const metadata: Metadata = {
-  title: "Verify Email | Charity Draws",
-  description: "Verify your email address to activate your Charity Draws account.",
+  title: "Verify Email | Airsoft Draws",
+  description: "Verify your email address to activate your Airsoft Draws account.",
 };
 
 export default function VerifyEmailPage() {
