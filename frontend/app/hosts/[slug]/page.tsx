@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (e) {}
 
   return {
-    title: `${name} | Airsoft Draws Verified Host`,
+    title: `${name} | Fairway Draws Verified Host`,
     description: `View live and past competitions hosted by ${name}.`,
   };
 }
@@ -75,7 +75,7 @@ export default async function HostProfilePage({ params }: PageProps) {
               <HostProfileHeader 
                 name={name}
                 logo={host.logo || initials}
-                bio={host.bio || "Airsoft draws host"}
+                bio={host.bio || "Fairway draws host"}
                 isVerified={host.isVerified}
                 drawsHosted={host.drawsHosted}
                 rating={host.rating}

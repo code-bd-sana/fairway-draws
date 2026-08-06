@@ -5,9 +5,9 @@ import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
 import TermsContent from "../../components/website/legal/TermsContent";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions | Airsoft Draws",
+  title: "Terms & Conditions | Fairway Draws",
   description:
-    "Read the official Terms and Conditions for Airsoft Draws prize competitions, free postal entry route, eligibility rules, and Anti-Money Laundering policies.",
+    "Read the official Terms and Conditions for Fairway Draws prize competitions, free postal entry route, eligibility rules, and Anti-Money Laundering policies.",
 };
 
 export default function TermsPage() {

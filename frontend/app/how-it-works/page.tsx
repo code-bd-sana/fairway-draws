@@ -8,9 +8,9 @@ import HowItWorksVideoSection from '../../components/website/how-it-works/HowItW
 import HowItWorksFinalCta from '../../components/website/how-it-works/HowItWorksFinalCta';
 
 export const metadata: Metadata = {
-  title: 'How It Works | Airsoft Draws',
+  title: 'How It Works | Fairway Draws',
   description:
-    'Learn how to enter premium airsoft gear drawings or host your own competitions with transparent random draws and instant payouts.',
+    'Learn how to enter premium golf gear draws or host your own competitions with transparent random draws and instant payouts.',
 };
 
 /**

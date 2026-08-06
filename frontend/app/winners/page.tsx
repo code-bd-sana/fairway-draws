@@ -7,7 +7,7 @@ import WinnersGrid from "../../components/website/winners/WinnersGrid";
 import WinnerHighlightCard from "../../components/website/winners/WinnerHighlightCard";
 
 export const metadata: Metadata = {
-  title: "Winners Gallery | Airsoft Draws",
+  title: "Winners Gallery | Fairway Draws",
   description:
     "See all the completed raffle winners. Check past draw dates, verified delivered prizes, and transparency records.",
 };

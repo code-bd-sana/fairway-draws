@@ -7,7 +7,7 @@ import ContactForm from "../../components/website/contact/ContactForm";
 import ContactInfoCards from "../../components/website/contact/ContactInfoCards";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Airsoft Draws",
+  title: "Contact Us | Fairway Draws",
   description:
     "Have questions about draw competitions, hosting fees, or verification? Send us a message and our support crew will reach out within 24 hours.",
 };

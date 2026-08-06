@@ -10,7 +10,7 @@ import { prisma } from "../../lib/db";
 import { LeadItem } from "../../types/lead.types";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | Airsoft Draws",
+  title: "Admin Dashboard | Fairway Draws",
   description: "Manage registered waiting list leads.",
 };
 

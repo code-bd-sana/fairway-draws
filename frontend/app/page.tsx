@@ -14,7 +14,7 @@ import FaqSection from '../components/website/home/FaqSection';
 import NewsletterSection from '../components/website/home/NewsletterSection';
 
 /**
- * Public Homepage for the Airsoft Draw application.
+ * Public Homepage for the Fairway Draws application.
  * Composes layout and modular sections for future scalability.
  */
 export default function Home() {

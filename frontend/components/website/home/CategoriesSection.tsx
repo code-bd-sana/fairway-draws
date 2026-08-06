@@ -48,7 +48,7 @@ export default function CategoriesSection() {
           <SectionHeader
             badgeText="CATEGORIES"
             headingText="Browse by Category"
-            paragraphText="Find exactly what you are looking for by exploring our curated airsoft competition sections."
+            paragraphText="Find exactly what you are looking for by exploring our curated golf competition sections."
           />
           
           {/* Navigation Arrows (Desktop) */}

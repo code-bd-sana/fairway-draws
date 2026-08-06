@@ -3,8 +3,8 @@ import { VerifiedHost } from "../../types/host.types";
 export const verifiedHostsData: VerifiedHost[] = [
   {
     id: "host-1",
-    slug: "airsoft-armoury",
-    name: "Airsoft Armoury",
+    slug: "golf-armoury",
+    name: "Golf Armoury",
     logo: "A",
     description: "Premium UK retailer hosting high-end rifle giveaways.",
     category: "Retailer",

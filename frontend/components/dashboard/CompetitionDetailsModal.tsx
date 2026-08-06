@@ -190,7 +190,7 @@ export default function CompetitionDetailsModal({
               {[
                 "Certified Random Draw", 
                 "Fully Insured Shipping", 
-                "Premium Airsoft Gear", 
+                "Premium Golf Gear", 
                 `Price per Ticket: £${Number(raffle.pricePerTicket).toFixed(2)}`
               ].map((feature) => (
                 <div key={feature} className="bg-[#161810] border border-[#2D3C13] rounded-[8px] p-3 flex items-center gap-2">

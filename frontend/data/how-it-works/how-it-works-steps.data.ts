@@ -32,7 +32,7 @@ export const entrantSteps: HowItWorksStep[] = [
     id: "entrant-step-5",
     stepNumber: 5,
     title: "Await the Draw Result",
-    description: "Once the draw closes, the winner is selected live on Airsoft Draws Instagram. You'll be notified by email instantly if you win.",
+    description: "Once the draw closes, the winner is selected live on Fairway Draws Instagram. You'll be notified by email instantly if you win.",
   },
 ];
 
@@ -74,6 +74,6 @@ export const hostSteps: HowItWorksStep[] = [
     id: "host-step-6",
     stepNumber: 6,
     title: "Manage Tickets & Payout",
-    description: "Monitor sales from your host dashboard. When the draw closes, Airsoft Draws will conduct the draw live and provide you with the winners details and receive your payout the next working day.",
+    description: "Monitor sales from your host dashboard. When the draw closes, Fairway Draws will conduct the draw live and provide you with the winners details and receive your payout the next working day.",
   },
 ];

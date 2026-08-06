@@ -5,9 +5,9 @@ import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
 import CookieContent from "../../components/website/legal/CookieContent";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy | Airsoft Draws",
+  title: "Cookie Policy | Fairway Draws",
   description:
-    "Learn about the cookies and tracking technologies used on Airsoft Draws to ensure security, site functionality, and optimal performance.",
+    "Learn about the cookies and tracking technologies used on Fairway Draws to ensure security, site functionality, and optimal performance.",
 };
 
 export default function CookiePolicyPage() {

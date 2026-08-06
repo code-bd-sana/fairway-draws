@@ -5,7 +5,7 @@ import WebsiteNavbar from "../../components/website/layout/WebsiteNavbar";
 import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
 
 export const metadata: Metadata = {
-  title: "Host Rules & Guidelines | Airsoft Draws",
+  title: "Host Rules & Guidelines | Fairway Draws",
 };
 
 export default function HostRulesPage() {
@@ -25,7 +25,7 @@ export default function HostRulesPage() {
             
             <div className="space-y-6 text-sm text-text-muted leading-relaxed font-sans">
               <p>
-                As a Verified Host on Airsoft Draws, you are expected to maintain the highest standards of integrity, transparency, and customer service. Please review our mandatory guidelines below.
+                As a Verified Host on Fairway Draws, you are expected to maintain the highest standards of integrity, transparency, and customer service. Please review our mandatory guidelines below.
               </p>
 
               <div className="bg-accent-bg border border-border p-5 rounded-md my-6">

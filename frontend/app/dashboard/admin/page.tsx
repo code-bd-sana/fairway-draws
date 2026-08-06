@@ -269,7 +269,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-4">
             {[
               { rank: 1, name: "Tactical Gear UK", revenue: "£12,400", initials: "TG" },
-              { rank: 2, name: "Airsoft World", revenue: "£10,800", initials: "AW" },
+              { rank: 2, name: "Golf World", revenue: "£10,800", initials: "AW" },
               { rank: 3, name: "Combat Zone Ltd", revenue: "£9,200", initials: "CZ" },
               { rank: 4, name: "Elite Shooters", revenue: "£7,800", initials: "ES" },
               { rank: 5, name: "Strike Force Co", revenue: "£5,400", initials: "SF" },

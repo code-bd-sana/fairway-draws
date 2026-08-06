@@ -4,36 +4,36 @@ export const faqData: FaqItem[] = [
   {
     id: "faq-1",
     question: "How are winners selected?",
-    answer: "Once a draw sells out or its timer expires, the winner is selected live on stream using our in-house lottery ball machine streamed live on our <a href=\"https://instagram.com/airsoftdraws\" target=\"_blank\" class=\"text-[#8CB34A] hover:underline\">Instagram</a>."
+    answer: "Once a draw sells out or its timer expires, the winner is selected live using a verified public randomiser streamed on our <a href=\"https://instagram.com/fairwaydraws\" target=\"_blank\" class=\"text-[#0b4d35] font-semibold hover:underline\">Instagram</a>. Every draw is fully transparent and independently verifiable."
   },
   {
     id: "faq-2",
     question: "How do I receive my prize?",
-    answer: "Prizes are shipped directly by the verified host using a trackable UK courier service. Once you receive and verify the gear, you confirm delivery in your user dashboard."
+    answer: "Prizes are shipped directly by the verified host using a tracked UK courier service within 7 working days of the draw. You'll receive a tracking number and can confirm delivery through your Fairway Draws dashboard."
   },
   {
     id: "faq-3",
     question: "Can I enter multiple times?",
-    answer: "Yes, you can purchase multiple tickets for any active draw up to the maximum limit set by the host (usually capped at 10-20% of tickets per user) to increase your chance of winning."
+    answer: "Yes, you can purchase multiple tickets for any active draw up to the maximum limit set by the host (typically capped at 10–20% of total tickets per user). Buying more tickets increases your chances of winning."
   },
   {
     id: "faq-4",
-    question: "Do I need a UKARA defense?",
-    answer: "Yes, for any competitions involving airsoft guns (AEGs/GBBs), a valid UKARA defense is required. For non-gun competitions, UKARA is not required. If you win a gun without a valid UKARA, a cash alternative can be provided by the host."
+    question: "Do I need a golf club membership to enter?",
+    answer: "No membership is required. Fairway Draws is open to all golfers and golf enthusiasts aged 18 and over, regardless of whether you hold a club membership or handicap certificate."
   },
   {
     id: "faq-5",
     question: "Do I need to be 18 to enter?",
-    answer: "Yes, 18+ is a legal requirement. Age and ID verification are checked prior to shipping any prize items."
+    answer: "Yes, 18+ is a legal requirement under the UK Gambling Act 2005. Age and identity verification are required before any prize items are dispatched to the winner."
   },
   {
     id: "faq-6",
     question: "Are the prizes brand new?",
-    answer: "Yes, all prize items hosted on Airsoft Draws are 100% brand new from authorized retailers. Second-hand items are strictly prohibited."
+    answer: "Absolutely. All prize items on Fairway Draws are 100% brand new from authorised retailers — Titleist, TaylorMade, Callaway, Scotty Cameron, and more. Second-hand or refurbished items are strictly prohibited."
   },
   {
     id: "faq-7",
     question: "Can I enter for free?",
-    answer: "Yes! Under UK law (Gambling Act 2005), every competition provides an equal Free Postal Entry route. Click the 'Free Postal Entry' button on any competition page to view full postcard entry instructions."
+    answer: "Yes! Under UK law (Gambling Act 2005), every competition includes an equal Free Postal Entry route. Click the 'Free Entry' option on any competition page to view full instructions for submitting a postcard entry."
   }
 ];

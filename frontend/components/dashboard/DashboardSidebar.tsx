@@ -39,7 +39,7 @@ export default function DashboardSidebar({ account }: DashboardSidebarProps) {
       <div className="h-[88px] flex items-center justify-center border-b border-[#2D3C13] shrink-0 w-full px-5">
         <Link href="/" className="relative h-[48px] w-auto aspect-[3/1] shrink-0 select-none block flex-none">
           <Image
-            alt="Airsoft Draws Logo"
+            alt="Fairway Draws Logo"
             src={logo}
             fill
             className="object-contain"

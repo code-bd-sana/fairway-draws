@@ -57,12 +57,12 @@ export default function CookieContent() {
               Cookie Policy
             </h1>
             <p className="font-sans text-sm sm:text-base text-[#72943A] max-w-2xl">
-              This policy details what cookies are, how Airsoft Draws uses them, the categories of cookies deployed, and how to manage your cookie preferences.
+              This policy details what cookies are, how Fairway Draws uses them, the categories of cookies deployed, and how to manage your cookie preferences.
             </p>
             <div className="flex items-center gap-4 text-xs font-sans text-[#5A752A] pt-2">
               <span>Last Updated: April 2026</span>
               <span>•</span>
-              <span>Applies to Domain: airsoft-draws.com</span>
+              <span>Applies to Domain: fairway-draws.com</span>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function CookieContent() {
                 1. Introduction & Consent
               </h2>
               <p>
-                This Cookie Policy explains what cookies are and how <strong className="text-[#E8EDD4]">Airsoft Draws</strong> uses them. It details the types of cookies we deploy (i.e. the information we collect using cookies and how that information is used) and how to control your cookie preferences.
+                This Cookie Policy explains what cookies are and how <strong className="text-[#E8EDD4]">Fairway Draws</strong> uses them. It details the types of cookies we deploy (i.e. the information we collect using cookies and how that information is used) and how to control your cookie preferences.
               </p>
               <p>
                 For further information on how we use, store, and keep your personal data secure, please refer to our{" "}
@@ -128,7 +128,7 @@ export default function CookieContent() {
               </p>
               <div className="bg-[#111210] border border-[#2D3C13] rounded-xl p-4 mt-2">
                 <span className="font-sans text-xs text-[#8CB34A] font-semibold block">Consent Domain Scope:</span>
-                <span className="font-sans text-xs text-[#E8EDD4]">Your cookie consent applies to the following domain: <strong>airsoft-draws.com</strong></span>
+                <span className="font-sans text-xs text-[#E8EDD4]">Your cookie consent applies to the following domain: <strong>fairway-draws.com</strong></span>
               </div>
             </section>
 
@@ -184,7 +184,7 @@ export default function CookieContent() {
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#1A230A] text-[#8CB34A] border border-[#43581E]">Strictly Necessary</span>
                   </div>
                   <p className="text-xs text-[#B3B8AA]">
-                    Some cookies are essential for you to experience the full functionality of our site. They allow us to maintain user sessions and prevent security threats. They do not collect or store personal information. For example, these cookies allow you to log in to your Airsoft Draws account, add tickets to your cart, and check out securely.
+                    Some cookies are essential for you to experience the full functionality of our site. They allow us to maintain user sessions and prevent security threats. They do not collect or store personal information. For example, these cookies allow you to log in to your Fairway Draws account, add tickets to your cart, and check out securely.
                   </p>
                 </div>
 
@@ -247,7 +247,7 @@ export default function CookieContent() {
               </div>
 
               <p className="text-xs text-[#72943A] pt-3">
-                For further information on managing your data, please contact our privacy team at <a href="mailto:privacy@airsoftdraws.com" className="text-[#8CB34A] underline">privacy@airsoftdraws.com</a>.
+                For further information on managing your data, please contact our privacy team at <a href="mailto:privacy@fairwaydraws.com" className="text-[#8CB34A] underline">privacy@fairwaydraws.com</a>.
               </p>
             </section>
 

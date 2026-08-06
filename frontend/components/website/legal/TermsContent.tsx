@@ -66,7 +66,7 @@ export default function TermsContent() {
               Terms & Conditions
             </h1>
             <p className="font-sans text-sm sm:text-base text-[#72943A] max-w-2xl">
-              Official rules governing all prize competitions, free postal entries, eligibility, anti-money laundering policies, and fair play on Airsoft Draws.
+              Official rules governing all prize competitions, free postal entries, eligibility, anti-money laundering policies, and fair play on Fairway Draws.
             </p>
             <div className="flex items-center gap-4 text-xs font-sans text-[#5A752A] pt-2">
               <span>Last Updated: July 2026</span>
@@ -124,17 +124,17 @@ export default function TermsContent() {
                 1. The Promoter
               </h2>
               <p>
-                1.1. The Promoter is: <strong className="text-[#E8EDD4]">Airsoft Draws Ltd</strong> ("Airsoft Draws") whose registered office is at Synergy House, Lawson Street, North Shields NE29 6TG.
+                1.1. The Promoter is: <strong className="text-[#E8EDD4]">Fairway Draws Ltd</strong> ("Fairway Draws") whose registered office is at Synergy House, Lawson Street, North Shields NE29 6TG.
               </p>
               <p>
                 1.2. Our correspondence address is: <span className="text-[#E8EDD4]">Synergy House, Lawson Street, North Shields NE29 6TG</span>.
               </p>
               <p>
                 1.3. If you wish to contact us for any reason, please email us at{" "}
-                <a href="mailto:win@airsoftdraws.com" className="text-[#8CB34A] font-semibold hover:underline">
-                  win@airsoftdraws.com
+                <a href="mailto:win@fairwaydraws.com" className="text-[#8CB34A] font-semibold hover:underline">
+                  win@fairwaydraws.com
                 </a>{" "}
-                or <a href="mailto:support@airsoftdraws.com" className="text-[#8CB34A] font-semibold hover:underline">support@airsoftdraws.com</a>.
+                or <a href="mailto:support@fairwaydraws.com" className="text-[#8CB34A] font-semibold hover:underline">support@fairwaydraws.com</a>.
               </p>
             </section>
 
@@ -145,8 +145,8 @@ export default function TermsContent() {
               </h2>
               <p>
                 2.1. These terms and conditions apply to all competitions listed on the Promoter’s website at{" "}
-                <a href="https://airsoft-draws.com" className="text-[#8CB34A] font-semibold hover:underline">
-                  https://airsoft-draws.com
+                <a href="https://fairway-draws.com" className="text-[#8CB34A] font-semibold hover:underline">
+                  https://fairway-draws.com
                 </a>{" "}
                 (the “Website”).
               </p>
@@ -191,7 +191,7 @@ export default function TermsContent() {
                   You may enter any competition for free by post by complying with the following conditions:
                 </p>
                 <ul className="list-disc list-inside space-y-1.5 text-xs text-[#E8EDD4] pl-2">
-                  <li>Send your entry on an unenclosed postcard by 1st or 2nd class post to: <strong className="text-[#A0D056]">Airsoft Draws Ltd, Synergy House, Lawson Street, North Shields NE29 6TG</strong>.</li>
+                  <li>Send your entry on an unenclosed postcard by 1st or 2nd class post to: <strong className="text-[#A0D056]">Fairway Draws Ltd, Synergy House, Lawson Street, North Shields NE29 6TG</strong>.</li>
                   <li>Include your full name, postal address, contact phone number, email address, and the exact Competition Name.</li>
                   <li><strong>Mandatory Requirement:</strong> You MUST have created a free registered account on the Website for the free entry to be processed. Details on the postcard MUST correspond exactly to your registered account.</li>
                   <li>Each free entry must be posted separately in an individual postcard. Bulk entries in an envelope will count as only one single entry.</li>
@@ -210,7 +210,7 @@ export default function TermsContent() {
               </p>
               <p>
                 4.2. All Entrants will have their names and entry numbers included in a entry spreadsheet published on the Website during the live draw. If you wish to censor your name on the live spreadsheet, notify us at{" "}
-                <a href="mailto:win@airsoftdraws.com" className="text-[#8CB34A] underline">win@airsoftdraws.com</a> at least 48 hours prior to the draw.
+                <a href="mailto:win@fairwaydraws.com" className="text-[#8CB34A] underline">win@fairwaydraws.com</a> at least 48 hours prior to the draw.
               </p>
             </section>
 
@@ -220,7 +220,7 @@ export default function TermsContent() {
                 5. Eligibility
               </h2>
               <p>
-                5.1. Competitions are open to residents in the United Kingdom aged <strong className="text-[#E8EDD4]">18 years or over</strong>, except employees of Airsoft Draws, their immediate families, or agents directly connected with competition administration.
+                5.1. Competitions are open to residents in the United Kingdom aged <strong className="text-[#E8EDD4]">18 years or over</strong>, except employees of Fairway Draws, their immediate families, or agents directly connected with competition administration.
               </p>
               <p>
                 5.2. Proof of age and UK residency will be required prior to releasing any major prize.
@@ -242,7 +242,7 @@ export default function TermsContent() {
                 6.2. Vehicle & Airsoft Replica Prizes: Winners are solely responsible for ensuring appropriate UKARA / defence registration, safety gear, valid insurance, and lawful usage on public/private property.
               </p>
               <p>
-                6.3. Airsoft Draws reserves the right to substitute a prize with an equivalent cash alternative if circumstances beyond reasonable control make it necessary.
+                6.3. Fairway Draws reserves the right to substitute a prize with an equivalent cash alternative if circumstances beyond reasonable control make it necessary.
               </p>
             </section>
 
@@ -268,7 +268,7 @@ export default function TermsContent() {
                 9. Limitation of Liability & Data Protection
               </h2>
               <p>
-                9.1. Airsoft Draws accepts no liability for technical failures, network outages, or delayed entries.
+                9.1. Fairway Draws accepts no liability for technical failures, network outages, or delayed entries.
               </p>
               <p>
                 10.1. Personal information provided will be processed strictly in accordance with our Privacy Policy and UK GDPR regulations.
@@ -287,7 +287,7 @@ export default function TermsContent() {
                 11.1. Competitions are governed by English Law and the exclusive jurisdiction of the courts of England & Wales.
               </p>
               <p>
-                11.2. Competitions on Airsoft Draws are in no way sponsored, endorsed, or administered by Meta (Facebook/Instagram).
+                11.2. Competitions on Fairway Draws are in no way sponsored, endorsed, or administered by Meta (Facebook/Instagram).
               </p>
             </section>
 
@@ -297,7 +297,7 @@ export default function TermsContent() {
                 12. Anti-Money Laundering (AML) Policy
               </h2>
               <p>
-                12.1. Airsoft Draws enforces strict anti-money laundering measures under UK regulations and the Gambling Act 2005.
+                12.1. Fairway Draws enforces strict anti-money laundering measures under UK regulations and the Gambling Act 2005.
               </p>
               <p>
                 12.2. A designated Money Laundering Reporting Officer (MLRO) oversees platform compliance.
@@ -313,7 +313,7 @@ export default function TermsContent() {
                 13. Fair Play & Strict One Account Policy
               </h2>
               <p>
-                13.1. <strong className="text-[#E8EDD4]">One Account Per Person:</strong> Each participant is strictly limited to one user account on Airsoft Draws.
+                13.1. <strong className="text-[#E8EDD4]">One Account Per Person:</strong> Each participant is strictly limited to one user account on Fairway Draws.
               </p>
               <p>
                 13.2. Creating duplicate accounts to gain an unfair advantage in free giveaways or ticket limits is strictly forbidden.

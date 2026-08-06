@@ -43,7 +43,7 @@ export default function MobileDashboardMenu({ account, isOpen, onClose }: Mobile
         <div className="h-[88px] flex items-center justify-between px-6 border-b border-[#2D3C13] shrink-0">
           <Link href="/" onClick={onClose} className="relative h-[36px] w-[120px] select-none block">
             <Image
-              alt="Airsoft Draws Logo"
+              alt="Fairway Draws Logo"
               src={logo}
               fill
               className="object-contain"

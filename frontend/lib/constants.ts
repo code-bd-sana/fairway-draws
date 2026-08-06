@@ -1,6 +1,6 @@
 import { NavLink, SocialLink } from "../types/common.types";
 
-export const BRAND_NAME = "Airsoft Draws";
+export const BRAND_NAME = "Fairway Draws";
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
@@ -14,7 +14,7 @@ export const NAV_LINKS: NavLink[] = [
 
 export const SOCIAL_LINKS: SocialLink[] = [
   { platform: "Facebook", href: "https://www.facebook.com/share/18zThK3JPJ/?mibextid=wwXIfr", iconName: "facebook" },
-  { platform: "Instagram", href: "https://instagram.com/airsoftdraws", iconName: "instagram" },
+  { platform: "Instagram", href: "https://instagram.com/fairwaydraws", iconName: "instagram" },
 ];
 
 export const FOOTER_SECTIONS = [
@@ -22,10 +22,10 @@ export const FOOTER_SECTIONS = [
     title: "Competitions",
     links: [
       { label: "All Live Draws", href: "/live-raffles" },
-      { label: "Rifles & AEGs", href: "/live-raffles?category=rifles" },
-      { label: "Pistols & GBBs", href: "/live-raffles?category=pistols" },
-      { label: "Tactical Gear & Optics", href: "/live-raffles?category=accessories" },
-      { label: "Cash Prize Competitions", href: "/live-raffles?category=cash" },
+      { label: "Drivers & Woods", href: "/live-raffles?category=drivers" },
+      { label: "Iron Sets & Wedges", href: "/live-raffles?category=irons" },
+      { label: "Putters & Accessories", href: "/live-raffles?category=putters" },
+      { label: "VIP Golf Experiences", href: "/live-raffles?category=experiences" },
     ],
   },
   {

@@ -62,7 +62,7 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
         "All winners will be contacted by email within 48 hours of the draw.",
         "Prizes are non-transferable and no cash alternative is offered.",
         "By entering you agree to be bound by these terms and conditions.",
-        "Free postal entry: send your name and address on a postcard to: Airsoft Draws, PO Box 99, Manchester, M1 1AA."
+        "Free postal entry: send your name and address on a postcard to: Fairway Draws, PO Box 99, Manchester, M1 1AA."
       ],
       instantWinPrizes: draw.instantWins?.map((iw: any) => ({
         id: iw.id,
@@ -72,7 +72,7 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
         isClaimed: iw.isClaimed
       })) || [],
       isFeatured: false,
-      hostName: draw.host?.user ? `${draw.host.user.firstName} ${draw.host.user.lastName}` : "Airsoft Draws Host",
+      hostName: draw.host?.user ? `${draw.host.user.firstName} ${draw.host.user.lastName}` : "Fairway Draws Host",
       hostLogo: draw.host?.user?.firstName?.[0] || "AD",
       hostDrawsCount: 1,
       hostVerified: true,
@@ -87,8 +87,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const raffle = await getRaffle(slug);
   return {
-    title: raffle ? `${raffle.title} | Airsoft Draws` : "Competition Not Found | Airsoft Draws",
-    description: raffle?.description || "Browse and enter active premium airsoft drawings.",
+    title: raffle ? `${raffle.title} | Fairway Draws` : "Competition Not Found | Fairway Draws",
+    description: raffle?.description || "Browse and enter active premium golf draws.",
   };
 }
 

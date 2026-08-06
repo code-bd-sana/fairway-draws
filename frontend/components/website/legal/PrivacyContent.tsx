@@ -62,7 +62,7 @@ export default function PrivacyContent() {
               Privacy Policy
             </h1>
             <p className="font-sans text-sm sm:text-base text-[#72943A] max-w-2xl">
-              Learn how Airsoft Draws collects, protects, processes, and respects your personal data under UK GDPR and data protection laws.
+              Learn how Fairway Draws collects, protects, processes, and respects your personal data under UK GDPR and data protection laws.
             </p>
             <div className="flex items-center gap-4 text-xs font-sans text-[#5A752A] pt-2">
               <span>Last Updated: 01/04/2026</span>
@@ -120,15 +120,15 @@ export default function PrivacyContent() {
                 1. Introduction & Data Controller
               </h2>
               <p>
-                Welcome to the <strong className="text-[#E8EDD4]">Airsoft Draws</strong> Privacy Policy.
+                Welcome to the <strong className="text-[#E8EDD4]">Fairway Draws</strong> Privacy Policy.
               </p>
               <p>
-                Airsoft Draws respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, process, and safeguard your personal data when you visit our website (regardless of where you access it from) and outlines your privacy rights under UK GDPR.
+                Fairway Draws respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, process, and safeguard your personal data when you visit our website (regardless of where you access it from) and outlines your privacy rights under UK GDPR.
               </p>
               <div className="bg-[#111210] border border-[#2D3C13] rounded-xl p-5 space-y-2 mt-4">
                 <h3 className="font-heading font-bold text-sm text-[#A0D056]">Data Controller & Privacy Contact</h3>
                 <p className="text-xs text-[#E8EDD4]">
-                  Legal Entity Name: <strong>Airsoft Draws Ltd</strong>
+                  Legal Entity Name: <strong>Fairway Draws Ltd</strong>
                 </p>
                 <p className="text-xs text-[#B3B8AA]">
                   Data Privacy Manager: <strong>L McManus</strong>
@@ -140,7 +140,7 @@ export default function PrivacyContent() {
                   Phone: <a href="tel:+447984594833" className="text-[#8CB34A] hover:underline">+44 (0) 7984 594833</a>
                 </p>
                 <p className="text-xs text-[#B3B8AA]">
-                  Email: <a href="mailto:privacy@airsoftdraws.com" className="text-[#8CB34A] hover:underline">privacy@airsoftdraws.com</a> / <a href="mailto:win@airsoftdraws.com" className="text-[#8CB34A] hover:underline">win@airsoftdraws.com</a>
+                  Email: <a href="mailto:privacy@fairwaydraws.com" className="text-[#8CB34A] hover:underline">privacy@fairwaydraws.com</a> / <a href="mailto:win@fairwaydraws.com" className="text-[#8CB34A] hover:underline">win@fairwaydraws.com</a>
                 </p>
               </div>
               <p className="text-xs text-[#72943A]">
@@ -206,10 +206,10 @@ export default function PrivacyContent() {
                 4. Marketing & Communication Preferences
               </h2>
               <p>
-                You will receive marketing communications from Airsoft Draws if you have requested information, purchased tickets, entered a competition, or explicitly subscribed to our newsletter.
+                You will receive marketing communications from Fairway Draws if you have requested information, purchased tickets, entered a competition, or explicitly subscribed to our newsletter.
               </p>
               <p>
-                <strong className="text-[#E8EDD4]">Opting Out:</strong> You can unsubscribe from marketing communications at any time by clicking the "Unsubscribe" link in any promotional email or contacting us directly at <a href="mailto:win@airsoftdraws.com" className="text-[#8CB34A] underline">win@airsoftdraws.com</a>. Opting out of marketing does not affect essential transaction emails (e.g. ticket purchase receipts or winner notifications).
+                <strong className="text-[#E8EDD4]">Opting Out:</strong> You can unsubscribe from marketing communications at any time by clicking the "Unsubscribe" link in any promotional email or contacting us directly at <a href="mailto:win@fairwaydraws.com" className="text-[#8CB34A] underline">win@fairwaydraws.com</a>. Opting out of marketing does not affect essential transaction emails (e.g. ticket purchase receipts or winner notifications).
               </p>
             </section>
 
@@ -277,7 +277,7 @@ export default function PrivacyContent() {
                 <li><strong>Data Portability:</strong> Request transfer of your data in a structured, machine-readable format.</li>
               </ul>
               <p className="text-xs text-[#72943A] pt-2">
-                To exercise any of your rights, contact our Data Privacy Manager at <a href="mailto:privacy@airsoftdraws.com" className="text-[#8CB34A] underline">privacy@airsoftdraws.com</a>. We aim to respond within 30 days.
+                To exercise any of your rights, contact our Data Privacy Manager at <a href="mailto:privacy@fairwaydraws.com" className="text-[#8CB34A] underline">privacy@fairwaydraws.com</a>. We aim to respond within 30 days.
               </p>
             </section>
 

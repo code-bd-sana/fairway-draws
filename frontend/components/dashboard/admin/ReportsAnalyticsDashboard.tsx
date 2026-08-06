@@ -42,7 +42,7 @@ const POPULAR_COMPETITIONS = [
 
 const HOST_PERFORMANCE = [
   { name: 'Tactical UK', percent: 90 },
-  { name: 'Airsoft World', percent: 75 },
+  { name: 'Golf World', percent: 75 },
   { name: 'Combat Zone', percent: 65 },
   { name: 'Elite', percent: 55 },
   { name: 'Strike', percent: 45 },

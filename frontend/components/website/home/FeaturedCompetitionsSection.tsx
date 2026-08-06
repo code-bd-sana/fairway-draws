@@ -1,17 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { liveDrawsData } from "../../../data/homepage/featured-draws.data";
+import Link from "next/link";
 import SectionHeader from "../shared/SectionHeader";
 import DrawCard from "../shared/DrawCard";
-import SecondaryButton from "../shared/SecondaryButton";
 import { cn } from "../../../lib/utils";
 import { raffleService } from "../../../services/raffle.service";
 import type { Draw } from "../../../types/draw.types";
 
-
 /**
- * Featured Competitions grid section with client-side category filter tabs and horizontal scroll carousel.
+ * Featured Competitions section with horizontal carousel and nav arrows.
  */
 export default function FeaturedCompetitionsSection() {
   const [draws, setDraws] = useState<Draw[]>([]);
@@ -23,88 +21,58 @@ export default function FeaturedCompetitionsSection() {
       try {
         const res = await raffleService.getPublicRaffles({ limit: 10, statusFilter: 'Live' });
         if (res.data && res.data.length > 0) {
-          const mappedDraws: Draw[] = res.data.map(r => ({
-            id: r.id,
-            title: r.title,
-            description: r.description,
-            image: r.mainImage || '',
-            ticketPrice: Number(r.pricePerTicket),
-            totalTickets: r.totalTickets,
-            soldTickets: r.ticketsSold,
+          setDraws(res.data.map(r => ({
+            id: r.id, title: r.title, description: r.description,
+            image: r.mainImage || '', ticketPrice: Number(r.pricePerTicket),
+            totalTickets: r.totalTickets, soldTickets: r.ticketsSold,
             endDate: new Date(r.endDate).toLocaleDateString(),
-            status: (r.status === 'ACTIVE' ? 'live' : 'ended') as "live" | "ended",
-            category: r.category || 'general',
-            slug: r.slug,
+            status: (r.status === 'ACTIVE' ? 'live' : 'ended') as 'live' | 'ended',
+            category: r.category || 'general', slug: r.slug,
             instantWinsCount: r._count?.instantWins || 0,
             isInstantWin: (r._count?.instantWins || 0) > 0,
-          }));
-          setDraws(mappedDraws);
+          })));
         }
-      } catch (err) {
-        console.error("Failed to fetch featured draws:", err);
-      } finally {
-        setLoading(false);
-      }
+      } catch { /* ignore */ } finally { setLoading(false); }
     }
     fetchDraws();
   }, []);
 
-  const scrollLeft = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -350, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 350, behavior: 'smooth' });
-    }
-  };
-
-  // Filter the draws
-  const filteredDraws = draws;
-
-  // Render arrow SVG icon
-  const arrowIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2.5}
-      stroke="currentColor"
-      className="w-4 h-4"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-      />
-    </svg>
-  );
+  const scroll = (dir: 'left' | 'right') =>
+    carouselRef.current?.scrollBy({ left: dir === 'left' ? -370 : 370, behavior: 'smooth' });
 
   return (
-    <section id="live-draws" className="py-20 bg-bg border-t border-divider">
+    <section id="live-draws" className="py-20 bg-white border-t border-[#EFF4ED]">
       <div className="container-custom">
-        
-        {/* Section Header */}
-        <SectionHeader
-          badgeText="LIVE NOW"
-          headingText="Featured Competitions"
-          paragraphText="Browse all our featured competitions. Hosted by Verified Airsoft Businesses."
-        />
 
-        {/* Competitions Carousel Wrapper */}
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+          <div>
+            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[#dc2626] block mb-2">⛳ Live Now</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#0b4d35]">Featured Competitions</h2>
+            <p className="font-sans text-sm text-[#5e766c] mt-2 max-w-md">
+              Browse all featured competitions hosted by verified golf clubs &amp; brands.
+            </p>
+          </div>
+          <Link
+            href="/live-raffles"
+            className="shrink-0 px-6 py-3 bg-[#0b4d35] hover:bg-[#073826] text-white font-sans text-xs font-black tracking-wider uppercase rounded-xl transition-all duration-200 shadow-md hover:shadow-lg self-start sm:self-auto"
+          >
+            See All Competitions →
+          </Link>
+        </div>
+
+        {/* Carousel */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-text-muted gap-4">
-            <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full"></div>
-            <p className="font-sans font-medium text-sm">Loading Competitions...</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-4 text-[#5e766c]">
+            <div className="animate-spin h-10 w-10 border-4 border-[#0b4d35] border-t-transparent rounded-full" />
+            <p className="font-sans text-sm font-medium">Loading competitions…</p>
           </div>
         ) : draws.length > 0 ? (
           <div className="relative group">
-            {/* Left Scroll Button */}
-            <button 
-              onClick={scrollLeft}
-              className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-surface border border-border shadow-md text-text-secondary hover:text-text-primary hover:border-border-medium hover:scale-105 transition-all focus:outline-none opacity-0 group-hover:opacity-100"
+            {/* Left arrow */}
+            <button
+              onClick={() => scroll('left')}
+              className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-white border border-[#0b4d35]/20 shadow-lg text-[#0b4d35] hover:bg-[#0b4d35] hover:text-white hover:scale-105 transition-all opacity-0 group-hover:opacity-100 focus:outline-none"
               aria-label="Scroll left"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
@@ -112,22 +80,21 @@ export default function FeaturedCompetitionsSection() {
               </svg>
             </button>
 
-            {/* Carousel Container */}
-            <div 
+            <div
               ref={carouselRef}
-              className="flex overflow-x-auto snap-x snap-mandatory gap-6 md:gap-8 mb-12 pb-6 -mx-4 px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+              className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4 -mx-4 px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
             >
-              {filteredDraws.map((draw) => (
-                <div key={draw.id} className="snap-center shrink-0 w-[85vw] sm:w-[350px] lg:w-[400px]">
+              {draws.map((draw) => (
+                <div key={draw.id} className="snap-center shrink-0 w-[85vw] sm:w-[360px] lg:w-[380px]">
                   <DrawCard draw={draw} />
                 </div>
               ))}
             </div>
 
-            {/* Right Scroll Button */}
-            <button 
-              onClick={scrollRight}
-              className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-surface border border-border shadow-md text-text-secondary hover:text-text-primary hover:border-border-medium hover:scale-105 transition-all focus:outline-none opacity-0 group-hover:opacity-100"
+            {/* Right arrow */}
+            <button
+              onClick={() => scroll('right')}
+              className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-white border border-[#0b4d35]/20 shadow-lg text-[#0b4d35] hover:bg-[#0b4d35] hover:text-white hover:scale-105 transition-all opacity-0 group-hover:opacity-100 focus:outline-none"
               aria-label="Scroll right"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
@@ -136,35 +103,12 @@ export default function FeaturedCompetitionsSection() {
             </button>
           </div>
         ) : (
-          <div className="text-center py-16 bg-surface border border-border border-dashed rounded-card max-w-md mx-auto">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-12 h-12 text-text-muted mx-auto mb-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-              />
-            </svg>
-            <h3 className="font-heading font-bold text-base text-text-primary mb-1">
-              No Competitions Found
-            </h3>
-            <p className="font-sans text-xs text-text-muted">
-              There are no active competitions in this category right now. Check back soon!
-            </p>
+          <div className="text-center py-16 bg-[#F8FAF6] border border-dashed border-[#0b4d35]/20 rounded-[20px] max-w-md mx-auto">
+            <div className="text-4xl mb-4">🏌️</div>
+            <h3 className="font-serif font-black text-lg text-[#0b4d35] mb-2">No Live Competitions Yet</h3>
+            <p className="font-sans text-sm text-[#5e766c]">New draws are dropping soon. Join the VIP waitlist to be first.</p>
           </div>
         )}
-
-        <div className="flex justify-center mt-6">
-          <SecondaryButton href="/live-raffles" icon={arrowIcon} className="px-8 py-3.5">
-            See All Competitions
-          </SecondaryButton>
-        </div>
 
       </div>
     </section>

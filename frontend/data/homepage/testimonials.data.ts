@@ -14,7 +14,7 @@ export const testimonialsData: Testimonial[] = [
     name: "Alex M.",
     role: "Verified Host",
     rating: 5,
-    quote: "As a gear seller, hosting draws on this platform has been incredible. I set the ticket price, and Airsoft Draws handles the payments and ticketing. Payout was fast and secure.",
+    quote: "As a gear seller, hosting draws on this platform has been incredible. I set the ticket price, and Fairway Draws handles the payments and ticketing. Payout was fast and secure.",
     location: "Cardiff, UK",
   },
   {
