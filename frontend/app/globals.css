@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  /* Semantic Colors - Fairway Draws Theme */
+  --color-bg: #F8FAF6;
+  --color-surface: #FFFFFF;
+  --color-elevated: #F1F5EE;
+  --color-accent-bg: #ECF5EE;
+  
+  --color-primary: #0b4d35;
+  --color-primary-hover: #073826;
+  --color-primary-text: #ffffff;
+  
+  --color-text-primary: #0e1e17;
+  --color-text-secondary: #334e43;
+  --color-text-muted: #5e766c;
+  --color-text-brand: #0b4d35;
+  --color-text-accent: #dc2626;
+  
+  --color-border: #E2EADF;
+  --color-border-medium: #CBD8C8;
+  --color-divider: #EFF4ED;
+  
+  --color-success: #16A34A;
+  --color-success-text: #15803D;
+  --color-success-bg: #DCFCE7;
+  
+  /* Radii */
+  --radius-card: 16px;
+  --radius-button: 8px;
+  --radius-badge: 9999px;
+  
+  /* Shadows */
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 25px rgba(11, 77, 53, 0.22);
+  
+  /* Fonts */
+  --font-sans: var(--font-inter), sans-serif;
+  --font-heading: var(--font-space-grotesk), sans-serif;
+}
+
+@theme {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-elevated: var(--color-elevated);
+  --color-accent-bg: var(--color-accent-bg);
+  
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-text: var(--color-primary-text);
+  
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-brand: var(--color-text-brand);
+  --color-text-accent: var(--color-text-accent);
+  
+  --color-border: var(--color-border);
+  --color-border-medium: var(--color-border-medium);
+  --color-divider: var(--color-divider);
+  
+  --color-success: var(--color-success);
+  --color-success-text: var(--color-success-text);
+  --color-success-bg: var(--color-success-bg);
+  
+  --radius-card: var(--radius-card);
+  --radius-button: var(--radius-button);
+  --radius-badge: var(--radius-badge);
+  
+  --shadow-card: var(--shadow-card);
+  --shadow-glow: var(--shadow-glow);
+  
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+}
+
+/* Base resets and defaults */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-divider);
+  border-radius: var(--radius-badge);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
+}
+
+/* Utility classes */
+.container-custom {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 1536px) {
+  .container-custom {
+    max-width: 1440px;
+  }
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}

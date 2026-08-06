@@ -1,0 +1,81 @@
+import { Category } from "../../types/category.types";
+
+export const categoriesData: Category[] = [
+  {
+    id: "cat-1",
+    title: "Rifles",
+    slug: "rifles",
+    image: "https://picsum.photos/seed/rifles/600/400",
+    drawCount: 18,
+  },
+  {
+    id: "cat-2",
+    title: "Pistols",
+    slug: "pistols",
+    image: "https://picsum.photos/seed/pistols/600/400",
+    drawCount: 12,
+  },
+  {
+    id: "cat-3",
+    title: "Accessories",
+    slug: "accessories",
+    image: "https://picsum.photos/seed/accessories/600/400",
+    drawCount: 24,
+  },
+  {
+    id: "cat-4",
+    title: "Cash Prizes",
+    slug: "cash",
+    image: "https://picsum.photos/seed/cash/600/400",
+    drawCount: 4,
+  },
+  {
+    id: "cat-5",
+    title: "Bundles",
+    slug: "bundles",
+    image: "https://picsum.photos/seed/bundles/600/400",
+    drawCount: 7,
+  },
+  {
+    id: "cat-6",
+    title: "Sniper Rifles",
+    slug: "sniper-rifles",
+    image: "https://picsum.photos/seed/sniper/600/400",
+    drawCount: 5,
+  },
+  {
+    id: "cat-7",
+    title: "Gear & Apparel",
+    slug: "gear-apparel",
+    image: "https://picsum.photos/seed/gear/600/400",
+    drawCount: 32,
+  },
+  {
+    id: "cat-8",
+    title: "Optics",
+    slug: "optics",
+    image: "https://picsum.photos/seed/optics/600/400",
+    drawCount: 15,
+  },
+  {
+    id: "cat-9",
+    title: "Mystery Boxes",
+    slug: "mystery-boxes",
+    image: "https://picsum.photos/seed/mystery/600/400",
+    drawCount: 3,
+  },
+  {
+    id: "cat-10",
+    title: "Tactical Vests",
+    slug: "tactical-vests",
+    image: "https://picsum.photos/seed/vests/600/400",
+    drawCount: 11,
+  },
+  {
+    id: "cat-11",
+    title: "BBs & Gas",
+    slug: "bbs-gas",
+    image: "https://picsum.photos/seed/ammo/600/400",
+    drawCount: 42,
+  },
+];
