@@ -23,7 +23,7 @@ export default function MobileBottomDock() {
   const dashboardHome = getDashboardHome();
 
   return (
-    <div className='fixed bottom-0 left-0 right-0 z-40 block lg:hidden bg-[#0D0D0B]/95 backdrop-blur-xl border-t border-[#2D3C13] shadow-[0_-10px_25px_rgba(0,0,0,0.5)]'>
+    <div className='fixed bottom-0 left-0 right-0 z-40 block lg:hidden bg-white/95 backdrop-blur-xl border-t border-[#E2EADF] shadow-[0_-5px_25px_rgba(11,77,53,0.1)]'>
       <div className='flex items-center justify-around h-16 px-2 max-w-md mx-auto'>
         {/* Tab 1: Home */}
         <Link
@@ -31,8 +31,8 @@ export default function MobileBottomDock() {
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/'
-              ? 'text-[#8CB34A] font-semibold scale-105'
-              : 'text-[#72943A] hover:text-[#E8EDD4]',
+              ? 'text-[#0b4d35] font-bold scale-105'
+              : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
           <svg
@@ -53,12 +53,12 @@ export default function MobileBottomDock() {
 
         {/* Tab 2: Competitions */}
         <Link
-          href='/login'
+          href='/live-raffles'
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/live-raffles' || pathname.startsWith('/live-raffles')
-              ? 'text-[#8CB34A] font-semibold scale-105'
-              : 'text-[#72943A] hover:text-[#E8EDD4]',
+              ? 'text-[#0b4d35] font-bold scale-105'
+              : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
           <svg
@@ -74,25 +74,25 @@ export default function MobileBottomDock() {
               d='M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-12h12c.621 0 1.125.504 1.125 1.125v1.757a1.5 1.5 0 0 0 0 2.236v1.757a1.5 1.5 0 0 0 0 2.236v1.757a1.5 1.5 0 0 0-1.125 1.125H7.5a1.125 1.125 0 0 1-1.125-1.125v-1.757a1.5 1.5 0 0 0 0-2.236V11.23a1.5 1.5 0 0 0 0-2.236V7.125A1.125 1.125 0 0 1 7.5 6Z'
             />
           </svg>
-          <span className='text-[10px] font-sans tracking-tight'>Login</span>
+          <span className='text-[10px] font-sans tracking-tight'>Competitions</span>
         </Link>
 
-        {/* Tab 3: Center Context Switcher Button (Public Website <-> Dashboard) */}
+        {/* Tab 3: Center Floating Switcher (Public Site <-> Dashboard) */}
         <Link
-          href={isDashboardRoute ? '/live-raffles' : isAuthenticated ? dashboardHome : '/login'}
+          href={isDashboardRoute ? '/' : isAuthenticated ? dashboardHome : '/login'}
           className='flex flex-col items-center justify-center relative -top-3 shrink-0 group'
         >
           <div
             className={cn(
-              'w-12 h-12 rounded-full flex items-center justify-center shadow-[0_0_18px_rgba(140,179,74,0.35)] transition-all duration-300 transform group-active:scale-95 border',
+              'w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 transform group-active:scale-95 border shadow-md',
               isDashboardRoute
-                ? 'bg-[#1A230A] border-[#8CB34A] text-[#A0D056]'
-                : 'bg-[#8CB34A] border-[#A0D056] text-[#0D0D0B]',
+                ? 'bg-[#ECF5EE] border-[#0b4d35]/30 text-[#0b4d35]'
+                : 'bg-[#0b4d35] border-[#073826] text-white shadow-[0_4px_14px_rgba(11,77,53,0.35)]',
             )}
           >
             {isDashboardRoute ? (
               <svg
-                className='w-6 h-6 animate-pulse'
+                className='w-6 h-6'
                 fill='none'
                 viewBox='0 0 24 24'
                 stroke='currentColor'
@@ -120,7 +120,7 @@ export default function MobileBottomDock() {
               </svg>
             )}
           </div>
-          <span className='text-[9px] font-sans font-bold uppercase tracking-wider text-[#A0D056] mt-0.5'>
+          <span className='text-[9px] font-sans font-bold uppercase tracking-wider text-[#0b4d35] mt-0.5'>
             {isDashboardRoute ? 'Public Site' : 'Dashboard'}
           </span>
         </Link>
@@ -131,8 +131,8 @@ export default function MobileBottomDock() {
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/winners'
-              ? 'text-[#8CB34A] font-semibold scale-105'
-              : 'text-[#72943A] hover:text-[#E8EDD4]',
+              ? 'text-[#0b4d35] font-bold scale-105'
+              : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
           <svg
@@ -151,14 +151,14 @@ export default function MobileBottomDock() {
           <span className='text-[10px] font-sans tracking-tight'>Winners</span>
         </Link>
 
-        {/* Tab 5: My Tickets */}
+        {/* Tab 5: Account / My Tickets */}
         <Link
           href={isAuthenticated ? '/dashboard/user/tickets' : '/login'}
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
-            pathname === '/dashboard/user/tickets'
-              ? 'text-[#8CB34A] font-semibold scale-105'
-              : 'text-[#72943A] hover:text-[#E8EDD4]',
+            pathname === '/dashboard/user/tickets' || pathname === '/login'
+              ? 'text-[#0b4d35] font-bold scale-105'
+              : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
           <svg
@@ -171,11 +171,11 @@ export default function MobileBottomDock() {
             <path
               strokeLinecap='round'
               strokeLinejoin='round'
-              d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
+              d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
             />
           </svg>
           <span className='text-[10px] font-sans tracking-tight'>
-            {isAuthenticated ? 'My Tickets' : 'Log In'}
+            {isAuthenticated ? 'My Tickets' : 'Account'}
           </span>
         </Link>
       </div>
