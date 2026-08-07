@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import logo from '../../public/logo2.png';
+import FairwayDrawsLogo from '../website/shared/FairwayDrawsLogo';
 import { cn } from "../../lib/utils";
 
 interface HostAuthBrandPanelProps {
@@ -98,15 +98,7 @@ export default function HostAuthBrandPanel({
     <div className="bg-surface flex flex-col h-full min-h-[500px] lg:min-h-screen justify-between px-6 py-10 md:px-[80px] md:py-[64px] border-b lg:border-b-0 lg:border-r-0 lg:w-[795px]">
       {/* Top Branding Logo */}
       <div>
-        <Link href="/" className="inline-block transition-transform duration-200 hover:scale-105 select-none relative w-[85px] h-[85px]">
-          <Image
-            alt="Fairway Draws Logo"
-            src={logo}
-            fill
-            priority
-            className="object-cover"
-          />
-        </Link>
+        <FairwayDrawsLogo variant="light" size="lg" priority />
       </div>
 
       {/* Center Body Panel */}

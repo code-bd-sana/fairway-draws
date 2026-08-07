@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import EarlyAccessForm from "./EarlyAccessForm";
+import FairwayDrawsLogo from "../shared/FairwayDrawsLogo";
 
 const TARGET_LAUNCH_TIMESTAMP = new Date("2026-09-05T12:00:00Z").getTime();
 
@@ -55,18 +57,9 @@ export default function ComingSoonHero() {
         {/* LEFT — Brand Story */}
         <div className="flex flex-col items-start text-left order-2 lg:order-1">
 
-          {/* Wordmark */}
+          {/* Official Brand Logo */}
           <div className="mb-6">
-            <h1 className="font-serif text-[56px] sm:text-[72px] font-black leading-[0.9] tracking-tight text-[#0b4d35] uppercase">
-              FAIRWAY
-            </h1>
-            <div className="flex items-center gap-4 mt-2">
-              <div className="h-[3px] w-10 bg-gradient-to-r from-[#0b4d35] to-transparent rounded-full" />
-              <span className="font-sans text-[28px] sm:text-[36px] font-black tracking-[0.22em] text-[#dc2626] uppercase">
-                DRAWS
-              </span>
-              <div className="h-[3px] flex-1 bg-gradient-to-r from-[#dc2626]/40 to-transparent rounded-full" />
-            </div>
+            <FairwayDrawsLogo variant="light" size="xl" href="" priority />
           </div>
 
           {/* Tagline */}

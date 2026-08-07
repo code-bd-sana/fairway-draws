@@ -7,7 +7,7 @@ import { DashboardAccount } from "../../types/dashboard.types";
 import { dashboardNavigation } from "../../config/dashboard-navigation.config";
 import { cn } from "../../lib/utils";
 import Image from "next/image";
-import logo from '../../public/logo2.png';
+import FairwayDrawsLogo from "../website/shared/FairwayDrawsLogo";
 import { useLogout } from "../../hooks/useAuthHooks";
 
 interface MobileDashboardMenuProps {
@@ -41,15 +41,9 @@ export default function MobileDashboardMenu({ account, isOpen, onClose }: Mobile
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="h-[88px] flex items-center justify-between px-6 border-b border-[#2D3C13] shrink-0">
-          <Link href="/" onClick={onClose} className="relative h-[36px] w-[120px] select-none block">
-            <Image
-              alt="Fairway Draws Logo"
-              src={logo}
-              fill
-              className="object-contain"
-              priority
-            />
-          </Link>
+          <div onClick={onClose}>
+            <FairwayDrawsLogo variant="dark" size="sm" href="/dashboard" priority />
+          </div>
           <button
             onClick={onClose}
             className="p-1 text-[#B3B8AA] hover:text-[#E8EDD4] rounded-md transition-colors"

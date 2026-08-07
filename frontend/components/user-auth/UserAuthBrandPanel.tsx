@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../../public/logo2.png";
+import FairwayDrawsLogo from "../website/shared/FairwayDrawsLogo";
 
 interface UserAuthBrandPanelProps {
   mode: "login" | "register" | "forgot" | "reset" | "verify";
@@ -60,16 +60,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
     <div className="bg-surface flex flex-col h-full min-h-[500px] lg:min-h-screen justify-between px-6 py-10 md:px-[80px] md:py-[64px] border-b lg:border-b-0 lg:border-r border-divider">
       {/* Top Branding Logo */}
       <div>
-        <Link href="/" className="inline-block transition-transform duration-200 hover:scale-105 select-none">
-          <Image
-            alt="Fairway Draws Logo"
-            src={logo}
-            height={85}
-            width={85}
-            priority
-            className="object-contain"
-          />
-        </Link>
+        <FairwayDrawsLogo variant="light" size="lg" priority />
       </div>
 
       {/* Center Body Panel */}
