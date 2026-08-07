@@ -3,151 +3,187 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-// Fixed target launch date (30 days from today)
 const TARGET_LAUNCH_TIMESTAMP = new Date("2026-09-05T12:00:00Z").getTime();
 
-function calculateTimeLeft() {
-  const now = Date.now();
-  const difference = Math.max(0, TARGET_LAUNCH_TIMESTAMP - now);
-
-  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((difference / 1000 / 60) % 60);
-  const seconds = Math.floor((difference / 1000) % 60);
-
-  return { days, hours, minutes, seconds };
-}
-
 /**
- * Hero header section for the Fairway Draws Coming Soon page.
- * Features the official Fairway Draws white cap image, golf aesthetic typography,
- * launch badge, and real-time persistent countdown timer.
+ * Premium Fairway Draws Coming Soon Hero.
+ * Two-column split: left = brand story, right = cap showcase.
+ * Countdown timer below.
  */
 export default function ComingSoonHero() {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 30,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  const [isMounted, setIsMounted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ days: 30, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    setIsMounted(true);
-    // Persist target in localStorage if first visit, or use fixed target date
     let target = TARGET_LAUNCH_TIMESTAMP;
-    const storedTarget = localStorage.getItem("fairway_launch_timestamp");
-    if (storedTarget) {
-      target = parseInt(storedTarget, 10);
+    const stored = localStorage.getItem("fairway_launch_ts");
+    if (stored) {
+      target = parseInt(stored, 10);
     } else {
-      localStorage.setItem("fairway_launch_timestamp", String(TARGET_LAUNCH_TIMESTAMP));
+      localStorage.setItem("fairway_launch_ts", String(TARGET_LAUNCH_TIMESTAMP));
     }
 
-    const updateTimer = () => {
-      const now = Date.now();
-      const difference = Math.max(0, target - now);
-
-      const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const h = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((difference / 1000 / 60) % 60);
-      const s = Math.floor((difference / 1000) % 60);
-
-      setTimeLeft({ days: d, hours: h, minutes: m, seconds: s });
+    const tick = () => {
+      const diff = Math.max(0, target - Date.now());
+      setTimeLeft({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff / 3600000) % 24),
+        minutes: Math.floor((diff / 60000) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
     };
-
-    updateTimer();
-    const timer = setInterval(updateTimer, 1000);
-    return () => clearInterval(timer);
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
   }, []);
 
+  const pad = (n: number) => String(n).padStart(2, "0");
+
   return (
-    <div className="relative w-full flex flex-col items-center pt-4 md:pt-8 pb-4 text-center max-w-4xl mx-auto">
-      {/* VIP Early Access Badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0b4d35]/10 border border-[#0b4d35]/20 text-[#0b4d35] text-xs font-semibold uppercase tracking-widest mb-6 animate-pulse shadow-sm">
-        <span className="w-2 h-2 rounded-full bg-[#dc2626]" />
-        ⛳ VIP Waitlist Now Open
+    <section className="w-full max-w-6xl mx-auto">
+
+      {/* ── TOP BADGE ── */}
+      <div className="flex justify-center mb-10">
+        <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#0b4d35]/30 bg-[#0b4d35]/8 text-[#0b4d35] text-[11px] font-bold uppercase tracking-[0.18em] shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#dc2626] animate-pulse" />
+          VIP Waitlist — Founding Members Only
+        </span>
       </div>
 
-      {/* Main Brand Title with matching Fairway Draws Embroidery Typography */}
-      <div className="flex flex-col items-center mb-6">
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#0b4d35] tracking-wider uppercase drop-shadow-sm">
-          FAIRWAY
-        </h1>
-        <div className="flex items-center justify-center gap-3 mt-1">
-          <span className="h-[2px] w-8 sm:w-12 bg-gradient-to-r from-transparent to-[#0b4d35]" />
-          <span className="font-sans text-xl sm:text-2xl md:text-3xl font-black text-[#dc2626] tracking-widest uppercase">
-            DRAWS
-          </span>
-          <span className="h-[2px] w-8 sm:w-12 bg-gradient-to-l from-transparent to-[#0b4d35]" />
-        </div>
-        <p className="font-sans text-xs sm:text-sm md:text-base text-text-secondary max-w-xl mt-4 leading-relaxed">
-          Win luxury golf equipment, premium club memberships & exclusive PGA tournament access — all while making a real difference for charity.
-        </p>
-      </div>
+      {/* ── SPLIT LAYOUT ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-      {/* Showcase Card featuring the Official Cap Image */}
-      <div className="relative w-full max-w-[540px] aspect-[4/3] rounded-[24px] overflow-hidden border-2 border-[#0b4d35]/20 shadow-2xl group transition-all duration-500 hover:shadow-emerald-950/20 hover:border-[#0b4d35]/40 my-4 bg-gradient-to-b from-[#0b4d35]/5 to-transparent p-2">
-        <div className="relative w-full h-full rounded-[18px] overflow-hidden">
-          <Image
-            src="/fairway_cap.jpg"
-            alt="Fairway Draws Official Golf Cap"
-            fill
-            sizes="(max-width: 768px) 100vw, 540px"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-            priority
-          />
-          {/* Subtle Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+        {/* LEFT — Brand Story */}
+        <div className="flex flex-col items-start text-left order-2 lg:order-1">
 
-          {/* Overlay Text & Floating Pill */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white z-10 text-left">
-            <div>
-              <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-200 block">
-                Official Gear & Apparel
+          {/* Wordmark */}
+          <div className="mb-6">
+            <h1 className="font-serif text-[56px] sm:text-[72px] font-black leading-[0.9] tracking-tight text-[#0b4d35] uppercase">
+              FAIRWAY
+            </h1>
+            <div className="flex items-center gap-4 mt-2">
+              <div className="h-[3px] w-10 bg-gradient-to-r from-[#0b4d35] to-transparent rounded-full" />
+              <span className="font-sans text-[28px] sm:text-[36px] font-black tracking-[0.22em] text-[#dc2626] uppercase">
+                DRAWS
               </span>
-              <span className="font-serif text-lg md:text-xl font-bold tracking-wide text-white drop-shadow">
-                Fairway Draws Edition
+              <div className="h-[3px] flex-1 bg-gradient-to-r from-[#dc2626]/40 to-transparent rounded-full" />
+            </div>
+          </div>
+
+          {/* Tagline */}
+          <p className="text-[#334e43] text-base sm:text-lg leading-relaxed mb-8 max-w-md font-sans">
+            Win <strong className="text-[#0b4d35] font-semibold">luxury golf equipment</strong>, premium club memberships &amp; exclusive{" "}
+            <strong className="text-[#0b4d35] font-semibold">PGA tournament access</strong> — while making a real difference for charity.
+          </p>
+
+          {/* Stat Pills */}
+          <div className="flex flex-wrap gap-3 mb-10">
+            {[
+              { value: "1,200+", label: "Golfers Registered" },
+              { value: "£0", label: "Entry Min. Price" },
+              { value: "100%", label: "Certified Gear" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="flex flex-col items-center px-5 py-3 bg-white border border-[#0b4d35]/15 rounded-2xl shadow-sm min-w-[90px]"
+              >
+                <span className="font-serif text-2xl font-black text-[#0b4d35]">{stat.value}</span>
+                <span className="font-sans text-[10px] font-semibold text-[#5e766c] uppercase tracking-wider mt-0.5">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Trust strip */}
+          <div className="flex items-center gap-2 text-[11px] text-[#5e766c] font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-[#0b4d35]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+            </svg>
+            UK Raffle Compliant · GDPR Protected · Zero Spam
+          </div>
+        </div>
+
+        {/* RIGHT — Cap Image Showcase */}
+        <div className="relative order-1 lg:order-2 flex justify-center">
+          {/* Decorative ring */}
+          <div className="absolute inset-[-16px] rounded-[40px] border-2 border-dashed border-[#0b4d35]/12 pointer-events-none" />
+
+          {/* Outer glow */}
+          <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-[#0b4d35]/10 via-transparent to-[#dc2626]/5 blur-2xl pointer-events-none" />
+
+          {/* Card */}
+          <div className="relative w-full max-w-[460px] aspect-[4/3] rounded-[28px] overflow-hidden border border-[#0b4d35]/20 shadow-2xl group">
+            <Image
+              src="/logo_final.jpg"
+              alt="Fairway Draws Official Golf Cap — Limited 2026 Edition"
+              fill
+              sizes="(max-width: 768px) 100vw, 460px"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              priority
+            />
+            {/* Bottom gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+            {/* Floating bottom bar */}
+            <div className="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between">
+              <div>
+                <p className="text-emerald-300 text-[10px] font-semibold uppercase tracking-widest mb-1">Official Gear &amp; Apparel</p>
+                <p className="font-serif text-white text-lg font-bold leading-tight">Fairway Draws Edition</p>
+              </div>
+              <span className="px-3 py-1.5 bg-white/15 backdrop-blur-md border border-white/25 rounded-full text-white text-[10px] font-bold uppercase tracking-wide">
+                2026 Batch
               </span>
             </div>
-            <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-semibold tracking-wide border border-white/30 text-white">
-              Limited 2026 Batch
-            </span>
+
+            {/* Top-right badge */}
+            <div className="absolute top-4 right-4 px-3 py-1.5 bg-[#dc2626] rounded-full text-white text-[10px] font-black uppercase tracking-wide shadow-lg">
+              Limited
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Persistent Real-Time Countdown Timer Grid */}
-      <div className="w-full max-w-md mt-6 bg-white/80 backdrop-blur-sm border border-[#0b4d35]/15 rounded-2xl p-4 shadow-sm">
-        <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest mb-3">
-          Official Launch Countdown
+      {/* ── COUNTDOWN TIMER ── */}
+      <div className="mt-14 flex flex-col items-center">
+        <p className="text-[11px] font-bold text-[#5e766c] uppercase tracking-[0.2em] mb-5">
+          ⛳ Official Launch Countdown
         </p>
-        <div className="grid grid-cols-4 gap-3 text-center">
-          <div className="flex flex-col items-center bg-[#0b4d35]/5 p-2 rounded-xl border border-[#0b4d35]/10">
-            <span className="font-serif text-xl sm:text-2xl font-bold text-[#0b4d35]">
-              {String(timeLeft.days).padStart(2, "0")}
-            </span>
-            <span className="text-[10px] uppercase font-medium text-text-muted">Days</span>
-          </div>
-          <div className="flex flex-col items-center bg-[#0b4d35]/5 p-2 rounded-xl border border-[#0b4d35]/10">
-            <span className="font-serif text-xl sm:text-2xl font-bold text-[#0b4d35]">
-              {String(timeLeft.hours).padStart(2, "0")}
-            </span>
-            <span className="text-[10px] uppercase font-medium text-text-muted">Hours</span>
-          </div>
-          <div className="flex flex-col items-center bg-[#0b4d35]/5 p-2 rounded-xl border border-[#0b4d35]/10">
-            <span className="font-serif text-xl sm:text-2xl font-bold text-[#0b4d35]">
-              {String(timeLeft.minutes).padStart(2, "0")}
-            </span>
-            <span className="text-[10px] uppercase font-medium text-text-muted">Mins</span>
-          </div>
-          <div className="flex flex-col items-center bg-[#0b4d35]/5 p-2 rounded-xl border border-[#0b4d35]/10">
-            <span className="font-serif text-xl sm:text-2xl font-bold text-[#dc2626]">
-              {String(timeLeft.seconds).padStart(2, "0")}
-            </span>
-            <span className="text-[10px] uppercase font-medium text-text-muted">Secs</span>
-          </div>
+        <div className="flex items-stretch gap-3 sm:gap-5">
+          {[
+            { value: pad(timeLeft.days), label: "Days" },
+            { value: pad(timeLeft.hours), label: "Hours" },
+            { value: pad(timeLeft.minutes), label: "Mins" },
+            { value: pad(timeLeft.seconds), label: "Secs", accent: true },
+          ].map((unit, i) => (
+            <React.Fragment key={unit.label}>
+              <div className="flex flex-col items-center">
+                <div
+                  className={`w-[68px] sm:w-[84px] h-[72px] sm:h-[88px] flex items-center justify-center rounded-2xl border shadow-sm ${
+                    unit.accent
+                      ? "bg-[#dc2626] border-[#dc2626] shadow-red-200"
+                      : "bg-white border-[#0b4d35]/15"
+                  }`}
+                >
+                  <span
+                    className={`font-serif text-3xl sm:text-4xl font-black tabular-nums ${
+                      unit.accent ? "text-white" : "text-[#0b4d35]"
+                    }`}
+                  >
+                    {unit.value}
+                  </span>
+                </div>
+                <span className="mt-2 text-[10px] sm:text-[11px] font-bold text-[#5e766c] uppercase tracking-widest">
+                  {unit.label}
+                </span>
+              </div>
+              {i < 3 && (
+                <div className="flex items-center pb-7">
+                  <span className="text-2xl font-black text-[#0b4d35]/30">:</span>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         </div>
       </div>
-    </div>
+
+    </section>
   );
 }

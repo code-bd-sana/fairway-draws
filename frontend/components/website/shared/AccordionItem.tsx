@@ -20,10 +20,10 @@ export default function AccordionItem({
   onToggle,
 }: AccordionItemProps) {
   return (
-    <div className="border-b border-divider py-4 transition-all duration-200">
+    <div className="border-b border-divider py-1 px-6 transition-all duration-200">
       <button
         onClick={onToggle}
-        className="flex items-center justify-between w-full text-left font-heading font-bold text-sm md:text-base text-text-primary hover:text-text-brand transition-colors duration-200 cursor-pointer group py-2"
+        className="flex items-center justify-between w-full text-left font-heading font-bold text-sm md:text-base text-text-primary hover:text-text-brand transition-colors duration-200 cursor-pointer group py-4"
         aria-expanded={isOpen}
       >
         <span>{question}</span>
@@ -37,7 +37,7 @@ export default function AccordionItem({
               viewBox="0 0 24 24"
               strokeWidth={2.5}
               stroke="currentColor"
-              className="w-5 h-5 transition-transform duration-200 rotate-180"
+              className="w-5 h-5 transition-transform duration-200"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
             </svg>
@@ -59,12 +59,12 @@ export default function AccordionItem({
       {/* Accordion Content with transition */}
       <div
         className={cn(
-          "grid transition-all duration-300 ease-in-out font-sans text-xs md:text-sm text-text-muted leading-relaxed overflow-hidden",
-          isOpen ? "grid-rows-[1fr] opacity-100 mt-2 pb-2" : "grid-rows-[0fr] opacity-0"
+          "grid transition-all duration-300 ease-in-out font-sans text-xs md:text-sm text-[#334e43] leading-relaxed overflow-hidden",
+          isOpen ? "grid-rows-[1fr] opacity-100 pb-4" : "grid-rows-[0fr] opacity-0"
         )}
       >
         <div className="overflow-hidden">
-          <p>{answer}</p>
+          <p dangerouslySetInnerHTML={{ __html: answer }} />
         </div>
       </div>
     </div>

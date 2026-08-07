@@ -8,8 +8,8 @@ interface Props {
 }
 
 const categories = [
-  "Charity Rifles",
-  "Charity Pistols",
+  "Golf Drivers",
+  "Golf Putters",
   "Tactical Gear",
   "Accessories",
   "Sniper Rifles",

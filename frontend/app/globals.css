@@ -8,6 +8,7 @@
   --color-accent-bg: #ECF5EE;
   
   --color-primary: #0b4d35;
+  --color-primary-rgb: 11,77,53;
   --color-primary-hover: #073826;
   --color-primary-text: #ffffff;
   
@@ -129,4 +130,19 @@ body {
 
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+/* Print / PDF Export Styles */
+@media print {
+  body {
+    background-color: #F8FAF6 !important;
+    color: #0e1e17 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print,
+  nav,
+  aside {
+    display: none !important;
+  }
 }

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminService } from '../services/admin.service';
+import { adminService, AdminDashboardOverview } from '../services/admin.service';
 
 export const useAdminUsers = (params: { page?: number; limit?: number; search?: string; role?: string }) => {
   return useQuery({
@@ -58,6 +58,41 @@ export const useToggleUserBlockMutation = () => {
     onSuccess: () => {
       // Invalidate both users list and stats to refetch updated data
       queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+    },
+  });
+};
+
+export const useAdminOverviewStats = (options?: any) => {
+  return useQuery<AdminDashboardOverview>({
+    queryKey: ['adminOverviewStats'],
+    queryFn: () => adminService.getOverviewStats(),
+    ...options,
+  });
+};
+
+export const useAdminLogs = (params: { page?: number; limit?: number; search?: string; filter?: string }) => {
+  return useQuery({
+    queryKey: ['admin', 'logs', params],
+    queryFn: () => adminService.getSystemLogs(params),
+  });
+};
+
+export const useAdminWithdrawals = () => {
+  return useQuery({
+    queryKey: ['adminWithdrawals'],
+    queryFn: () => adminService.getAdminWithdrawals(),
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useUpdateWithdrawalStatusMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status, adminNotes }: { id: string; status: 'APPROVED' | 'COMPLETED' | 'REJECTED'; adminNotes?: string }) =>
+      adminService.updateWithdrawalStatus(id, status, adminNotes),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminWithdrawals'] });
+      queryClient.invalidateQueries({ queryKey: ['adminOverviewStats'] });
     },
   });
 };

@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Free Entry Information | Charity Draws",
+  title: "Free Entry Information | Fairway Draws",
 };
 
 export default async function FreeEntryPage({ params }: PageProps) {

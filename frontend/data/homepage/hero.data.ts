@@ -14,9 +14,9 @@ export interface HeroData {
 }
 
 export const heroData: HeroData = {
-  badgeText: "CHARITY GEAR COMPETITIONS",
-  headingText: "Win Premium Charity Gear For Less",
-  paragraphText: "Enter draws from just £1 per ticket. Fair, transparent, and escrow-protected. Over £180k+ in prizes already won by our community.",
+  badgeText: "PREMIUM GOLF COMPETITIONS",
+  headingText: "Win Premium Golf Gear For Less",
+  paragraphText: "Enter charity golf draws from just £1 per ticket. Fair, transparent & fully verified. Over £180k+ in luxury prizes already won by our community.",
   primaryCtaLabel: "Browse Live Draws",
   primaryCtaHref: "#live-draws",
   secondaryCtaLabel: "How It Works",
@@ -40,16 +40,16 @@ export const heroData: HeroData = {
   ],
   featuredDraw: {
     id: "hero-feat-1",
-    title: "VFC HK416 GBBR Bundle",
-    description: "Worth £1,200. Comes with 4 leak-free green gas magazines, tactical reflex sight, suppressor, and hard transport case.",
-    image: "https://images.unsplash.com/photo-1595590424283-b8f17842773f?q=80&w=800&auto=format&fit=crop",
+    title: "TaylorMade Stealth 2 Driver + Full Iron Set",
+    description: "Worth £1,400. Brand-new TaylorMade Stealth 2 driver bundle including full iron set, premium golf bag, and rangefinder.",
+    image: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=800&auto=format&fit=crop",
     ticketPrice: 2.50,
     totalTickets: 500,
     soldTickets: 342,
     endDate: "Ends in 2d 4h",
     status: "live",
-    category: "bundles",
-    worthPrice: 1200,
+    category: "equipment",
+    worthPrice: 1400,
     isFeatured: true,
   },
 };

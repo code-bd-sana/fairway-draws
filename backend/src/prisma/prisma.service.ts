@@ -16,8 +16,13 @@ export class PrismaService
 {
   constructor() {
     // Prisma 7 requires the driver adapter for native PostgreSQL connections
-    const pool = new Pool({ connectionString: config.database.url });
-    const adapter = new PrismaPg(pool);
+    // Extract schema from DATABASE_URL (e.g. ?schema=app) and pass it to PrismaPg
+    const dbUrl = config.database.url;
+    const schemaMatch = dbUrl.match(/[?&]schema=([^&]+)/);
+    const schema = schemaMatch ? schemaMatch[1] : 'public';
+
+    const pool = new Pool({ connectionString: dbUrl });
+    const adapter = new PrismaPg(pool, { schema });
     super({ adapter });
   }
 

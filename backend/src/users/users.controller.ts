@@ -1,9 +1,11 @@
 import {
   Controller,
+  Get,
   Patch,
   Post,
   Body,
   Req,
+  UseGuards,
   UseInterceptors,
   UploadedFile,
   BadRequestException,
@@ -14,6 +16,8 @@ import {
   ApiOperation,
   ApiResponse,
   ApiConsumes,
+  ApiBearerAuth,
+  ApiBody,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request } from 'express';
@@ -23,8 +27,12 @@ import { UsersService } from './users.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { FileUploadDto } from '../common/dto/file-upload.dto';
 
 @ApiTags('Users')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('api/v1/users')
 export class UsersController {
   constructor(
@@ -45,9 +53,26 @@ export class UsersController {
     }
   }
 
+  @Get('my-winners')
+  @ApiOperation({ summary: 'Get all winning records for the current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of prizes won by current user',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getMyWinners(@Req() req: Request) {
+    const userId = this.extractUserId(req);
+    return this.usersService.getMyWinners(userId);
+  }
+
   @Patch('change-password')
   @ApiOperation({ summary: 'Change user password' })
   @ApiResponse({ status: 200, description: 'Password changed successfully' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid current password or new password criteria',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async changePassword(
     @Req() req: Request,
     @Body() changePasswordDto: ChangePasswordDto,
@@ -59,6 +84,8 @@ export class UsersController {
   @Patch('profile')
   @ApiOperation({ summary: 'Update user profile' })
   @ApiResponse({ status: 200, description: 'Profile updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async updateProfile(
     @Req() req: Request,
     @Body() updateProfileDto: UpdateProfileDto,
@@ -70,7 +97,10 @@ export class UsersController {
   @Post('avatar')
   @ApiOperation({ summary: 'Upload user avatar' })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: FileUploadDto })
   @ApiResponse({ status: 200, description: 'Avatar uploaded successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid file or file missing' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -105,8 +135,12 @@ export class UsersController {
       throw new BadRequestException('File is required');
     }
     const userId = this.extractUserId(req);
-    // Construct public URL - using 127.0.0.1 avoids Node.js IPv6 localhost resolution issues
-    const avatarUrl = `${process.env.APP_URL || 'http://127.0.0.1:5000'}/uploads/avatars/${file.filename}`;
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host =
+      req.headers['x-forwarded-host'] || req.headers.host || '127.0.0.1:5000';
+    const baseUrl = process.env.APP_URL || `${protocol}://${host}`;
+    const avatarUrl = `${baseUrl}/uploads/avatars/${file.filename}`;
     return this.usersService.updateAvatar(userId, avatarUrl);
   }
 }
+

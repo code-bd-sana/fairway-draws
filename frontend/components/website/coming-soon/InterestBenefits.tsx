@@ -4,72 +4,96 @@ import React from "react";
 
 const BENEFITS = [
   {
+    emoji: "🏆",
     title: "Launch Day Raffles",
-    description: "Be the first to enter inaugural competitions for Titleist, TaylorMade, Scotty Cameron gear, and VIP PGA tickets.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6 text-[#0b4d35]">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-6.75c-.621 0-1.125.504-1.125 1.125v3.375m9 0h3.75a1.125 1.125 0 0 0 1.125-1.125v-9.25a1.125 1.125 0 0 0-1.125-1.125h-3.75m-9 11.625H3.75A1.125 1.125 0 0 1 2.625 17.625v-9.25A1.125 1.125 0 0 1 3.75 7.25h3.75m0 0V5.625c0-.621.504-1.125 1.125-1.125h6.75c.621 0 1.125.504 1.125 1.125V7.25m-9 0h9" />
-      </svg>
-    ),
+    description:
+      "Be first to enter inaugural competitions — Titleist drivers, TaylorMade irons, Scotty Cameron putters & VIP PGA tickets.",
+    tag: "Players",
   },
   {
-    title: "Exclusive Host Perks",
-    description: "Golf clubs and organizers who register early lock in zero platform fees for their initial 3 charity draws.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6 text-[#0b4d35]">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-      </svg>
-    ),
+    emoji: "💰",
+    title: "Zero Host Fees",
+    description:
+      "Golf clubs & organizers who register early lock in zero platform commission for their first 3 charity draws.",
+    tag: "Hosts",
   },
   {
+    emoji: "✅",
     title: "100% Certified Gear",
-    description: "Every item in our draws is verified authentic, brand-new, and legally compliant under UK raffle regulations.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6 text-[#0b4d35]">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-      </svg>
-    ),
+    description:
+      "Every item is brand-new, verified authentic, and fully compliant with UK raffle regulations — guaranteed.",
+    tag: "All Members",
   },
 ];
 
 /**
- * Grid component showcasing waitlist rewards and value-adding points for Fairway Draws.
+ * Premium VIP Waitlist Privileges section — Fairway Draws.
+ * Large icon cards with hover glow and a subtle top header.
  */
 export default function InterestBenefits() {
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-0 py-8">
-      <div className="text-center mb-8">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#dc2626] block mb-1">
+    <section className="w-full max-w-6xl mx-auto px-2 md:px-0 pb-6">
+
+      {/* Section header */}
+      <div className="text-center mb-10">
+        <span className="inline-block text-[11px] font-black uppercase tracking-[0.22em] text-[#dc2626] mb-3">
           Why Register Early?
         </span>
-        <h2 className="font-serif font-bold text-2xl md:text-3xl text-[#0b4d35]">
+        <h2 className="font-serif text-3xl sm:text-4xl font-black text-[#0b4d35]">
           VIP Waitlist Privileges
         </h2>
+        <p className="font-sans text-sm text-[#5e766c] mt-3 max-w-lg mx-auto leading-relaxed">
+          Founding members unlock exclusive perks unavailable after launch day.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-        {BENEFITS.map((benefit, idx) => (
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {BENEFITS.map((b) => (
           <div
-            key={idx}
-            className="bg-white border border-[#0b4d35]/15 rounded-[16px] p-6 flex flex-col items-start hover:border-[#0b4d35]/40 hover:shadow-lg transition-all duration-300 group"
+            key={b.title}
+            className="group relative bg-white border border-[#0b4d35]/12 rounded-[20px] p-7 flex flex-col gap-4 hover:border-[#0b4d35]/35 hover:shadow-2xl hover:shadow-emerald-900/8 transition-all duration-300 overflow-hidden"
           >
-            {/* Rounded Icon Ring */}
-            <div className="w-12 h-12 rounded-2xl bg-[#0b4d35]/10 border border-[#0b4d35]/20 flex items-center justify-center mb-4 shrink-0 group-hover:bg-[#0b4d35] group-hover:text-white transition-colors duration-300">
-              {benefit.icon}
+            {/* Hover glow */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-[#0b4d35]/4 via-transparent to-transparent pointer-events-none rounded-[20px]" />
+
+            {/* Top row */}
+            <div className="flex items-center justify-between">
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-2xl bg-[#0b4d35]/8 border border-[#0b4d35]/15 flex items-center justify-center text-2xl group-hover:bg-[#0b4d35] group-hover:border-[#0b4d35] transition-all duration-300 shrink-0">
+                <span className="group-hover:grayscale-0">{b.emoji}</span>
+              </div>
+              {/* Tag */}
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#5e766c] border border-[#E2EADF] rounded-full px-3 py-1 bg-[#F8FAF6]">
+                {b.tag}
+              </span>
             </div>
 
-            {/* Title */}
-            <h4 className="font-serif font-bold text-base md:text-lg text-[#0b4d35] tracking-wide mb-2">
-              {benefit.title}
-            </h4>
+            {/* Text */}
+            <div>
+              <h4 className="font-serif text-lg font-black text-[#0b4d35] mb-2">{b.title}</h4>
+              <p className="font-sans text-sm text-[#334e43] leading-relaxed">{b.description}</p>
+            </div>
 
-            {/* Description */}
-            <p className="font-sans text-xs md:text-sm text-text-secondary leading-relaxed">
-              {benefit.description}
-            </p>
+            {/* Bottom accent line */}
+            <div className="h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-[#0b4d35] to-[#dc2626]/50 rounded-full transition-all duration-500 ease-out mt-auto" />
           </div>
         ))}
       </div>
-    </div>
+
+      {/* Bottom strip */}
+      <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 py-5 px-6 bg-white border border-[#0b4d35]/10 rounded-2xl shadow-sm">
+        {[
+          { icon: "⛳", text: "UK Charity Raffle Compliant" },
+          { icon: "🔐", text: "GDPR & Data Protected" },
+          { icon: "📦", text: "Prizes Dispatched Within 7 Days" },
+        ].map((item) => (
+          <div key={item.text} className="flex items-center gap-2.5 text-[#334e43]">
+            <span className="text-lg">{item.icon}</span>
+            <span className="font-sans text-xs font-semibold">{item.text}</span>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

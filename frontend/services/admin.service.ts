@@ -16,6 +16,11 @@ export interface User {
   lastName: string | null;
   role: string;
   isBlocked: boolean;
+  isEmailVerified: boolean;
+  avatarUrl: string | null;
+  location: string | null;
+  phone: string | null;
+  address: string | null;
   createdAt: string;
   ticketsCount: number;
   totalSpent: number;
@@ -35,6 +40,7 @@ export interface HostData {
   businessName: string;
   email: string;
   isBlocked: boolean;
+  isVerified: boolean;
   plan: string;
   raffles: number;
   revenue: number;
@@ -53,6 +59,7 @@ export interface HostStats {
   totalHosts: number;
   activeHosts: number;
   blockedHosts: number;
+  pendingHosts?: number;
 }
 
 export interface OrderData {
@@ -84,6 +91,54 @@ export interface OrderStats {
 }
 
 
+export interface LogData {
+  id: string;
+  timestamp: string;
+  actor: {
+    name: string;
+    initials: string;
+    type: "admin" | "system" | "user";
+  };
+  description: string;
+  ip: string;
+  status: "Success" | "Failed";
+}
+
+export interface GetLogsResponse {
+  logs: LogData[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface AdminDashboardOverview {
+  stats: {
+    totalUsers: number;
+    activeHosts: number;
+    liveRaffles: number;
+    totalRevenue: number;
+  };
+  awaitingReview: {
+    count: number;
+    list: {
+      id: string;
+      title: string;
+      sub: string;
+      icon: string;
+    }[];
+  };
+  recentActivity: {
+    text: string;
+    time: string;
+    highlight: boolean;
+    alert: boolean;
+  }[];
+}
+
+
 export const adminService = {
   async getUsers(params: { page?: number; limit?: number; search?: string; role?: string }): Promise<GetUsersResponse> {
     const { data } = await api.get('/admin/users', { params });
@@ -110,6 +165,26 @@ export const adminService = {
     return data;
   },
 
+  async approveHost(hostId: string): Promise<any> {
+    const { data } = await api.patch(`/admin/hosts/${hostId}/approve`);
+    return data;
+  },
+
+  async rejectHost(hostId: string): Promise<any> {
+    const { data } = await api.patch(`/admin/hosts/${hostId}/reject`);
+    return data;
+  },
+
+  async getOverviewStats(): Promise<AdminDashboardOverview> {
+    const { data } = await api.get('/admin/dashboard/stats');
+    return data;
+  },
+
+  async getSystemLogs(params: { page?: number; limit?: number; search?: string; filter?: string }): Promise<GetLogsResponse> {
+    const { data } = await api.get('/admin/dashboard/logs', { params });
+    return data;
+  },
+
   async getOrders(params: { page?: number; limit?: number; search?: string }): Promise<GetOrdersResponse> {
     const { data } = await api.get('/admin/orders', { params });
     return data;
@@ -122,6 +197,16 @@ export const adminService = {
 
   async processRefund(transactionId: string, reason?: string): Promise<{ message: string; transaction: any }> {
     const { data } = await api.post(`/admin/orders/${transactionId}/refund`, { reason });
+    return data;
+  },
+
+  async getAdminWithdrawals(): Promise<any[]> {
+    const { data } = await api.get('/admin/withdrawals');
+    return data;
+  },
+
+  async updateWithdrawalStatus(id: string, status: 'APPROVED' | 'COMPLETED' | 'REJECTED', adminNotes?: string): Promise<any> {
+    const { data } = await api.patch(`/admin/withdrawals/${id}/status`, { status, adminNotes });
     return data;
   },
 };
