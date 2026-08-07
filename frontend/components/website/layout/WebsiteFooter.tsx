@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { FOOTER_SECTIONS, BRAND_NAME, SOCIAL_LINKS } from "../../../lib/constants";
+import FairwayDrawsLogo from "../shared/FairwayDrawsLogo";
 
 /**
  * Premium Fairway Draws website footer — light theme, golf branding.
@@ -27,10 +28,7 @@ export default function WebsiteFooter() {
 
           {/* Brand Column */}
           <div className="lg:col-span-2 flex flex-col gap-5">
-            <Link href="/" className="flex flex-col items-start select-none group py-0.5">
-              <span className="font-serif text-2xl font-black tracking-wider text-[#0b4d35] uppercase group-hover:opacity-90 transition-opacity">FAIRWAY</span>
-              <span className="font-sans text-[10px] font-black tracking-[0.25em] text-[#dc2626] uppercase">— DRAWS —</span>
-            </Link>
+            <FairwayDrawsLogo variant="light" size="lg" />
 
             <p className="font-sans text-xs text-[#5e766c] leading-relaxed max-w-xs">
               The premier platform for luxury golf prize competitions. Win top-tier equipment, club memberships &amp; PGA tournament access — all for charity.

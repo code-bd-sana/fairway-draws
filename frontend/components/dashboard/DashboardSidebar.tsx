@@ -7,7 +7,7 @@ import { DashboardAccount } from "../../types/dashboard.types";
 import { dashboardNavigation } from "../../config/dashboard-navigation.config";
 import { cn } from "../../lib/utils";
 import Image from "next/image";
-import logo from '../../public/logo2.png';
+import FairwayDrawsLogo from "../website/shared/FairwayDrawsLogo";
 import { useLogout } from "../../hooks/useAuthHooks";
 import { useAdminOverviewStats } from "../../hooks/useAdminHooks";
 
@@ -37,15 +37,7 @@ export default function DashboardSidebar({ account }: DashboardSidebarProps) {
 
       {/* Brand / Logo Area */}
       <div className="h-[88px] flex items-center justify-center border-b border-[#2D3C13] shrink-0 w-full px-5">
-        <Link href="/" className="relative h-[48px] w-auto aspect-[3/1] shrink-0 select-none block flex-none">
-          <Image
-            alt="Fairway Draws Logo"
-            src={logo}
-            fill
-            className="object-contain"
-            priority
-          />
-        </Link>
+        <FairwayDrawsLogo variant="dark" size="md" href="/dashboard" priority />
       </div>
 
       {/* Navigation */}
