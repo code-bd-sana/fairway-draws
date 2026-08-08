@@ -9,27 +9,27 @@ interface Props {
 
 export default function TopRafflesList({ data = [] }: Props) {
   return (
-    <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px] flex flex-col flex-1">
-      <h3 className="font-heading font-medium text-[16px] text-[#e8edd4] mb-[24px]">
-        Top Performing Raffles
+    <div className="bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col flex-1 shadow-card">
+      <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight mb-6">
+        Top Performing Competitions
       </h3>
       
-      <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-5">
         {data.map((item) => (
-          <div key={item.id} className="flex flex-col gap-[8px]">
-            <div className="flex items-center justify-between text-[14px]">
-              <span className="font-sans font-medium text-[#72943a]">
+          <div key={item.id} className="flex flex-col gap-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-heading font-bold text-text-primary">
                 {item.name}
               </span>
-              <span className="font-sans font-medium text-[#8cb34a]">
+              <span className="font-sans font-bold text-text-brand">
                 {item.percentage}%
               </span>
             </div>
             
             {/* Progress Bar Container */}
-            <div className="w-full bg-[#1a230a] h-[6px] rounded-full overflow-hidden">
+            <div className="w-full bg-elevated h-2 rounded-full overflow-hidden border border-border-medium">
               <div 
-                className="bg-[#8cb34a] h-full rounded-full transition-all duration-500"
+                className="bg-primary h-full rounded-full transition-all duration-500"
                 style={{ width: `${item.percentage}%` }}
               />
             </div>

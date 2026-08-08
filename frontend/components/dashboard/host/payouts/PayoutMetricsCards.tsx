@@ -7,57 +7,57 @@ interface Props {
 
 export default function PayoutMetricsCards({ metrics }: Props) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[24px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       
       {/* Available Balance */}
-      <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px] flex flex-col gap-[8px]">
-        <h4 className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-[0.275px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <h4 className="font-sans font-bold text-xs text-text-muted uppercase tracking-wider">
           Available Balance
         </h4>
-        <div className="font-heading font-bold text-[28px] text-[#e8edd4]">
+        <div className="font-heading font-black text-3xl text-text-primary">
           £{metrics.availableBalance.toFixed(2)}
         </div>
-        <p className="font-sans font-normal text-[11px] text-[#5a752a]">
+        <p className="font-sans font-medium text-xs text-text-brand">
           Ready to withdraw
         </p>
       </div>
 
       {/* Pending Clearance */}
-      <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px] flex flex-col gap-[8px]">
-        <h4 className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-[0.275px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <h4 className="font-sans font-bold text-xs text-text-muted uppercase tracking-wider">
           Pending Clearance
         </h4>
-        <div className="font-heading font-bold text-[28px] text-[#e8edd4]">
+        <div className="font-heading font-black text-3xl text-text-primary">
           £{metrics.pendingClearance.toFixed(2)}
         </div>
-        <p className="font-sans font-normal text-[11px] text-[#5a752a]">
-          Processing 3–5 days
+        <p className="font-sans font-medium text-xs text-text-muted">
+          Processing (3–5 business days)
         </p>
       </div>
 
       {/* Total Lifetime Earnings */}
-      <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px] flex flex-col gap-[8px]">
-        <h4 className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-[0.275px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <h4 className="font-sans font-bold text-xs text-text-muted uppercase tracking-wider">
           Total Lifetime Earnings
         </h4>
-        <div className="font-heading font-bold text-[28px] text-[#e8edd4]">
+        <div className="font-heading font-black text-3xl text-text-primary">
           £{metrics.totalLifetimeEarnings.toFixed(2)}
         </div>
-        <p className="font-sans font-normal text-[11px] text-[#5a752a]">
-          Across all completed raffles
+        <p className="font-sans font-medium text-xs text-text-muted">
+          Across all completed competitions
         </p>
       </div>
 
       {/* Total Fees Paid */}
-      <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px] flex flex-col gap-[8px]">
-        <h4 className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-[0.275px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <h4 className="font-sans font-bold text-xs text-text-muted uppercase tracking-wider">
           Total Fees Paid
         </h4>
-        <div className="font-heading font-bold text-[28px] text-[#72943a]">
+        <div className="font-heading font-black text-3xl text-[#dc2626]">
           £{metrics.totalFeesPaid.toFixed(2)}
         </div>
-        <p className="font-sans font-normal text-[11px] text-[#5a752a]">
-          Across all completed raffles
+        <p className="font-sans font-medium text-xs text-text-muted">
+          Standard platform commission
         </p>
       </div>
 

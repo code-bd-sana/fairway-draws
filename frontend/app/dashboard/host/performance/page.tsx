@@ -19,20 +19,29 @@ export default function PerformanceStatsPage() {
   const [activeTimeframe, setActiveTimeframe] = useState("1M");
 
   return (
-    <div className="flex-1 w-full px-[20px] lg:px-[40px] py-[24px] lg:py-[32px] flex flex-col gap-[24px] animate-in fade-in zoom-in-95 duration-300">
+    <div className="flex-1 w-full px-[20px] lg:px-[40px] py-[24px] lg:py-[32px] flex flex-col gap-6 animate-in fade-in zoom-in-95 duration-300">
       
-      {/* Header Actions (Timeframes) */}
-      <div className="flex justify-end">
-        <div className="flex items-center gap-[12px]">
+      {/* Header & Timeframe Filters */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
+            Performance Analytics
+          </h1>
+          <p className="font-sans text-xs text-text-muted">
+            Track competition revenue trends, category breakdowns, and entrant demographics.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 bg-elevated p-1 rounded-xl border border-border-medium w-fit">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf}
               onClick={() => setActiveTimeframe(tf)}
               className={cn(
-                "w-[32px] h-[32px] rounded-full flex items-center justify-center border font-sans font-medium text-[12px] transition-colors",
+                "h-8 px-3 rounded-lg flex items-center justify-center font-heading font-bold text-xs transition-all cursor-pointer",
                 activeTimeframe === tf
-                  ? "border-[#8cb34a] text-[#8cb34a]"
-                  : "border-[#2d3c13] text-[#5a752a] hover:border-[#5a752a]"
+                  ? "bg-surface text-text-brand border border-border shadow-xs"
+                  : "text-text-muted hover:text-text-primary"
               )}
             >
               {tf}
