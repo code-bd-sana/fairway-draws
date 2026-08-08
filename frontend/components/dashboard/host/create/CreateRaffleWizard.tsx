@@ -136,15 +136,15 @@ export default function CreateRaffleWizard() {
 
   if (isSubLoading) {
     return (
-      <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] min-h-[400px] flex flex-col items-center justify-center p-[32px]">
-        <div className="relative flex items-center justify-center w-24 h-24 mb-8">
-          <div className="absolute inset-0 rounded-full border-[3px] border-[#2d3c13] opacity-20"></div>
-          <div className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#8cb34a] border-r-[#8cb34a] animate-spin" style={{ animationDuration: '1s' }}></div>
-          <div className="w-4 h-4 bg-[#8cb34a] rounded-full animate-pulse shadow-[0_0_15px_#8cb34a]"></div>
+      <div className="w-full bg-surface border border-border rounded-card min-h-[400px] flex flex-col items-center justify-center p-8 shadow-card">
+        <div className="relative flex items-center justify-center w-20 h-20 mb-6">
+          <div className="absolute inset-0 rounded-full border-4 border-border-medium opacity-30"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary border-r-primary animate-spin" style={{ animationDuration: '0.8s' }}></div>
+          <div className="w-4 h-4 bg-primary rounded-full animate-pulse shadow-md"></div>
         </div>
-        <h3 className="text-[#8cb34a] text-xl font-semibold mb-2">Verifying Subscription</h3>
-        <p className="text-[#8c9477] text-sm max-w-[280px] text-center animate-pulse">
-          Please wait a moment while we securely check your host status...
+        <h3 className="text-text-brand text-lg font-heading font-black uppercase tracking-tight mb-2">Verifying Host Subscription</h3>
+        <p className="text-text-muted text-xs max-w-[280px] text-center font-sans">
+          Please wait a moment while we check your active host privileges...
         </p>
       </div>
     );
@@ -152,21 +152,26 @@ export default function CreateRaffleWizard() {
 
   if (!mySub || mySub.status !== 'ACTIVE') {
     return (
-      <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[32px] text-center">
-        <h2 className="text-[#f76b6b] text-xl mb-4">Active Subscription Required</h2>
-        <p className="text-[#e8edd4] mb-6">You must have an active subscription to create a competition.</p>
-        <button onClick={() => router.push('/dashboard/host/billing')} className="px-6 py-2 bg-[#8cb34a] text-black rounded-lg">View Plans</button>
+      <div className="w-full bg-surface border border-border rounded-card p-8 text-center shadow-card">
+        <h2 className="text-[#DC2626] font-heading font-black text-xl mb-3 uppercase tracking-tight">Active Subscription Required</h2>
+        <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">You must have an active host plan to create competitions on Fairway Draws.</p>
+        <button 
+          onClick={() => router.push('/dashboard/host/billing')} 
+          className="btn-glossy-red px-6 py-2.5 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md cursor-pointer"
+        >
+          View Host Plans
+        </button>
       </div>
     );
   }
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full px-[10px] md:px-[20px]">
+      <div className="w-full px-2 sm:px-4">
         <CreateRaffleStepper currentStep={currentStep} totalSteps={6} />
       </div>
 
-      <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[32px] mt-[16px]">
+      <div className="w-full bg-surface border border-border rounded-card p-6 md:p-10 mt-2 shadow-card">
         {currentStep === 1 && (
           <CreateRaffleStep1 formData={formData} updateForm={updateForm} onNext={nextStep} />
         )}

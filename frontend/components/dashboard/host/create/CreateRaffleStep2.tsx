@@ -11,23 +11,23 @@ interface Props {
 export default function CreateRaffleStep2({ formData, updateForm, onNext, onPrev }: Props) {
   return (
     <div className="flex flex-col w-full animate-in fade-in zoom-in-95 duration-200">
-      <div className="flex flex-col gap-[8px] mb-[32px]">
-        <h2 className="font-heading font-medium text-[24px] text-[#e8edd4]">
-          Tickets & Pricing
+      <div className="flex flex-col gap-2 mb-8">
+        <h2 className="font-heading font-black text-2xl text-text-primary uppercase tracking-tight">
+          Tickets &amp; Pricing
         </h2>
-        <p className="font-sans font-normal text-[14px] text-[#b3b8aa]">
-          Set the parameters for your raffle tickets and expected revenue.
+        <p className="font-sans text-sm text-text-muted">
+          Set the parameters for your competition tickets and expected revenue.
         </p>
       </div>
 
-      <div className="flex flex-col gap-[24px]">
+      <div className="flex flex-col gap-6">
         {/* Main Prize Value */}
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
             Main Prize Value (£)
           </label>
           <div className="relative">
-            <span className="absolute left-[16px] top-1/2 -translate-y-1/2 font-sans font-normal text-[14px] text-[#5a752a]">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-heading font-bold text-sm text-text-brand">
               £
             </span>
             <input
@@ -36,14 +36,14 @@ export default function CreateRaffleStep2({ formData, updateForm, onNext, onPrev
               value={formData.mainPrizeValue}
               onChange={(e) => updateForm({ mainPrizeValue: e.target.value })}
               placeholder="e.g. 1500.00"
-              className="w-full h-[48px] pl-[32px] pr-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans font-normal text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] outline-none focus:border-[#8cb34a] transition-colors"
+              className="w-full h-[48px] pl-9 pr-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary focus:bg-surface transition-all"
             />
           </div>
         </div>
 
         {/* Total Tickets */}
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
             Total Number of Tickets
           </label>
           <input
@@ -51,17 +51,17 @@ export default function CreateRaffleStep2({ formData, updateForm, onNext, onPrev
             value={formData.totalTickets}
             onChange={(e) => updateForm({ totalTickets: e.target.value })}
             placeholder="e.g. 500"
-            className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans font-normal text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] outline-none focus:border-[#8cb34a] transition-colors"
+            className="h-[48px] px-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary focus:bg-surface transition-all"
           />
         </div>
 
         {/* Ticket Price */}
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
             Ticket Price (£)
           </label>
           <div className="relative">
-            <span className="absolute left-[16px] top-1/2 -translate-y-1/2 font-sans font-normal text-[14px] text-[#5a752a]">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-heading font-bold text-sm text-text-brand">
               £
             </span>
             <input
@@ -70,14 +70,14 @@ export default function CreateRaffleStep2({ formData, updateForm, onNext, onPrev
               value={formData.ticketPrice}
               onChange={(e) => updateForm({ ticketPrice: e.target.value })}
               placeholder="e.g. 2.50"
-              className="w-full h-[48px] pl-[32px] pr-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans font-normal text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] outline-none focus:border-[#8cb34a] transition-colors"
+              className="w-full h-[48px] pl-9 pr-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary focus:bg-surface transition-all"
             />
           </div>
         </div>
 
-        {/* Minimum Tickets (Optional depending on design, I'll add it) */}
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
+        {/* Minimum Tickets */}
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
             Minimum Tickets Per Person (Optional)
           </label>
           <input
@@ -85,27 +85,25 @@ export default function CreateRaffleStep2({ formData, updateForm, onNext, onPrev
             value={formData.minTickets}
             onChange={(e) => updateForm({ minTickets: e.target.value })}
             placeholder="e.g. 1"
-            className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans font-normal text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] outline-none focus:border-[#8cb34a] transition-colors"
+            className="h-[48px] px-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary focus:bg-surface transition-all"
           />
         </div>
       </div>
 
       {/* Footer Actions */}
-      <div className="flex items-center justify-between mt-[40px] pt-[24px] border-t border-[#2d3c13]">
+      <div className="flex items-center justify-between mt-10 pt-6 border-t border-divider">
         <button
           onClick={onPrev}
-          className="h-[48px] px-[24px] bg-transparent border border-[#2d3c13] hover:bg-[#1a230a] text-[#5a752a] hover:text-[#e8edd4] transition-colors rounded-[8px] flex items-center justify-center font-sans font-medium text-[14px]"
+          className="h-[46px] px-6 bg-elevated border border-border hover:bg-surface text-text-primary transition-all rounded-xl font-heading font-bold text-xs uppercase tracking-wider cursor-pointer"
         >
-          Back
+          ← Back
         </button>
         <button
           onClick={onNext}
           disabled={!formData.totalTickets || !formData.ticketPrice}
-          className="h-[48px] px-[32px] bg-[#8cb34a] disabled:bg-[#8cb34a]/50 disabled:cursor-not-allowed hover:bg-[#72943a] transition-colors rounded-[8px] flex items-center justify-center"
+          className="btn-glossy-red h-[46px] px-8 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          <span className="font-heading font-medium text-[16px] text-[#0d0d0b]">
-            Next Step
-          </span>
+          <span>Next Step →</span>
         </button>
       </div>
     </div>

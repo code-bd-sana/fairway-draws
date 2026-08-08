@@ -81,30 +81,32 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
 
   return (
     <div className="flex flex-col w-full animate-in fade-in zoom-in-95 duration-200">
-      <div className="flex flex-col gap-[8px] mb-[32px]">
-        <h2 className="font-heading font-bold text-[24px] text-[#e8edd4]">
+      <div className="flex flex-col gap-2 mb-8">
+        <h2 className="font-heading font-black text-2xl text-text-primary uppercase tracking-tight">
           Instant Wins
         </h2>
-        <p className="font-sans font-normal text-[14px] text-[#a0d056]">
-          Would you like to offer instant wins for this competition?
+        <p className="font-sans text-sm text-text-muted">
+          Would you like to offer instant win prizes for this competition?
         </p>
       </div>
 
-      <div className="flex flex-col gap-[24px]">
-        <label className="flex items-center gap-3 cursor-pointer">
+      <div className="flex flex-col gap-6">
+        <label className="flex items-center gap-3 cursor-pointer select-none">
           <input 
             type="checkbox" 
-            className="w-5 h-5 rounded border-[#2d3c13] bg-[#1a230a] text-[#8cb34a] focus:ring-[#8cb34a] focus:ring-offset-[#111210]"
+            className="w-5 h-5 rounded border-border-medium text-primary focus:ring-primary accent-[#0b4d35] cursor-pointer"
             checked={formData.hasInstantWins}
             onChange={handleToggle}
           />
-          <span className="font-sans font-medium text-[15px] text-[#e8edd4]">Enable Instant Wins</span>
+          <span className="font-heading font-bold text-sm text-text-primary uppercase tracking-wide">
+            Enable Instant Win Prizes
+          </span>
         </label>
 
         {formData.hasInstantWins && (
-          <div className="flex flex-col gap-[24px] mt-2 border-t border-[#2d3c13] pt-6">
-            <div className="flex flex-col gap-[8px]">
-              <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
+          <div className="flex flex-col gap-6 mt-2 border-t border-divider pt-6">
+            <div className="flex flex-col gap-2">
+              <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
                 Number of Instant Wins
               </label>
               <input
@@ -113,19 +115,19 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
                 max={formData.totalTickets || "1000"}
                 value={numInstantWins}
                 onChange={handleNumChange}
-                className="w-full sm:w-[200px] h-[48px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[12px] px-[16px] text-[#e8edd4] font-sans text-[15px] focus:outline-none focus:border-[#8cb34a] transition-colors"
+                className="w-full sm:w-[200px] h-[48px] bg-elevated border border-border-medium rounded-xl px-4 text-text-primary font-sans font-medium text-sm focus:outline-none focus:border-primary focus:bg-surface transition-all"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {formData.instantWins.map((iw, idx) => (
-                <div key={idx} className="bg-[#0d0d0b] border border-[#2d3c13] rounded-[12px] p-4 flex flex-col gap-4">
+                <div key={idx} className="bg-elevated border border-border-medium rounded-xl p-5 flex flex-col gap-4 shadow-xs">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-[#a0d056] font-semibold text-[14px]">Prize #{idx + 1}</h4>
+                    <h4 className="text-text-brand font-heading font-bold text-sm uppercase">Prize #{idx + 1}</h4>
                     {idx === 0 && formData.instantWins.length > 1 && (
                       <button
                         onClick={() => applyToAll(0)}
-                        className="text-[12px] text-[#8cb34a] hover:underline"
+                        className="text-xs text-text-brand font-bold uppercase tracking-wider hover:text-primary-hover cursor-pointer"
                         title="Copy this prize's name and image to all other instant wins"
                       >
                         Apply to all
@@ -134,7 +136,7 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
                     {idx > 0 && formData.instantWins[0].prizeName && (
                       <button
                         onClick={() => applyFromFirst(idx)}
-                        className="text-[12px] text-[#8cb34a] hover:underline"
+                        className="text-xs text-text-brand font-bold uppercase tracking-wider hover:text-primary-hover cursor-pointer"
                         title="Copy the details from Prize #1"
                       >
                         Copy from 1st
@@ -142,34 +144,34 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
                     )}
                   </div>
                   
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[12px] text-[#e8edd4]">Prize Name*</label>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans font-bold text-[11px] uppercase text-text-muted">Prize Name*</label>
                     <input
                       type="text"
                       value={iw.prizeName}
                       onChange={(e) => updateInstantWin(idx, "prizeName", e.target.value)}
-                      placeholder="e.g. TM Hi-Capa 5.1"
-                      className="w-full h-[40px] bg-[#1a230a] border border-[#2d3c13] rounded-[8px] px-[12px] text-[#e8edd4] font-sans text-[14px] focus:outline-none focus:border-[#8cb34a] transition-colors"
+                      placeholder="e.g. Titleist Pro V1 Box"
+                      className="w-full h-[42px] bg-surface border border-border-medium rounded-xl px-3 text-text-primary font-sans font-medium text-sm focus:outline-none focus:border-primary transition-all"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[12px] text-[#e8edd4]">RRP Value (£)</label>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans font-bold text-[11px] uppercase text-text-muted">RRP Value (£)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={iw.rrpValue}
                       onChange={(e) => updateInstantWin(idx, "rrpValue", e.target.value)}
-                      placeholder="e.g. 150.00"
-                      className="w-full h-[40px] bg-[#1a230a] border border-[#2d3c13] rounded-[8px] px-[12px] text-[#e8edd4] font-sans text-[14px] focus:outline-none focus:border-[#8cb34a] transition-colors"
+                      placeholder="e.g. 50.00"
+                      className="w-full h-[42px] bg-surface border border-border-medium rounded-xl px-3 text-text-primary font-sans font-medium text-sm focus:outline-none focus:border-primary transition-all"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[12px] text-[#e8edd4]">Prize Image</label>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans font-bold text-[11px] uppercase text-text-muted">Prize Image</label>
                     <div className="flex items-center gap-3">
                       {iw.imageUrl && (
-                        <div className="w-12 h-12 rounded overflow-hidden shrink-0 bg-[#161810]">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-surface border border-border">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={iw.imageUrl} alt="preview" className="w-full h-full object-cover" />
                         </div>
@@ -178,7 +180,7 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
                         type="file"
                         accept="image/*"
                         onChange={(e) => updateInstantWin(idx, "imageFile", e.target.files?.[0] || null)}
-                        className="text-[12px] text-[#b3b8aa] file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-[12px] file:font-semibold file:bg-[#2d3c13] file:text-[#e8edd4] hover:file:bg-[#43581e] cursor-pointer"
+                        className="text-xs text-text-muted file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-surface file:text-text-primary hover:file:bg-accent-bg cursor-pointer"
                       />
                     </div>
                   </div>
@@ -191,19 +193,19 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
         )}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-[16px] mt-[48px] pt-[24px] border-t border-[#2d3c13]">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-10 pt-6 border-t border-divider">
         <button
           onClick={onPrev}
-          className="w-full sm:w-auto h-[48px] px-[32px] rounded-[12px] bg-transparent border border-[#2d3c13] hover:bg-[#1a230a] text-[#e8edd4] font-heading font-medium text-[15px] transition-colors"
+          className="w-full sm:w-auto h-[46px] px-6 rounded-xl bg-elevated border border-border hover:bg-surface text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
         >
-          Back
+          ← Back
         </button>
         <button
           onClick={onNext}
           disabled={!isValid}
-          className="w-full sm:w-auto h-[48px] px-[32px] rounded-[12px] bg-[#8cb34a] hover:bg-[#a0d056] text-[#0d0d0b] font-heading font-bold text-[15px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-glossy-red w-full sm:w-auto h-[46px] px-8 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          Continue
+          <span>Next Step →</span>
         </button>
       </div>
     </div>

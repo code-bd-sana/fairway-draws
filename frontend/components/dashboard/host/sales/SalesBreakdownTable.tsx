@@ -21,29 +21,29 @@ export default function SalesBreakdownTable({ raffles }: Props) {
   });
 
   return (
-    <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] overflow-hidden flex flex-col mt-[24px]">
+    <div className="w-full bg-surface border border-border rounded-card overflow-hidden flex flex-col mt-6 shadow-card">
       
       {/* Header & Tabs */}
-      <div className="p-[24px] border-b border-[#2d3c13] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px]">
+      <div className="p-6 lg:p-8 border-b border-divider flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-surface">
         <div>
-          <h3 className="font-heading font-medium text-[18px] text-[#e8edd4]">
+          <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
             Competition Breakdown
           </h3>
-          <p className="font-sans font-normal text-[14px] text-[#b3b8aa]">
-            Individual performance metrics for your raffles.
+          <p className="font-sans text-xs text-text-muted">
+            Individual performance metrics for your competitions.
           </p>
         </div>
         
-        <div className="flex items-center gap-[8px] bg-[#0d0d0b] p-[4px] rounded-[10px] border border-[#2d3c13]">
+        <div className="flex items-center gap-1 bg-elevated p-1 rounded-xl border border-border-medium">
           {tabs.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                "px-[16px] py-[6px] rounded-[6px] font-sans font-medium text-[13px] transition-colors",
+                "px-4 py-1.5 rounded-lg font-sans font-bold text-xs transition-all cursor-pointer",
                 activeTab === tab
-                  ? "bg-[#2d3c13] text-[#e8edd4]"
-                  : "text-[#5a752a] hover:text-[#b3b8aa]"
+                  ? "bg-surface text-text-brand border border-border shadow-xs"
+                  : "text-text-muted hover:text-text-primary"
               )}
             >
               {tab}
@@ -56,20 +56,20 @@ export default function SalesBreakdownTable({ raffles }: Props) {
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[800px] text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#2d3c13] bg-[#0d0d0b]/50">
-              <th className="py-[16px] px-[24px] font-sans font-medium text-[12px] text-[#5a752a] uppercase tracking-wider">
+            <tr className="border-b border-divider bg-elevated/70">
+              <th className="py-4 px-6 font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
                 Item
               </th>
-              <th className="py-[16px] px-[24px] font-sans font-medium text-[12px] text-[#5a752a] uppercase tracking-wider">
+              <th className="py-4 px-6 font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
                 Status
               </th>
-              <th className="py-[16px] px-[24px] font-sans font-medium text-[12px] text-[#5a752a] uppercase tracking-wider">
+              <th className="py-4 px-6 font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
                 Tickets Sold
               </th>
-              <th className="py-[16px] px-[24px] font-sans font-medium text-[12px] text-[#5a752a] uppercase tracking-wider">
+              <th className="py-4 px-6 font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
                 Price
               </th>
-              <th className="py-[16px] px-[24px] font-sans font-medium text-[12px] text-[#5a752a] uppercase tracking-wider">
+              <th className="py-4 px-6 font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
                 Gross Revenue
               </th>
             </tr>
@@ -79,46 +79,46 @@ export default function SalesBreakdownTable({ raffles }: Props) {
               <tr 
                 key={raffle.id}
                 className={cn(
-                  "group transition-colors hover:bg-[#1a230a]",
-                  index !== filteredRaffles.length - 1 && "border-b border-[#2d3c13]/50"
+                  "group transition-colors hover:bg-elevated/60",
+                  index !== filteredRaffles.length - 1 && "border-b border-divider"
                 )}
               >
-                <td className="py-[20px] px-[24px]">
-                  <span className="font-sans font-medium text-[14px] text-[#e8edd4]">
+                <td className="py-5 px-6">
+                  <span className="font-heading font-bold text-sm text-text-primary">
                     {raffle.name}
                   </span>
                 </td>
-                <td className="py-[20px] px-[24px]">
+                <td className="py-5 px-6">
                   <span className={cn(
-                    "inline-flex px-[10px] py-[4px] rounded-full font-sans font-medium text-[11px]",
-                    raffle.status === "Live" && "bg-[#8cb34a]/10 text-[#8cb34a] border border-[#8cb34a]/20",
-                    raffle.status === "Completed" && "bg-[#5a752a]/10 text-[#5a752a] border border-[#5a752a]/20",
-                    (raffle.status === "Draft" || raffle.status === "Pending Review") && "bg-[#f76b6b]/10 text-[#f76b6b] border border-[#f76b6b]/20"
+                    "inline-flex px-3 py-0.5 rounded-full font-sans font-bold text-[11px] uppercase tracking-wide border",
+                    raffle.status === "Live" && "bg-success-bg border-[#BBF7D0] text-success-text",
+                    raffle.status === "Completed" && "bg-accent-bg border border-primary/30 text-text-brand",
+                    (raffle.status === "Draft" || raffle.status === "Pending Review") && "bg-[#FEE2E2] border-[#FECACA] text-[#DC2626]"
                   )}>
                     {raffle.status}
                   </span>
                 </td>
-                <td className="py-[20px] px-[24px]">
-                  <div className="flex flex-col gap-[4px]">
-                    <span className="font-sans font-medium text-[14px] text-[#e8edd4]">
-                      {raffle.ticketsSold} <span className="text-[#5a752a]">/ {raffle.totalTickets}</span>
+                <td className="py-5 px-6">
+                  <div className="flex flex-col gap-1.5">
+                    <span className="font-sans font-semibold text-xs text-text-primary">
+                      {raffle.ticketsSold} <span className="text-text-muted">/ {raffle.totalTickets}</span>
                     </span>
-                    {/* Tiny Progress bar */}
-                    <div className="w-full max-w-[100px] h-[4px] bg-[#0d0d0b] rounded-full overflow-hidden">
+                    {/* Progress bar */}
+                    <div className="w-full max-w-[120px] h-1.5 bg-elevated rounded-full overflow-hidden border border-border-medium">
                       <div 
-                        className="h-full bg-[#8cb34a]"
+                        className="h-full bg-primary rounded-full transition-all duration-300"
                         style={{ width: `${(raffle.ticketsSold / raffle.totalTickets) * 100}%` }}
                       />
                     </div>
                   </div>
                 </td>
-                <td className="py-[20px] px-[24px]">
-                  <span className="font-sans font-medium text-[14px] text-[#b3b8aa]">
+                <td className="py-5 px-6">
+                  <span className="font-sans font-medium text-xs text-text-muted">
                     £{raffle.ticketPrice.toFixed(2)}
                   </span>
                 </td>
-                <td className="py-[20px] px-[24px]">
-                  <span className="font-heading font-medium text-[15px] text-[#8cb34a]">
+                <td className="py-5 px-6">
+                  <span className="font-heading font-bold text-sm text-text-brand">
                     £{raffle.grossRevenue.toFixed(2)}
                   </span>
                 </td>
