@@ -8,27 +8,24 @@ interface HostStatCardProps {
 
 export default function HostStatCard({ stat }: HostStatCardProps) {
   return (
-    <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[21px] flex flex-col justify-between h-[110px] w-full">
+    <div className="bg-surface border border-border rounded-card p-5 md:p-6 flex flex-col justify-between h-[120px] w-full shadow-card hover:border-border-medium transition-all duration-200">
       <div className="w-full">
-        <p className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
+        <p className="font-sans font-bold text-[11px] leading-tight tracking-wider uppercase text-text-muted">
           {stat.label}
         </p>
       </div>
-      <div className="w-full flex items-end justify-between mt-auto">
-        <div className="h-[42px] flex items-center">
-          <p className="font-heading font-bold text-[28px] leading-[42px] text-[#e8edd4]">
+      <div className="w-full flex items-end justify-between mt-auto gap-2">
+        <div className="flex items-center">
+          <p className="font-heading font-black text-2xl md:text-3xl leading-none text-text-primary tracking-tight">
             {stat.value}
           </p>
         </div>
         {stat.change && (
           <div className={cn(
-            "rounded-[99px] px-[8px] py-[3px] flex items-center gap-[2px]",
-            stat.trend === "up" ? "bg-[#083b18]" : "bg-[#3b0808]" // basic down state example
+            "rounded-full px-2.5 py-1 flex items-center gap-1 border shrink-0",
+            stat.trend === "up" ? "bg-success-bg border-[#BBF7D0] text-success-text" : "bg-[#FEE2E2] border-[#FECACA] text-[#DC2626]"
           )}>
-            <span className={cn(
-              "font-sans font-medium text-[11px] leading-[16.5px]",
-              stat.trend === "up" ? "text-[#4ade80]" : "text-[#f87171]"
-            )}>
+            <span className="font-sans font-bold text-[10px] leading-none tracking-wide uppercase">
               {stat.change}
             </span>
           </div>

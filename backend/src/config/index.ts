@@ -58,9 +58,9 @@ export const config: AppConfig = {
     port: Number(process.env.SMTP_PORT) || 587,
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASSWORD || '',
-    from: process.env.FROM_EMAIL || 'Airsoft Draws <noreply@airsoftdraws.com>',
+    from: process.env.FROM_EMAIL || 'Fairway Draws <noreply@fairwaydraws.com>',
   },
   frontend: {
-    url: process.env.FRONTEND_URL || 'http://localhost:3000',
+    url: (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/$/, ''),
   },
 };

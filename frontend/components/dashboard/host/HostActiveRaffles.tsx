@@ -15,81 +15,83 @@ export default function HostActiveRaffles({ raffles, isLoading: propIsLoading }:
   const isLoading = propIsLoading ?? queryIsLoading;
 
   return (
-    <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[25px] w-full flex flex-col min-h-[330px]">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-heading font-normal text-[16px] leading-[normal] text-[#e8edd4]">
-          Active Raffles
+    <div className="bg-surface border border-border rounded-card p-6 w-full flex flex-col min-h-[330px] shadow-card">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
+          Active Competitions
         </h2>
-        <Link href="/dashboard/host/competitions" className="text-[#8cb34a] font-sans font-medium text-[13px] hover:underline flex items-center">
-          View All <span className="ml-1">→</span>
+        <Link href="/dashboard/host/competitions" className="text-text-brand hover:text-primary-hover font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1">
+          <span>View All</span>
+          <span>→</span>
         </Link>
       </div>
 
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full gap-1">
         {isLoading && (
           <div className="flex flex-col gap-[12px]">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-[12px] h-[48px] animate-pulse">
-                <div className="w-[32px] h-[32px] rounded-[6px] bg-[#1a230a] shrink-0"></div>
-                <div className="flex-1 h-[14px] bg-[#1a230a] rounded"></div>
-                <div className="w-[50px] h-[14px] bg-[#1a230a] rounded shrink-0"></div>
+              <div key={i} className="flex items-center gap-[12px] h-[52px] animate-pulse">
+                <div className="w-[36px] h-[36px] rounded-xl bg-elevated shrink-0"></div>
+                <div className="flex-1 h-[14px] bg-elevated rounded"></div>
+                <div className="w-[50px] h-[14px] bg-elevated rounded shrink-0"></div>
               </div>
             ))}
           </div>
         )}
 
         {!isLoading && activeRaffles.length === 0 && (
-          <div className="py-8 text-center text-[#5a752a] font-sans text-sm">
-            No active raffles found.
+          <div className="py-12 text-center text-text-muted font-sans text-sm bg-bg rounded-xl border border-dashed border-border-medium">
+            No active competitions currently live.
           </div>
         )}
 
         {!isLoading && activeRaffles.map((comp: any) => {
           const progress = Math.min(Math.round((comp.ticketsSold / comp.totalTickets) * 100), 100);
-          const isEndingSoon = false; // Add logic if needed, e.g., less than 24h left
-          const imageUrl = comp.images && comp.images.length > 0 ? comp.images[0] : "https://placehold.co/100x100/1a230a/8cb34a?text=Raffle";
+          const isEndingSoon = false;
+          const imageUrl = comp.images && comp.images.length > 0 ? comp.images[0] : "https://placehold.co/100x100/ecf5ee/0b4d35?text=Raffle";
 
           return (
             <Link 
               href={`/dashboard/host/competitions`}
               key={comp.id} 
-              className="flex items-center gap-[12px] h-[48px] border-b border-[#1a230a] last:border-0 hover:bg-[#1a230a]/20 transition-colors px-2 -mx-2 rounded-md cursor-pointer"
+              className="flex items-center gap-[14px] py-2.5 border-b border-divider last:border-0 hover:bg-elevated transition-colors px-3 -mx-3 rounded-xl cursor-pointer"
             >
               {/* Thumbnail */}
-              <div className="w-[32px] h-[32px] rounded-[6px] overflow-hidden bg-[#1a230a] shrink-0">
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-elevated border border-border-medium shrink-0 shadow-xs">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={imageUrl} alt={comp.title} className="w-full h-full object-cover" />
               </div>
 
               {/* Title */}
               <div className="flex-1 min-w-0">
-                <p className="font-heading font-medium text-[13px] text-[#e8edd4] truncate">
+                <p className="font-heading font-bold text-sm text-text-primary truncate">
                   {comp.title}
+                </p>
+                <p className="font-sans text-[11px] text-text-muted">
+                  {comp.ticketsSold} / {comp.totalTickets} tickets sold
                 </p>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-[60px] h-[4px] bg-[#1a230a] rounded-full overflow-hidden shrink-0 hidden sm:block">
+              <div className="w-[70px] h-[6px] bg-elevated border border-divider rounded-full overflow-hidden shrink-0 hidden sm:block">
                 <div 
-                  className="h-full bg-[#8cb34a] rounded-full" 
+                  className="h-full bg-primary rounded-full transition-all duration-300" 
                   style={{ width: `${progress}%` }} 
                 />
               </div>
 
               {/* Price */}
-              <div className="w-[50px] shrink-0 text-right">
-                <p className="font-sans font-normal text-[13px] text-[#a0d056]">
+              <div className="w-[60px] shrink-0 text-right">
+                <p className="font-heading font-bold text-sm text-text-brand">
                   £{Number(comp.pricePerTicket || 0).toFixed(2)}
                 </p>
               </div>
 
               {/* Status Pill */}
-              <div className={`h-[22.5px] px-[8px] rounded-full flex items-center justify-center shrink-0 ${
-                isEndingSoon ? "bg-[#78350f]" : "bg-[#083b18]"
+              <div className={`h-[24px] px-2.5 rounded-full flex items-center justify-center shrink-0 border ${
+                isEndingSoon ? "bg-[#FEF3C7] border-[#FDE68A] text-[#D97706]" : "bg-success-bg border-[#BBF7D0] text-success-text"
               }`}>
-                <span className={`font-sans font-medium text-[11px] ${
-                  isEndingSoon ? "text-[#fbbf24]" : "text-[#4ade80]"
-                }`}>
+                <span className="font-sans font-bold text-[10px] uppercase tracking-wide">
                   {isEndingSoon ? "Ending Soon" : "Live"}
                 </span>
               </div>
