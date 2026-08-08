@@ -49,40 +49,40 @@ export default function WinnerDetailsModal({ isOpen, onClose, raffle }: Props) {
           disabled={updatingWinnerId === winnerRecordId}
           onChange={(e) => handleUpdateDelivery(winnerRecordId, e.target.value)}
           className={cn(
-            "px-2.5 py-1 rounded-[6px] font-sans font-semibold text-xs border outline-none cursor-pointer transition-colors bg-[#0D0D0B]",
+            "px-3 py-1.5 rounded-xl font-sans font-bold text-xs border outline-none cursor-pointer transition-all bg-surface",
             status.toUpperCase() === "DELIVERED"
-              ? "border-[#4ADE80] text-[#4ADE80]"
+              ? "border-[#BBF7D0] text-[#15803D] bg-[#DCFCE7]"
               : status.toUpperCase() === "SHIPPED"
-              ? "border-[#3B82F6] text-[#60A5FA]"
-              : "border-[#EAB308] text-[#EAB308]"
+              ? "border-[#BFDBFE] text-[#1D4ED8] bg-[#EFF6FF]"
+              : "border-[#FDE68A] text-[#D97706] bg-[#FEF3C7]"
           )}
         >
-          <option value="PENDING" className="bg-[#111210] text-[#EAB308]">Pending Dispatch</option>
-          <option value="SHIPPED" className="bg-[#111210] text-[#60A5FA]">Shipped</option>
-          <option value="DELIVERED" className="bg-[#111210] text-[#4ADE80]">Delivered ✓</option>
+          <option value="PENDING" className="bg-surface text-[#D97706]">Pending Dispatch</option>
+          <option value="SHIPPED" className="bg-surface text-[#1D4ED8]">Shipped</option>
+          <option value="DELIVERED" className="bg-surface text-[#15803D]">Delivered ✓</option>
         </select>
       </div>
     );
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
       {/* Modal Container */}
-      <div className="bg-[#0D0D0B] border border-[#2D3C13] rounded-[16px] w-full max-w-[820px] shadow-2xl flex flex-col relative max-h-[85vh] overflow-hidden">
+      <div className="bg-surface border border-border rounded-card w-full max-w-[820px] shadow-card flex flex-col relative max-h-[85vh] overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#2D3C13]">
+        <div className="flex items-center justify-between p-6 border-b border-divider bg-surface">
           <div className="flex flex-col gap-1">
-            <h2 className="font-heading font-medium text-[20px] text-[#E8EDD4]">
+            <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
               Competition Winners: {raffle.title}
             </h2>
-            <span className="font-sans text-[13px] text-[#72943A]">
-              View main draw winner and instant win prize claims. Update dispatch & delivery status.
+            <span className="font-sans text-xs text-text-muted">
+              View main draw winner and instant win prize claims. Update dispatch &amp; delivery status.
             </span>
           </div>
           <button 
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1A230A] border border-[#2D3C13] flex items-center justify-center text-[#72943A] hover:text-[#E8EDD4] transition-colors shrink-0"
+            className="w-8 h-8 rounded-xl bg-elevated border border-border flex items-center justify-center text-text-muted hover:text-text-primary transition-colors shrink-0 cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -92,14 +92,14 @@ export default function WinnerDetailsModal({ isOpen, onClose, raffle }: Props) {
 
         <div className="flex flex-col p-6 overflow-y-auto custom-scrollbar flex-1">
           {/* Tabs */}
-          <div className="flex items-center gap-[8px] bg-[#161810] p-[4px] rounded-[10px] border border-[#2d3c13] w-fit mb-6">
+          <div className="flex items-center gap-1 bg-elevated p-1 rounded-xl border border-border-medium w-fit mb-6">
             <button
               onClick={() => setActiveTab("Main Draw")}
               className={cn(
-                "px-[16px] py-[6px] rounded-[6px] font-sans font-medium text-[13px] transition-colors",
+                "px-4 py-1.5 rounded-lg font-sans font-bold text-xs transition-all cursor-pointer",
                 activeTab === "Main Draw"
-                  ? "bg-[#2d3c13] text-[#e8edd4]"
-                  : "text-[#5a752a] hover:text-[#b3b8aa]"
+                  ? "bg-surface text-text-brand border border-border shadow-xs"
+                  : "text-text-muted hover:text-text-primary"
               )}
             >
               Main Draw Winner
@@ -107,10 +107,10 @@ export default function WinnerDetailsModal({ isOpen, onClose, raffle }: Props) {
             <button
               onClick={() => setActiveTab("Instant Wins")}
               className={cn(
-                "px-[16px] py-[6px] rounded-[6px] font-sans font-medium text-[13px] transition-colors",
+                "px-4 py-1.5 rounded-lg font-sans font-bold text-xs transition-all cursor-pointer",
                 activeTab === "Instant Wins"
-                  ? "bg-[#2d3c13] text-[#e8edd4]"
-                  : "text-[#5a752a] hover:text-[#b3b8aa]"
+                  ? "bg-surface text-text-brand border border-border shadow-xs"
+                  : "text-text-muted hover:text-text-primary"
               )}
             >
               Instant Wins ({instantWins.length})
@@ -118,43 +118,43 @@ export default function WinnerDetailsModal({ isOpen, onClose, raffle }: Props) {
           </div>
 
           {isLoading ? (
-            <div className="text-[#72943A] p-8 text-center text-sm font-sans">Loading winners list...</div>
+            <div className="text-text-muted p-8 text-center text-sm font-sans animate-pulse">Loading winners list...</div>
           ) : (
             <div className="flex-1">
               {activeTab === "Main Draw" && (
                 <div className="flex flex-col gap-4">
                   {mainDrawWinner ? (
-                    <div className="bg-[#1A230A] border border-[#2D3C13] rounded-[12px] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="bg-elevated border border-border-medium rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-[#8cb34a]/20 border border-[#8cb34a]/40 flex items-center justify-center text-[24px] shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-accent-bg border border-primary/30 flex items-center justify-center text-2xl shrink-0 shadow-xs">
                           🏆
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-heading font-semibold text-[18px] text-[#E8EDD4]">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
                             {mainDrawWinner.user?.firstName
                               ? `${mainDrawWinner.user.firstName} ${mainDrawWinner.user.lastName || ''}`.trim()
                               : "Winner"}
                           </span>
-                          <span className="font-sans text-[13px] text-[#8CB34A] font-semibold mt-0.5">
+                          <span className="font-sans text-xs text-text-brand font-bold">
                             Winning Ticket #{mainDrawWinner.ticket?.ticketNumber}
                           </span>
-                          <span className="font-sans text-[12px] text-[#72943a] mt-1 font-mono">
+                          <span className="font-sans text-xs text-text-muted font-mono mt-0.5">
                             Email: {mainDrawWinner.user?.email}
                           </span>
-                          <span className="font-sans text-[12px] text-[#72943a]">
+                          <span className="font-sans text-xs text-text-muted font-medium">
                             Prize: {mainDrawWinner.prizeName || raffle.title}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0 border-t sm:border-t-0 border-[#2D3C13] pt-3 sm:pt-0 w-full sm:w-auto">
-                        <span className="font-sans text-[10px] text-[#5A752A] uppercase">Delivery Status</span>
+                      <div className="flex flex-col items-start sm:items-end gap-1 shrink-0 border-t sm:border-t-0 border-divider pt-3 sm:pt-0 w-full sm:w-auto">
+                        <span className="font-sans font-bold text-[10px] text-text-muted uppercase tracking-wider">Delivery Status</span>
                         {renderDeliveryBadge(mainDrawWinner)}
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-[#161810] border border-[#2D3C13] rounded-[12px] p-8 text-center text-[#72943A] text-sm">
-                      No main draw winner has been selected yet by Admin.
+                    <div className="bg-elevated border border-dashed border-border-medium rounded-xl p-8 text-center text-text-muted text-sm font-sans">
+                      No main draw winner has been drawn yet.
                     </div>
                   )}
                 </div>
@@ -163,38 +163,38 @@ export default function WinnerDetailsModal({ isOpen, onClose, raffle }: Props) {
               {activeTab === "Instant Wins" && (
                 <div className="flex flex-col gap-3">
                   {instantWins.length === 0 ? (
-                    <div className="bg-[#161810] border border-[#2D3C13] rounded-[12px] p-8 text-center text-[#72943A] text-sm">
+                    <div className="bg-elevated border border-dashed border-border-medium rounded-xl p-8 text-center text-text-muted text-sm font-sans">
                       No instant win prizes were created for this competition.
                     </div>
                   ) : (
                     instantWins.map((iw: any) => (
-                      <div key={iw.id} className="bg-[#161810] border border-[#2D3C13] rounded-[12px] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#1A230A] border border-[#2D3C13] flex items-center justify-center text-[18px] shrink-0">
+                      <div key={iw.id} className="bg-elevated border border-border-medium rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center text-lg shrink-0">
                             🎁
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-sans font-medium text-[14px] text-[#E8EDD4]">
+                            <span className="font-heading font-bold text-sm text-text-primary">
                               {iw.prizeName}
                             </span>
-                            <span className="font-sans text-[12px] font-semibold text-[#8CB34A]">
+                            <span className="font-sans text-xs font-bold text-text-brand">
                               Ticket #{iw.ticketNumber}
                             </span>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between w-full sm:w-auto gap-4 border-t sm:border-t-0 border-[#2D3C13] pt-2 sm:pt-0">
+                        <div className="flex items-center justify-between w-full sm:w-auto gap-4 border-t sm:border-t-0 border-divider pt-2 sm:pt-0">
                           {iw.winner ? (
                             <div className="flex flex-col items-start sm:items-end">
-                              <span className="font-sans font-semibold text-[13px] text-[#E8EDD4]">
+                              <span className="font-heading font-bold text-xs text-text-primary">
                                 {iw.winner.firstName} {iw.winner.lastName}
                               </span>
-                              <span className="font-sans text-[11px] text-[#72943A] font-mono">
+                              <span className="font-sans text-[11px] text-text-muted font-mono">
                                 {iw.winner.email}
                               </span>
                             </div>
                           ) : (
-                            <span className="font-sans text-[11px] text-[#5A752A] uppercase tracking-wide">
+                            <span className="font-sans font-bold text-[10px] text-text-muted uppercase tracking-wider">
                               Unclaimed
                             </span>
                           )}
@@ -211,10 +211,10 @@ export default function WinnerDetailsModal({ isOpen, onClose, raffle }: Props) {
         </div>
         
         {/* Footer */}
-        <div className="p-4 border-t border-[#2D3C13] flex justify-end">
+        <div className="p-4 border-t border-divider flex justify-end bg-surface">
           <button 
             onClick={onClose}
-            className="px-[20px] py-[10px] bg-[#2d3c13] hover:bg-[#3a4d19] transition-colors rounded-[8px] font-heading font-medium text-[14px] text-[#e8edd4]"
+            className="h-[42px] px-6 bg-elevated border border-border hover:bg-surface text-text-primary transition-all rounded-xl font-heading font-bold text-xs uppercase tracking-wider cursor-pointer"
           >
             Close Details
           </button>
