@@ -19,7 +19,7 @@ export default function WinnersFilterBar({
   setSortBy,
 }: WinnersFilterBarProps) {
   return (
-    <div className="bg-bg border-b border-border py-4 select-none">
+    <div className="select-none border-y border-[#0b4d35]/20 bg-[#dcebd8]/94 py-4 shadow-[0_8px_22px_rgba(11,77,53,.1)] backdrop-blur-xl">
       <div className="container-custom flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         
         {/* Timeline Toggles */}
@@ -30,7 +30,7 @@ export default function WinnersFilterBar({
               "px-4 py-2 rounded-full border font-sans text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer",
               activeTab === "all"
                 ? "bg-primary border-primary text-primary-text"
-                : "bg-surface border-border text-text-secondary hover:text-text-primary"
+                : "border-[#bbd3b8] bg-[#eff6ec] text-text-secondary hover:border-[#0b4d35]/45 hover:text-[#0b4d35]"
             )}
           >
             All Time
@@ -41,7 +41,7 @@ export default function WinnersFilterBar({
               "px-4 py-2 rounded-full border font-sans text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer",
               activeTab === "month"
                 ? "bg-primary border-primary text-primary-text"
-                : "bg-surface border-border text-text-secondary hover:text-text-primary"
+                : "border-[#bbd3b8] bg-[#eff6ec] text-text-secondary hover:border-[#0b4d35]/45 hover:text-[#0b4d35]"
             )}
           >
             This Month
@@ -52,7 +52,7 @@ export default function WinnersFilterBar({
               "px-4 py-2 rounded-full border font-sans text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer",
               activeTab === "week"
                 ? "bg-primary border-primary text-primary-text"
-                : "bg-surface border-border text-text-secondary hover:text-text-primary"
+                : "border-[#bbd3b8] bg-[#eff6ec] text-text-secondary hover:border-[#0b4d35]/45 hover:text-[#0b4d35]"
             )}
           >
             This Week
@@ -64,7 +64,7 @@ export default function WinnersFilterBar({
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as "newest" | "oldest")}
-            className="w-full bg-surface border border-border text-text-primary rounded-button px-4 py-2.5 font-sans text-xs font-semibold hover:border-border-medium transition-colors duration-200 cursor-pointer outline-none appearance-none"
+            className="w-full appearance-none rounded-xl border border-[#bbd3b8] bg-[#eff6ec] px-4 py-2.5 font-sans text-xs font-semibold text-text-primary transition-colors duration-200 hover:border-[#0b4d35]/45 cursor-pointer outline-none"
             aria-label="Sort Winner Records"
           >
             <option value="newest">Newest First</option>

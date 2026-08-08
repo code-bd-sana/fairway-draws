@@ -14,7 +14,7 @@ export default function CookiePolicyPage() {
   return (
     <>
       <WebsiteNavbar />
-      <main className="min-h-screen bg-[#0D0D0B]">
+      <main className="min-h-screen bg-[#cfdfcb]">
         <CookieContent />
       </main>
       <WebsiteFooter />

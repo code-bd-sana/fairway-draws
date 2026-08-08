@@ -56,7 +56,7 @@ export default function HeroSection() {
 
             {/* Description Subtitle */}
             <p className="mb-8 max-w-[20rem] rounded-2xl border border-white/55 bg-white/40 p-3.5 font-sans text-sm font-medium leading-relaxed text-[#1e342b] shadow-xs backdrop-blur-xs sm:max-w-xl sm:text-base">
-              Enter charity golf draws from just <strong className="text-[#073826] font-bold">£1 per ticket</strong>. Fair, transparent &amp; fully verified. Over <strong className="text-[#b91c1c] font-bold">£180k+</strong> in luxury prizes already won by our community.
+              Discover charity golf competitions with premium prizes. Every draw is <strong className="font-bold text-[#073826]">fair, transparent, and fully verified</strong>—created for a community that loves the game.
             </p>
 
             {/* Action Buttons */}
@@ -92,45 +92,46 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Bottom Dark Green Curved Stats Section */}
-      <div className="relative z-10 mt-6 bg-gradient-to-r from-[#073826] via-[#0b4d35] to-[#073826] rounded-t-[32px] sm:rounded-t-[44px] border-t-2 border-[#16A34A]/30 pt-8 pb-10 shadow-[0_-10px_35px_rgba(0,0,0,0.25)]">
-        <div className="container-custom">
-          <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-4xl mx-auto">
+      {/* The course continues through this translucent grass statistics band. */}
+      <div className="relative z-10 mt-6 overflow-hidden border-t border-[#58b866]/45 bg-[url('/hero-banner.jpg')] bg-[length:200%_auto] bg-left-bottom bg-no-repeat shadow-[0_-10px_35px_rgba(0,0,0,0.25)]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#032417]/92 via-[#07502f]/88 to-[#032417]/92" />
+        <div className="container-custom relative pt-7 pb-8 sm:pt-9 sm:pb-10">
+          <div className="mx-auto grid max-w-5xl grid-cols-3 divide-x divide-white/30">
             {/* Stat Card 1 */}
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.03]">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#dc2626] flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-2 border border-white/20">
+            <div className="flex flex-col items-center justify-center px-2 text-center transition-transform hover:scale-[1.03] sm:px-5">
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-[#c91818]/90 text-lg text-white shadow-[0_5px_14px_rgba(60,0,0,.38)] sm:h-12 sm:w-12 sm:text-xl">
                 🏆
               </div>
-              <span className="font-heading font-black text-lg sm:text-2xl lg:text-3xl text-white tracking-tight">
+              <span className="font-heading text-lg font-black tracking-tight text-white sm:text-2xl lg:text-3xl">
                 2,400+
               </span>
-              <span className="font-sans text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/80 mt-1">
+              <span className="mt-1 font-sans text-[8px] font-bold tracking-wide text-white/85 uppercase sm:text-[11px] sm:tracking-wider">
                 DRAWS COMPLETED
               </span>
             </div>
 
             {/* Stat Card 2 */}
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.03]">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#dc2626] flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-2 border border-white/20">
-                🎫
+            <div className="flex flex-col items-center justify-center px-2 text-center transition-transform hover:scale-[1.03] sm:px-5">
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-[#c91818]/90 text-lg text-white shadow-[0_5px_14px_rgba(60,0,0,.38)] sm:h-12 sm:w-12 sm:text-xl">
+                ⛳
               </div>
-              <span className="font-heading font-black text-lg sm:text-2xl lg:text-3xl text-white tracking-tight">
-                £1
+              <span className="font-heading text-lg font-black tracking-tight text-white sm:text-2xl lg:text-3xl">
+                PREMIUM
               </span>
-              <span className="font-sans text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/80 mt-1">
-                MINIMUM ENTRY
+              <span className="mt-1 font-sans text-[8px] font-bold tracking-wide text-white/85 uppercase sm:text-[11px] sm:tracking-wider">
+                GOLF PRIZES
               </span>
             </div>
 
             {/* Stat Card 3 */}
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.03]">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#dc2626] flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-2 border border-white/20">
+            <div className="flex flex-col items-center justify-center px-2 text-center transition-transform hover:scale-[1.03] sm:px-5">
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-[#c91818]/90 text-lg text-white shadow-[0_5px_14px_rgba(60,0,0,.38)] sm:h-12 sm:w-12 sm:text-xl">
                 🛡️
               </div>
-              <span className="font-heading font-black text-lg sm:text-2xl lg:text-3xl text-white tracking-tight">
+              <span className="font-heading text-lg font-black tracking-tight text-white sm:text-2xl lg:text-3xl">
                 VERIFIED
               </span>
-              <span className="font-sans text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/80 mt-1">
+              <span className="mt-1 font-sans text-[8px] font-bold tracking-wide text-white/85 uppercase sm:text-[11px] sm:tracking-wider">
                 FAIR DRAWS
               </span>
             </div>

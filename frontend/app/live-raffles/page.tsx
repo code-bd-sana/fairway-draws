@@ -8,7 +8,7 @@ import LiveRaffleGrid from "../../components/website/live-raffles/LiveRaffleGrid
 export const metadata: Metadata = {
   title: "Live Competitions | Fairway Draws",
   description:
-    "Browse and enter active premium golf draws, AEGs, GBBs, sidearms, tactical gear, and cash prize draws. Tickets from £1.",
+    "Browse and enter active premium golf competitions. Tickets from £1, transparent draws, and prizes worth winning.",
 };
 
 /**

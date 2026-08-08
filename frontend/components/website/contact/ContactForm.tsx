@@ -124,7 +124,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="w-full bg-elevated border border-border rounded-[16px] p-6 md:p-8 relative">
+    <div className="relative w-full rounded-[20px] border border-[#bdd3ba] bg-[#edf5e9] p-6 shadow-[0_12px_28px_rgba(11,77,53,.12)] md:p-8">
       <h2 className="font-heading font-bold text-lg md:text-xl text-text-primary mb-6">
         Send Us a Message
       </h2>
@@ -207,7 +207,7 @@ export default function ContactForm() {
               onChange={handleInputChange}
               disabled={isSubmitting}
               className={cn(
-                "w-full bg-bg border border-border rounded-button px-4 py-2.5 font-sans text-xs md:text-sm text-text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all duration-200 cursor-pointer appearance-none",
+                "w-full appearance-none rounded-xl border border-[#bdd3ba] bg-[#f8fbf6] px-4 py-2.5 font-sans text-xs text-text-primary outline-none transition-all duration-200 focus:border-primary focus:ring-1 focus:ring-primary/20 cursor-pointer md:text-sm",
                 errors.subject && "border-red-500/80 focus:border-red-500 focus:ring-1 focus:ring-red-500/30",
                 isSubmitting && "opacity-50 cursor-not-allowed"
               )}

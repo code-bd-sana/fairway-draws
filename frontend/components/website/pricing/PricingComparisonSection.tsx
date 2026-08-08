@@ -41,8 +41,8 @@ export default function PricingComparisonSection() {
   };
 
   return (
-    <section className="w-full bg-elevated py-20 border-b border-divider">
-      <div className="container-custom">
+    <section className="relative w-full border-b border-[#bcd5b8] bg-[#cfdfcb] py-20 before:absolute before:inset-0 before:bg-[radial-gradient(#0b4d3520_1px,transparent_1px)] before:bg-[size:28px_28px]">
+      <div className="container-custom relative">
         {/* Header Title */}
         <div className="text-center mb-12">
           <h2 className="font-heading font-bold text-2xl md:text-4xl text-text-primary tracking-tight">
@@ -51,19 +51,19 @@ export default function PricingComparisonSection() {
         </div>
 
         {/* Scrollable Comparison Table Frame */}
-        <div className="w-full max-w-4xl mx-auto overflow-x-auto rounded-[14px] border border-border shadow-card">
+        <div className="mx-auto w-full max-w-4xl overflow-x-auto rounded-[18px] border border-[#bdd3ba] bg-[#edf5e9] shadow-[0_12px_28px_rgba(11,77,53,.12)]">
           <table className="w-full min-w-[600px] border-collapse text-left">
             
             {/* Table Header */}
             <thead>
-              <tr className="bg-surface border-b border-border h-[58px]">
-                <th className="font-heading font-bold text-xs md:text-sm text-text-secondary px-6 uppercase tracking-wider w-1/2">
+              <tr className="h-[58px] border-b border-[#bdd3ba] bg-[#0b4d35]">
+                <th className="w-1/2 px-6 font-heading text-xs font-bold tracking-wider text-white uppercase md:text-sm">
                   Feature
                 </th>
-                <th className="font-heading font-bold text-xs md:text-sm text-text-primary text-center px-6 uppercase tracking-wider w-1/4">
+                <th className="w-1/4 px-6 text-center font-heading text-xs font-bold tracking-wider text-white uppercase md:text-sm">
                   Premium
                 </th>
-                <th className="font-heading font-bold text-xs md:text-sm text-text-primary text-center px-6 uppercase tracking-wider w-1/4">
+                <th className="w-1/4 px-6 text-center font-heading text-xs font-bold tracking-wider text-white uppercase md:text-sm">
                   Pro
                 </th>
               </tr>
@@ -74,7 +74,7 @@ export default function PricingComparisonSection() {
               {COMPARISON_ROWS.map((row, index) => (
                 <tr
                   key={row.featureName}
-                  className={index % 2 === 0 ? "bg-bg" : "bg-surface"}
+                  className={index % 2 === 0 ? "bg-[#edf5e9]" : "bg-[#e3efdf]"}
                 >
                   {/* Feature Label Name */}
                   <td className="font-sans font-medium text-xs md:text-sm text-text-muted px-6 py-4.5">

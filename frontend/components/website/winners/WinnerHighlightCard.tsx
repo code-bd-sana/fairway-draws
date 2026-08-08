@@ -17,7 +17,7 @@ export default function WinnerHighlightCard() {
   );
 
   return (
-    <section className="bg-accent-bg border-t border-b border-border py-16 md:py-20 select-none">
+    <section className="select-none border-y border-[#bcd5b8] bg-[#dcebd8] py-16 md:py-20">
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-12 items-center max-w-6xl mx-auto">
           
@@ -44,7 +44,7 @@ export default function WinnerHighlightCard() {
             <div className="shrink-0">{quoteIcon}</div>
             
             <p className="font-heading font-medium text-lg sm:text-xl md:text-2xl text-text-primary leading-relaxed">
-              &quot;I honestly didn&apos;t think I&apos;d win — but I did! The whole process was so smooth. Fairway Draws is the real deal. My VFC HK416 arrived perfectly packaged within 5 days of winning.&quot;
+              &quot;I honestly didn&apos;t think I&apos;d win — but I did! The whole process was so smooth. Fairway Draws is the real deal. My new driver arrived perfectly packaged within five days of winning.&quot;
             </p>
 
             <div className="flex flex-col gap-1">
@@ -52,7 +52,7 @@ export default function WinnerHighlightCard() {
                 Aisha R. · Leeds
               </span>
               <span className="font-sans text-xs sm:text-sm text-text-secondary">
-                Won: VFC HK416 Bundle — June 2026
+                Won: Premium Driver Bundle — June 2026
               </span>
             </div>
           </div>

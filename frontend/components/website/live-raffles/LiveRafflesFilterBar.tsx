@@ -63,7 +63,7 @@ export default function LiveRafflesFilterBar({
   }, []);
 
   return (
-    <div className="bg-[#0d0d0b] border-b border-[#2d3c13] py-4 sticky top-[60px] md:top-[68px] z-30">
+    <div className="sticky top-[60px] z-30 border-y border-[#0b4d35]/20 bg-[#dcebd8]/94 py-4 shadow-[0_8px_22px_rgba(11,77,53,.12)] backdrop-blur-xl md:top-[68px]">
       <div className="container-custom flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         
         {/* Category Pills (Horizontal scrolling list on small screens) */}
@@ -75,8 +75,8 @@ export default function LiveRafflesFilterBar({
               className={cn(
                 "font-sans font-medium text-xs px-4 py-2 rounded-badge border shrink-0 transition-all duration-200 cursor-pointer select-none",
                 activeCategory === cat.value
-                  ? "bg-primary border-primary text-primary-text font-semibold hover:bg-primary-hover shadow-glow"
-                  : "bg-surface border-border text-text-secondary hover:text-text-primary hover:border-border-medium"
+                  ? "border-[#0b4d35] bg-[#0b4d35] font-semibold text-white shadow-[0_5px_12px_rgba(11,77,53,.24)]"
+                  : "border-[#bbd3b8] bg-[#eff6ec] text-[#426256] hover:border-[#0b4d35]/45 hover:text-[#0b4d35]"
               )}
             >
               {cat.label}
@@ -90,7 +90,7 @@ export default function LiveRafflesFilterBar({
           <div className="relative shrink-0 font-sans" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-full sm:w-[170px] bg-surface border border-border px-4 py-2.5 rounded-button text-xs font-semibold text-text-primary hover:border-border-medium flex items-center justify-between gap-2 cursor-pointer transition-all duration-200"
+              className="flex w-full items-center justify-between gap-2 rounded-xl border border-[#bbd3b8] bg-[#eff6ec] px-4 py-2.5 text-xs font-semibold text-[#163a2a] transition-all duration-200 hover:border-[#0b4d35]/45 sm:w-[170px]"
             >
               <span>Sort: {activeSortOption.label}</span>
               <svg
@@ -106,7 +106,7 @@ export default function LiveRafflesFilterBar({
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 left-0 sm:left-auto sm:w-[170px] mt-1.5 bg-[#161810] border border-border rounded-button overflow-hidden shadow-lg z-40 transition-all duration-150 animate-in fade-in slide-in-from-top-1.5">
+              <div className="absolute right-0 left-0 z-40 mt-1.5 overflow-hidden rounded-xl border border-[#d6e3d4] bg-white shadow-xl transition-all duration-150 animate-in fade-in slide-in-from-top-1.5 sm:left-auto sm:w-[170px]">
                 {sortOptions.map((opt) => (
                   <button
                     key={opt.value}
@@ -117,8 +117,8 @@ export default function LiveRafflesFilterBar({
                     className={cn(
                       "w-full text-left px-4 py-2.5 text-xs font-medium transition-colors cursor-pointer select-none",
                       sortBy === opt.value
-                        ? "bg-accent-bg text-text-brand"
-                        : "text-text-muted hover:bg-surface hover:text-text-primary"
+                        ? "bg-[#ecf5ee] text-[#0b4d35]"
+                        : "text-[#5e766c] hover:bg-[#f8faf6] hover:text-[#0b4d35]"
                     )}
                   >
                     {opt.label}
@@ -135,7 +135,7 @@ export default function LiveRafflesFilterBar({
               placeholder="Search draws..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface border border-border pl-9 pr-4 py-2.5 rounded-button text-xs text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-border-medium transition-colors"
+              className="w-full rounded-xl border border-[#bbd3b8] bg-[#eff6ec] py-2.5 pr-4 pl-9 text-xs text-[#163a2a] placeholder:text-[#5e766c]/55 transition-colors focus:border-[#0b4d35] focus:outline-none"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -154,15 +154,15 @@ export default function LiveRafflesFilterBar({
           </div>
 
           {/* Layout Toggle Buttons (Grid / List) */}
-          <div className="flex items-center border border-border rounded-button overflow-hidden divide-x divide-border shrink-0 select-none bg-surface">
+          <div className="flex shrink-0 select-none items-center divide-x divide-[#bbd3b8] overflow-hidden rounded-xl border border-[#bbd3b8] bg-[#eff6ec]">
             {/* Grid Layout Toggle */}
             <button
               onClick={() => setViewMode("grid")}
               className={cn(
                 "p-2.5 cursor-pointer transition-all duration-200 select-none",
                 viewMode === "grid"
-                  ? "bg-accent-bg text-[#a0d056]"
-                  : "text-text-muted hover:text-text-primary"
+                  ? "bg-[#ecf5ee] text-[#0b4d35]"
+                  : "text-[#5e766c] hover:text-[#0b4d35]"
               )}
               title="Grid View"
             >
@@ -188,8 +188,8 @@ export default function LiveRafflesFilterBar({
               className={cn(
                 "p-2.5 cursor-pointer transition-all duration-200 select-none",
                 viewMode === "list"
-                  ? "bg-accent-bg text-[#a0d056]"
-                  : "text-text-muted hover:text-text-primary"
+                  ? "bg-[#ecf5ee] text-[#0b4d35]"
+                  : "text-[#5e766c] hover:text-[#0b4d35]"
               )}
               title="List View"
             >

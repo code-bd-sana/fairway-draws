@@ -14,7 +14,7 @@ export default function PrivacyPage() {
   return (
     <>
       <WebsiteNavbar />
-      <main className="min-h-screen bg-[#0D0D0B]">
+      <main className="min-h-screen bg-[#cfdfcb]">
         <PrivacyContent />
       </main>
       <WebsiteFooter />

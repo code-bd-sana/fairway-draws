@@ -154,7 +154,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
   if (viewMode === "list") {
     return (
-      <div className="flex flex-col sm:flex-row bg-surface border border-border rounded-card overflow-hidden shadow-card transition-all duration-300 hover:border-border-medium hover:shadow-glow w-full">
+      <div className="group flex w-full flex-col overflow-hidden rounded-[20px] border border-[#c5d9c1] bg-[#f0f6ed] shadow-[0_10px_28px_rgba(11,77,53,.1)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0b4d35]/35 hover:shadow-[0_18px_34px_rgba(11,77,53,.16)] sm:flex-row">
         {/* Left Side: Image Block */}
         <div className="relative w-full sm:w-[240px] md:w-[280px] h-[180px] sm:h-auto bg-bg shrink-0">
           <Image
@@ -162,7 +162,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
             alt={title}
             fill
             sizes="(max-width: 640px) 100vw, 280px"
-            className="object-cover opacity-75 text-transparent"
+            className="object-cover text-transparent transition-transform duration-500 group-hover:scale-[1.03]"
             unoptimized
             onError={() => setImgError(true)}
           />
@@ -170,20 +170,20 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
           {/* Badges on Top of Image */}
           <div className="absolute inset-x-3 top-3 flex items-start justify-between pointer-events-none">
             {(hostName || hostLocation) ? (
-              <div className="bg-[#1a230a]/90 backdrop-blur-sm border border-[#2d3c13] px-2.5 py-1 rounded-badge text-[10px] font-semibold text-[#a0d056] shadow-md truncate max-w-[160px]">
+              <div className="max-w-[160px] truncate rounded-full border border-white/65 bg-[#073826]/88 px-2.5 py-1 text-[10px] font-semibold text-white shadow-md backdrop-blur-sm">
                 {hostLocation ? `📍 ${hostLocation}` : `By ${hostName}`}
               </div>
             ) : <div />}
 
-            <div className="bg-[#1a230a] border border-[#2d3c13] px-2.5 py-1 rounded-badge text-[10px] font-semibold text-[#72943a]">
+            <div className="rounded-full border border-white/65 bg-white/90 px-2.5 py-1 text-[10px] font-semibold text-[#0b4d35] shadow-sm backdrop-blur-sm">
               {categoryLabel}
             </div>
           </div>
           
           <div className="absolute inset-x-3 bottom-3 flex items-end justify-center pointer-events-none">
-            <div className="bg-[#1a230a]/90 backdrop-blur-sm border border-[#43581e] px-3 py-1.5 rounded-[8px] flex items-center gap-1.5 shadow-md">
+            <div className="flex items-center gap-1.5 rounded-lg border border-white/40 bg-[#073826]/88 px-3 py-1.5 shadow-md backdrop-blur-sm">
               {clockIcon}
-              <span className="text-[11px] font-bold text-[#e8edd4] tracking-wide">{timeLeft}</span>
+              <span className="text-[11px] font-bold tracking-wide text-white">{timeLeft}</span>
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
                   </p>
                 )}
               </div>
-              <div className="bg-[#1a230a] border border-[#2d3c13] px-3.5 py-1.5 rounded-badge text-xs font-bold text-[#a0d056] shrink-0">
+              <div className="shrink-0 rounded-full border border-[#0b4d35]/15 bg-[#ecf5ee] px-3.5 py-1.5 text-xs font-black text-[#0b4d35]">
                 {formatCurrency(ticketPrice)}
               </div>
             </div>
@@ -233,7 +233,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
                 </span>
                 <span className="text-[#a0d056] font-semibold">{soldPercent}%</span>
               </div>
-              <div className="w-full h-1.5 bg-[#1a230a] rounded-badge overflow-hidden">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#e6eee3]">
                 <div
                   className="h-full bg-primary rounded-badge transition-all duration-500 ease-out"
                   style={{ width: `${soldPercent}%` }}
@@ -242,7 +242,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
             </div>
 
             {/* Countdown block */}
-            <div className="flex items-center gap-2 bg-[#111210] border border-[#1a230a] px-3.5 py-2 rounded-button w-full">
+            <div className="flex w-full items-center gap-2 rounded-lg border border-[#dce8da] bg-[#f8faf6] px-3.5 py-2">
               {clockIcon}
               <div className="flex gap-1 text-[11px]">
                 <span className="text-text-muted">Closes on</span>
@@ -255,7 +255,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
           <div className="pt-2">
             <Link
               href={`/live-raffles/${slug || id}`}
-              className="block w-full border border-[#5a752a] text-[#b3b8aa] hover:bg-primary/10 hover:text-[#a0d056] hover:border-[#a0d056] text-center py-2.5 rounded-[10px] font-heading text-xs font-semibold uppercase tracking-wider transition-all duration-200 select-none"
+              className="btn-glossy-red block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider text-white uppercase transition-all duration-200 hover:scale-[1.01]"
             >
               Enter Draw →
             </Link>
@@ -267,7 +267,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
   // Default Grid Layout Card
   return (
-    <div className="flex flex-col bg-[#161810] border border-border rounded-card overflow-hidden shadow-card transition-all duration-300 hover:border-border-medium hover:shadow-glow w-full">
+    <div className="group flex w-full flex-col overflow-hidden rounded-[20px] border border-[#c5d9c1] bg-[#f0f6ed] shadow-[0_10px_28px_rgba(11,77,53,.1)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0b4d35]/35 hover:shadow-[0_18px_34px_rgba(11,77,53,.16)]">
       {/* Card Image Block */}
       <div className="relative w-full h-[180px] bg-bg shrink-0">
         <Image
@@ -275,7 +275,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
           alt={title}
           fill
           sizes="(max-width: 768px) 100vw, 380px"
-          className="object-cover opacity-75 text-transparent"
+          className="object-cover text-transparent transition-transform duration-500 group-hover:scale-[1.04]"
           unoptimized
           onError={() => setImgError(true)}
         />
@@ -283,20 +283,20 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
         {/* Floating Badges */}
         <div className="absolute inset-x-3 top-3 flex items-start justify-between pointer-events-none">
           {(hostName || hostLocation) ? (
-            <div className="bg-[#1a230a]/90 backdrop-blur-sm border border-[#2d3c13] px-2.5 py-1 rounded-badge text-[10px] font-semibold text-[#a0d056] shadow-md truncate max-w-[160px]">
+            <div className="max-w-[160px] truncate rounded-full border border-white/65 bg-[#073826]/88 px-2.5 py-1 text-[10px] font-semibold text-white shadow-md backdrop-blur-sm">
               {hostLocation ? `📍 ${hostLocation}` : `By ${hostName}`}
             </div>
           ) : <div />}
 
-          <div className="bg-[#1a230a] border border-[#2d3c13] px-2.5 py-1 rounded-badge text-[10px] font-semibold text-[#72943a]">
+          <div className="rounded-full border border-white/65 bg-white/90 px-2.5 py-1 text-[10px] font-semibold text-[#0b4d35] shadow-sm backdrop-blur-sm">
             {categoryLabel}
           </div>
         </div>
 
         <div className="absolute inset-x-3 bottom-3 flex items-end justify-center pointer-events-none">
-          <div className="bg-[#1a230a]/90 backdrop-blur-sm border border-[#43581e] px-3 py-1.5 rounded-[8px] flex items-center gap-1.5 shadow-md">
+          <div className="flex items-center gap-1.5 rounded-lg border border-white/40 bg-[#073826]/88 px-3 py-1.5 shadow-md backdrop-blur-sm">
             {clockIcon}
-            <span className="text-[11px] font-bold text-[#e8edd4] tracking-wide">{timeLeft}</span>
+            <span className="text-[11px] font-bold tracking-wide text-white">{timeLeft}</span>
           </div>
         </div>
       </div>
@@ -309,7 +309,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
             <h3 className="font-heading font-medium text-lg text-text-primary line-clamp-1">
               {title}
             </h3>
-            <div className="bg-[#1a230a] border border-[#2d3c13] px-2 py-0.5 rounded-badge text-[11px] font-bold text-[#a0d056] shrink-0 mt-0.5">
+            <div className="mt-0.5 shrink-0 rounded-full border border-[#0b4d35]/15 bg-[#ecf5ee] px-2.5 py-1 text-[11px] font-black text-[#0b4d35]">
               {formatCurrency(ticketPrice)}
             </div>
           </div>
@@ -330,7 +330,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
           {/* Worth Subheading */}
           {worthPrice > 0 && (
-            <p className="font-sans text-[11px] text-[#5a752a] font-normal mb-3">
+            <p className="mb-3 font-sans text-[11px] font-semibold text-[#5e766c]">
               Worth {formatCurrency(worthPrice, 0)}
             </p>
           )}
@@ -344,7 +344,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
               </span>
               <span className="text-[#8cb34a] font-medium">{soldPercent}%</span>
             </div>
-            <div className="w-full h-1.5 bg-[#1a230a] rounded-badge overflow-hidden">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#e6eee3]">
               <div
                 className="h-full bg-primary rounded-badge transition-all duration-500 ease-out"
                 style={{ width: `${soldPercent}%` }}
@@ -353,7 +353,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
           </div>
 
           {/* Closes in Countdown Block */}
-          <div className="flex items-center gap-1.5 bg-[#111210] border border-[#1a230a] px-3 py-2 rounded-[10px] mb-4 text-xs">
+          <div className="mb-4 flex items-center gap-1.5 rounded-lg border border-[#dce8da] bg-[#f8faf6] px-3 py-2 text-xs">
             {clockIcon}
             <span className="text-[#5a752a]">Closes in</span>
             <span className="font-semibold text-text-primary">{formattedEndDate}</span>
@@ -363,7 +363,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
         {/* Enter Draw CTA Button */}
         <Link
           href={`/live-raffles/${slug || id}`}
-          className="block w-full border border-[#5a752a] text-[#b3b8aa] hover:bg-primary/10 hover:text-[#a0d056] hover:border-[#a0d056] text-center py-2.5 rounded-[10px] font-heading text-xs font-semibold transition-all duration-200 select-none"
+            className="btn-glossy-red block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider text-white uppercase transition-all duration-200 hover:scale-[1.01]"
         >
           Enter Draw →
         </Link>

@@ -49,7 +49,7 @@ export default async function HostProfilePage({ params }: PageProps) {
     return (
       <>
         <WebsiteNavbar />
-        <main className="min-h-screen bg-background flex items-center justify-center pt-[80px]">
+        <main className="flex min-h-screen items-center justify-center bg-[#cfdfcb] pt-[80px]">
           <div className="text-center">
             <h1 className="text-2xl text-[#E8EDD4] mb-4">Host Not Found</h1>
             <p className="text-[#72943A]">This host does not exist or has been removed.</p>
@@ -67,7 +67,7 @@ export default async function HostProfilePage({ params }: PageProps) {
     <>
       <WebsiteNavbar />
       
-      <main className="min-h-screen bg-background pt-[80px] md:pt-[90px]">
+      <main className="min-h-screen bg-[#cfdfcb] pt-[80px] md:pt-[90px]">
         <section className="py-12 md:py-16">
           <div className="container-custom">
             

@@ -57,11 +57,11 @@ export default function ContactInfoCards() {
       {CONTACT_INFO_ITEMS.map((item) => (
         <div
           key={item.id}
-          className="bg-elevated border border-border rounded-[14px] p-5 flex items-center justify-between gap-4 transition-all duration-200 hover:border-border-medium group"
+          className="group flex items-center justify-between gap-4 rounded-[16px] border border-[#bdd3ba] bg-[#edf5e9] p-5 shadow-[0_8px_20px_rgba(11,77,53,.08)] transition-all duration-200 hover:border-[#0b4d35]/45"
         >
           <div className="flex items-center gap-4 min-w-0">
             {/* Rounded Icon Circle */}
-            <div className="w-10 h-10 rounded-full bg-accent-bg border border-border-medium flex items-center justify-center shrink-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#0b4d35]/20 bg-[#dcebd8]">
               {renderIcon(item.type)}
             </div>
             
@@ -130,7 +130,7 @@ export default function ContactInfoCards() {
       </a>
 
       {/* FAQ Promo Card */}
-      <div className="bg-[#1a230a] border border-[#2d3c13] rounded-[14px] p-5.5 flex flex-col items-start hover:shadow-glow transition-all duration-300">
+      <div className="flex flex-col items-start rounded-[16px] border border-[#bdd3ba] bg-[#e5f0e2] p-5.5 shadow-[0_8px_20px_rgba(11,77,53,.08)] transition-all duration-300">
         <h4 className="font-sans font-medium text-sm text-text-primary mb-2">
           Looking for quick answers?
         </h4>
@@ -147,7 +147,7 @@ export default function ContactInfoCards() {
       </div>
 
       {/* Support Hours Card */}
-      <div className="bg-elevated border border-border rounded-[14px] p-5.5 flex flex-col">
+      <div className="flex flex-col rounded-[16px] border border-[#bdd3ba] bg-[#edf5e9] p-5.5 shadow-[0_8px_20px_rgba(11,77,53,.08)]">
         <h4 className="font-sans font-medium text-sm text-text-primary mb-4">
           Support Hours
         </h4>

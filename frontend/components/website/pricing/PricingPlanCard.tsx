@@ -68,10 +68,10 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
   return (
     <div
       className={cn(
-        "relative flex flex-col bg-surface border rounded-[16px] p-8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-glow w-full",
+        "relative flex w-full flex-col rounded-[20px] border bg-[#edf5e9] p-8 shadow-[0_14px_32px_rgba(0,0,0,.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_42px_rgba(0,0,0,.25)]",
         plan.isFeatured
-          ? "border-primary ring-1 ring-primary/30"
-          : "border-border hover:border-border-medium"
+          ? "border-[#dc2626] ring-1 ring-[#dc2626]/35"
+          : "border-[#bdd3ba] hover:border-[#0b4d35]/45"
       )}
     >
       {/* Featured Ribbon Badge */}

@@ -57,7 +57,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
   ];
 
   return (
-    <div className="bg-surface flex flex-col h-full min-h-[500px] lg:min-h-screen justify-between px-6 py-10 md:px-[80px] md:py-[64px] border-b lg:border-b-0 lg:border-r border-divider">
+    <div className="relative isolate flex h-full min-h-[500px] flex-col justify-between overflow-hidden border-b border-[#bdd3ba] bg-[#e5f0e2] bg-[url('/hero-banner.jpg')] bg-cover bg-center px-6 py-10 before:absolute before:inset-0 before:z-0 before:bg-gradient-to-b before:from-[#f4faf1]/94 before:via-[#e5f0e2]/88 before:to-[#c9dec4]/92 [&>*]:relative [&>*]:z-10 md:px-[80px] md:py-[64px] lg:min-h-screen lg:border-r lg:border-b-0">
       {/* Top Branding Logo */}
       <div>
         <FairwayDrawsLogo variant="light" size="lg" priority />

@@ -97,8 +97,8 @@ export default function LiveRaffleGrid() {
   };
 
   return (
-    <section className="py-12 bg-bg flex-grow">
-      <div className="container-custom">
+    <section className="relative flex-grow bg-[#cfdfcb] py-12 before:absolute before:inset-0 before:bg-[radial-gradient(#0b4d3520_1px,transparent_1px)] before:bg-[size:28px_28px]">
+      <div className="container-custom relative">
         {/* Filter controls bar */}
         <LiveRafflesFilterBar
           activeCategory={activeCategory}
@@ -112,14 +112,14 @@ export default function LiveRaffleGrid() {
         />
 
         {/* Content Area */}
-        <div className="mt-8 min-h-[400px]">
+        <div className="mt-10 min-h-[400px]">
           {isLoading ? (
             <div className="flex justify-center items-center h-[400px] text-primary">Loading live competitions...</div>
           ) : filteredRaffles.length > 0 ? (
             <div
               className={
                 viewMode === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  ? "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                   : "flex flex-col gap-6"
               }
             >

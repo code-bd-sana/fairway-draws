@@ -1,9 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuthUser } from '../../../hooks/useAuthHooks';
 import { NAV_LINKS } from '../../../lib/constants';
 import { cn } from '../../../lib/utils';
@@ -15,22 +14,8 @@ import PrimaryButton from '../shared/PrimaryButton';
  */
 export default function WebsiteNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const { data: user } = useAuthUser();
-
-  // Monitor scrolling to add backdrop background
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -39,12 +24,7 @@ export default function WebsiteNavbar() {
   return (
     <>
       <header
-        className={cn(
-          'fixed top-0 left-0 w-full z-45 transition-all duration-300 border-b',
-          scrolled
-            ? 'bg-bg/90 backdrop-blur-md border-divider/80 py-3'
-            : 'bg-transparent border-transparent py-5',
-        )}
+        className='fixed top-0 left-0 z-45 w-full border-b border-white/50 bg-[#f8faf6]/72 py-3 backdrop-blur-md transition-all duration-300'
       >
         <div className='container-custom flex items-center justify-between'>
           {/* Branding Logo */}

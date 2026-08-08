@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "../../../lib/utils";
 
 const SECTIONS = [
@@ -44,22 +45,24 @@ export default function CookieContent() {
   };
 
   return (
-    <div className="w-full bg-[#0D0D0B] text-[#E8EDD4] pt-24 pb-20">
+    <div className="cookie-policy w-full overflow-hidden bg-[#cfdfcb] pt-20 pb-20">
       
       {/* Top Banner */}
-      <div className="border-b border-[#2D3C13] bg-[#111210]/60 backdrop-blur-md py-12 mb-12">
-        <div className="container-custom max-w-6xl mx-auto px-4">
-          <div className="flex flex-col gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1A230A] border border-[#43581E] text-[#8CB34A] text-xs font-semibold w-fit">
+      <div className="relative isolate overflow-hidden border-b border-[#0b4d35]/30 py-16 sm:py-20 mb-12">
+        <Image src="/hero-banner.jpg" alt="Golf course" fill priority className="z-0 object-cover object-center" />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#032b1d]/95 via-[#075236]/85 to-[#073826]/50" />
+        <div className="container-custom relative z-10 max-w-6xl mx-auto px-4">
+          <div className="flex max-w-2xl flex-col gap-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-[#0b4d35]/70 px-4 py-2 text-xs font-semibold tracking-[0.12em] text-white w-fit">
               <span>🍪 Cookie Transparency</span>
             </div>
-            <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-[#E8EDD4] tracking-tight">
+            <h1 className="font-heading font-extrabold text-4xl sm:text-6xl text-white tracking-tight">
               Cookie Policy
             </h1>
-            <p className="font-sans text-sm sm:text-base text-[#72943A] max-w-2xl">
+            <p className="rounded-2xl border border-white/20 bg-white/10 p-4 font-sans text-sm sm:text-base leading-relaxed text-white/90 max-w-2xl backdrop-blur-sm">
               This policy details what cookies are, how Fairway Draws uses them, the categories of cookies deployed, and how to manage your cookie preferences.
             </p>
-            <div className="flex items-center gap-4 text-xs font-sans text-[#5A752A] pt-2">
+            <div className="flex items-center gap-4 text-xs font-sans font-medium text-white/75 pt-1">
               <span>Last Updated: April 2026</span>
               <span>•</span>
               <span>Applies to Domain: fairway-draws.com</span>
