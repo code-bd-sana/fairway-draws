@@ -10,14 +10,17 @@ export const metadata: Metadata = {
 
 export default function AdminOrdersPage() {
   return (
-    <div className="flex flex-col gap-8 p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
-      <div>
-        <h1 className="font-heading font-bold text-2xl text-[#E8EDD4] mb-2">Ticket / Order Overview</h1>
-        <p className="font-sans text-sm text-[#72943A]">
-          Monitor platform-wide ticket sales, review orders, and process refunds if necessary.
+    <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
+      {/* Page Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
+          Ticket Orders & Transactions
+        </h1>
+        <p className="font-sans text-xs text-text-muted">
+          Monitor platform ticket purchasing logs, audit order payment amounts, and process buyer refunds.
         </p>
       </div>
-      
+
       <OrdersStatsCards />
       <AdminOrdersTable />
     </div>
