@@ -63,33 +63,33 @@ export default function SecuritySettings() {
   };
 
   return (
-    <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-8 flex flex-col gap-8 animate-fadeIn">
+    <div className="bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col gap-6 shadow-card animate-fadeIn">
       <div>
-        <h2 className="font-heading font-medium text-[20px] text-[#E8EDD4]">Security</h2>
-        <p className="font-sans text-[13px] text-[#72943A] mt-1">Keep your account secure with a strong password.</p>
+        <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">Security Settings</h2>
+        <p className="font-sans text-xs text-text-muted mt-1">Keep your account secure with a strong, unique password.</p>
       </div>
 
-      <div className="h-px w-full bg-[#2D3C13]/50" />
+      <div className="h-px w-full bg-divider" />
 
       {/* Password Change Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <h3 className="font-heading font-medium text-[16px] text-[#E8EDD4]">Change Password</h3>
+        <h3 className="font-heading font-bold text-base text-text-primary">Change Account Password</h3>
         
         {errors.form && (
-          <div className="bg-[#f76b6b]/10 border border-[#f76b6b]/20 text-[#f76b6b] text-[13px] p-3 rounded-[8px]">
-            {errors.form}
+          <div className="bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] text-xs font-sans font-semibold p-3 rounded-xl">
+            ⚠️ {errors.form}
           </div>
         )}
 
         {successMsg && (
-          <div className="bg-[#8CB34A]/10 border border-[#8CB34A]/20 text-[#8CB34A] text-[13px] p-3 rounded-[8px]">
-            {successMsg}
+          <div className="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xs font-sans font-semibold p-3 rounded-xl">
+            ✅ {successMsg}
           </div>
         )}
         
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">Current Password</label>
+            <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">Current Password</label>
             <input 
               type="password" 
               name="currentPassword"
@@ -97,13 +97,13 @@ export default function SecuritySettings() {
               onChange={handleInputChange}
               placeholder="••••••••" 
               disabled={mutation.isPending}
-              className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
+              className="w-full h-11 bg-elevated border border-border-medium rounded-xl px-4 text-sm text-text-primary focus:border-primary focus:outline-none transition-all"
             />
-            {errors.currentPassword && <span className="text-[#f76b6b] text-[11px]">{errors.currentPassword}</span>}
+            {errors.currentPassword && <span className="text-[#DC2626] text-xs font-semibold">{errors.currentPassword}</span>}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
-              <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">New Password</label>
+              <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">New Password</label>
               <input 
                 type="password" 
                 name="newPassword"
@@ -111,11 +111,11 @@ export default function SecuritySettings() {
                 onChange={handleInputChange}
                 placeholder="••••••••" 
                 disabled={mutation.isPending}
-                className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
+                className="w-full h-11 bg-elevated border border-border-medium rounded-xl px-4 text-sm text-text-primary focus:border-primary focus:outline-none transition-all"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">Confirm Password</label>
+              <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">Confirm New Password</label>
               <input 
                 type="password" 
                 name="confirmPassword"
@@ -123,18 +123,18 @@ export default function SecuritySettings() {
                 onChange={handleInputChange}
                 placeholder="••••••••" 
                 disabled={mutation.isPending}
-                className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
+                className="w-full h-11 bg-elevated border border-border-medium rounded-xl px-4 text-sm text-text-primary focus:border-primary focus:outline-none transition-all"
               />
             </div>
           </div>
-          {errors.newPassword && <span className="text-[#f76b6b] text-[11px]">{errors.newPassword}</span>}
+          {errors.newPassword && <span className="text-[#DC2626] text-xs font-semibold">{errors.newPassword}</span>}
         </div>
         
-        <div className="flex justify-start mt-1">
+        <div className="flex justify-end pt-4 border-t border-divider mt-2">
           <button 
             type="submit" 
             disabled={mutation.isPending}
-            className="h-[36px] px-5 rounded-[8px] bg-transparent border border-[#8CB34A] hover:bg-[#8CB34A]/10 text-[#8CB34A] font-sans font-medium text-[13px] transition-colors disabled:opacity-50"
+            className="btn-glossy-red h-[42px] px-8 rounded-xl bg-[#dc2626] text-white font-heading font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
           >
             {mutation.isPending ? "Updating..." : "Update Password"}
           </button>
