@@ -24,27 +24,27 @@ export default function WithdrawalsStatsCards({ withdrawals = [], isLoading }: W
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 h-28 animate-pulse" />
+          <div key={i} className="bg-surface border border-border rounded-card p-6 h-28 animate-pulse shadow-card" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
       
       {/* Pending Requests */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col justify-between">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
-          Pending Requests
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col justify-between shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+          Pending Payout Requests
         </span>
         <div className="flex flex-col gap-1 mt-2">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">{pendingCount}</span>
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">{pendingCount}</span>
           <div className="flex items-center gap-1.5 mt-2">
-            <div className="px-2 py-0.5 rounded-full border border-[#D97706]/30 bg-[#78350F] flex items-center justify-center">
-              <span className="font-sans font-medium text-[10px] text-[#F59E0B]">
+            <div className="px-2.5 py-0.5 rounded-full border border-[#FDE68A] bg-[#FEF3C7] flex items-center justify-center">
+              <span className="font-sans font-bold text-[10px] text-[#D97706]">
                 {pendingCount > 0 ? `${pendingCount} Needs Action` : "All Processed"}
               </span>
             </div>
@@ -53,41 +53,41 @@ export default function WithdrawalsStatsCards({ withdrawals = [], isLoading }: W
       </div>
 
       {/* Total Pending Amount */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col justify-between">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col justify-between shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
           Total Pending Amount
         </span>
         <div className="flex flex-col gap-1 mt-2">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">
             £{totalPendingAmount.toFixed(2)}
           </span>
-          <span className="font-sans text-[11px] text-[#72943A] mt-1">Gross requested payouts</span>
+          <span className="font-sans text-xs font-semibold text-text-muted mt-1">Gross requested payouts</span>
         </div>
       </div>
 
       {/* Platform Commission Earned (10%) */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col justify-between">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col justify-between shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
           Platform Commission (10%)
         </span>
         <div className="flex flex-col gap-1 mt-2">
-          <span className="font-heading font-bold text-[32px] text-[#8CB34A] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-brand leading-none">
             £{totalCommissionEarned.toFixed(2)}
           </span>
-          <span className="font-sans text-[11px] text-[#72943A] mt-1">Platform revenue from withdrawals</span>
+          <span className="font-sans text-xs font-semibold text-text-muted mt-1">Platform revenue from payouts</span>
         </div>
       </div>
 
       {/* Total Processed Payouts */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col justify-between">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col justify-between shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
           Processed Net Payouts
         </span>
         <div className="flex flex-col gap-1 mt-2">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">
             £{totalProcessedNet.toFixed(2)}
           </span>
-          <span className="font-sans text-[11px] text-[#72943A] mt-1">Total transferred to hosts</span>
+          <span className="font-sans text-xs font-semibold text-text-muted mt-1">Total transferred to hosts</span>
         </div>
       </div>
 

@@ -31,45 +31,45 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
       case "APPROVED":
       case "COMPLETED":
       case "PAID":
-        return "border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80]";
+        return "border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-bold shadow-xs";
       case "PENDING":
       case "PROCESSING":
-        return "border-[#D97706]/30 bg-[#78350F] text-[#F59E0B]";
+        return "border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-bold shadow-xs";
       case "REJECTED":
       case "FAILED":
-        return "border-[#DC2626]/30 bg-[#7f1d1d] text-[#EF4444]";
+        return "border-[#FECACA] bg-[#FEE2E2] text-[#DC2626] font-bold shadow-xs";
       default:
-        return "border-[#2D3C13] bg-[#111210] text-[#72943A]";
+        return "border-border bg-elevated text-text-muted font-bold shadow-xs";
     }
   };
 
   if (isLoading) {
     return (
-      <div className="w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] p-8 text-center text-[#8CB34A] font-sans text-sm animate-pulse">
+      <div className="w-full bg-surface border border-border rounded-card p-12 text-center text-text-muted font-sans text-xs font-bold animate-pulse shadow-card">
         Loading withdrawal requests...
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto mt-2 animate-fadeIn">
-      <table className="w-full min-w-[1100px] text-left border-collapse">
+    <div className="w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card animate-fadeIn">
+      <table className="w-full min-w-[1100px] text-left border-collapse font-sans">
         <thead>
-          <tr className="border-b border-[#2D3C13] bg-[#111210]">
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px]">HOST BUSINESS</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-center">REQUESTED GROSS</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-center">FEE (10%)</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-center">NET PAYOUT</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-center">PAYMENT METHOD</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-center">REQUEST DATE</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-center">STATUS</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-right">ACTIONS</th>
+          <tr className="border-b border-divider bg-elevated">
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider">HOST BUSINESS</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">REQUESTED GROSS</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">FEE (10%)</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">NET PAYOUT</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">PAYMENT METHOD</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">REQUEST DATE</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">STATUS</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-right">ACTIONS</th>
           </tr>
         </thead>
         <tbody>
           {withdrawals.length === 0 ? (
             <tr>
-              <td colSpan={8} className="py-12 text-center text-[#72943A] font-sans text-sm">
+              <td colSpan={8} className="py-12 text-center text-text-muted font-sans text-xs font-bold">
                 No withdrawal requests found.
               </td>
             </tr>
@@ -81,30 +81,30 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
               const dateStr = payout.createdAt ? new Date(payout.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
 
               return (
-                <tr key={payout.id} className={`${i !== withdrawals.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}>
+                <tr key={payout.id} className={`${i !== withdrawals.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}>
                   <td className="py-4 px-6">
                     <div className="flex flex-col">
-                      <span className="font-heading font-medium text-[14px] text-[#E8EDD4]">{payout.hostBusinessName || 'Unknown Host'}</span>
-                      <span className="font-sans text-[11px] text-[#72943A]">{payout.hostUserEmail}</span>
+                      <span className="font-heading font-bold text-xs text-text-primary">{payout.hostBusinessName || 'Unknown Host'}</span>
+                      <span className="font-sans font-semibold text-[11px] text-text-muted">{payout.hostUserEmail}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-center font-heading font-semibold text-[14px] text-[#E8EDD4]">
+                  <td className="py-4 px-6 text-center font-heading font-bold text-xs text-text-primary">
                     £{grossAmount.toFixed(2)}
                   </td>
-                  <td className="py-4 px-6 text-center font-heading font-medium text-[13px] text-[#F76B6B]">
+                  <td className="py-4 px-6 text-center font-heading font-bold text-xs text-[#DC2626]">
                     -£{feeAmount.toFixed(2)}
                   </td>
-                  <td className="py-4 px-6 text-center font-heading font-bold text-[14px] text-[#8CB34A]">
+                  <td className="py-4 px-6 text-center font-heading font-black text-xs text-text-brand">
                     £{netAmount.toFixed(2)}
                   </td>
-                  <td className="py-4 px-6 text-center font-sans text-[13px] text-[#72943A]">
+                  <td className="py-4 px-6 text-center font-sans font-semibold text-xs text-text-muted">
                     {payout.payoutMethod || 'Bank Transfer'}
                   </td>
-                  <td className="py-4 px-6 text-center font-sans text-[12px] text-[#72943A]">
+                  <td className="py-4 px-6 text-center font-sans font-semibold text-xs text-text-muted">
                     {dateStr}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <span className={`px-3 py-1 rounded-full border font-sans font-medium text-[10px] uppercase tracking-wider ${getStatusStyle(payout.status)}`}>
+                    <span className={`px-3 py-1 rounded-full border font-sans text-[10px] uppercase tracking-wider ${getStatusStyle(payout.status)}`}>
                       {payout.status}
                     </span>
                   </td>
@@ -114,13 +114,13 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
                         <>
                           <button 
                             onClick={() => handleAction(payout, "APPROVE")}
-                            className="h-[28px] px-3 rounded-[6px] bg-[#8CB34A]/10 border border-[#8CB34A] text-[#8CB34A] hover:bg-[#8CB34A] hover:text-[#0D0D0B] font-heading font-medium text-[11px] transition-colors"
+                            className="h-7 px-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-heading font-bold text-[11px] uppercase tracking-wider shadow-xs transition-all cursor-pointer active:scale-98"
                           >
                             Approve
                           </button>
                           <button 
                             onClick={() => handleAction(payout, "REJECT")}
-                            className="h-[28px] px-3 rounded-[6px] bg-red-950/20 border border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white font-heading font-medium text-[11px] transition-colors"
+                            className="btn-glossy-red h-7 px-3 rounded-lg text-white font-heading font-bold text-[11px] uppercase tracking-wider shadow-xs transition-all cursor-pointer active:scale-98"
                           >
                             Reject
                           </button>
@@ -129,7 +129,7 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
                       <button 
                         onClick={() => handleAction(payout, "VIEW")}
                         title="View Details"
-                        className="p-1.5 rounded-lg text-[#5A752A] hover:text-[#E8EDD4] hover:bg-[#111210] transition-colors"
+                        className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-elevated transition-colors cursor-pointer"
                       >
                         <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
