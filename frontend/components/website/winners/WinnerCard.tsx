@@ -14,12 +14,12 @@ export default function WinnerCard({ winner }: WinnerCardProps) {
   const displayImage = competitionImage || avatar;
 
   return (
-    <div className="relative bg-[#161810] border border-border rounded-[14px] p-5 hover:border-border-medium hover:shadow-glow transition-all duration-300 w-full min-h-[185px]">
+    <div className="relative min-h-[185px] w-full rounded-[18px] border border-[#bdd3ba] bg-[#f0f6ed] p-5 shadow-[0_10px_25px_rgba(11,77,53,.09)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0b4d35]/40 hover:shadow-[0_18px_32px_rgba(11,77,53,.16)]">
       
       {/* Top Header Block: Initials & User Details */}
       <div className="flex items-center gap-3 pr-24">
         {/* Initials Placeholder Circle */}
-        <div className="w-11 h-11 rounded-full bg-accent-bg border border-border-medium flex items-center justify-center font-sans font-bold text-sm text-text-brand select-none shrink-0">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#0b4d35]/20 bg-[#e0eddd] font-sans text-sm font-bold text-[#0b4d35] select-none">
           {initials}
         </div>
 
@@ -37,7 +37,7 @@ export default function WinnerCard({ winner }: WinnerCardProps) {
       </div>
 
       {/* Horizontal Divider Line */}
-      <div className="h-px bg-divider w-full my-4" />
+      <div className="my-4 h-px w-full bg-[#d6e4d3]" />
 
       {/* Body Section: Prize Name & Draw Date */}
       <div className="flex flex-col justify-between pr-24">
@@ -54,11 +54,11 @@ export default function WinnerCard({ winner }: WinnerCardProps) {
       {/* Bottom Row: Delivered status pill & ticket ref */}
       <div className="flex items-center justify-between mt-4 pr-24 sm:pr-0">
         {/* Verification Status Badge */}
-        <div className="bg-[#0d2010] border border-[#16a34a] rounded-full px-3 py-1 flex items-center gap-1.5 w-fit">
-          <span className="text-[10px] font-semibold text-[#4ade80] leading-none">
+        <div className="flex w-fit items-center gap-1.5 rounded-full border border-[#16a34a]/30 bg-[#dcfce7] px-3 py-1">
+          <span className="text-[10px] font-semibold leading-none text-[#15803d]">
             ✓
           </span>
-          <span className="text-[10px] font-semibold text-[#4ade80] leading-none uppercase tracking-wider">
+          <span className="text-[10px] font-semibold leading-none tracking-wider text-[#15803d] uppercase">
             Delivered
           </span>
         </div>

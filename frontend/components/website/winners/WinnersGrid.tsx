@@ -47,7 +47,7 @@ export default function WinnersGrid() {
   };
 
   return (
-    <section id="winners-listing-grid" className="py-12 md:py-16 bg-bg flex-grow scroll-mt-20">
+    <section id="winners-listing-grid" className="relative flex-grow scroll-mt-20 bg-[#cfdfcb] py-12 before:absolute before:inset-0 before:bg-[radial-gradient(#0b4d3520_1px,transparent_1px)] before:bg-[size:28px_28px] md:py-16">
       
       {/* Dynamic Filters Header bar */}
       <WinnersFilterBar
@@ -57,7 +57,7 @@ export default function WinnersGrid() {
         setSortBy={setSortBy}
       />
 
-      <div className="container-custom mt-8 md:mt-12">
+      <div className="container-custom relative mt-8 md:mt-12">
         {/* Winner Type Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10 max-w-3xl mx-auto">
           {[

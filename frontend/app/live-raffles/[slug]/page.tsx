@@ -152,9 +152,9 @@ export default async function LiveRaffleDetailPage({ params }: PageProps) {
       {/* Sticky top navbar */}
       <WebsiteNavbar />
 
-      <main className="min-h-screen flex flex-col bg-bg pt-20 md:pt-[68px]">
+      <main className="min-h-screen flex flex-col bg-[#cfdfcb] pt-20 md:pt-[68px]">
         {/* Back Link Sub-header */}
-        <div className="bg-[#0d0d0b] border-b border-[#2d3c13] h-14 flex items-center shrink-0">
+        <div className="flex h-14 shrink-0 items-center border-b border-[#0b4d35]/20 bg-[#dcebd8]">
           <div className="container-custom flex items-center">
             {/* <Link
               href="/live-raffles"

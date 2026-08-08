@@ -20,13 +20,13 @@ export default async function FreeEntryPage({ params }: PageProps) {
   return (
     <>
       <WebsiteNavbar />
-      <main className="flex-grow bg-bg pt-28 pb-20">
+      <main className="flex-grow bg-[#cfdfcb] pt-28 pb-20">
         <div className="container-custom max-w-3xl">
           <Link href={`/live-raffles/${slug}`} className="text-xs font-semibold text-text-muted hover:text-text-primary transition-colors flex items-center gap-1 mb-8 w-fit">
             ← Back to Competition
           </Link>
           
-          <div className="bg-[#161810] border border-border rounded-card p-6 md:p-10">
+          <div className="rounded-[20px] border border-[#bdd3ba] bg-[#edf5e9] p-6 shadow-[0_12px_28px_rgba(11,77,53,.12)] md:p-10">
             <h1 className="font-heading font-bold text-3xl text-text-primary mb-6">
               Free Postal Entry
             </h1>

@@ -53,7 +53,7 @@ export default function TermsContent() {
   };
 
   return (
-    <div className="w-full bg-[#0D0D0B] text-[#E8EDD4] pt-24 pb-20">
+    <div className="legal-campaign w-full pt-24 pb-20">
       
       {/* Top Banner */}
       <div className="border-b border-[#2D3C13] bg-[#111210]/60 backdrop-blur-md py-12 mb-12">

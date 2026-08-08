@@ -14,18 +14,18 @@ export default function HowItWorksStepsSection() {
   const steps = activeTab === "entrants" ? entrantSteps : hostSteps;
 
   return (
-    <section className="py-16 md:py-24 bg-bg">
-      <div className="container-custom">
+    <section className="relative bg-[#cfdfcb] py-16 before:absolute before:inset-0 before:bg-[radial-gradient(#0b4d3520_1px,transparent_1px)] before:bg-[size:28px_28px] md:py-24">
+      <div className="container-custom relative">
         {/* Tab Swapper Segment Capsule */}
         <div className="flex justify-center mb-16">
-          <div className="bg-[#161810] border border-border p-1.5 rounded-full flex gap-1.5 items-center select-none shadow-md">
+          <div className="flex items-center gap-1.5 rounded-full border border-[#0b4d35]/20 bg-[#e8f2e5] p-1.5 shadow-[0_8px_18px_rgba(11,77,53,.12)] select-none">
             <button
               onClick={() => setActiveTab("entrants")}
               className={cn(
                 "px-6 py-2.5 rounded-full font-heading text-xs font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer",
                 activeTab === "entrants"
                   ? "bg-primary text-primary-text shadow-md"
-                  : "text-text-secondary hover:text-text-primary"
+                  : "text-[#426256] hover:text-[#0b4d35]"
               )}
             >
               I Want to Enter Draws
@@ -36,7 +36,7 @@ export default function HowItWorksStepsSection() {
                 "px-6 py-2.5 rounded-full font-heading text-xs font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer",
                 activeTab === "hosts"
                   ? "bg-primary text-primary-text shadow-md"
-                  : "text-text-secondary hover:text-text-primary"
+                  : "text-[#426256] hover:text-[#0b4d35]"
               )}
             >
               I Want to Host Draws
@@ -48,7 +48,7 @@ export default function HowItWorksStepsSection() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="relative pl-14 sm:pl-20">
             {/* Connecting Vertical Green Line */}
-            <div className="absolute left-[27px] sm:left-[27px] top-[28px] bottom-[28px] w-px bg-border" />
+            <div className="absolute bottom-[28px] left-[27px] top-[28px] w-px bg-[#0b4d35]/25 sm:left-[27px]" />
 
             {/* List of Timeline Steps */}
             <div className="flex flex-col gap-8 sm:gap-10">
@@ -58,12 +58,12 @@ export default function HowItWorksStepsSection() {
                   className="relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-start group"
                 >
                   {/* Circular Number Indicator */}
-                  <div className="absolute left-[-56px] sm:left-[-80px] z-10 flex-shrink-0 w-14 h-14 rounded-full bg-accent-bg border border-border-medium flex items-center justify-center font-heading text-lg font-medium text-text-brand select-none group-hover:border-primary transition-colors duration-300">
+                  <div className="absolute left-[-56px] z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#0b4d35]/25 bg-[#ecf5ee] font-heading text-lg font-black text-[#0b4d35] shadow-md select-none transition-colors duration-300 group-hover:border-primary sm:left-[-80px]">
                     {String(step.stepNumber).padStart(2, "0")}
                   </div>
 
                   {/* Step Description Card */}
-                  <div className="w-full bg-[#161810] border border-border rounded-card p-6 sm:p-8 hover:border-border-medium transition-all duration-300 shadow-card hover:shadow-glow">
+                  <div className="w-full rounded-[20px] border border-[#bdd3ba] bg-[#f0f6ed] p-6 shadow-[0_10px_25px_rgba(11,77,53,.09)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#0b4d35]/40 hover:shadow-[0_18px_32px_rgba(11,77,53,.16)] sm:p-8">
                     <h3 className="font-heading font-semibold text-lg md:text-xl text-text-primary mb-2">
                       {step.title}
                     </h3>
