@@ -94,14 +94,14 @@ export default function WebsiteNavbar() {
           {/* Hamburger Mobile Menu Toggle */}
           <button
             onClick={toggleMobileMenu}
-            className='xl:hidden flex items-center justify-center p-2 text-text-primary hover:text-text-brand transition-colors duration-200 cursor-pointer'
+            className='xl:hidden flex items-center justify-center p-2.5 rounded-xl btn-glossy-red text-white transition-all duration-200 cursor-pointer active:scale-95'
             aria-label='Toggle Navigation Menu'
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'
               viewBox='0 0 24 24'
-              strokeWidth={2}
+              strokeWidth={2.5}
               stroke='currentColor'
               className='w-6 h-6'
             >
