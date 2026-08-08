@@ -5,7 +5,17 @@ import SubscriptionTable from "../../../../components/dashboard/admin/Subscripti
 
 export default function AdminSubscriptionsManagementPage() {
   return (
-    <div className="flex flex-col gap-6 p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
+    <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
+      {/* Page Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
+          Host Subscriptions & Billing
+        </h1>
+        <p className="font-sans text-xs text-text-muted">
+          Monitor host merchant plan distribution, recurring subscription revenue (MRR), and active billing renewals.
+        </p>
+      </div>
+
       {/* Top Stats Cards */}
       <SubscriptionStatsCards />
 
