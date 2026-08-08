@@ -1,143 +1,140 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { heroData } from '../../../data/homepage/hero.data';
+import React from 'react';
 import Link from 'next/link';
-import DrawCard from '../shared/DrawCard';
-import { raffleService } from '../../../services/raffle.service';
-import type { Draw } from '../../../types/draw.types';
+import Image from 'next/image';
 
 /**
- * Premium hero section for Fairway Draws homepage.
- * Split layout: left = brand headline + stats, right = featured draw card.
+ * Homepage hero: a mobile-first, high-impact golf course composition.
+ * The product image is deliberately allowed to lead the right side of the
+ * frame, while the copy stays readable through layered gradients.
  */
 export default function HeroSection() {
-  const [dynamicFeaturedDraw, setDynamicFeaturedDraw] = useState<Draw | null>(null);
-  const [dynamicStats, setDynamicStats] = useState<{ id: number; value: string; label: string }[] | null>(null);
-
-  useEffect(() => {
-    async function fetchFeaturedRaffle() {
-      try {
-        const res = await raffleService.getPublicRaffles({ limit: 1, sort: 'Most Popular' });
-        if (res.data && res.data.length > 0) {
-          const r = res.data[0];
-          setDynamicFeaturedDraw({
-            id: r.id, title: r.title, description: r.description,
-            image: r.mainImage || '', ticketPrice: Number(r.pricePerTicket),
-            totalTickets: r.totalTickets, soldTickets: r.ticketsSold,
-            endDate: new Date(r.endDate).toLocaleDateString(),
-            status: (r.status === 'ACTIVE' ? 'live' : 'ended') as 'live' | 'ended',
-            category: 'general', slug: r.slug,
-          });
-        }
-      } catch { /* fallback to static */ }
-    }
-    async function fetchStats() {
-      try {
-        const stats = await raffleService.getPublicStats();
-        if (stats && stats.length > 0) setDynamicStats(stats);
-      } catch { /* ignore */ }
-    }
-    fetchFeaturedRaffle();
-    fetchStats();
-  }, []);
-
-  const { badgeText, paragraphText, stats: fallbackStats, featuredDraw } = heroData;
-  const statsToShow = dynamicStats || fallbackStats;
-
   return (
-    <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-[#F8FAF6]">
-      {/* Decorative blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-[25%] -right-[15%] w-[65%] h-[65%] bg-[#0b4d35]/8 rounded-full blur-[180px]" />
-        <div className="absolute -bottom-[15%] -left-[10%] w-[50%] h-[50%] bg-[#dc2626]/5 rounded-full blur-[140px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#0b4d3510_1px,transparent_1px)] bg-[size:28px_28px]" />
+    <section className="relative min-h-[810px] overflow-hidden bg-[#F8FAF6] pt-24 sm:min-h-[770px] md:pt-32 lg:min-h-[690px]">
+      {/* Golden Hour Golf Course Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/hero-banner.jpg"
+          alt="Fairway Draws Golf Background"
+          fill
+          priority
+          className="object-cover object-[58%_center] sm:object-center lg:object-right opacity-95"
+        />
+        {/* Responsive Readability Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F8FAF6]/97 via-[#F8FAF6]/82 to-transparent lg:w-[64%]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAF6]/45 via-transparent to-[#073826]/35" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,.28),transparent_35%)]" />
       </div>
 
-      <div className="container-custom relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 xl:gap-20 items-center">
-
-          {/* LEFT — Brand Copy */}
-          <div className="flex flex-col items-start">
-
+      <div className="container-custom relative z-10 flex min-h-[670px] items-start pt-5 pb-32 sm:min-h-[625px] sm:items-center sm:pb-28 lg:min-h-[600px] lg:pb-20">
+        <div className="grid w-full grid-cols-1 items-center lg:grid-cols-12">
+          {/* LEFT — Main Hero Headline & CTAs */}
+          <div className="flex max-w-[720px] flex-col items-start text-left lg:col-span-8">
             {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0b4d35]/10 border border-[#0b4d35]/20 text-[#0b4d35] text-[11px] font-bold uppercase tracking-widest mb-8">
-              <span className="w-2 h-2 rounded-full bg-[#dc2626] animate-pulse" />
-              {badgeText}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#073826] border border-[#16A34A]/40 text-white text-[11px] font-bold uppercase tracking-widest mb-6 shadow-md">
+              <span className="text-sm">🏆</span>
+              <span>PREMIUM GOLF COMPETITIONS</span>
             </div>
 
-            {/* Wordmark Heading */}
-            <div className="mb-4">
-              <h1 className="font-serif text-[52px] sm:text-[64px] lg:text-[72px] font-black leading-[0.88] tracking-tight text-[#0b4d35] uppercase">
+            {/* Main 3-Tier Headline */}
+            <div className="mb-5">
+              <h1 className="font-heading text-[clamp(3.35rem,14vw,5.3rem)] font-black leading-[0.82] tracking-[-0.075em] text-[#073826] uppercase text-shadow-hero-green sm:tracking-[-0.06em]">
                 WIN PREMIUM
               </h1>
-              <div className="flex items-center gap-4 mt-2 mb-2">
-                <div className="h-[3px] w-10 bg-gradient-to-r from-[#0b4d35] to-transparent rounded-full" />
-                <span className="font-sans text-[28px] sm:text-[36px] font-black tracking-[0.18em] text-[#dc2626] uppercase">
+              <div className="my-2 flex items-center gap-2.5 sm:gap-4">
+                <span className="text-xl font-black text-[#b91c1c] sm:text-3xl">—</span>
+                <span className="font-heading text-[clamp(2.55rem,10.5vw,4rem)] font-black leading-none tracking-[-0.055em] text-[#b91c1c] uppercase text-shadow-hero-red">
                   GOLF GEAR
                 </span>
-                <div className="h-[3px] flex-1 max-w-[80px] bg-gradient-to-r from-[#dc2626]/40 to-transparent rounded-full" />
+                <span className="text-xl font-black text-[#b91c1c] sm:text-3xl">—</span>
               </div>
-              <span className="font-serif text-[52px] sm:text-[64px] lg:text-[72px] font-black leading-[0.88] tracking-tight text-[#0b4d35] uppercase block">
+              <span className="font-heading block text-[clamp(3.35rem,14vw,5.3rem)] font-black leading-[0.82] tracking-[-0.075em] text-[#073826] uppercase text-shadow-hero-green sm:tracking-[-0.06em]">
                 FOR LESS
               </span>
             </div>
 
-            {/* Paragraph */}
-            <p className="font-sans text-base text-[#334e43] leading-relaxed mb-8 max-w-lg mt-4">
-              {paragraphText}
+            {/* Description Subtitle */}
+            <p className="mb-8 max-w-[20rem] rounded-2xl border border-white/55 bg-white/40 p-3.5 font-sans text-sm font-medium leading-relaxed text-[#1e342b] shadow-xs backdrop-blur-xs sm:max-w-xl sm:text-base">
+              Enter charity golf draws from just <strong className="text-[#073826] font-bold">£1 per ticket</strong>. Fair, transparent &amp; fully verified. Over <strong className="text-[#b91c1c] font-bold">£180k+</strong> in luxury prizes already won by our community.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-4 mb-12">
+            {/* Action Buttons */}
+            <div className="flex w-full flex-wrap items-center gap-3.5 sm:w-auto sm:gap-4">
               <Link
                 href="/live-raffles"
-                className="px-8 py-3.5 bg-[#0b4d35] hover:bg-[#073826] active:scale-[0.98] text-white font-sans text-sm font-black tracking-wider uppercase rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="btn-glossy-red px-7 py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
               >
-                View All Competitions →
+                <span>VIEW ALL COMPETITIONS</span>
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
               </Link>
+
               <Link
                 href="/how-it-works"
-                className="px-8 py-3.5 bg-white hover:bg-[#F1F5EE] text-[#0b4d35] font-sans text-sm font-bold tracking-wider uppercase rounded-2xl border border-[#0b4d35]/25 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="btn-glossy-white px-6 py-3.5 rounded-2xl text-[#073826] font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
               >
-                How It Works
+                <span className="w-5 h-5 rounded-full bg-[#073826] text-white flex items-center justify-center text-xs font-serif font-bold italic">
+                  i
+                </span>
+                <span>HOW IT WORKS</span>
               </Link>
             </div>
+          </div>
 
-            {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-[#0b4d35]/15 w-full">
-              {statsToShow.map((stat) => (
-                <div key={stat.id} className="flex flex-col">
-                  <div className="font-serif font-black text-2xl md:text-3xl text-[#0b4d35]">
-                    {stat.value}
-                  </div>
-                  <div className="font-sans text-[10px] text-[#5e766c] font-semibold uppercase tracking-wider mt-1">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+        </div>
+      </div>
+
+      {/* Bottom Dark Green Curved Stats Section */}
+      <div className="relative z-10 mt-6 bg-gradient-to-r from-[#073826] via-[#0b4d35] to-[#073826] rounded-t-[32px] sm:rounded-t-[44px] border-t-2 border-[#16A34A]/30 pt-8 pb-10 shadow-[0_-10px_35px_rgba(0,0,0,0.25)]">
+        <div className="container-custom">
+          <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-4xl mx-auto">
+            {/* Stat Card 1 */}
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.03]">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#dc2626] flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-2 border border-white/20">
+                🏆
+              </div>
+              <span className="font-heading font-black text-lg sm:text-2xl lg:text-3xl text-white tracking-tight">
+                2,400+
+              </span>
+              <span className="font-sans text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/80 mt-1">
+                DRAWS COMPLETED
+              </span>
+            </div>
+
+            {/* Stat Card 2 */}
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.03]">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#dc2626] flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-2 border border-white/20">
+                🎫
+              </div>
+              <span className="font-heading font-black text-lg sm:text-2xl lg:text-3xl text-white tracking-tight">
+                £1
+              </span>
+              <span className="font-sans text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/80 mt-1">
+                MINIMUM ENTRY
+              </span>
+            </div>
+
+            {/* Stat Card 3 */}
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.03]">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#dc2626] flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-2 border border-white/20">
+                🛡️
+              </div>
+              <span className="font-heading font-black text-lg sm:text-2xl lg:text-3xl text-white tracking-tight">
+                VERIFIED
+              </span>
+              <span className="font-sans text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/80 mt-1">
+                FAIR DRAWS
+              </span>
             </div>
           </div>
-
-          {/* RIGHT — Featured Draw Card */}
-          <div className="flex justify-center lg:justify-end w-full min-h-[420px]">
-            {dynamicFeaturedDraw ? (
-              <DrawCard draw={dynamicFeaturedDraw} variant="featured" />
-            ) : (
-              <div className="w-full max-w-[500px] flex flex-col items-center justify-center bg-white border-2 border-dashed border-[#0b4d35]/20 rounded-[24px] text-center p-10 shadow-sm">
-                <div className="text-5xl mb-4">⛳</div>
-                <h3 className="font-serif font-black text-xl text-[#0b4d35] mb-2">New Competitions Dropping Soon</h3>
-                <p className="font-sans text-sm text-[#5e766c]">We&apos;re preparing the next big prize draw. Check back soon!</p>
-                <Link
-                  href="/raffle-coming-soon"
-                  className="mt-6 px-6 py-2.5 bg-[#0b4d35] text-white font-sans text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#073826] transition-colors"
-                >
-                  Join VIP Waitlist
-                </Link>
-              </div>
-            )}
-          </div>
-
         </div>
       </div>
     </section>

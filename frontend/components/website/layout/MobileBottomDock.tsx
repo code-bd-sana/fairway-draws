@@ -31,13 +31,13 @@ export default function MobileBottomDock() {
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/'
-              ? 'text-[#0b4d35] font-bold scale-105'
+              ? 'text-[#b91c1c] font-bold scale-105'
               : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
           <svg
             className='w-5 h-5 mb-0.5'
-            fill='none'
+            fill={pathname === '/' ? 'currentColor' : 'none'}
             viewBox='0 0 24 24'
             stroke='currentColor'
             strokeWidth={2}
@@ -57,7 +57,7 @@ export default function MobileBottomDock() {
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/live-raffles' || pathname.startsWith('/live-raffles')
-              ? 'text-[#0b4d35] font-bold scale-105'
+              ? 'text-[#b91c1c] font-bold scale-105'
               : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
@@ -84,44 +84,24 @@ export default function MobileBottomDock() {
         >
           <div
             className={cn(
-              'w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 transform group-active:scale-95 border shadow-md',
+              'w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 transform group-active:scale-95 border shadow-lg',
               isDashboardRoute
                 ? 'bg-[#ECF5EE] border-[#0b4d35]/30 text-[#0b4d35]'
-                : 'bg-[#0b4d35] border-[#073826] text-white shadow-[0_4px_14px_rgba(11,77,53,0.35)]',
+                : 'btn-glossy-red text-white border-white/20 shadow-[0_6px_20px_rgba(185,28,28,0.45)]',
             )}
           >
-            {isDashboardRoute ? (
-              <svg
-                className='w-6 h-6'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m-17.432-6A8.959 8.959 0 0 0 3 12c0 .778.099 1.533.284 2.253'
-                />
-              </svg>
-            ) : (
-              <svg
-                className='w-6 h-6'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3 1 3m0 0l.5 1.5m-1-1.5h-9.5m0 0l-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605'
-                />
-              </svg>
-            )}
+            <svg
+              className='w-6 h-6'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              strokeWidth={2.2}
+            >
+              <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 5.25v2.25m7.5-2.25v2.25M6 9.75h12M7.5 19.5h9M8.25 15.75h7.5M12 3.75c-1.036 0-1.875.84-1.875 1.875v.75h3.75v-.75C13.875 4.59 13.036 3.75 12 3.75ZM6 9.75h12l-1.125 8.25a1.5 1.5 0 0 1-1.486 1.298H8.611A1.5 1.5 0 0 1 7.125 18L6 9.75Z' />
+            </svg>
           </div>
-          <span className='text-[9px] font-sans font-bold uppercase tracking-wider text-[#0b4d35] mt-0.5'>
-            {isDashboardRoute ? 'Public Site' : 'Dashboard'}
+          <span className='text-[9px] font-sans font-black uppercase tracking-wider text-[#b91c1c] mt-0.5'>
+            {isDashboardRoute ? 'Public Site' : 'DASHBOARD'}
           </span>
         </Link>
 
@@ -131,7 +111,7 @@ export default function MobileBottomDock() {
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/winners'
-              ? 'text-[#0b4d35] font-bold scale-105'
+              ? 'text-[#b91c1c] font-bold scale-105'
               : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
@@ -145,7 +125,7 @@ export default function MobileBottomDock() {
             <path
               strokeLinecap='round'
               strokeLinejoin='round'
-              d='M16.5 18.75h-9m9 0a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-9a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-6.75c-.621 0-1.125.504-1.125 1.125V18.75m9 0h-9'
+              d='M12 6v12m-3-6h6'
             />
           </svg>
           <span className='text-[10px] font-sans tracking-tight'>Winners</span>
@@ -157,7 +137,7 @@ export default function MobileBottomDock() {
           className={cn(
             'flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-all duration-200',
             pathname === '/dashboard/user/tickets' || pathname === '/login'
-              ? 'text-[#0b4d35] font-bold scale-105'
+              ? 'text-[#b91c1c] font-bold scale-105'
               : 'text-[#5e766c] hover:text-[#0b4d35]',
           )}
         >
