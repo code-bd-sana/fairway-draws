@@ -26,26 +26,26 @@ const USER_GROWTH_DATA = [
 ];
 
 const CATEGORY_DATA = [
-  { name: 'Rifles', value: 45, color: '#A0D056' },
-  { name: 'Pistols', value: 25, color: '#72943A' },
-  { name: 'Gear', value: 20, color: '#43581E' },
-  { name: 'Optics', value: 10, color: '#2D3C13' },
+  { name: 'Golf Clubs', value: 45, color: '#0B4D35' },
+  { name: 'Apparel', value: 25, color: '#15803D' },
+  { name: 'Gear & Bags', value: 20, color: '#16A34A' },
+  { name: 'Accessories', value: 10, color: '#4ADE80' },
 ];
 
 const POPULAR_COMPETITIONS = [
-  { name: 'Sniper Rifle Set', value: 420 },
-  { name: 'VFC HK416 Bundle', value: 345 },
-  { name: 'Tactical Pistol Set', value: 250 },
-  { name: 'Night Vision', value: 200 },
-  { name: 'Ghillie Suit', value: 150 },
+  { name: 'Callaway Paradym Driver', value: 420 },
+  { name: 'Taylormade Qi10 Iron Set', value: 345 },
+  { name: 'Titleist Pro V1 Golf Bundle', value: 250 },
+  { name: 'Garmin Approach S70 Watch', value: 200 },
+  { name: 'Bushnell Pro X3 Rangefinder', value: 150 },
 ];
 
 const HOST_PERFORMANCE = [
-  { name: 'Tactical UK', percent: 90 },
-  { name: 'Golf World', percent: 75 },
-  { name: 'Combat Zone', percent: 65 },
-  { name: 'Elite', percent: 55 },
-  { name: 'Strike', percent: 45 },
+  { name: 'Fairway Elite', percent: 90 },
+  { name: 'Golf World UK', percent: 75 },
+  { name: 'Pro Tour Gear', percent: 65 },
+  { name: 'Scottish Links', percent: 55 },
+  { name: 'Strike Golf', percent: 45 },
 ];
 
 const GEOGRAPHIC_DATA = [
@@ -59,9 +59,9 @@ const GEOGRAPHIC_DATA = [
 const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#111210] border border-[#2D3C13] rounded-[8px] p-3 shadow-lg">
-        <p className="font-sans text-[12px] text-[#72943A] mb-1">{label}</p>
-        <p className="font-sans font-medium text-[14px] text-[#E8EDD4]">
+      <div className="bg-surface border border-border rounded-xl p-3 shadow-card font-sans">
+        <p className="text-xs font-bold text-text-muted mb-0.5">{label}</p>
+        <p className="font-heading font-black text-sm text-text-primary">
           {prefix}{payload[0].value.toLocaleString()}{suffix}
         </p>
       </div>
@@ -75,64 +75,56 @@ export default function ReportsAnalyticsDashboard() {
   const filters = ["7D", "1M", "3M", "1Y"];
 
   return (
-    <div className="flex flex-col w-full animate-fadeIn">
+    <div className="flex flex-col w-full animate-fadeIn gap-6">
       
-      {/* Header & Filters */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-heading font-bold text-2xl text-[#E8EDD4] mb-2">Reports & Analytics</h1>
-          <p className="font-sans text-sm text-[#72943A]">
-            Comprehensive overview of platform performance, sales, and user growth.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setTimeFilter(filter)}
-              className={`w-[44px] h-[32px] rounded-full font-sans font-medium text-[12px] transition-colors ${
-                timeFilter === filter
-                  ? "bg-transparent border border-[#8CB34A] text-[#E8EDD4]"
-                  : "bg-transparent border border-[#2D3C13] text-[#72943A] hover:bg-[#1A230A] hover:text-[#A0D056]"
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
+      {/* Time Filter Pills */}
+      <div className="flex items-center justify-end gap-2">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            onClick={() => setTimeFilter(filter)}
+            className={`px-4 py-1.5 rounded-full font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
+              timeFilter === filter
+                ? "bg-primary text-white shadow-xs border border-primary"
+                : "bg-surface border border-border text-text-muted hover:text-text-primary"
+            }`}
+          >
+            {filter}
+          </button>
+        ))}
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-4">
         
         {/* Revenue Trend */}
-        <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col h-[320px]">
-          <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] mb-6">Revenue Trend</h3>
+        <div className="bg-surface border border-border rounded-card p-6 flex flex-col h-[320px] shadow-card">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-4">Revenue Trend</h3>
           <div className="flex-1 w-full min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={REVENUE_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#A0D056" />
-                    <stop offset="100%" stopColor="#8CB34A" />
+                    <stop offset="0%" stopColor="#0B4D35" />
+                    <stop offset="100%" stopColor="#15803D" />
                   </linearGradient>
                 </defs>
                 <XAxis 
                   dataKey="name" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fill: '#5A752A', fontSize: 11, fontFamily: 'inherit' }} 
+                  tick={{ fill: '#64748B', fontSize: 11, fontFamily: 'inherit' }} 
                   dy={10}
                 />
                 <YAxis hide />
-                <Tooltip content={<CustomTooltip prefix="£" />} cursor={{ stroke: '#2D3C13', strokeWidth: 1 }} />
+                <Tooltip content={<CustomTooltip prefix="£" />} cursor={{ stroke: '#E2EADF', strokeWidth: 1 }} />
                 <Line 
                   type="monotone" 
                   dataKey="value" 
                   stroke="url(#lineGradient)" 
                   strokeWidth={2.5} 
                   dot={false}
-                  activeDot={{ r: 6, fill: '#111210', stroke: '#A0D056', strokeWidth: 2 }} 
+                  activeDot={{ r: 6, fill: '#0B4D35', stroke: '#FFFFFF', strokeWidth: 2 }} 
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -140,8 +132,8 @@ export default function ReportsAnalyticsDashboard() {
         </div>
 
         {/* Sales by Category */}
-        <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col h-[320px]">
-          <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] mb-2">Sales by Category</h3>
+        <div className="bg-surface border border-border rounded-card p-6 flex flex-col h-[320px] shadow-card">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-2">Sales by Category</h3>
           <div className="flex-1 w-full flex items-center justify-center relative min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -164,12 +156,12 @@ export default function ReportsAnalyticsDashboard() {
             </ResponsiveContainer>
             
             {/* Custom Legend */}
-            <div className="absolute right-[10%] top-1/2 -translate-y-1/2 flex flex-col gap-4">
+            <div className="absolute right-[5%] top-1/2 -translate-y-1/2 flex flex-col gap-3">
               {CATEGORY_DATA.map((cat, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.color }}></div>
-                  <span className="font-sans text-[12px] text-[#72943A] w-[45px]">{cat.name}</span>
-                  <span className="font-sans font-medium text-[12px] text-[#E8EDD4]">{cat.value}%</span>
+                <div key={i} className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cat.color }}></div>
+                  <span className="font-sans font-semibold text-xs text-text-muted w-[75px] truncate">{cat.name}</span>
+                  <span className="font-heading font-bold text-xs text-text-primary">{cat.value}%</span>
                 </div>
               ))}
             </div>
@@ -177,20 +169,20 @@ export default function ReportsAnalyticsDashboard() {
         </div>
 
         {/* Most Popular Competitions */}
-        <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col h-[320px]">
-          <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] mb-6">Most Popular Competitions</h3>
-          <div className="flex flex-col gap-5 flex-1 justify-center">
+        <div className="bg-surface border border-border rounded-card p-6 flex flex-col h-[320px] shadow-card">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-4">Most Popular Competitions</h3>
+          <div className="flex flex-col gap-4 flex-1 justify-center">
             {POPULAR_COMPETITIONS.map((comp, i) => {
               // Calculate width based on max value (420)
               const width = Math.max((comp.value / 420) * 100, 5);
               return (
-                <div key={i} className="flex flex-col gap-1.5 w-full">
+                <div key={i} className="flex flex-col gap-1 w-full">
                   <div className="flex items-center justify-between w-full">
-                    <span className="font-sans text-[11px] text-[#72943A]">{comp.name}</span>
-                    <span className="font-sans font-medium text-[11px] text-[#E8EDD4]">{comp.value}</span>
+                    <span className="font-sans font-semibold text-xs text-text-muted truncate max-w-[200px]">{comp.name}</span>
+                    <span className="font-heading font-bold text-xs text-text-primary">{comp.value} entries</span>
                   </div>
-                  <div className="w-full bg-[#111210] h-[3px] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#8CB34A] rounded-full" style={{ width: `${width}%` }}></div>
+                  <div className="w-full bg-elevated h-2 rounded-full overflow-hidden border border-border-medium">
+                    <div className="h-full bg-primary rounded-full" style={{ width: `${width}%` }}></div>
                   </div>
                 </div>
               );
@@ -199,34 +191,34 @@ export default function ReportsAnalyticsDashboard() {
         </div>
 
         {/* User Growth Over Time */}
-        <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col h-[320px]">
-          <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] mb-6">User Growth Over Time</h3>
+        <div className="bg-surface border border-border rounded-card p-6 flex flex-col h-[320px] shadow-card">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-4">User Growth Over Time</h3>
           <div className="flex-1 w-full min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={USER_GROWTH_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#A0D056" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#A0D056" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0B4D35" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#0B4D35" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis 
                   dataKey="name" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fill: '#5A752A', fontSize: 11, fontFamily: 'inherit' }} 
+                  tick={{ fill: '#64748B', fontSize: 11, fontFamily: 'inherit' }} 
                   dy={10}
                 />
                 <YAxis hide />
-                <Tooltip content={<CustomTooltip prefix="users: " />} cursor={{ stroke: '#2D3C13', strokeWidth: 1 }} />
+                <Tooltip content={<CustomTooltip prefix="users: " />} cursor={{ stroke: '#E2EADF', strokeWidth: 1 }} />
                 <Area 
                   type="monotone" 
                   dataKey="users" 
-                  stroke="#A0D056" 
+                  stroke="#0B4D35" 
                   strokeWidth={2}
                   fillOpacity={1} 
                   fill="url(#areaGradient)" 
-                  activeDot={{ r: 6, fill: '#111210', stroke: '#A0D056', strokeWidth: 2 }} 
+                  activeDot={{ r: 6, fill: '#0B4D35', stroke: '#FFFFFF', strokeWidth: 2 }} 
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -234,15 +226,15 @@ export default function ReportsAnalyticsDashboard() {
         </div>
 
         {/* Host Performance */}
-        <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col h-[320px]">
-          <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] mb-6">Host Performance</h3>
-          <div className="flex flex-col flex-1 justify-center gap-[14px]">
+        <div className="bg-surface border border-border rounded-card p-6 flex flex-col h-[320px] shadow-card">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-4">Host Performance</h3>
+          <div className="flex flex-col flex-1 justify-center gap-3.5">
             {HOST_PERFORMANCE.map((host, i) => (
-              <div key={i} className="flex items-center gap-4 w-full">
-                <span className="font-sans text-[11px] text-[#72943A] w-[70px] text-right truncate shrink-0">{host.name}</span>
-                <div className="flex-1 h-[24px] bg-[#111210] rounded-[4px] overflow-hidden flex items-center group">
+              <div key={i} className="flex items-center gap-3 w-full">
+                <span className="font-sans font-semibold text-xs text-text-muted w-[90px] text-right truncate shrink-0">{host.name}</span>
+                <div className="flex-1 h-5 bg-elevated border border-border-medium rounded-md overflow-hidden flex items-center group">
                   <div 
-                    className="h-full bg-[#8CB34A] rounded-r-[4px] transition-all duration-500 ease-out flex items-center justify-end pr-2 group-hover:bg-[#A0D056]" 
+                    className="h-full bg-primary rounded-r-md transition-all duration-500 ease-out flex items-center justify-end pr-2 group-hover:bg-primary/90" 
                     style={{ width: `${host.percent}%` }}
                   >
                   </div>
@@ -253,19 +245,19 @@ export default function ReportsAnalyticsDashboard() {
         </div>
 
         {/* Geographic Entry Distribution */}
-        <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col h-[320px]">
-          <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] mb-6">Geographic Entry Distribution</h3>
-          <div className="flex flex-col gap-5 flex-1 justify-center">
+        <div className="bg-surface border border-border rounded-card p-6 flex flex-col h-[320px] shadow-card">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-4">Geographic Entry Distribution</h3>
+          <div className="flex flex-col gap-4 flex-1 justify-center">
             {GEOGRAPHIC_DATA.map((geo, i) => {
               const width = Math.max(geo.value, 2);
               return (
-                <div key={i} className="flex flex-col gap-1.5 w-full">
+                <div key={i} className="flex flex-col gap-1 w-full">
                   <div className="flex items-center justify-between w-full">
-                    <span className="font-sans text-[11px] text-[#72943A]">{geo.name}</span>
-                    <span className="font-sans font-medium text-[11px] text-[#E8EDD4]">{geo.value}%</span>
+                    <span className="font-sans font-semibold text-xs text-text-muted">{geo.name}</span>
+                    <span className="font-heading font-bold text-xs text-text-primary">{geo.value}%</span>
                   </div>
-                  <div className="w-full bg-[#111210] h-[4px] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#5A752A] rounded-full" style={{ width: `${width}%` }}></div>
+                  <div className="w-full bg-elevated h-2 rounded-full overflow-hidden border border-border-medium">
+                    <div className="h-full bg-primary rounded-full" style={{ width: `${width}%` }}></div>
                   </div>
                 </div>
               );
