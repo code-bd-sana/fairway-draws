@@ -128,12 +128,12 @@ export default function WinnersTrackingTable() {
 
   const getStatusStyle = (winner: Winner) => {
     if (winner.deliveryStatus === 'DELIVERED')
-      return 'border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80]';
+      return 'border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-bold shadow-xs';
     if (winner.verificationStatus === 'VERIFIED')
-      return 'border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80]';
+      return 'border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-bold shadow-xs';
     if (winner.verificationStatus === 'PENDING')
-      return 'border-[#D97706]/30 bg-[#78350F] text-[#F59E0B]';
-    return 'border-[#2D3C13] bg-[#111210] text-[#72943A]';
+      return 'border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-bold shadow-xs';
+    return 'border-border bg-elevated text-text-muted font-bold shadow-xs';
   };
 
   const getDisplayStatus = (winner: Winner) => {
@@ -144,19 +144,19 @@ export default function WinnersTrackingTable() {
   };
 
   return (
-    <div className='flex flex-col gap-6 w-full mt-4'>
+    <div className='flex flex-col gap-6 w-full mt-2'>
       {/* Filters Container */}
       <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-4'>
         {/* Status Filters */}
-        <div className='flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0'>
+        <div className='flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar'>
           {filters.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-4 py-2 rounded-[8px] font-sans font-medium text-[12px] whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-full font-heading font-bold text-xs uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                 activeFilter === filter
-                  ? 'bg-transparent border border-[#8CB34A] text-[#E8EDD4]'
-                  : 'bg-transparent border border-[#2D3C13] text-[#72943A] hover:bg-[#1A230A] hover:text-[#A0D056]'
+                  ? 'bg-primary text-white shadow-xs border border-primary'
+                  : 'bg-surface border border-border text-text-muted hover:text-text-primary'
               }`}
             >
               {filter}
@@ -166,15 +166,15 @@ export default function WinnersTrackingTable() {
 
         {/* Win Type Filters & Export CSV */}
         <div className='flex flex-wrap items-center gap-4'>
-          <div className='flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0'>
+          <div className='flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar'>
             {winTypeFilters.map((filter) => (
               <button
                 key={filter}
                 onClick={() => setWinTypeFilter(filter)}
-                className={`px-4 py-2 rounded-[8px] font-sans font-medium text-[12px] whitespace-nowrap transition-colors ${
+                className={`px-4 py-2 rounded-full font-heading font-bold text-xs uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                   winTypeFilter === filter
-                    ? 'bg-transparent border border-[#8CB34A] text-[#E8EDD4]'
-                    : 'bg-transparent border border-[#2D3C13] text-[#72943A] hover:bg-[#1A230A] hover:text-[#A0D056]'
+                    ? 'bg-primary text-white shadow-xs border border-primary'
+                    : 'bg-surface border border-border text-text-muted hover:text-text-primary'
                 }`}
               >
                 {filter}
@@ -185,41 +185,41 @@ export default function WinnersTrackingTable() {
           <button 
             onClick={handleExportCSV}
             disabled={winners.length === 0}
-            className="h-[36px] px-4 bg-[#111210] border border-[#2D3C13] hover:border-[#5A752A] hover:bg-[#1A230A] rounded-[8px] flex items-center justify-center gap-2 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+            className="h-9 px-4 bg-surface border border-border hover:bg-elevated rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer shrink-0 shadow-xs"
             title="Export filtered winners to CSV"
           >
-            <svg className="w-4 h-4 text-[#8CB34A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
-            <span className="font-sans font-medium text-[12px] text-[#E8EDD4]">Export CSV</span>
+            <span className="font-heading font-bold text-xs uppercase tracking-wider text-text-primary">Export CSV</span>
           </button>
         </div>
       </div>
 
       {/* Table Container */}
-      <div className='w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto mt-2'>
+      <div className='w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card'>
         <table className='w-full min-w-[1050px] text-left border-collapse'>
           <thead>
-            <tr className='border-b border-[#2D3C13] bg-[#111210]'>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[18%]'>
-                WINNER
+            <tr className='border-b border-divider bg-elevated'>
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[18%]'>
+                WINNER NAME
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[18%]'>
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[18%]'>
                 COMPETITION WON
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[12%] text-center'>
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[12%] text-center'>
                 WIN TYPE
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[12%] text-center'>
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[12%] text-center'>
                 DRAW DATE
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[12%] text-center'>
-                PRIZE VALUE
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[12%] text-center'>
+                PRIZE TITLE
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center'>
-                STATUS
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center'>
+                CLAIM STATUS
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[13%] text-right'>
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[13%] text-right'>
                 ACTIONS
               </th>
             </tr>
@@ -227,14 +227,14 @@ export default function WinnersTrackingTable() {
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={7} className='py-8 text-center text-[#72943A] font-sans text-sm'>
+                <td colSpan={7} className='py-8 text-center text-text-muted font-sans text-xs font-bold'>
                   Loading winners...
                 </td>
               </tr>
             ) : winners.length === 0 ? (
               <tr>
-                <td colSpan={7} className='py-8 text-center text-[#72943A] font-sans text-sm'>
-                  No winners found.
+                <td colSpan={7} className='py-8 text-center text-text-muted font-sans text-xs font-bold'>
+                  No competition winners found.
                 </td>
               </tr>
             ) : (
@@ -247,11 +247,11 @@ export default function WinnersTrackingTable() {
                 return (
                   <tr
                     key={winner.id}
-                    className={`${i !== winners.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}
+                    className={`${i !== winners.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}
                   >
                     <td className='py-4 px-6'>
                       <div className='flex items-center gap-3'>
-                        <div className='w-7 h-7 rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0 overflow-hidden'>
+                        <div className='w-7 h-7 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 overflow-hidden shadow-xs'>
                           {winner.user?.avatarUrl ? (
                             <img
                               src={winner.user.avatarUrl}
@@ -259,45 +259,45 @@ export default function WinnersTrackingTable() {
                               className='w-full h-full object-cover'
                             />
                           ) : (
-                            <span className='font-sans font-medium text-[10px] text-[#8CB34A]'>
+                            <span className='font-sans font-bold text-[10px] text-text-brand'>
                               {initials}
                             </span>
                           )}
                         </div>
-                        <span className='font-sans font-medium text-[13px] text-[#E8EDD4]'>
+                        <span className='font-heading font-bold text-xs text-text-primary'>
                           {name}
                         </span>
                       </div>
                     </td>
                     <td className='py-4 px-6'>
-                      <span className='font-sans text-[13px] text-[#72943A]'>
+                      <span className='font-sans font-semibold text-xs text-text-muted truncate block w-[180px]'>
                         {winner.raffle?.title || 'Unknown Raffle'}
                       </span>
                     </td>
                     <td className='py-4 px-6 text-center'>
                       {winner.winType === 'INSTANT_WIN' ? (
-                        <span className='font-sans font-medium text-[12px] text-[#A0D056]'>
+                        <span className='font-sans font-bold text-xs text-[#15803D]'>
                           Instant Win
                         </span>
                       ) : (
-                        <span className='font-sans font-medium text-[12px] text-[#F59E0B]'>
+                        <span className='font-sans font-bold text-xs text-[#D97706]'>
                           Main Draw
                         </span>
                       )}
                     </td>
                     <td className='py-4 px-6 text-center'>
-                      <span className='font-sans text-[13px] text-[#72943A]'>
+                      <span className='font-sans font-semibold text-xs text-text-muted'>
                         {format(new Date(winner.createdAt), 'dd MMM yyyy')}
                       </span>
                     </td>
                     <td className='py-4 px-6 text-center'>
-                      <span className='font-sans font-medium text-[13px] text-[#E8EDD4]'>
+                      <span className='font-heading font-bold text-xs text-text-primary'>
                         {winner.prizeName}
                       </span>
                     </td>
                     <td className='py-4 px-6 text-center'>
                       <span
-                        className={`px-3 py-1 rounded-full border font-sans font-medium text-[10px] whitespace-nowrap ${getStatusStyle(winner)}`}
+                        className={`px-3 py-1 rounded-full font-sans text-[10px] uppercase tracking-wider whitespace-nowrap ${getStatusStyle(winner)}`}
                       >
                         {getDisplayStatus(winner)}
                       </span>
@@ -307,14 +307,14 @@ export default function WinnersTrackingTable() {
                         {winner.verificationStatus === 'PENDING' && (
                           <button
                             onClick={() => handleVerify(winner)}
-                            className='h-[32px] px-5 rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-heading font-medium text-[12px] transition-colors'
+                            className='h-8 px-5 rounded-lg bg-primary hover:bg-primary/90 text-white font-heading font-bold text-xs uppercase tracking-wider shadow-xs transition-all cursor-pointer active:scale-98'
                           >
-                            Verify
+                            Verify Claim
                           </button>
                         )}
                         {winner.verificationStatus === 'VERIFIED' &&
                           winner.deliveryStatus === 'PENDING' && (
-                            <button className='h-[32px] px-5 rounded-[8px] bg-transparent border border-[#2D3C13] text-[#72943A] font-heading font-medium text-[12px] cursor-not-allowed opacity-50'>
+                            <button className='h-8 px-4 rounded-lg bg-elevated border border-border text-text-muted font-heading font-bold text-[11px] uppercase tracking-wider cursor-not-allowed opacity-60'>
                               Awaiting Delivery
                             </button>
                           )}
