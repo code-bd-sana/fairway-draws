@@ -33,19 +33,30 @@ export default function UserRafflesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
+    <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
+      
+      {/* Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
+          Browse Competitions
+        </h1>
+        <p className="font-sans text-xs text-text-muted">
+          Explore all active, upcoming, and featured draws across all hosts.
+        </p>
+      </div>
+
       {/* Search & Filters Section */}
       <div className="flex flex-col gap-4 w-full">
         <form onSubmit={handleSearch} className="w-full max-w-md">
           <div className="relative">
             <input
               type="text"
-              placeholder="Search competitions..."
+              placeholder="Search competitions by keyword or brand..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full h-[42px] bg-[#1A230A] border border-[#2D3C13] rounded-[8px] px-4 text-[#E8EDD4] placeholder-[#72943A] focus:outline-none focus:border-[#8CB34A]"
+              className="w-full h-11 bg-surface border border-border rounded-xl px-4 pr-10 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all shadow-xs"
             />
-            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#72943A] hover:text-[#8CB34A]">
+            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors cursor-pointer">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
@@ -58,10 +69,10 @@ export default function UserRafflesPage() {
             <button
               key={status}
               onClick={() => { setStatusFilter(status); setPage(1); }}
-              className={`px-5 py-2 rounded-[20px] font-sans font-medium text-[13px] transition-colors ${
+              className={`px-4 py-1.5 rounded-full font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
                 statusFilter === status
-                  ? "bg-[#8CB34A] text-[#0D0D0B]"
-                  : "bg-[#1A230A] border border-[#2D3C13] text-[#72943A] hover:text-[#E8EDD4]"
+                  ? "bg-primary text-white shadow-xs"
+                  : "bg-surface border border-border text-text-muted hover:text-text-primary"
               }`}
             >
               {status}
@@ -75,10 +86,10 @@ export default function UserRafflesPage() {
               <button
                 key={cat}
                 onClick={() => { setCategory(cat); setPage(1); }}
-                className={`px-4 py-1.5 rounded-[20px] font-sans font-medium text-[12px] transition-colors border ${
+                className={`px-3.5 py-1 rounded-full font-sans font-bold text-xs transition-all border cursor-pointer ${
                   category === cat
-                    ? "bg-[#0D0D0B] border-[#8CB34A] text-[#8CB34A]"
-                    : "bg-[#0D0D0B] border-[#2D3C13] text-[#5A752A] hover:border-[#43581E] hover:text-[#72943A]"
+                    ? "bg-accent-bg border-primary/40 text-text-brand"
+                    : "bg-elevated border-border-medium text-text-muted hover:text-text-primary"
                 }`}
               >
                 {cat}
@@ -87,7 +98,7 @@ export default function UserRafflesPage() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-2 px-4 py-1.5 rounded-[8px] bg-[#0D0D0B] border border-[#2D3C13] text-[#72943A] font-sans font-medium text-[12px] hover:text-[#E8EDD4] transition-colors">
+            <button className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-surface border border-border text-text-muted font-heading font-bold text-xs uppercase tracking-wider hover:text-text-primary transition-all cursor-pointer shadow-xs">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
               </svg>
@@ -96,12 +107,12 @@ export default function UserRafflesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
               </svg>
             </button>
-            <div className="absolute right-0 top-full mt-1 hidden group-hover:flex flex-col bg-[#1A230A] border border-[#2D3C13] rounded-[8px] overflow-hidden z-10 w-[160px]">
+            <div className="absolute right-0 top-full mt-1 hidden group-hover:flex flex-col bg-surface border border-border rounded-xl shadow-card overflow-hidden z-10 w-[180px]">
               {["Latest", "Ending Soon", "Price: Low to High", "Price: High to Low"].map((s) => (
                 <button
                   key={s}
                   onClick={() => { setSort(s); setPage(1); }}
-                  className="px-4 py-2 text-left text-[12px] font-sans font-medium text-[#72943A] hover:bg-[#2D3C13] hover:text-[#E8EDD4] transition-colors w-full"
+                  className="px-4 py-2 text-left text-xs font-heading font-bold text-text-muted hover:bg-elevated hover:text-text-primary transition-colors w-full cursor-pointer"
                 >
                   {s}
                 </button>
@@ -116,29 +127,13 @@ export default function UserRafflesPage() {
           {Array.from({ length: 8 }).map((_, idx) => (
             <div
               key={idx}
-              className="bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden flex flex-col gap-4 pb-5"
+              className="bg-surface border border-border rounded-card overflow-hidden flex flex-col gap-4 pb-5 shadow-card"
             >
-              <div className="w-full aspect-square bg-[#0D0D0B] animate-pulse flex items-center justify-center relative p-0 overflow-hidden">
-                <div className="absolute top-4 left-4 w-16 h-5 bg-[#1C2012] rounded-[14px]" />
-                <div className="absolute top-4 right-4 w-20 h-5 bg-[#1C2012] rounded-[14px]" />
-              </div>
+              <div className="w-full aspect-square bg-elevated animate-pulse relative" />
               <div className="px-5 flex flex-col gap-4 flex-1">
                 <div className="flex flex-col gap-2">
-                  <div className="h-4.5 w-full bg-[#1C2012] rounded animate-pulse" />
-                  <div className="h-4.5 w-3/4 bg-[#1C2012] rounded animate-pulse" />
-                </div>
-                <div className="flex flex-col gap-2 mt-2">
-                  <div className="flex justify-between items-center w-full">
-                    <div className="h-3 w-10 bg-[#1C2012] rounded animate-pulse" />
-                    <div className="h-3 w-10 bg-[#1C2012] rounded animate-pulse" />
-                  </div>
-                  <div className="w-full h-[4px] bg-[#1A230A] rounded-full overflow-hidden animate-pulse">
-                    <div className="h-full bg-[#1C2012] rounded-full w-1/4" />
-                  </div>
-                </div>
-                <div className="flex justify-between items-center w-full mt-2">
-                  <div className="h-3.5 w-28 bg-[#1C2012] rounded animate-pulse" />
-                  <div className="h-5 w-12 bg-[#1C2012] rounded animate-pulse" />
+                  <div className="h-4 w-full bg-elevated rounded animate-pulse" />
+                  <div className="h-4 w-3/4 bg-elevated rounded animate-pulse" />
                 </div>
               </div>
             </div>
@@ -146,11 +141,11 @@ export default function UserRafflesPage() {
         </div>
       ) : isError ? (
         <div className="flex justify-center py-20">
-          <p className="text-red-500">Failed to load competitions. Please try again.</p>
+          <p className="text-[#DC2626] font-sans font-bold text-sm">Failed to load competitions. Please try again.</p>
         </div>
       ) : raffles.length === 0 ? (
         <div className="flex justify-center py-20">
-          <p className="text-[#72943A]">No competitions found matching your filters.</p>
+          <p className="text-text-muted font-sans font-bold text-sm">No competitions found matching your active filters.</p>
         </div>
       ) : (
         <>
@@ -171,60 +166,60 @@ export default function UserRafflesPage() {
               return (
                 <div
                   key={raffle.id}
-                  className="bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20"
+                  className="bg-surface border border-border rounded-card overflow-hidden flex flex-col transition-all hover:-translate-y-1 hover:shadow-card"
                 >
-                  <div className="relative w-full aspect-square bg-[#0D0D0B] flex items-center justify-center p-0 overflow-hidden">
+                  <div className="relative w-full aspect-square bg-elevated flex items-center justify-center overflow-hidden">
                     <Image
                       src={raffle.mainImage || "/coming-soon-hero.jpg"}
                       alt={raffle.title}
                       fill
-                      className="object-cover opacity-60 transition-opacity hover:opacity-80"
+                      className="object-cover transition-opacity hover:opacity-90"
                       unoptimized
                     />
 
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                      <div className="px-3 py-1 rounded-[14px] bg-[#161810]/80 backdrop-blur-sm border border-[#2D3C13] shadow-sm">
-                        <span className="font-sans text-[10px] font-medium text-[#72943A] uppercase tracking-wider">
+                      <div className="px-3 py-1 rounded-full bg-surface/90 backdrop-blur-sm border border-border shadow-xs">
+                        <span className="font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider">
                           {raffle.category || 'General'}
                         </span>
                       </div>
-                      <div className="px-3 py-1 rounded-[14px] bg-[#161810] border border-[#2D3C13] shadow-sm">
-                        <span className="font-sans text-[11px] font-medium text-[#A0D056]">
-                          £{Number(raffle.pricePerTicket).toFixed(2)}/ticket
+                      <div className="px-3 py-1 rounded-full bg-surface/90 backdrop-blur-sm border border-border shadow-xs">
+                        <span className="font-heading font-black text-xs text-text-brand">
+                          £{Number(raffle.pricePerTicket).toFixed(2)}/tkt
                         </span>
                       </div>
                     </div>
                   </div>
 
                   <div className="p-5 flex flex-col gap-4 flex-1">
-                    <h3 className="font-heading font-medium text-[15px] text-[#E8EDD4] line-clamp-2 min-h-[44px]">
+                    <h3 className="font-heading font-black text-sm text-text-primary line-clamp-2 min-h-[44px]">
                       {raffle.title}
                     </h3>
 
                     <div className="flex flex-col gap-1.5">
                       <div className="flex justify-between items-center w-full">
-                        <span className="font-sans text-[11px] text-[#72943A]">{raffle.ticketsSold} sold</span>
-                        <span className="font-sans text-[11px] text-[#72943A]">{raffle.totalTickets} max</span>
+                        <span className="font-sans text-xs font-semibold text-text-muted">{raffle.ticketsSold} sold</span>
+                        <span className="font-sans text-xs font-bold text-text-primary">{raffle.totalTickets} max</span>
                       </div>
-                      <div className="w-full h-[4px] bg-[#1A230A] rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-elevated border border-border-medium rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[#8CB34A] rounded-full"
+                          className="h-full bg-primary rounded-full transition-all duration-500"
                           style={{ width: `${progressPercentage}%` }}
                         />
                       </div>
                     </div>
 
                     <div className="flex justify-between items-center w-full mt-1">
-                      <div className="flex items-center gap-1.5 text-[#5A752A]">
+                      <div className="flex items-center gap-1.5 text-text-muted">
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
-                        <span className="font-sans text-[11px] font-medium">Draws in {drawsIn}</span>
+                        <span className="font-sans font-semibold text-xs text-text-muted">Draws in {drawsIn}</span>
                       </div>
                       
                       {isLive && (
-                        <div className="px-2 py-0.5 rounded-[4px] border border-[#2D3C13]">
-                          <span className="font-sans font-medium text-[10px] text-[#72943A] uppercase tracking-wide">Live</span>
+                        <div className="px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0]">
+                          <span className="font-sans font-bold text-[10px] text-success-text uppercase tracking-wide">Live</span>
                         </div>
                       )}
                     </div>
@@ -232,12 +227,12 @@ export default function UserRafflesPage() {
                     <div className="mt-2 w-full">
                       {isLive ? (
                         <Link href={`/live-raffles/${raffle.slug}`} className="w-full">
-                          <button className="w-full h-[38px] rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-heading font-medium text-[13px] transition-colors flex items-center justify-center">
+                          <button className="btn-glossy-red w-full h-[38px] rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider shadow-sm flex items-center justify-center cursor-pointer">
                             Buy Tickets
                           </button>
                         </Link>
                       ) : (
-                        <button disabled className="w-full h-[38px] rounded-[8px] bg-transparent border border-[#2D3C13] text-[#72943A] font-heading font-medium text-[13px] opacity-70 cursor-not-allowed flex items-center justify-center gap-2">
+                        <button disabled className="w-full h-[38px] rounded-xl bg-elevated border border-border-medium text-text-muted font-heading font-bold text-xs uppercase tracking-wider opacity-60 cursor-not-allowed flex items-center justify-center">
                           Not Live
                         </button>
                       )}
