@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Category, categoryService } from '../../../../services/category.service';
 
-const AVAILABLE_ICONS = ['Crosshair', 'Target', 'Shield', 'Gun', 'Ammo', 'Helmet', 'Star'];
+const AVAILABLE_ICONS = ['GolfClubs', 'Trophy', 'Shirt', 'Watch', 'ShoppingBag', 'Star', 'Tag', 'Crosshair'];
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -105,67 +105,69 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <div className='flex flex-col gap-8 p-8 max-w-[1660px] mx-auto w-full animate-fadeIn'>
-      <div className='flex justify-between items-center'>
-        <div>
-          <h1 className='font-heading font-bold text-[32px] text-[#E8EDD4] tracking-[-0.02em]'>
-            Categories Management
+    <div className='flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn font-sans'>
+      {/* Page Header */}
+      <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
+        <div className='flex flex-col gap-1'>
+          <h1 className='font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight'>
+            Competition Categories Management
           </h1>
-          <p className='font-sans text-[14px] text-[#72943A] mt-1'>
-            Manage public categories displayed on the homepage.
+          <p className='font-sans text-xs text-text-muted'>
+            Organize public competition categories, manage homepage icons, and toggle category visibility.
           </p>
         </div>
         <button
           onClick={openAddModal}
-          className='bg-primary hover:bg-[#ff4d79] text-[#0D0D0B] px-5 py-2.5 rounded-[8px] font-heading font-bold text-[14px] transition-colors flex items-center gap-2'
+          className='bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-md cursor-pointer active:scale-98 shrink-0'
         >
           <svg
             className='w-4 h-4'
             fill='none'
             viewBox='0 0 24 24'
-            strokeWidth={2}
+            strokeWidth={2.5}
             stroke='currentColor'
           >
             <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
           </svg>
-          Add Category
+          Add New Category
         </button>
       </div>
 
-      <div className='w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto'>
+      {/* Categories Table Container */}
+      <div className='w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card'>
         <table className='w-full min-w-[900px] text-left border-collapse'>
           <thead>
-            <tr className='border-b border-[#2D3C13] bg-[#111210]'>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[60px]'>
-                Image
+            <tr className='border-b border-divider bg-elevated'>
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[70px]'>
+                IMAGE
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px]'>
-                Name
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider'>
+                CATEGORY NAME
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px]'>
-                Slug
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider'>
+                SLUG
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px]'>
-                Icon
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider'>
+                ICON
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px]'>
-                Status
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider'>
+                STATUS
               </th>
-              <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] text-right'>
-                Actions
+              <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-right'>
+                ACTIONS
               </th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={6} className='py-8 text-center text-[#72943A]'>
+                <td colSpan={6} className='py-8 text-center text-text-muted font-sans text-xs font-bold'>
                   Loading categories...
                 </td>
               </tr>
             ) : categories.length === 0 ? (
               <tr>
-                <td colSpan={6} className='py-8 text-center text-[#72943A]'>
+                <td colSpan={6} className='py-8 text-center text-text-muted font-sans text-xs font-bold'>
                   No categories found.
                 </td>
               </tr>
@@ -173,11 +175,11 @@ export default function AdminCategoriesPage() {
               categories.map((category, i) => (
                 <tr
                   key={category.id}
-                  className={`${i !== categories.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}
+                  className={`${i !== categories.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}
                 >
                   <td className='py-4 px-6'>
                     {category.image ? (
-                      <div className='w-[40px] h-[40px] rounded-[6px] overflow-hidden border border-[#2D3C13]'>
+                      <div className='w-10 h-10 rounded-lg overflow-hidden border border-border-medium shadow-xs'>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={category.image}
@@ -186,9 +188,9 @@ export default function AdminCategoriesPage() {
                         />
                       </div>
                     ) : (
-                      <div className='w-[40px] h-[40px] rounded-[6px] bg-[#0D0D0B] border border-[#2D3C13] flex items-center justify-center'>
+                      <div className='w-10 h-10 rounded-lg bg-elevated border border-border-medium flex items-center justify-center shadow-xs'>
                         <svg
-                          className='w-4 h-4 text-[#5A752A]'
+                          className='w-4 h-4 text-text-muted'
                           fill='none'
                           viewBox='0 0 24 24'
                           stroke='currentColor'
@@ -204,36 +206,36 @@ export default function AdminCategoriesPage() {
                     )}
                   </td>
                   <td className='py-4 px-6'>
-                    <span className='font-sans font-medium text-[14px] text-[#E8EDD4]'>
+                    <span className='font-heading font-bold text-xs text-text-primary'>
                       {category.name}
                     </span>
                   </td>
                   <td className='py-4 px-6'>
-                    <span className='font-sans text-[13px] text-[#72943A]'>{category.slug}</span>
+                    <span className='font-sans font-semibold text-xs text-text-muted'>{category.slug}</span>
                   </td>
                   <td className='py-4 px-6'>
-                    <span className='font-sans text-[13px] text-[#72943A]'>
+                    <span className='font-sans font-semibold text-xs text-text-muted'>
                       {category.icon || '-'}
                     </span>
                   </td>
                   <td className='py-4 px-6'>
                     <button
                       onClick={() => toggleStatus(category)}
-                      className={`px-3 py-1 inline-flex text-[10px] leading-5 font-sans font-medium rounded-full border ${
+                      className={`px-3 py-1 inline-flex text-[10px] font-sans font-bold uppercase tracking-wider rounded-full border shadow-xs cursor-pointer ${
                         category.isActive
-                          ? 'border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80]'
-                          : 'border-[#EF4444]/30 bg-[#7F1D1D] text-[#f76b6b]'
+                          ? 'border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D]'
+                          : 'border-[#FECACA] bg-[#FEE2E2] text-[#DC2626]'
                       }`}
                     >
                       {category.isActive ? 'Active' : 'Inactive'}
                     </button>
                   </td>
                   <td className='py-4 px-6 text-right'>
-                    <div className='flex items-center justify-end gap-4'>
+                    <div className='flex items-center justify-end gap-3'>
                       <button
                         onClick={() => openEditModal(category)}
-                        className='text-[#5A752A] hover:text-[#E8EDD4] transition-colors'
-                        title='Edit'
+                        className='text-text-muted hover:text-text-primary transition-colors cursor-pointer'
+                        title='Edit Category'
                       >
                         <svg
                           className='w-4 h-4'
@@ -251,8 +253,8 @@ export default function AdminCategoriesPage() {
                       </button>
                       <button
                         onClick={() => handleDelete(category.id)}
-                        className='text-[#f76b6b] hover:text-[#ef4444] transition-colors'
-                        title='Delete'
+                        className='text-[#f76b6b] hover:text-[#dc2626] transition-colors cursor-pointer'
+                        title='Delete Category'
                       >
                         <svg
                           className='w-4 h-4'
@@ -281,17 +283,17 @@ export default function AdminCategoriesPage() {
       {isModalOpen && (
         <>
           <div
-            className='fixed inset-0 z-50 bg-[#0D0D0B]/80 backdrop-blur-sm transition-opacity'
+            className='fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity'
             onClick={closeModal}
           />
-          <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-[#161810] border border-[#2D3C13] rounded-[16px] shadow-2xl z-50 animate-fadeIn flex flex-col overflow-hidden max-h-[90vh] overflow-y-auto'>
-            <div className='flex items-center justify-between p-6 border-b border-[#2D3C13] bg-[#111210] sticky top-0 z-10'>
-              <h2 className='font-heading font-bold text-[20px] text-[#E8EDD4]'>
+          <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-surface border border-border rounded-card shadow-card z-50 animate-fadeIn flex flex-col overflow-hidden max-h-[90vh] overflow-y-auto font-sans'>
+            <div className='flex items-center justify-between p-6 border-b border-divider bg-elevated sticky top-0 z-10'>
+              <h2 className='font-heading font-black text-xl text-text-primary uppercase tracking-tight'>
                 {isEditMode ? 'Edit Category' : 'Add New Category'}
               </h2>
               <button
                 onClick={closeModal}
-                className='text-[#5A752A] hover:text-[#E8EDD4] transition-colors'
+                className='text-text-muted hover:text-text-primary transition-colors cursor-pointer'
               >
                 <svg
                   className='w-5 h-5'
@@ -300,45 +302,45 @@ export default function AdminCategoriesPage() {
                   stroke='currentColor'
                   strokeWidth={2}
                 >
-                  <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
-            <div className='p-6 space-y-5'>
+            <div className='p-6 space-y-4'>
               {error && (
-                <div className='p-3 bg-[#7F1D1D]/20 border border-[#EF4444]/30 text-[#f76b6b] text-sm rounded-[8px] font-sans'>
+                <div className='p-3 bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] text-xs rounded-xl font-sans font-semibold'>
                   {error}
                 </div>
               )}
 
-              <div>
-                <label className='block text-[13px] font-sans text-[#72943A] mb-1.5'>Name *</label>
+              <div className="flex flex-col gap-1.5">
+                <label className='block text-xs font-bold text-text-muted'>Category Name *</label>
                 <input
                   type='text'
                   value={currentCategory.name || ''}
                   onChange={(e) => setCurrentCategory({ ...currentCategory, name: e.target.value })}
-                  className='w-full h-[44px] px-4 bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] focus:outline-none focus:border-[#8CB34A] text-[#E8EDD4] font-sans text-[14px] placeholder:text-[#5A752A] transition-colors'
-                  placeholder='e.g. Rifles'
+                  className='w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl text-text-primary font-sans text-xs placeholder:text-text-muted outline-none focus:border-primary transition-colors'
+                  placeholder='e.g. Golf Clubs'
                 />
               </div>
 
-              <div>
-                <label className='block text-[13px] font-sans text-[#72943A] mb-1.5'>
-                  Slug (Optional)
+              <div className="flex flex-col gap-1.5">
+                <label className='block text-xs font-bold text-text-muted'>
+                  Slug (URL Identifier)
                 </label>
                 <input
                   type='text'
                   value={currentCategory.slug || ''}
                   onChange={(e) => setCurrentCategory({ ...currentCategory, slug: e.target.value })}
-                  className='w-full h-[44px] px-4 bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] focus:outline-none focus:border-[#8CB34A] text-[#E8EDD4] font-sans text-[14px] placeholder:text-[#5A752A] transition-colors'
-                  placeholder='e.g. rifles'
+                  className='w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl text-text-primary font-sans text-xs placeholder:text-text-muted outline-none focus:border-primary transition-colors'
+                  placeholder='e.g. golf-clubs'
                 />
               </div>
 
-              <div>
-                <label className='block text-[13px] font-sans text-[#72943A] mb-1.5'>
-                  Icon Selection (Optional)
+              <div className="flex flex-col gap-1.5">
+                <label className='block text-xs font-bold text-text-muted'>
+                  Icon Identifier
                 </label>
                 <div className='relative'>
                   <select
@@ -346,7 +348,7 @@ export default function AdminCategoriesPage() {
                     onChange={(e) =>
                       setCurrentCategory({ ...currentCategory, icon: e.target.value })
                     }
-                    className='w-full h-[44px] px-4 bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] focus:outline-none focus:border-[#8CB34A] text-[#E8EDD4] font-sans text-[14px] transition-colors appearance-none cursor-pointer'
+                    className='w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl text-text-primary font-sans text-xs outline-none focus:border-primary transition-colors appearance-none cursor-pointer'
                   >
                     <option value=''>Select an icon...</option>
                     {AVAILABLE_ICONS.map((icon) => (
@@ -355,7 +357,7 @@ export default function AdminCategoriesPage() {
                       </option>
                     ))}
                   </select>
-                  <div className='absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-[#5A752A]'>
+                  <div className='absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-text-muted'>
                     <svg className='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                       <path
                         strokeLinecap='round'
@@ -369,9 +371,9 @@ export default function AdminCategoriesPage() {
               </div>
 
               {/* Image Upload Area */}
-              <div>
-                <label className='block text-[13px] font-sans text-[#72943A] mb-1.5'>
-                  Category Image (Optional)
+              <div className="flex flex-col gap-1.5">
+                <label className='block text-xs font-bold text-text-muted'>
+                  Category Image Banner
                 </label>
                 <div
                   onClick={() =>
@@ -379,10 +381,10 @@ export default function AdminCategoriesPage() {
                       ? document.getElementById('categoryImageInput')?.click()
                       : undefined
                   }
-                  className={`w-full h-[140px] border-2 border-dashed rounded-[8px] flex flex-col items-center justify-center transition-colors relative overflow-hidden group ${
+                  className={`w-full h-[130px] border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-all relative overflow-hidden group ${
                     currentCategory.image || imageFile
-                      ? 'border-[#2D3C13] bg-[#0D0D0B]'
-                      : 'border-[#2D3C13] hover:border-[#8CB34A] hover:bg-[#1A230A]/50 cursor-pointer bg-[#0D0D0B]'
+                      ? 'border-border-medium bg-elevated'
+                      : 'border-border-medium hover:border-primary hover:bg-elevated/70 cursor-pointer bg-elevated'
                   }`}
                 >
                   {currentCategory.image || imageFile ? (
@@ -393,7 +395,7 @@ export default function AdminCategoriesPage() {
                         alt='Preview'
                         className='w-full h-full object-cover'
                       />
-                      <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
+                      <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -404,7 +406,7 @@ export default function AdminCategoriesPage() {
                             ) as HTMLInputElement;
                             if (el) el.value = '';
                           }}
-                          className='h-[32px] px-[12px] bg-[#f76b6b] text-white font-sans font-medium text-[12px] rounded-[6px] hover:bg-[#ef4444] transition-colors'
+                          className='btn-glossy-red h-8 px-3 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-lg transition-all cursor-pointer shadow-md'
                         >
                           Remove Image
                         </button>
@@ -413,7 +415,7 @@ export default function AdminCategoriesPage() {
                   ) : (
                     <>
                       <svg
-                        className='w-6 h-6 text-[#8CB34A] mb-2'
+                        className='w-6 h-6 text-text-brand mb-1.5'
                         fill='none'
                         viewBox='0 0 24 24'
                         stroke='currentColor'
@@ -425,8 +427,8 @@ export default function AdminCategoriesPage() {
                           d='M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z'
                         />
                       </svg>
-                      <span className='font-sans font-medium text-[12px] text-[#E8EDD4]'>
-                        Click to upload image
+                      <span className='font-sans font-bold text-xs text-text-primary'>
+                        Click to upload category banner
                       </span>
                     </>
                   )}
@@ -449,7 +451,7 @@ export default function AdminCategoriesPage() {
                 </div>
               </div>
 
-              <div className='flex items-center mt-2'>
+              <div className='flex items-center gap-2 pt-1'>
                 <input
                   type='checkbox'
                   id='isActive'
@@ -457,27 +459,27 @@ export default function AdminCategoriesPage() {
                   onChange={(e) =>
                     setCurrentCategory({ ...currentCategory, isActive: e.target.checked })
                   }
-                  className='h-4 w-4 rounded border-[#2D3C13] bg-[#0D0D0B] text-primary focus:ring-primary focus:ring-offset-[#161810]'
+                  className='h-4 w-4 rounded border-border-medium text-primary focus:ring-primary accent-primary cursor-pointer'
                 />
                 <label
                   htmlFor='isActive'
-                  className='ml-2 block text-[13px] font-sans text-[#E8EDD4]'
+                  className='block text-xs font-bold text-text-primary cursor-pointer'
                 >
-                  Active (visible to public)
+                  Active (visible in public competition filters)
                 </label>
               </div>
             </div>
 
-            <div className='p-6 border-t border-[#2D3C13] bg-[#111210] flex justify-end gap-3 sticky bottom-0 z-10'>
+            <div className='p-6 border-t border-divider bg-elevated flex justify-end gap-3 sticky bottom-0 z-10'>
               <button
                 onClick={closeModal}
-                className='px-5 py-2.5 rounded-[8px] bg-transparent border border-[#2D3C13] hover:border-[#5A752A] text-[#E8EDD4] font-heading font-bold text-[14px] transition-colors'
+                className='px-5 py-2.5 rounded-xl bg-surface border border-border hover:bg-elevated text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-xs'
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className='px-5 py-2.5 bg-primary hover:bg-[#ff4d79] text-[#0D0D0B] rounded-[8px] font-heading font-bold text-[14px] transition-colors'
+                className='px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer active:scale-98'
               >
                 Save Category
               </button>
