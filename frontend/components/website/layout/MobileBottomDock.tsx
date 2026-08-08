@@ -97,11 +97,7 @@ export default function MobileBottomDock() {
               stroke='currentColor'
               strokeWidth={2.2}
             >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M16.5 18.75h-9m9 0a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-9a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-6.75c-.621 0-1.125.504-1.125 1.125V18.75m9 0h-9'
-              />
+              <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 5.25v2.25m7.5-2.25v2.25M6 9.75h12M7.5 19.5h9M8.25 15.75h7.5M12 3.75c-1.036 0-1.875.84-1.875 1.875v.75h3.75v-.75C13.875 4.59 13.036 3.75 12 3.75ZM6 9.75h12l-1.125 8.25a1.5 1.5 0 0 1-1.486 1.298H8.611A1.5 1.5 0 0 1 7.125 18L6 9.75Z' />
             </svg>
           </div>
           <span className='text-[9px] font-sans font-black uppercase tracking-wider text-[#b91c1c] mt-0.5'>

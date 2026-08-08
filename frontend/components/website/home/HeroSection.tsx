@@ -1,53 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { heroData } from '../../../data/homepage/hero.data';
-import DrawCard from '../shared/DrawCard';
-import { raffleService } from '../../../services/raffle.service';
-import type { Draw } from '../../../types/draw.types';
 
 /**
- * High-fidelity 3D Hero section for Fairway Draws matching reference design.
- * Features:
- * - Sunset golf course background with PING golf bag banner visual
- * - 3-tier headline typography (WIN PREMIUM — GOLF GEAR — FOR LESS)
- * - Glossy 3D red primary action button & pristine white info pill
- * - Dark forest green bottom stats panel with 3 glassmorphic cards
+ * Homepage hero: a mobile-first, high-impact golf course composition.
+ * The product image is deliberately allowed to lead the right side of the
+ * frame, while the copy stays readable through layered gradients.
  */
 export default function HeroSection() {
-  const [dynamicFeaturedDraw, setDynamicFeaturedDraw] = useState<Draw | null>(null);
-
-  useEffect(() => {
-    async function fetchFeaturedRaffle() {
-      try {
-        const res = await raffleService.getPublicRaffles({ limit: 1, sort: 'Most Popular' });
-        if (res.data && res.data.length > 0) {
-          const r = res.data[0];
-          setDynamicFeaturedDraw({
-            id: r.id,
-            title: r.title,
-            description: r.description,
-            image: r.mainImage || '',
-            ticketPrice: Number(r.pricePerTicket),
-            totalTickets: r.totalTickets,
-            soldTickets: r.ticketsSold,
-            endDate: new Date(r.endDate).toLocaleDateString(),
-            status: (r.status === 'ACTIVE' ? 'live' : 'ended') as 'live' | 'ended',
-            category: 'general',
-            slug: r.slug,
-          });
-        }
-      } catch {
-        /* fallback to static */
-      }
-    }
-    fetchFeaturedRaffle();
-  }, []);
-
   return (
-    <section className="relative pt-24 md:pt-32 overflow-hidden bg-[#F8FAF6]">
+    <section className="relative min-h-[810px] overflow-hidden bg-[#F8FAF6] pt-24 sm:min-h-[770px] md:pt-32 lg:min-h-[690px]">
       {/* Golden Hour Golf Course Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -55,17 +19,18 @@ export default function HeroSection() {
           alt="Fairway Draws Golf Background"
           fill
           priority
-          className="object-cover object-center lg:object-right opacity-95"
+          className="object-cover object-[58%_center] sm:object-center lg:object-right opacity-95"
         />
         {/* Responsive Readability Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F8FAF6]/95 via-[#F8FAF6]/85 to-transparent lg:w-[65%]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAF6]/60 via-transparent to-[#073826]/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F8FAF6]/97 via-[#F8FAF6]/82 to-transparent lg:w-[64%]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAF6]/45 via-transparent to-[#073826]/35" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,.28),transparent_35%)]" />
       </div>
 
-      <div className="container-custom relative z-10 pt-4 pb-12 md:pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="container-custom relative z-10 flex min-h-[670px] items-start pt-5 pb-32 sm:min-h-[625px] sm:items-center sm:pb-28 lg:min-h-[600px] lg:pb-20">
+        <div className="grid w-full grid-cols-1 items-center lg:grid-cols-12">
           {/* LEFT — Main Hero Headline & CTAs */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left">
+          <div className="flex max-w-[720px] flex-col items-start text-left lg:col-span-8">
             {/* Pill Badge */}
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#073826] border border-[#16A34A]/40 text-white text-[11px] font-bold uppercase tracking-widest mb-6 shadow-md">
               <span className="text-sm">🏆</span>
@@ -73,29 +38,29 @@ export default function HeroSection() {
             </div>
 
             {/* Main 3-Tier Headline */}
-            <div className="mb-4">
-              <h1 className="font-heading text-[44px] sm:text-[62px] md:text-[76px] xl:text-[84px] font-black leading-[0.9] tracking-tight text-[#073826] uppercase text-shadow-hero-green">
+            <div className="mb-5">
+              <h1 className="font-heading text-[clamp(3.35rem,14vw,5.3rem)] font-black leading-[0.82] tracking-[-0.075em] text-[#073826] uppercase text-shadow-hero-green sm:tracking-[-0.06em]">
                 WIN PREMIUM
               </h1>
-              <div className="flex items-center gap-3 sm:gap-4 my-1.5 sm:my-2">
-                <span className="text-[#b91c1c] text-xl sm:text-3xl font-black">—</span>
-                <span className="font-heading text-[32px] sm:text-[48px] md:text-[58px] xl:text-[64px] font-black tracking-wider text-[#b91c1c] uppercase text-shadow-hero-red">
+              <div className="my-2 flex items-center gap-2.5 sm:gap-4">
+                <span className="text-xl font-black text-[#b91c1c] sm:text-3xl">—</span>
+                <span className="font-heading text-[clamp(2.55rem,10.5vw,4rem)] font-black leading-none tracking-[-0.055em] text-[#b91c1c] uppercase text-shadow-hero-red">
                   GOLF GEAR
                 </span>
-                <span className="text-[#b91c1c] text-xl sm:text-3xl font-black">—</span>
+                <span className="text-xl font-black text-[#b91c1c] sm:text-3xl">—</span>
               </div>
-              <span className="font-heading text-[44px] sm:text-[62px] md:text-[76px] xl:text-[84px] font-black leading-[0.9] tracking-tight text-[#073826] uppercase block text-shadow-hero-green">
+              <span className="font-heading block text-[clamp(3.35rem,14vw,5.3rem)] font-black leading-[0.82] tracking-[-0.075em] text-[#073826] uppercase text-shadow-hero-green sm:tracking-[-0.06em]">
                 FOR LESS
               </span>
             </div>
 
             {/* Description Subtitle */}
-            <p className="font-sans text-sm sm:text-base text-[#1e342b] font-medium leading-relaxed mb-8 max-w-xl bg-white/40 backdrop-blur-xs p-3.5 rounded-2xl border border-white/60 shadow-xs">
+            <p className="mb-8 max-w-[20rem] rounded-2xl border border-white/55 bg-white/40 p-3.5 font-sans text-sm font-medium leading-relaxed text-[#1e342b] shadow-xs backdrop-blur-xs sm:max-w-xl sm:text-base">
               Enter charity golf draws from just <strong className="text-[#073826] font-bold">£1 per ticket</strong>. Fair, transparent &amp; fully verified. Over <strong className="text-[#b91c1c] font-bold">£180k+</strong> in luxury prizes already won by our community.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 mb-8 w-full sm:w-auto">
+            <div className="flex w-full flex-wrap items-center gap-3.5 sm:w-auto sm:gap-4">
               <Link
                 href="/live-raffles"
                 className="btn-glossy-red px-7 py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
@@ -124,32 +89,6 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* RIGHT — Featured Competition Card Visual Overlay */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end w-full mt-4 lg:mt-0">
-            {dynamicFeaturedDraw ? (
-              <div className="w-full max-w-[420px] transform hover:scale-[1.01] transition-transform duration-300 shadow-2xl rounded-3xl">
-                <DrawCard draw={dynamicFeaturedDraw} variant="featured" />
-              </div>
-            ) : (
-              <div className="w-full max-w-[400px] bg-white/90 backdrop-blur-md border border-[#073826]/20 rounded-3xl p-6 text-center shadow-xl">
-                <div className="inline-flex p-3 rounded-full bg-[#ECF5EE] mb-3">
-                  <span className="text-3xl">⛳</span>
-                </div>
-                <h3 className="font-heading font-black text-lg text-[#073826] uppercase">
-                  Featured Competition
-                </h3>
-                <p className="font-sans text-xs text-[#5e766c] mt-1.5">
-                  Win top-tier clubs, bags, and golf gadgets for just £1 per ticket.
-                </p>
-                <Link
-                  href="/live-raffles"
-                  className="mt-4 inline-block btn-glossy-red px-5 py-2.5 rounded-xl text-white font-bold text-xs uppercase tracking-wider"
-                >
-                  Browse All Raffles
-                </Link>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
