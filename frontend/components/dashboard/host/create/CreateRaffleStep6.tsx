@@ -14,94 +14,94 @@ export default function CreateRaffleStep6({ formData, onPrev, onPublish, isSubmi
   const tickets = parseInt(formData.totalTickets) || 0;
   const price = parseFloat(formData.ticketPrice) || 0;
   const gross = tickets * price;
-  const platformFee = gross * 0.1; // 10% demo
+  const platformFee = gross * 0.05; // 5% fee
   const net = gross - platformFee;
 
   return (
     <div className="flex flex-col w-full animate-in fade-in zoom-in-95 duration-200">
-      <div className="flex flex-col gap-[8px] mb-[32px]">
-        <h2 className="font-heading font-medium text-[24px] text-[#e8edd4]">
-          Review & Publish
+      <div className="flex flex-col gap-2 mb-8">
+        <h2 className="font-heading font-black text-2xl text-text-primary uppercase tracking-tight">
+          Review &amp; Publish
         </h2>
-        <p className="font-sans font-normal text-[14px] text-[#b3b8aa]">
-          Review your raffle details carefully before making it live.
+        <p className="font-sans text-sm text-text-muted">
+          Review your competition details carefully before publishing live.
         </p>
       </div>
 
-      <div className="flex flex-col gap-[24px]">
+      <div className="flex flex-col gap-6">
         
         {/* Basic Details Summary */}
-        <div className="flex flex-col p-[24px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[16px] gap-[16px]">
-          <h3 className="font-heading font-medium text-[16px] text-[#e8edd4] border-b border-[#1a230a] pb-2">
+        <div className="flex flex-col p-6 bg-elevated border border-border-medium rounded-card gap-4 shadow-xs">
+          <h3 className="font-heading font-bold text-base text-text-primary uppercase tracking-tight border-b border-divider pb-2.5">
             Basic Details
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[16px]">
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Title</span>
-              <span className="font-sans font-medium text-[14px] text-[#e8edd4]">{formData.title || "—"}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Title</span>
+              <span className="font-heading font-bold text-sm text-text-primary">{formData.title || "—"}</span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Category</span>
-              <span className="font-sans font-medium text-[14px] text-[#e8edd4]">{formData.category || "—"}</span>
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Category</span>
+              <span className="font-sans font-semibold text-sm text-text-brand">{formData.category || "—"}</span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Main Prize Value</span>
-              <span className="font-sans font-medium text-[14px] text-[#e8edd4]">{formData.mainPrizeValue ? `£${formData.mainPrizeValue}` : "—"}</span>
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Main Prize RRP Value</span>
+              <span className="font-heading font-bold text-sm text-text-primary">{formData.mainPrizeValue ? `£${formData.mainPrizeValue}` : "—"}</span>
             </div>
-            <div className="flex flex-col gap-[4px] sm:col-span-2">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Description</span>
-              <p className="font-sans font-normal text-[14px] text-[#e8edd4] whitespace-pre-wrap">{formData.description || "—"}</p>
+            <div className="flex flex-col gap-1 sm:col-span-2">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Description</span>
+              <p className="font-sans text-xs text-text-muted leading-relaxed whitespace-pre-wrap">{formData.description || "—"}</p>
             </div>
           </div>
         </div>
 
         {/* Pricing Summary */}
-        <div className="flex flex-col p-[24px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[16px] gap-[16px]">
-          <h3 className="font-heading font-medium text-[16px] text-[#e8edd4] border-b border-[#1a230a] pb-2">
-            Pricing & Projections
+        <div className="flex flex-col p-6 bg-elevated border border-border-medium rounded-card gap-4 shadow-xs">
+          <h3 className="font-heading font-bold text-base text-text-primary uppercase tracking-tight border-b border-divider pb-2.5">
+            Pricing &amp; Projections
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-[16px]">
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Tickets</span>
-              <span className="font-sans font-medium text-[16px] text-[#e8edd4]">{formData.totalTickets || "0"}</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Total Tickets</span>
+              <span className="font-heading font-bold text-base text-text-primary">{formData.totalTickets || "0"}</span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Price</span>
-              <span className="font-sans font-medium text-[16px] text-[#e8edd4]">£{price.toFixed(2)}</span>
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Ticket Price</span>
+              <span className="font-heading font-bold text-base text-text-primary">£{price.toFixed(2)}</span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Platform Fee</span>
-              <span className="font-sans font-medium text-[16px] text-[#f76b6b]">-£{platformFee.toFixed(2)}</span>
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Est. Platform Fee (5%)</span>
+              <span className="font-heading font-bold text-base text-[#dc2626]">-£{platformFee.toFixed(2)}</span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Est. Earnings</span>
-              <span className="font-heading font-bold text-[18px] text-[#8cb34a]">£{net.toFixed(2)}</span>
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Est. Net Earnings</span>
+              <span className="font-heading font-black text-xl text-text-brand">£{net.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {/* Schedule Summary */}
-        <div className="flex flex-col p-[24px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[16px] gap-[16px]">
-          <h3 className="font-heading font-medium text-[16px] text-[#e8edd4] border-b border-[#1a230a] pb-2">
-            Schedule & Settings
+        <div className="flex flex-col p-6 bg-elevated border border-border-medium rounded-card gap-4 shadow-xs">
+          <h3 className="font-heading font-bold text-base text-text-primary uppercase tracking-tight border-b border-divider pb-2.5">
+            Schedule &amp; Rules
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[16px]">
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Start Date</span>
-              <span className="font-sans font-medium text-[14px] text-[#e8edd4]">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Start Date</span>
+              <span className="font-sans font-medium text-xs text-text-primary">
                 {formData.startDate ? new Date(formData.startDate).toLocaleString() : "—"}
               </span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Draw Date</span>
-              <span className="font-sans font-medium text-[14px] text-[#e8edd4]">
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Draw Date</span>
+              <span className="font-sans font-medium text-xs text-text-primary">
                 {formData.endDate ? new Date(formData.endDate).toLocaleString() : "—"}
               </span>
             </div>
-            <div className="flex flex-col gap-[4px]">
-              <span className="font-sans font-medium text-[11px] uppercase text-[#5a752a]">Auto Draw</span>
-              <span className={cn("font-sans font-medium text-[14px]", formData.isAutoDraw ? "text-[#8cb34a]" : "text-[#5a752a]")}>
-                {formData.isAutoDraw ? "Enabled" : "Disabled"}
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Draw Mechanism</span>
+              <span className={cn("font-heading font-bold text-xs uppercase", formData.isAutoDraw ? "text-text-brand" : "text-text-muted")}>
+                {formData.isAutoDraw ? "Automatic Draw" : "Live Draw"}
               </span>
             </div>
           </div>
@@ -109,23 +109,21 @@ export default function CreateRaffleStep6({ formData, onPrev, onPublish, isSubmi
       </div>
 
       {/* Footer Actions */}
-      <div className="flex items-center justify-between mt-[40px] pt-[24px] border-t border-[#2d3c13]">
+      <div className="flex items-center justify-between mt-10 pt-6 border-t border-divider">
         <button
           onClick={onPrev}
-          className="h-[48px] px-[24px] bg-transparent border border-[#2d3c13] hover:bg-[#1a230a] text-[#5a752a] hover:text-[#e8edd4] transition-colors rounded-[8px] flex items-center justify-center font-sans font-medium text-[14px]"
+          className="h-[46px] px-6 bg-elevated border border-border hover:bg-surface text-text-primary transition-all rounded-xl font-heading font-bold text-xs uppercase tracking-wider cursor-pointer"
         >
-          Back
+          ← Back
         </button>
         <button
           onClick={onPublish}
           disabled={isSubmitting}
-          className="h-[48px] px-[32px] bg-[#8cb34a] hover:bg-[#72943a] transition-colors rounded-[8px] flex items-center gap-[8px] justify-center shadow-[0_0_20px_rgba(140,179,74,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-glossy-red h-[48px] px-8 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
         >
-          <span className="font-heading font-medium text-[16px] text-[#0d0d0b]">
-            {isSubmitting ? "Publishing..." : "Publish Raffle"}
-          </span>
+          <span>{isSubmitting ? "Publishing..." : "Publish Competition"}</span>
           {!isSubmitting && (
-            <svg className="w-5 h-5 text-[#0d0d0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
             </svg>
           )}

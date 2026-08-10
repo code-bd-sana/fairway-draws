@@ -43,10 +43,10 @@ export default function HostRafflesTable() {
   };
 
   return (
-    <div className="w-full flex flex-col gap-[24px]">
+    <div className="w-full flex flex-col gap-6">
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-[16px]">
-        <div className="flex flex-wrap items-center gap-[12px]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-2">
           {filters.map((filter) => (
             <button
               key={filter}
@@ -55,10 +55,10 @@ export default function HostRafflesTable() {
                 setPage(1);
               }}
               className={cn(
-                "h-[32px] px-[16px] rounded-full border transition-colors flex items-center justify-center font-sans font-medium text-[13px]",
+                "h-[36px] px-4 rounded-full border transition-all flex items-center justify-center font-sans font-bold text-xs tracking-wide cursor-pointer",
                 activeFilter === filter
-                  ? "border-[#8cb34a] text-[#8cb34a] bg-[#1a230a]"
-                  : "border-[#2d3c13] text-[#5a752a] hover:bg-[#1a230a]/50"
+                  ? "bg-accent-bg border-primary text-text-brand shadow-xs"
+                  : "bg-elevated border-border text-text-muted hover:text-text-primary hover:bg-surface"
               )}
             >
               {filter}
@@ -67,41 +67,39 @@ export default function HostRafflesTable() {
         </div>
         <Link 
           href="/dashboard/host/create"
-          className="h-[40px] px-[20px] bg-[#8cb34a] hover:bg-[#72943a] transition-colors rounded-[8px] flex items-center justify-center shrink-0"
+          className="btn-glossy-red h-[42px] px-5 text-white font-sans font-bold text-xs tracking-wider uppercase rounded-xl flex items-center justify-center gap-2 shrink-0 transition-all shadow-md active:scale-98"
         >
-          <span className="font-heading font-medium text-[14px] text-[#0d0d0b]">
-            + Create Raffle
-          </span>
+          <span>+ Create Competition</span>
         </Link>
       </div>
 
       {/* Table Container */}
-      <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] overflow-hidden flex flex-col">
+      <div className="w-full bg-surface border border-border rounded-card overflow-hidden flex flex-col shadow-card">
         {/* Table Header */}
-        <div className="grid grid-cols-5 items-center px-[24px] h-[48px] border-b border-[#2d3c13] bg-[#161810]">
+        <div className="grid grid-cols-5 items-center px-6 h-12 border-b border-divider bg-elevated/70">
           <div className="col-span-2 sm:col-span-1">
-            <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
-              Raffle Name
+            <span className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">
+              Competition Name
             </span>
           </div>
           <div className="hidden sm:block">
-            <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
+            <span className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">
               Tickets Sold
             </span>
           </div>
           <div className="hidden sm:block">
-            <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
-              Raised
+            <span className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">
+              Total Raised
             </span>
           </div>
           <div>
-            <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
+            <span className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">
               Status
             </span>
           </div>
           <div className="hidden md:block text-right">
-            <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
-              Ends
+            <span className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">
+              Draw Date
             </span>
           </div>
         </div>
@@ -111,31 +109,31 @@ export default function HostRafflesTable() {
           {isLoading && (
             <div className="flex flex-col w-full animate-in fade-in duration-300">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="grid grid-cols-5 items-center px-[24px] min-h-[72px] py-3 border-b border-[#2d3c13] last:border-b-0 bg-[#161810]">
+                <div key={i} className="grid grid-cols-5 items-center px-6 min-h-[72px] py-3.5 border-b border-divider last:border-b-0 bg-surface">
                   {/* Raffle Name */}
-                  <div className="col-span-2 sm:col-span-1 flex items-center gap-[12px] pr-4">
-                    <div className="w-[12px] h-[12px] shrink-0 bg-[#2d3c13]/50 rounded-sm animate-pulse" style={{ animationDelay: `${i * 150}ms` }}></div>
-                    <div className="h-[18px] w-[140px] bg-[#2d3c13]/60 rounded animate-pulse" style={{ animationDelay: `${i * 150}ms` }}></div>
+                  <div className="col-span-2 sm:col-span-1 flex items-center gap-3 pr-4">
+                    <div className="w-3 h-3 shrink-0 bg-elevated rounded-sm animate-pulse"></div>
+                    <div className="h-4 w-36 bg-elevated rounded animate-pulse"></div>
                   </div>
                   
                   {/* Tickets Sold */}
                   <div className="hidden sm:block">
-                    <div className="h-[16px] w-[80px] bg-[#2d3c13]/40 rounded animate-pulse" style={{ animationDelay: `${i * 150 + 50}ms` }}></div>
+                    <div className="h-4 w-20 bg-elevated rounded animate-pulse"></div>
                   </div>
                   
                   {/* Raised */}
                   <div className="hidden sm:block">
-                    <div className="h-[16px] w-[60px] bg-[#2d3c13]/40 rounded animate-pulse" style={{ animationDelay: `${i * 150 + 100}ms` }}></div>
+                    <div className="h-4 w-16 bg-elevated rounded animate-pulse"></div>
                   </div>
                   
                   {/* Status */}
                   <div>
-                    <div className="h-[22px] w-[70px] bg-[#2d3c13]/50 rounded-full animate-pulse" style={{ animationDelay: `${i * 150 + 150}ms` }}></div>
+                    <div className="h-5 w-16 bg-elevated rounded-full animate-pulse"></div>
                   </div>
                   
                   {/* Ends */}
                   <div className="hidden md:flex justify-end">
-                    <div className="h-[16px] w-[90px] bg-[#2d3c13]/40 rounded animate-pulse ml-auto" style={{ animationDelay: `${i * 150 + 200}ms` }}></div>
+                    <div className="h-4 w-24 bg-elevated rounded animate-pulse ml-auto"></div>
                   </div>
                 </div>
               ))}
@@ -145,17 +143,17 @@ export default function HostRafflesTable() {
           {!isLoading && raffles.map((raffle: any) => {
             const isExpanded = expandedId === raffle.id;
             return (
-              <div key={raffle.id} className="flex flex-col border-b border-[#2d3c13] last:border-b-0">
+              <div key={raffle.id} className="flex flex-col border-b border-divider last:border-b-0">
                 {/* Main Row */}
                 <div
                   onClick={() => toggleRow(raffle.id)}
-                  className="grid grid-cols-5 items-center px-[24px] min-h-[72px] py-3 cursor-pointer hover:bg-[#1a230a]/50 transition-colors bg-[#161810]"
+                  className="grid grid-cols-5 items-center px-6 min-h-[72px] py-3.5 cursor-pointer hover:bg-elevated/60 transition-colors bg-surface"
                 >
-                  <div className="col-span-2 sm:col-span-1 flex items-center gap-[12px] min-w-0 pr-4">
+                  <div className="col-span-2 sm:col-span-1 flex items-center gap-3 min-w-0 pr-4">
                     <svg
                       className={cn(
-                        "w-[12px] h-[12px] shrink-0 text-[#72943a] transition-transform duration-200",
-                        isExpanded ? "rotate-180" : "rotate-0"
+                        "w-3.5 h-3.5 shrink-0 text-text-muted transition-transform duration-200",
+                        isExpanded ? "rotate-180 text-primary" : "rotate-0"
                       )}
                       fill="none"
                       viewBox="0 0 24 24"
@@ -164,40 +162,40 @@ export default function HostRafflesTable() {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
-                    <span className="font-heading font-medium text-[14px] text-[#e8edd4] truncate">
+                    <span className="font-heading font-bold text-sm text-text-primary truncate">
                       {raffle.title}
                     </span>
                   </div>
                   
                   <div className="hidden sm:block">
-                    <span className="font-sans font-normal text-[13px] text-[#a0d056]">
+                    <span className="font-sans font-semibold text-xs text-text-muted">
                       {raffle.ticketsSold} / {raffle.totalTickets}
                     </span>
                   </div>
                   
                   <div className="hidden sm:block">
-                    <span className="font-heading font-medium text-[14px] text-[#e8edd4]">
+                    <span className="font-heading font-bold text-sm text-text-brand">
                       £{(Number(raffle.pricePerTicket) * raffle.ticketsSold).toFixed(2)}
                     </span>
                   </div>
                   
                   <div>
                     <div className={cn(
-                      "inline-flex h-[22px] px-[10px] items-center justify-center rounded-full",
-                      raffle.status === "ACTIVE" && "bg-[#083b18] text-[#4ade80]",
-                      raffle.status === "ENDED" && "bg-[#3b0808] text-[#f87171]",
-                      raffle.status === "DRAFT" && "bg-[#1a230a] text-[#5a752a] border border-[#2d3c13]",
-                      raffle.status === "PENDING_APPROVAL" && "bg-[#422006] text-[#eab308]",
-                      raffle.status === "CANCELLED" && "bg-[#3b0808] text-[#f87171]"
+                      "inline-flex h-[24px] px-3 items-center justify-center rounded-full border text-[11px] font-bold uppercase tracking-wide",
+                      raffle.status === "ACTIVE" && "bg-success-bg border-[#BBF7D0] text-success-text",
+                      raffle.status === "ENDED" && "bg-[#FEE2E2] border-[#FECACA] text-[#DC2626]",
+                      raffle.status === "DRAFT" && "bg-elevated border-border text-text-muted",
+                      raffle.status === "PENDING_APPROVAL" && "bg-[#FEF3C7] border-[#FDE68A] text-[#D97706]",
+                      raffle.status === "CANCELLED" && "bg-[#FEE2E2] border-[#FECACA] text-[#DC2626]"
                     )}>
-                      <span className="font-sans font-medium text-[11px]">
+                      <span>
                         {raffle.status === "ACTIVE" ? "Live" : raffle.status === "PENDING_APPROVAL" ? "Pending Review" : raffle.status}
                       </span>
                     </div>
                   </div>
                   
                   <div className="hidden md:flex justify-end min-w-0">
-                    <span className="font-sans font-normal text-[13px] text-[#b3b8aa] truncate">
+                    <span className="font-sans font-medium text-xs text-text-muted truncate">
                       {new Date(raffle.endDate).toLocaleDateString()}
                     </span>
                   </div>
@@ -205,56 +203,56 @@ export default function HostRafflesTable() {
 
                 {/* Expanded Details Panel */}
                 {isExpanded && (
-                  <div className="w-full bg-[#0d0d0b] border-t border-[#1a230a] px-[24px] py-[32px] flex flex-col md:flex-row gap-[40px] md:gap-[80px]">
+                  <div className="w-full bg-bg border-t border-divider px-6 py-8 flex flex-col md:flex-row gap-8 md:gap-16">
                     {/* Gross Revenue */}
-                    <div className="flex flex-col gap-[8px]">
-                      <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
                         Gross Revenue
                       </span>
                       <div className="flex flex-col">
-                        <span className="font-heading font-bold text-[24px] text-[#e8edd4]">
+                        <span className="font-heading font-black text-2xl text-text-primary">
                           £{(Number(raffle.pricePerTicket) * raffle.ticketsSold).toFixed(2)}
                         </span>
-                        <span className="font-sans font-normal text-[11px] text-[#5a752a]">
+                        <span className="font-sans font-medium text-[11px] text-text-muted mt-0.5">
                           {raffle.ticketsSold} tickets × £{Number(raffle.pricePerTicket).toFixed(2)}
                         </span>
                       </div>
                     </div>
 
                     {/* Platform Fee */}
-                    <div className="flex flex-col gap-[8px]">
-                      <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
                         Platform Fee
                       </span>
-                      <div className="flex items-center gap-[12px]">
-                        <span className="font-heading font-bold text-[24px] text-[#f76b6b]">
+                      <div className="flex items-center gap-3">
+                        <span className="font-heading font-black text-2xl text-[#dc2626]">
                           - £{((Number(raffle.pricePerTicket) * raffle.ticketsSold) * 0.05).toFixed(2)}
                         </span>
-                        <div className="h-[22px] px-[8px] bg-[#1a230a] border border-[#2d3c13] rounded-full flex items-center justify-center">
-                          <span className="font-sans font-medium text-[10px] text-[#a0d056]">
+                        <div className="h-6 px-2.5 bg-accent-bg border border-primary/30 rounded-full flex items-center justify-center">
+                          <span className="font-sans font-bold text-[10px] text-text-brand uppercase">
                             5% (Standard)
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="hidden md:block w-px bg-[#1a230a] shrink-0 self-stretch" />
+                    <div className="hidden md:block w-px bg-divider shrink-0 self-stretch" />
 
                     {/* Your Earnings */}
-                    <div className="flex flex-col gap-[8px] flex-1">
-                      <span className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.88px] uppercase text-[#5a752a]">
-                        Your Earnings
+                    <div className="flex flex-col gap-1.5 flex-1">
+                      <span className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
+                        Your Net Earnings
                       </span>
                       <div className="flex flex-col relative w-full">
-                        <span className="font-heading font-bold text-[24px] text-[#8cb34a]">
+                        <span className="font-heading font-black text-2xl text-text-brand">
                           £{((Number(raffle.pricePerTicket) * raffle.ticketsSold) * 0.95).toFixed(2)}
                         </span>
-                        <span className="font-sans font-normal text-[11px] text-[#5a752a]">
-                          Paid out on completion
+                        <span className="font-sans font-medium text-[11px] text-text-muted mt-0.5">
+                          Paid out directly on completion
                         </span>
                         
                         {/* Action buttons */}
-                        <div className="mt-4 md:absolute md:bottom-0 md:right-0 md:mt-0 flex gap-4 items-center">
+                        <div className="mt-5 md:absolute md:bottom-0 md:right-0 md:mt-0 flex flex-wrap gap-3 items-center">
                           {raffle.status === "ACTIVE" && (
                             <button
                               onClick={async (e) => {
@@ -273,7 +271,7 @@ export default function HostRafflesTable() {
                                 }
                               }}
                               disabled={drawingId === raffle.id}
-                              className="font-sans font-medium text-[12px] px-[16px] py-[6px] bg-[#8cb34a] disabled:opacity-50 text-[#0d0d0b] rounded-[6px] hover:bg-[#72943a] transition-colors flex items-center"
+                              className="btn-glossy-red font-sans font-bold text-xs uppercase px-4 py-2 text-white rounded-xl shadow-xs transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                             >
                               {drawingId === raffle.id ? "Drawing..." : "Run Draw Now"}
                             </button>
@@ -282,7 +280,7 @@ export default function HostRafflesTable() {
                             <Link
                               href="/dashboard/host/winners"
                               onClick={(e) => e.stopPropagation()}
-                              className="font-sans font-medium text-[12px] px-[16px] py-[6px] bg-[#1a230a] text-[#8cb34a] border border-[#2d3c13] rounded-[6px] hover:bg-[#2d3c13] transition-colors flex items-center"
+                              className="font-sans font-bold text-xs uppercase px-4 py-2 bg-accent-bg text-text-brand border border-primary/30 rounded-xl hover:bg-primary hover:text-white transition-all shadow-xs"
                             >
                               View Winners
                             </Link>
@@ -290,7 +288,7 @@ export default function HostRafflesTable() {
                           <Link
                             href={`/dashboard/host/competitions/${raffle.id}/edit`}
                             onClick={(e) => e.stopPropagation()}
-                            className="font-sans font-medium text-[12px] text-[#5a752a] hover:text-[#e8edd4] transition-colors flex items-center gap-1 group ml-[8px]"
+                            className="font-sans font-bold text-xs uppercase tracking-wider text-text-brand hover:text-primary-hover transition-colors px-2 py-1"
                           >
                             Edit
                           </Link>
@@ -300,9 +298,9 @@ export default function HostRafflesTable() {
                               setSelectedCompForDelete(raffle);
                             }}
                             disabled={deleteMutation.isPending || isDeleting}
-                            className="font-sans font-medium text-[12px] text-red-500 hover:text-red-400 transition-colors flex items-center gap-1 group ml-[8px] cursor-pointer disabled:opacity-50"
+                            className="font-sans font-bold text-xs uppercase tracking-wider text-[#dc2626] hover:text-[#b91c1c] transition-colors px-2 py-1 cursor-pointer disabled:opacity-50"
                           >
-                            Delete Competition
+                            Delete
                           </button>
                         </div>
                       </div>
@@ -314,12 +312,13 @@ export default function HostRafflesTable() {
           })}
           
           {!isLoading && raffles?.length === 0 && (
-            <div className="p-8 text-center text-[#5a752a]">No competitions found.</div>
+            <div className="p-12 text-center text-text-muted font-sans text-sm bg-surface">
+              No competitions found matching criteria.
+            </div>
           )}
         </div>
       </div>
 
-      {/* Pagination component */}
       {/* Pagination component */}
       {!isLoading && meta && meta.total > 0 && (
         <Pagination 

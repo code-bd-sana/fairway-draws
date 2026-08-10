@@ -16,31 +16,31 @@ export default function DrawsTable({
     switch (status) {
       case 'PENDING_APPROVAL':
         return (
-          <span className='px-3 py-1 rounded-full border border-[#D97706]/30 bg-[#78350F] text-[#F59E0B] font-sans font-medium text-[10px]'>
+          <span className='px-3 py-1 rounded-full border border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs'>
             Pending Approval
           </span>
         );
       case 'DRAFT':
         return (
-          <span className='px-3 py-1 rounded-full border border-[#6B7280]/30 bg-[#374151] text-[#9CA3AF] font-sans font-medium text-[10px]'>
+          <span className='px-3 py-1 rounded-full border border-border bg-elevated text-text-muted font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs'>
             Draft
           </span>
         );
       case 'ENDED':
         return (
-          <span className='px-3 py-1 rounded-full border border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80] font-sans font-medium text-[10px]'>
+          <span className='px-3 py-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs'>
             Completed
           </span>
         );
       case 'ACTIVE':
         return (
-          <span className='px-3 py-1 rounded-full border border-[#EAB308]/30 bg-[#854D0E] text-[#FDE047] font-sans font-medium text-[10px]'>
+          <span className='px-3 py-1 rounded-full border border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs'>
             In Progress
           </span>
         );
       case 'CANCELLED':
         return (
-          <span className='px-3 py-1 rounded-full border border-[#EF4444]/30 bg-[#7F1D1D] text-[#F87171] font-sans font-medium text-[10px]'>
+          <span className='px-3 py-1 rounded-full border border-[#FECACA] bg-[#FEE2E2] text-[#DC2626] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs'>
             Cancelled
           </span>
         );
@@ -56,37 +56,37 @@ export default function DrawsTable({
   };
 
   const getTypeStyle = (type: string) => {
-    if (type.includes('Auto')) return 'text-[#4ADE80]';
-    if (type.includes('Manual')) return 'text-[#F59E0B]';
-    return 'text-[#E8EDD4]';
+    if (type.includes('Auto')) return 'text-[#15803D] font-bold';
+    if (type.includes('Manual')) return 'text-[#D97706] font-bold';
+    return 'text-text-primary font-bold';
   };
 
   const [selectedDrawForWinner, setSelectedDrawForWinner] = useState<Raffle | null>(null);
 
   return (
-    <div className='w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto'>
+    <div className='w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card'>
       <table className='w-full min-w-[900px] text-left border-collapse'>
         <thead>
-          <tr className='border-b border-[#2D3C13] bg-[#111210]'>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[20%]'>
+          <tr className='border-b border-divider bg-elevated'>
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[20%]'>
               COMPETITION NAME
             </th>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[20%]'>
-              HOST
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[20%]'>
+              HOST OPERATOR
             </th>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center'>
-              DRAW TYPE
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center'>
+              DRAW ENGINE
             </th>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center'>
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center'>
               END DATE
             </th>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center'>
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center'>
               TOTAL TICKETS
             </th>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center'>
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center'>
               STATUS
             </th>
-            <th className='py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-right'>
+            <th className='py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-right'>
               ACTIONS
             </th>
           </tr>
@@ -100,16 +100,16 @@ export default function DrawsTable({
             return (
               <tr
                 key={draw.id}
-                className={`${i !== draws.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}
+                className={`${i !== draws.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}
               >
                 <td className='py-4 px-6'>
-                  <span className='font-sans font-medium text-[13px] text-[#E8EDD4]'>
+                  <span className='font-heading font-bold text-xs text-text-primary'>
                     {draw.title}
                   </span>
                 </td>
                 <td className='py-4 px-6'>
                   <div className='flex items-center gap-3'>
-                    <div className='w-6 h-6 rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0 overflow-hidden'>
+                    <div className='w-7 h-7 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 overflow-hidden shadow-xs'>
                       {draw.host?.user?.avatarUrl ? (
                         <img
                           src={draw.host.user.avatarUrl}
@@ -117,26 +117,26 @@ export default function DrawsTable({
                           className='w-full h-full object-cover'
                         />
                       ) : (
-                        <span className='font-sans font-medium text-[9px] text-[#8CB34A]'>
+                        <span className='font-sans font-bold text-[10px] text-text-brand'>
                           {hostInitials}
                         </span>
                       )}
                     </div>
-                    <span className='font-sans text-[13px] text-[#72943A]'>{hostName}</span>
+                    <span className='font-sans font-semibold text-xs text-text-muted'>{hostName}</span>
                   </div>
                 </td>
                 <td className='py-4 px-6 text-center'>
-                  <span className={`font-sans font-medium text-[12px] ${getTypeStyle(drawType)}`}>
+                  <span className={`font-sans text-xs ${getTypeStyle(drawType)}`}>
                     {drawType}
                   </span>
                 </td>
                 <td className='py-4 px-6 text-center'>
-                  <span className={`font-sans font-medium text-[12px] text-[#72943A]`}>
+                  <span className={`font-sans font-semibold text-xs text-text-muted`}>
                     {draw.endDate ? format(new Date(draw.endDate), 'dd MMM yyyy HH:mm') : 'N/A'}
                   </span>
                 </td>
                 <td className='py-4 px-6 text-center'>
-                  <span className='font-sans font-medium text-[13px] text-[#E8EDD4]'>
+                  <span className='font-heading font-bold text-xs text-text-primary'>
                     {draw.totalTickets}
                   </span>
                 </td>
@@ -147,7 +147,7 @@ export default function DrawsTable({
                   <div className='flex items-center justify-end gap-3'>
                     <button
                       onClick={() => onSelectDraw(draw)}
-                      className='px-3 py-1.5 rounded-[8px] bg-[#1A230A] border border-[#2D3C13] hover:border-[#8CB34A] text-[#72943A] hover:text-[#E8EDD4] font-sans font-medium text-[12px] transition-all'
+                      className='px-3 py-1.5 rounded-lg bg-surface border border-border hover:bg-elevated text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all shadow-xs cursor-pointer'
                     >
                       Details
                     </button>
@@ -161,7 +161,7 @@ export default function DrawsTable({
 
                       if (hasWinner) {
                         return (
-                          <span className='px-3 py-1.5 rounded-[8px] border border-[#4ADE80]/30 bg-[#4ADE80]/10 text-[#4ADE80] font-sans font-semibold text-[11px] flex items-center gap-1 shrink-0'>
+                          <span className='px-2.5 py-1 rounded-lg border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 shrink-0 shadow-xs'>
                             <span>✓</span> Winner Selected
                           </span>
                         );
@@ -171,7 +171,7 @@ export default function DrawsTable({
                         return (
                           <button
                             onClick={() => setSelectedDrawForWinner(draw)}
-                            className='px-3 py-1.5 rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-sans font-bold text-[12px] shadow-[0_0_12px_rgba(140,179,74,0.35)] transition-all flex items-center gap-1.5 shrink-0'
+                            className='px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-white font-heading font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer active:scale-98'
                           >
                             <span>🏆</span>
                             <span>Select Winner</span>
@@ -180,8 +180,8 @@ export default function DrawsTable({
                       }
 
                       return (
-                        <span className='px-3 py-1 rounded-[6px] border border-[#2D3C13] bg-[#0D0D0B] text-[#5A752A] font-sans text-[11px] shrink-0' title="Available when sold out or expired">
-                          Live (In Progress)
+                        <span className='px-2.5 py-1 rounded-lg border border-border bg-elevated text-text-muted font-sans font-bold text-[10px] uppercase tracking-wider shrink-0' title="Available when sold out or expired">
+                          Live Draw
                         </span>
                       );
                     })()}
@@ -192,7 +192,7 @@ export default function DrawsTable({
           })}
           {draws.length === 0 && (
             <tr>
-              <td colSpan={7} className='py-8 text-center text-[#72943A] font-sans text-sm'>
+              <td colSpan={7} className='py-8 text-center text-text-muted font-sans text-xs font-bold'>
                 No draws found for this filter.
               </td>
             </tr>

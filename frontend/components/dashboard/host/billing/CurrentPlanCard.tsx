@@ -25,22 +25,25 @@ export default function CurrentPlanCard() {
   };
 
   if (isLoading) {
-    return <div className="p-[24px] text-white">Loading subscription...</div>;
+    return <div className="p-6 bg-surface border border-border rounded-card text-text-muted font-sans text-sm animate-pulse">Loading subscription status...</div>;
   }
 
   if (!subscription || subscription.status !== 'ACTIVE') {
     return (
-      <div className="w-full bg-[#1a230a] border border-[#2d3c13] rounded-[16px] p-[24px] lg:p-[32px] flex flex-col sm:flex-row sm:items-center justify-between gap-[24px]">
-        <div className="flex flex-col gap-[8px]">
-          <h2 className="font-heading font-medium text-[20px] text-[#e8edd4]">
+      <div className="w-full bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-card">
+        <div className="flex flex-col gap-2">
+          <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
             No Active Subscription
           </h2>
-          <p className="font-sans font-medium text-[14px] text-[#ff4d4f]">
-            {subscription?.status === 'CANCELLED' ? 'Your subscription was cancelled.' : 'You do not have an active plan.'}
+          <p className="font-sans font-semibold text-xs text-[#DC2626]">
+            {subscription?.status === 'CANCELLED' ? 'Your subscription was cancelled.' : 'You do not have an active host plan.'}
           </p>
         </div>
-        <div className="flex items-center gap-[24px]">
-          <a href="/pricing" className="h-[40px] flex items-center justify-center px-[24px] bg-[#8cb34a] hover:bg-[#72943A] rounded-[8px] font-sans font-semibold text-[13px] text-[#1a230a] transition-colors">
+        <div className="flex items-center gap-4">
+          <a 
+            href="/pricing" 
+            className="btn-glossy-red h-[42px] flex items-center justify-center px-6 rounded-xl font-heading font-bold text-xs uppercase tracking-wider text-white transition-all shadow-md active:scale-98"
+          >
             Subscribe Now
           </a>
         </div>
@@ -56,29 +59,34 @@ export default function CurrentPlanCard() {
   const tx = subscription.transaction;
 
   return (
-    <div className="w-full bg-[#1a230a] border border-[#2d3c13] rounded-[16px] p-[24px] lg:p-[32px] flex flex-col sm:flex-row sm:items-center justify-between gap-[24px]">
+    <div className="w-full bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-card">
       
       {/* Plan Details */}
-      <div className="flex flex-col gap-[8px]">
-        <h2 className="font-heading font-medium text-[20px] text-[#e8edd4]">
-          Current Plan: {subscription.plan.name}
-        </h2>
-        <p className="font-sans font-medium text-[14px] text-[#8cb34a]">
-          £{subscription.plan.price}/month · Renews {formattedEndDate} ({remainingDays} days left)
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
+            Current Plan: {subscription.plan.name}
+          </h2>
+          <span className="px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] text-success-text font-bold text-[10px] uppercase">
+            Active
+          </span>
+        </div>
+        <p className="font-heading font-bold text-sm text-text-brand">
+          £{subscription.plan.price}/month · Renews {formattedEndDate} ({remainingDays} days remaining)
         </p>
-        <div className="font-sans text-[12px] text-text-muted mt-2 space-y-1">
-          <p><strong>Start Date:</strong> {formattedStartDate}</p>
-          <p><strong>Payment Status:</strong> {tx?.status || 'COMPLETED'}</p>
-          {tx?.gatewayTransactionId && <p><strong>Transaction ID:</strong> {tx.gatewayTransactionId}</p>}
+        <div className="font-sans text-xs text-text-muted mt-2 space-y-1">
+          <p><strong className="text-text-primary">Start Date:</strong> {formattedStartDate}</p>
+          <p><strong className="text-text-primary">Payment Status:</strong> <span className="text-text-brand font-bold">{tx?.status || 'COMPLETED'}</span></p>
+          {tx?.gatewayTransactionId && <p><strong className="text-text-primary">Transaction ID:</strong> {tx.gatewayTransactionId}</p>}
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-[24px]">
+      <div className="flex items-center gap-6 shrink-0">
         <button 
           onClick={handleCancel} 
           disabled={isCancelling}
-          className="font-sans font-medium text-[13px] text-[#ff4d4f] hover:text-[#ff7875] transition-colors disabled:opacity-50"
+          className="font-sans font-bold text-xs uppercase tracking-wider text-[#DC2626] hover:text-[#B91C1C] transition-colors disabled:opacity-50 cursor-pointer"
         >
           {isCancelling ? 'Cancelling...' : 'Cancel Subscription'}
         </button>

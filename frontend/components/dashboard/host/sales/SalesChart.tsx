@@ -18,17 +18,17 @@ interface Props {
 
 export default function SalesChart({ data }: Props) {
   return (
-    <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px]">
-      <div className="flex items-center justify-between mb-[24px]">
+    <div className="w-full bg-surface border border-border rounded-card p-6 lg:p-8 shadow-card">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h3 className="font-heading font-medium text-[18px] text-[#e8edd4]">
+          <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
             Revenue Overview
           </h3>
-          <p className="font-sans font-normal text-[14px] text-[#b3b8aa]">
-            Ticket sales across all active competitions over the last 7 days.
+          <p className="font-sans text-xs text-text-muted">
+            Ticket sales across all active competitions over time.
           </p>
         </div>
-        <select className="bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] px-[12px] py-[8px] font-sans font-medium text-[12px] text-[#e8edd4] outline-none hover:border-[#8cb34a] transition-colors cursor-pointer">
+        <select className="bg-elevated border border-border-medium rounded-xl px-3 py-2 font-sans font-bold text-xs text-text-primary outline-none hover:border-primary transition-all cursor-pointer">
           <option>Last 7 Days</option>
           <option>Last 30 Days</option>
           <option>This Year</option>
@@ -40,39 +40,40 @@ export default function SalesChart({ data }: Props) {
           <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8cb34a" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#8cb34a" stopOpacity={0} />
+                <stop offset="5%" stopColor="#0b4d35" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="#0b4d35" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#2d3c13" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2EADF" />
             <XAxis 
               dataKey="date" 
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#5a752a", fontSize: 12, fontFamily: "Inter" }}
+              tick={{ fill: "#5e766c", fontSize: 12, fontFamily: "Inter", fontWeight: 500 }}
               dy={10}
             />
             <YAxis 
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#5a752a", fontSize: 12, fontFamily: "Inter" }}
+              tick={{ fill: "#5e766c", fontSize: 12, fontFamily: "Inter", fontWeight: 500 }}
               tickFormatter={(val) => `£${val}`}
             />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: "#1a230a", 
-                border: "1px solid #8cb34a",
-                borderRadius: "8px",
+                backgroundColor: "#FFFFFF", 
+                border: "1px solid #E2EADF",
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                 fontFamily: "Inter"
               }}
-              itemStyle={{ color: "#e8edd4" }}
-              labelStyle={{ color: "#8cb34a", marginBottom: "4px" }}
+              itemStyle={{ color: "#0e1e17", fontWeight: "bold" }}
+              labelStyle={{ color: "#0b4d35", fontWeight: "bold", marginBottom: "4px" }}
               formatter={(value: any) => [`£${value}`, "Revenue"]}
             />
             <Area 
               type="monotone" 
               dataKey="revenue" 
-              stroke="#8cb34a" 
+              stroke="#0b4d35" 
               strokeWidth={3}
               fillOpacity={1} 
               fill="url(#colorRevenue)" 

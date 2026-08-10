@@ -7,71 +7,71 @@ export default function OrdersStatsCards() {
   const { data: stats, isLoading } = useAdminOrdersStats();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
       
       {/* Total Orders */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col gap-2">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
-          Total Orders
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+          Total Platform Orders
         </span>
         <div className="flex flex-col gap-1 mt-1">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">
             {isLoading ? "..." : stats?.totalOrders?.toLocaleString() || 0}
           </span>
           <div className="flex items-center gap-1.5 mt-2">
-            <div className="px-2 py-0.5 rounded-full bg-[#083b18] flex items-center justify-center">
-              <span className="font-sans font-medium text-[10px] text-[#4ADE80]">Transactions</span>
+            <div className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center">
+              <span className="font-sans font-bold text-[10px] text-text-brand">Completed Purchases</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Total Tickets Sold */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col gap-2">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
           Total Tickets Sold
         </span>
         <div className="flex flex-col gap-1 mt-1">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">
             {isLoading ? "..." : stats?.totalTicketsSold?.toLocaleString() || 0}
           </span>
           <div className="flex items-center gap-1.5 mt-2">
-            <div className="px-2 py-0.5 rounded-full bg-[#083b18] flex items-center justify-center">
-              <span className="font-sans font-medium text-[10px] text-[#4ADE80]">Tickets</span>
+            <div className="px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] flex items-center justify-center">
+              <span className="font-sans font-bold text-[10px] text-success-text">Raffle Entries</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Total Order Value */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col gap-2">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
-          Total Order Value
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+          Total Ticket Order Value
         </span>
         <div className="flex flex-col gap-1 mt-1">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">
             {isLoading ? "..." : `£${stats?.totalOrderValue?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`}
           </span>
           <div className="flex items-center gap-1.5 mt-2">
-            <div className="px-2 py-0.5 rounded-full bg-[#083b18] flex items-center justify-center">
-              <span className="font-sans font-medium text-[10px] text-[#4ADE80]">Revenue</span>
+            <div className="px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] flex items-center justify-center">
+              <span className="font-sans font-bold text-[10px] text-success-text">Gross Sales</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Refunded Orders */}
-      <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-6 flex flex-col gap-2">
-        <span className="font-sans text-[11px] font-medium text-[#5A752A] uppercase tracking-[1px]">
-          Refunded Orders
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+          Refunded Ticket Orders
         </span>
         <div className="flex flex-col gap-1 mt-1">
-          <span className="font-heading font-bold text-[32px] text-[#E8EDD4] leading-none">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-text-primary leading-none">
             {isLoading ? "..." : stats?.refundedOrders?.toLocaleString() || 0}
           </span>
           <div className="flex items-center gap-1.5 mt-2">
-            <div className="px-2 py-0.5 rounded-full bg-[#7F1D1D] flex items-center justify-center">
-              <span className="font-sans font-medium text-[10px] text-[#f76b6b]">Refunded</span>
+            <div className="px-2.5 py-0.5 rounded-full bg-[#FEE2E2] border border-[#FECACA] flex items-center justify-center">
+              <span className="font-sans font-bold text-[10px] text-[#DC2626]">Refunded</span>
             </div>
           </div>
         </div>

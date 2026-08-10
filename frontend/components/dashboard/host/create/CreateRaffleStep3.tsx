@@ -36,27 +36,27 @@ export default function CreateRaffleStep3({ formData, updateForm, onNext, onPrev
 
   return (
     <div className="flex flex-col w-full animate-in fade-in zoom-in-95 duration-200">
-      <div className="flex flex-col gap-[8px] mb-[32px]">
-        <h2 className="font-heading font-medium text-[24px] text-[#e8edd4]">
-          Media & Images
+      <div className="flex flex-col gap-2 mb-8">
+        <h2 className="font-heading font-black text-2xl text-text-primary uppercase tracking-tight">
+          Media &amp; Images
         </h2>
-        <p className="font-sans font-normal text-[14px] text-[#b3b8aa]">
-          Upload high-quality images of the prize. The first image will be the cover.
+        <p className="font-sans text-sm text-text-muted">
+          Upload high-quality images of the prize. The main image will serve as the cover card.
         </p>
       </div>
 
-      <div className="flex flex-col gap-[24px]">
+      <div className="flex flex-col gap-6">
         {/* Main Cover Image Upload */}
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
             Cover Image
           </label>
           <div 
             onClick={!formData.coverImage ? handleUploadClick : undefined}
-            className={`w-full h-[240px] border-2 border-dashed rounded-[16px] flex flex-col items-center justify-center transition-colors relative overflow-hidden group ${
+            className={`w-full h-[250px] border-2 border-dashed rounded-card flex flex-col items-center justify-center transition-all relative overflow-hidden group ${
               formData.coverImage 
-                ? "border-[#2d3c13] bg-[#0d0d0b]" 
-                : "border-[#2d3c13] hover:border-[#8cb34a] hover:bg-[#1a230a]/50 cursor-pointer bg-[#0d0d0b]"
+                ? "border-border bg-surface" 
+                : "border-border-medium hover:border-primary hover:bg-accent-bg/40 cursor-pointer bg-elevated"
             }`}
           >
             {formData.coverImage ? (
@@ -67,10 +67,10 @@ export default function CreateRaffleStep3({ formData, updateForm, onNext, onPrev
                   alt="Cover preview" 
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-xs">
                   <button 
                     onClick={handleClearImage}
-                    className="h-[40px] px-[16px] bg-[#f76b6b] text-white font-sans font-medium text-[13px] rounded-[8px] hover:bg-[#ef4444] transition-colors"
+                    className="h-[40px] px-5 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
                   >
                     Remove Image
                   </button>
@@ -78,16 +78,16 @@ export default function CreateRaffleStep3({ formData, updateForm, onNext, onPrev
               </>
             ) : (
               <>
-                <div className="w-[48px] h-[48px] rounded-full bg-[#1a230a] flex items-center justify-center mb-[16px]">
-                  <svg className="w-6 h-6 text-[#8cb34a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="w-12 h-12 rounded-2xl bg-accent-bg border border-primary/30 flex items-center justify-center mb-4 shadow-xs">
+                  <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                   </svg>
                 </div>
-                <span className="font-sans font-medium text-[14px] text-[#e8edd4]">
+                <span className="font-heading font-bold text-sm text-text-primary uppercase tracking-wide">
                   Click to upload cover image
                 </span>
-                <span className="font-sans font-normal text-[12px] text-[#5a752a] mt-1">
-                  SVG, PNG, JPG or GIF (Recommended image size: 800x600px, 4:3 aspect ratio for best display)
+                <span className="font-sans text-xs text-text-muted mt-1.5 text-center px-4">
+                  SVG, PNG, JPG or WEBP (Recommended: 800x600px, 4:3 aspect ratio)
                 </span>
               </>
             )}
@@ -103,21 +103,19 @@ export default function CreateRaffleStep3({ formData, updateForm, onNext, onPrev
       </div>
 
       {/* Footer Actions */}
-      <div className="flex items-center justify-between mt-[40px] pt-[24px] border-t border-[#2d3c13]">
+      <div className="flex items-center justify-between mt-10 pt-6 border-t border-divider">
         <button
           onClick={onPrev}
-          className="h-[48px] px-[24px] bg-transparent border border-[#2d3c13] hover:bg-[#1a230a] text-[#5a752a] hover:text-[#e8edd4] transition-colors rounded-[8px] flex items-center justify-center font-sans font-medium text-[14px]"
+          className="h-[46px] px-6 bg-elevated border border-border hover:bg-surface text-text-primary transition-all rounded-xl font-heading font-bold text-xs uppercase tracking-wider cursor-pointer"
         >
-          Back
+          ← Back
         </button>
         <button
           onClick={onNext}
           disabled={!formData.coverImage}
-          className="h-[48px] px-[32px] bg-[#8cb34a] disabled:bg-[#8cb34a]/50 disabled:cursor-not-allowed hover:bg-[#72943a] transition-colors rounded-[8px] flex items-center justify-center"
+          className="btn-glossy-red h-[46px] px-8 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          <span className="font-heading font-medium text-[16px] text-[#0d0d0b]">
-            Next Step
-          </span>
+          <span>Next Step →</span>
         </button>
       </div>
     </div>

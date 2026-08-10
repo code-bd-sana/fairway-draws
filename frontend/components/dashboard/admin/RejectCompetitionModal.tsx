@@ -14,20 +14,20 @@ export default function RejectCompetitionModal({ isOpen, onClose, competitionDat
   return (
     <>
       <div 
-        className="fixed inset-0 z-50 bg-[#0D0D0B]/80 backdrop-blur-sm transition-opacity" 
+        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity" 
         onClick={onClose} 
       />
       
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[560px] bg-[#161810] border border-[#2D3C13] rounded-[16px] shadow-2xl z-50 animate-fadeIn flex flex-col p-8">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[560px] bg-surface border border-border rounded-card shadow-card z-50 animate-fadeIn flex flex-col p-6 lg:p-8">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading font-bold text-[20px] text-[#E8EDD4]">
+          <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
             Reason for Rejection
           </h2>
           <button 
             onClick={onClose}
-            className="text-[#5A752A] hover:text-[#E8EDD4] transition-colors"
+            className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -36,9 +36,9 @@ export default function RejectCompetitionModal({ isOpen, onClose, competitionDat
         </div>
 
         {/* Subtitle */}
-        <div className="flex items-center gap-1.5 mb-6">
-          <span className="font-sans text-[13px] text-[#72943A]">Rejecting:</span>
-          <span className="font-sans text-[13px] text-[#E8EDD4]">{competitionData.title}</span>
+        <div className="flex items-center gap-1.5 mb-5 bg-elevated border border-border-medium rounded-xl p-3.5">
+          <span className="font-sans font-bold text-xs text-text-muted">Rejecting Competition:</span>
+          <span className="font-heading font-bold text-xs text-text-primary truncate">{competitionData.title}</span>
         </div>
 
         {/* Textarea */}
@@ -46,14 +46,14 @@ export default function RejectCompetitionModal({ isOpen, onClose, competitionDat
           <textarea 
             rows={5}
             placeholder="Describe the issue and what the host should change before resubmitting..."
-            className="w-full bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] p-4 text-[#E8EDD4] font-sans text-[13px] placeholder:text-[#5A752A] outline-none focus:border-[#43581E] resize-none transition-colors"
+            className="w-full bg-elevated border border-border-medium rounded-xl p-4 text-text-primary font-sans text-xs placeholder:text-text-muted outline-none focus:border-primary resize-none transition-colors"
           />
         </div>
 
         {/* Button */}
         <button 
           onClick={onClose}
-          className="w-full h-[48px] rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-heading font-medium text-[14px] transition-colors flex items-center justify-center"
+          className="btn-glossy-red w-full h-11 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 cursor-pointer flex items-center justify-center"
         >
           Send Feedback & Request Changes
         </button>

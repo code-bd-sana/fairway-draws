@@ -161,15 +161,15 @@ export default function AdminCompetitionsTable() {
   const getStatusPill = (status: string) => {
     switch (status) {
       case "ACTIVE":
-        return <span className="px-3 py-1 rounded-full border border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80] font-sans font-medium text-[10px]">Live</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Live</span>;
       case "PENDING_APPROVAL":
-        return <span className="px-3 py-1 rounded-full border border-[#D97706]/30 bg-[#78350F] text-[#F59E0B] font-sans font-medium text-[10px]">Pending</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Pending</span>;
       case "CANCELLED":
-        return <span className="px-3 py-1 rounded-full border border-[#EF4444]/30 bg-[#7F1D1D] text-[#f76b6b] font-sans font-medium text-[10px]">Rejected</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#FECACA] bg-[#FEE2E2] text-[#DC2626] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Rejected</span>;
       case "ENDED":
-        return <span className="px-3 py-1 rounded-full border border-[#A78BFA]/30 bg-[#312E81] text-[#C4B5FD] font-sans font-medium text-[10px]">Ended</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#DDD6FE] bg-[#F3E8FF] text-[#7C3AED] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Ended</span>;
       case "DRAFT":
-        return <span className="px-3 py-1 rounded-full border border-[#D97706]/30 bg-[#78350F] text-[#F59E0B] font-sans font-medium text-[10px]">Draft</span>;
+        return <span className="px-3 py-1 rounded-full border border-border bg-elevated text-text-muted font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Draft</span>;
       default:
         return null;
     }
@@ -179,18 +179,18 @@ export default function AdminCompetitionsTable() {
     <div className="flex flex-col gap-6">
       
       {/* Controls Row */}
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-[#111210] p-4 rounded-[16px] border border-[#2D3C13]">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface p-4 rounded-card border border-border shadow-card">
         
-        {/* Filter Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar border-r border-[#2D3C13] pr-4 mr-2">
+        {/* Left: Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar lg:border-r lg:border-divider lg:pr-4 lg:mr-2">
           {["All", "Live", "Pending", "Ended", "Rejected", "Draft"].map((filter) => (
             <button
               key={filter}
               onClick={() => handleFilterChange(filter)}
-              className={`px-4 py-1.5 rounded-full text-[12px] font-sans font-medium transition-colors whitespace-nowrap ${
+              className={`px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                 activeFilter === filter 
-                  ? 'border border-[#8CB34A] text-[#8CB34A] bg-[#1A230A]' 
-                  : 'border border-[#2D3C13] text-[#72943A] hover:border-[#43581E] hover:text-[#E8EDD4]'
+                  ? 'bg-primary text-white shadow-xs border border-primary' 
+                  : 'bg-surface border border-border text-text-muted hover:text-text-primary'
               }`}
             >
               {filter}
@@ -198,9 +198,9 @@ export default function AdminCompetitionsTable() {
           ))}
         </div>
 
-        {/* Search Input */}
-        <div className="flex items-center h-[40px] w-full lg:w-[360px] bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] px-3">
-          <svg className="w-4 h-4 text-[#72943A] shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+        {/* Right: Search Input */}
+        <div className="flex items-center h-10 w-full lg:w-[360px] bg-elevated border border-border-medium rounded-xl px-3 focus-within:border-primary transition-all">
+          <svg className="w-4 h-4 text-text-muted shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
           <input 
@@ -208,54 +208,54 @@ export default function AdminCompetitionsTable() {
             placeholder="Search by title, host name, or email..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-transparent border-none outline-none text-[#E8EDD4] text-[13px] placeholder:text-[#5A752A] w-full ml-2 font-sans"
+            className="bg-transparent border-none outline-none text-text-primary text-xs placeholder:text-text-muted w-full ml-2 font-sans font-semibold"
           />
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto">
+      <div className="w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card">
         <table className="w-full min-w-[1000px] text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#2D3C13] bg-[#111210]">
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[25%]">TITLE / HOST</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[12%]">CATEGORY</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[12%] text-center">PRICE/TICKET</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[18%]">TICKETS SOLD</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center">STATUS</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[13%] text-center">CREATED</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-right">ACTIONS</th>
+            <tr className="border-b border-divider bg-elevated">
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[25%]">TITLE / HOST</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[12%]">CATEGORY</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[12%] text-center">PRICE/TICKET</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[18%]">TICKETS SOLD</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center">STATUS</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[13%] text-center">CREATED</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {isLoading && (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={`skeleton-${i}`} className="border-b border-[#2D3C13]">
+                <tr key={`skeleton-${i}`} className="border-b border-divider">
                   <td className="py-4 px-6">
                     <div className="flex flex-col gap-2">
-                      <div className="w-3/4 h-[14px] bg-[#1a230a] rounded animate-pulse"></div>
-                      <div className="w-1/2 h-[12px] bg-[#1a230a] rounded animate-pulse"></div>
+                      <div className="w-3/4 h-3.5 bg-elevated rounded animate-pulse"></div>
+                      <div className="w-1/2 h-3 bg-elevated rounded animate-pulse"></div>
                     </div>
                   </td>
-                  <td className="py-4 px-6"><div className="w-16 h-[14px] bg-[#1a230a] rounded animate-pulse"></div></td>
-                  <td className="py-4 px-6 text-center"><div className="w-12 h-[14px] bg-[#1a230a] rounded animate-pulse mx-auto"></div></td>
+                  <td className="py-4 px-6"><div className="w-16 h-3.5 bg-elevated rounded animate-pulse"></div></td>
+                  <td className="py-4 px-6 text-center"><div className="w-12 h-3.5 bg-elevated rounded animate-pulse mx-auto"></div></td>
                   <td className="py-4 px-6">
                     <div className="flex flex-col gap-2 w-full max-w-[180px]">
-                      <div className="w-10 h-[12px] bg-[#1a230a] rounded animate-pulse"></div>
-                      <div className="w-full h-1 bg-[#1a230a] rounded-full animate-pulse"></div>
+                      <div className="w-10 h-3 bg-elevated rounded animate-pulse"></div>
+                      <div className="w-full h-1 bg-elevated rounded-full animate-pulse"></div>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-center"><div className="w-14 h-[22px] bg-[#1a230a] rounded-full animate-pulse mx-auto"></div></td>
-                  <td className="py-4 px-6 text-center"><div className="w-20 h-[14px] bg-[#1a230a] rounded animate-pulse mx-auto"></div></td>
-                  <td className="py-4 px-6 text-right"><div className="w-16 h-[20px] bg-[#1a230a] rounded animate-pulse ml-auto"></div></td>
+                  <td className="py-4 px-6 text-center"><div className="w-14 h-5 bg-elevated rounded-full animate-pulse mx-auto"></div></td>
+                  <td className="py-4 px-6 text-center"><div className="w-20 h-3.5 bg-elevated rounded animate-pulse mx-auto"></div></td>
+                  <td className="py-4 px-6 text-right"><div className="w-16 h-5 bg-elevated rounded animate-pulse ml-auto"></div></td>
                 </tr>
               ))
             )}
             
             {!isLoading && raffles.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-12 px-6 text-center text-[#5A752A] font-sans text-sm">
-                  No competitions found.
+                <td colSpan={7} className="py-12 px-6 text-center text-text-muted font-sans text-xs">
+                  No competitions found matching your search.
                 </td>
               </tr>
             )}
@@ -266,26 +266,26 @@ export default function AdminCompetitionsTable() {
               const hostEmail = comp.host?.user?.email || '';
 
               return (
-                <tr key={comp.id} className={`${i !== raffles.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}>
+                <tr key={comp.id} className={`${i !== raffles.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}>
                   <td className="py-4 px-6">
-                    <div className="flex flex-col gap-1">
-                      <span className="font-sans font-medium text-[13px] text-[#E8EDD4] truncate block max-w-[280px]">{comp.title}</span>
-                      <span className="font-sans text-[11px] text-[#72943A] truncate block max-w-[280px]">{hostName} ({hostEmail})</span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-heading font-bold text-xs text-text-primary truncate block max-w-[280px]">{comp.title}</span>
+                      <span className="font-sans font-medium text-[11px] text-text-muted truncate block max-w-[280px]">{hostName} ({hostEmail})</span>
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <span className="font-sans text-[13px] text-[#72943A]">{comp.category || 'N/A'}</span>
+                    <span className="font-sans font-semibold text-xs text-text-muted">{comp.category || 'N/A'}</span>
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">£{Number(comp.pricePerTicket).toFixed(2)}</span>
+                    <span className="font-heading font-black text-xs text-text-primary">£{Number(comp.pricePerTicket).toFixed(2)}</span>
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex flex-col gap-1.5 w-full max-w-[180px]">
                       <div className="flex items-center justify-between w-full">
-                        <span className="font-sans font-medium text-[12px] text-[#E8EDD4]">{comp.ticketsSold}/{comp.totalTickets}</span>
+                        <span className="font-heading font-bold text-xs text-text-primary">{comp.ticketsSold}/{comp.totalTickets}</span>
                         <button
                           onClick={() => setSelectedCompForTickets(comp)}
-                          className="text-[11px] font-sans font-medium text-[#8CB34A] hover:text-[#A0D056] hover:underline cursor-pointer flex items-center gap-0.5"
+                          className="text-[11px] font-sans font-bold text-text-brand hover:underline cursor-pointer flex items-center gap-0.5"
                           title="View Ticket Numbers & Buyer Details"
                         >
                           <span>🎟️</span>
@@ -293,13 +293,13 @@ export default function AdminCompetitionsTable() {
                         </button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-full h-1 bg-[#0D0D0B] rounded-full overflow-hidden border border-[#2D3C13]">
+                        <div className="w-full h-1 bg-elevated rounded-full overflow-hidden border border-border-medium">
                           <div 
-                            className="h-full bg-[#8CB34A] rounded-full" 
+                            className="h-full bg-primary rounded-full" 
                             style={{ width: `${progress}%` }}
                           />
                         </div>
-                        <span className="font-sans text-[10px] text-[#5A752A] shrink-0 w-[24px] text-right">{progress}%</span>
+                        <span className="font-sans font-bold text-[10px] text-text-muted shrink-0 w-[24px] text-right">{progress}%</span>
                       </div>
                     </div>
                   </td>
@@ -307,7 +307,7 @@ export default function AdminCompetitionsTable() {
                     {getStatusPill(comp.status)}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <span className="font-sans font-medium text-[12px] text-[#72943A]">
+                    <span className="font-sans font-semibold text-xs text-text-muted">
                       {comp.createdAt ? format(new Date(comp.createdAt), 'dd MMM yyyy') : 'N/A'}
                     </span>
                   </td>
@@ -323,7 +323,7 @@ export default function AdminCompetitionsTable() {
 
                         if (hasWinner) {
                           return (
-                            <span className="px-2.5 py-1 rounded-[6px] border border-[#4ADE80]/30 bg-[#4ADE80]/10 text-[#4ADE80] font-sans font-semibold text-[11px] flex items-center gap-1 shrink-0">
+                            <span className="px-2.5 py-1 rounded-lg border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 shrink-0 shadow-xs">
                               <span>✓</span> Winner Selected
                             </span>
                           );
@@ -333,7 +333,7 @@ export default function AdminCompetitionsTable() {
                           return (
                             <button
                               onClick={() => setSelectedCompForWinner(comp)}
-                              className="px-3 py-1 rounded-[6px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-sans font-bold text-[11px] shadow-[0_0_10px_rgba(140,179,74,0.3)] transition-all flex items-center gap-1 shrink-0"
+                              className="px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-white font-heading font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer active:scale-98"
                             >
                               <span>🏆</span>
                               <span>Select Winner</span>
@@ -342,15 +342,15 @@ export default function AdminCompetitionsTable() {
                         }
 
                         return (
-                          <span className="px-2.5 py-1 rounded-[6px] border border-[#2D3C13] bg-[#0D0D0B] text-[#5A752A] font-sans text-[11px] shrink-0" title="Available when sold out or expired">
-                            Live (In Progress)
+                          <span className="px-2.5 py-1 rounded-lg border border-border bg-elevated text-text-muted font-sans font-bold text-[10px] uppercase tracking-wider shrink-0" title="Available when sold out or expired">
+                            Live Draw
                           </span>
                         );
                       })()}
                       {/* View Tickets Modal Action */}
                       <button 
                         onClick={() => setSelectedCompForTickets(comp)}
-                        className="text-[#5A752A] hover:text-[#8CB34A] transition-colors cursor-pointer p-1 rounded hover:bg-[#1A230A]" 
+                        className="text-text-muted hover:text-text-primary transition-colors cursor-pointer p-1 rounded-md hover:bg-elevated" 
                         title="View Ticket Numbers & Buyer Details"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -362,11 +362,11 @@ export default function AdminCompetitionsTable() {
                       <button 
                         onClick={() => handleExportRaffleTicketsCSV(comp)}
                         disabled={exportingRaffleId === comp.id}
-                        className="text-[#5A752A] hover:text-[#8CB34A] transition-colors disabled:opacity-50 cursor-pointer p-1 rounded hover:bg-[#1A230A]" 
+                        className="text-text-muted hover:text-text-primary transition-colors disabled:opacity-50 cursor-pointer p-1 rounded-md hover:bg-elevated" 
                         title={comp.ticketsSold > 0 ? "Export Competition Ticket Sales CSV" : "No tickets sold yet"}
                       >
                         {exportingRaffleId === comp.id ? (
-                          <div className="w-4 h-4 border-2 border-[#8CB34A] border-t-transparent rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                         ) : (
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -378,7 +378,7 @@ export default function AdminCompetitionsTable() {
                       <button 
                         onClick={() => setSelectedCompForDelete(comp)}
                         disabled={deleteMutation.isPending || isDeleting}
-                        className="text-[#5A752A] hover:text-[#EF4444] transition-colors disabled:opacity-50 cursor-pointer p-1 rounded hover:bg-[#1A230A]" 
+                        className="text-[#DC2626] hover:text-[#b91c1c] transition-colors disabled:opacity-50 cursor-pointer p-1 rounded-md hover:bg-elevated" 
                         title="Delete Competition"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -396,12 +396,12 @@ export default function AdminCompetitionsTable() {
 
       {/* Pagination Controls */}
       {!isLoading && raffles.length > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#111210] p-4 rounded-[16px] border border-[#2D3C13]">
-          <div className="font-sans text-[13px] text-[#72943A]">
-            Showing <span className="text-[#E8EDD4] font-medium">{raffles.length}</span> of{" "}
-            <span className="text-[#E8EDD4] font-medium">{totalItems}</span> competitions
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-surface p-4 rounded-card border border-border shadow-card">
+          <div className="font-sans text-xs text-text-muted">
+            Showing <span className="text-text-primary font-bold">{raffles.length}</span> of{" "}
+            <span className="text-text-primary font-bold">{totalItems}</span> competitions
             {totalPages > 1 && (
-              <span> (Page <span className="text-[#8CB34A] font-medium">{page}</span> of {totalPages})</span>
+              <span> (Page <span className="text-text-brand font-bold">{page}</span> of {totalPages})</span>
             )}
           </div>
 

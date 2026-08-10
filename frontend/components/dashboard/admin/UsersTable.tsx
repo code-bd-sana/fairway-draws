@@ -64,9 +64,9 @@ export default function UsersTable() {
 
   const getStatusPill = (isBlocked: boolean) => {
     if (isBlocked) {
-      return <span className="px-3 py-1 rounded-full border border-[#EF4444]/30 bg-[#7F1D1D] text-[#f76b6b] font-sans font-medium text-[10px]">Blocked</span>;
+      return <span className="px-3 py-1 rounded-full border border-[#FECACA] bg-[#FEE2E2] text-[#DC2626] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Blocked</span>;
     }
-    return <span className="px-3 py-1 rounded-full border border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80] font-sans font-medium text-[10px]">Active</span>;
+    return <span className="px-3 py-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Active</span>;
   };
 
   const getInitials = (firstName: string | null, lastName: string | null, email: string) => {
@@ -93,10 +93,10 @@ export default function UsersTable() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         
         {/* Left: Search & Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-1">
           {/* Search Input */}
-          <div className="flex items-center h-[40px] w-full sm:w-[320px] bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] px-3">
-            <svg className="w-4 h-4 text-[#72943A] shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <div className="flex items-center h-10 w-full sm:w-[320px] bg-elevated border border-border-medium rounded-xl px-3 focus-within:border-primary transition-all">
+            <svg className="w-4 h-4 text-text-muted shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
             <input 
@@ -104,7 +104,7 @@ export default function UsersTable() {
               placeholder="Search users by name or email..." 
               value={search}
               onChange={handleSearchChange}
-              className="bg-transparent border-none outline-none text-[#E8EDD4] text-[13px] placeholder:text-[#5A752A] w-full ml-2 font-sans"
+              className="bg-transparent border-none outline-none text-text-primary text-xs placeholder:text-text-muted w-full ml-2 font-sans font-semibold"
             />
           </div>
 
@@ -114,10 +114,10 @@ export default function UsersTable() {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-1.5 rounded-full text-[12px] font-sans font-medium transition-colors whitespace-nowrap ${
+                className={`px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   activeFilter === filter 
-                    ? 'border border-[#8CB34A] text-[#8CB34A]' 
-                    : 'border border-[#2D3C13] text-[#72943A] hover:border-[#43581E] hover:text-[#E8EDD4]'
+                    ? 'bg-primary text-white shadow-xs' 
+                    : 'bg-surface border border-border text-text-muted hover:text-text-primary'
                 }`}
               >
                 {filter}
@@ -130,96 +130,96 @@ export default function UsersTable() {
         <button 
           onClick={handleExportCSV}
           disabled={filteredUsers.length === 0}
-          className="h-[40px] px-4 bg-transparent border border-[#2D3C13] hover:bg-[#1A230A] rounded-[8px] flex items-center justify-center gap-2 transition-colors shrink-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="h-10 px-4 bg-surface border border-border hover:bg-elevated rounded-xl flex items-center justify-center gap-2 transition-all shrink-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
         >
-          <svg className="w-4 h-4 text-[#8CB34A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-4 h-4 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
           </svg>
-          <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">Export CSV</span>
+          <span className="font-heading font-bold text-xs uppercase tracking-wider text-text-primary">Export CSV</span>
         </button>
 
       </div>
 
       {/* Table Container */}
-      <div className="w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto">
+      <div className="w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card">
         <table className="w-full min-w-[900px] text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#2D3C13] bg-[#111210]">
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[30%]">NAME / EMAIL</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%]">JOINED</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center">TICKETS</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center">SPENT</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%]">STATUS</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-right">ACTIONS</th>
+            <tr className="border-b border-divider bg-elevated">
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[30%]">NAME / EMAIL</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%]">JOINED</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center">TICKETS</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center">SPENT</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%]">STATUS</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, idx) => (
-                <tr key={idx} className="border-b border-[#2D3C13] last:border-b-0">
+                <tr key={idx} className="border-b border-divider last:border-b-0">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3 animate-pulse">
-                      <div className="w-8 h-8 rounded-full bg-[#1C2012] shrink-0" />
+                      <div className="w-8 h-8 rounded-full bg-elevated shrink-0" />
                       <div className="flex flex-col gap-1.5">
-                        <div className="h-4.5 w-28 bg-[#1C2012] rounded" />
-                        <div className="h-3.5 w-36 bg-[#1C2012] rounded" />
+                        <div className="h-4.5 w-28 bg-elevated rounded" />
+                        <div className="h-3.5 w-36 bg-elevated rounded" />
                       </div>
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="h-4 w-24 bg-[#1C2012] rounded animate-pulse" />
+                    <div className="h-4 w-24 bg-elevated rounded animate-pulse" />
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <div className="h-4 w-8 bg-[#1C2012] rounded animate-pulse mx-auto" />
+                    <div className="h-4 w-8 bg-elevated rounded animate-pulse mx-auto" />
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <div className="h-4 w-12 bg-[#1C2012] rounded animate-pulse mx-auto" />
+                    <div className="h-4 w-12 bg-elevated rounded animate-pulse mx-auto" />
                   </td>
                   <td className="py-4 px-6">
-                    <div className="h-6 w-16 bg-[#1C2012] rounded-full animate-pulse" />
+                    <div className="h-6 w-16 bg-elevated rounded-full animate-pulse" />
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end gap-3">
-                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
-                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-elevated rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-elevated rounded animate-pulse" />
                     </div>
                   </td>
                 </tr>
               ))
             ) : filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-[#72943A] font-sans text-sm">
+                <td colSpan={6} className="py-8 text-center text-text-muted font-sans text-xs">
                   No users found.
                 </td>
               </tr>
             ) : (
               filteredUsers.map((user, i) => (
-                <tr key={user.id} className={`${i !== filteredUsers.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}>
+                <tr key={user.id} className={`${i !== filteredUsers.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}>
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#0D0D0B] border border-[#43581E] flex items-center justify-center shrink-0">
-                      <span className="font-sans font-medium text-[11px] text-[#8CB34A]">
+                    <div className="w-8 h-8 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
+                      <span className="font-sans font-bold text-xs text-text-brand">
                         {getInitials(user.firstName, user.lastName, user.email)}
                       </span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">
+                      <span className="font-heading font-bold text-xs text-text-primary">
                         {user.firstName ? `${user.firstName} ${user.lastName || ''}` : 'No Name'}
                       </span>
-                      <span className="font-sans text-[11px] text-[#5A752A]">{user.email}</span>
+                      <span className="font-sans font-medium text-xs text-text-muted">{user.email}</span>
                     </div>
                   </div>
                 </td>
                 <td className="py-4 px-6">
-                  <span className="font-sans text-[13px] text-[#72943A]">
+                  <span className="font-sans font-semibold text-xs text-text-muted">
                     {format(new Date(user.createdAt), 'dd MMM yyyy')}
                   </span>
                 </td>
                 <td className="py-4 px-6 text-center">
-                  <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{user.ticketsCount}</span>
+                  <span className="font-heading font-bold text-xs text-text-primary">{user.ticketsCount}</span>
                 </td>
                 <td className="py-4 px-6 text-center">
-                  <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">£{user.totalSpent.toFixed(2)}</span>
+                  <span className="font-heading font-black text-xs text-text-primary">£{user.totalSpent.toFixed(2)}</span>
                 </td>
                 <td className="py-4 px-6">
                   {getStatusPill(user.isBlocked)}
@@ -228,7 +228,7 @@ export default function UsersTable() {
                   <div className="flex items-center justify-end gap-3">
                     <button 
                       onClick={() => { setSelectedUser(user); setIsDetailsOpen(true); }}
-                      className="text-[#5A752A] hover:text-[#8CB34A] hover:scale-110 active:scale-90 transition-all duration-150 flex items-center justify-center shrink-0 cursor-pointer" 
+                      className="text-text-muted hover:text-text-primary hover:scale-110 active:scale-90 transition-all duration-150 flex items-center justify-center shrink-0 cursor-pointer" 
                       title="View details"
                     >
                       <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -240,10 +240,10 @@ export default function UsersTable() {
                       <button 
                         onClick={() => setBlockModalUser(user)}
                         disabled={toggleBlock.isPending}
-                        className="text-[#4ADE80] hover:text-[#22c55e] transition-colors disabled:opacity-50" 
+                        className="text-[#15803D] hover:text-[#166534] transition-colors disabled:opacity-50 cursor-pointer" 
                         title="Unblock user"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                         </svg>
                       </button>
@@ -251,10 +251,10 @@ export default function UsersTable() {
                       <button 
                         onClick={() => setBlockModalUser(user)}
                         disabled={toggleBlock.isPending}
-                        className="text-[#f76b6b] hover:text-[#ef4444] transition-colors disabled:opacity-50" 
+                        className="text-[#DC2626] hover:text-[#b91c1c] transition-colors disabled:opacity-50 cursor-pointer" 
                         title="Block user"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
                         </svg>
                       </button>
@@ -269,19 +269,19 @@ export default function UsersTable() {
 
       {/* Pagination Controls */}
       {data && data.totalPages > 1 && (
-        <div className="flex justify-between items-center bg-[#161810] border border-[#2D3C13] rounded-[16px] px-6 py-4">
+        <div className="flex justify-between items-center bg-surface border border-border rounded-card px-6 py-4 shadow-card">
           <button 
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="text-[13px] font-sans font-medium text-[#E8EDD4] disabled:text-[#5A752A] hover:text-[#8CB34A] transition-colors"
+            className="text-xs font-heading font-bold uppercase tracking-wider text-text-primary disabled:text-text-muted hover:text-text-brand transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
             Previous
           </button>
-          <span className="text-[13px] font-sans text-[#72943A]">Page {page} of {data.totalPages}</span>
+          <span className="text-xs font-sans font-bold text-text-muted">Page {page} of {data.totalPages}</span>
           <button 
             onClick={() => setPage(p => Math.min(data.totalPages, p + 1))}
             disabled={page === data.totalPages}
-            className="text-[13px] font-sans font-medium text-[#E8EDD4] disabled:text-[#5A752A] hover:text-[#8CB34A] transition-colors"
+            className="text-xs font-heading font-bold uppercase tracking-wider text-text-primary disabled:text-text-muted hover:text-text-brand transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
             Next
           </button>

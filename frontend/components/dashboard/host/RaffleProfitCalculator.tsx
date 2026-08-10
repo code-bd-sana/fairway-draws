@@ -27,62 +27,62 @@ export default function RaffleProfitCalculator() {
   };
 
   return (
-    <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[25px] w-full flex flex-col gap-[16px] h-[362px] shrink-0 xl:w-[635px]">
+    <div className="bg-surface border border-border rounded-card p-6 w-full flex flex-col gap-4 h-[380px] shrink-0 xl:w-[635px] shadow-card">
       <div className="w-full">
-        <h2 className="font-heading font-bold text-[16px] leading-[normal] text-[#e8edd4]">
-          Raffle Profit Calculator
+        <h2 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
+          Competition Profit Calculator
         </h2>
       </div>
 
-      <div className="w-full flex flex-col gap-[12px]">
+      <div className="w-full flex flex-col gap-3">
         {/* Row 1 */}
-        <div className="flex gap-[12px] items-center">
-          <div className="flex flex-col gap-[5px] flex-1">
-            <label className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.77px] uppercase text-[#5a752a]">
+        <div className="flex gap-3 items-center">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <label className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
               Ticket Price (£)
             </label>
             <input
               type="text"
               value={ticketPrice}
               onChange={(e) => setTicketPrice(e.target.value)}
-              className="bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] h-[40px] px-[13px] font-sans font-normal text-[14px] text-[#e8edd4] outline-none focus:border-[#8cb34a] transition-colors"
+              className="bg-elevated border border-border-medium rounded-xl h-[42px] px-[13px] font-sans font-bold text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all"
             />
           </div>
-          <div className="flex flex-col gap-[5px] flex-1">
-            <label className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.77px] uppercase text-[#5a752a]">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <label className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
               Total Tickets
             </label>
             <input
               type="text"
               value={totalTickets}
               onChange={(e) => setTotalTickets(e.target.value)}
-              className="bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] h-[40px] px-[13px] font-sans font-normal text-[14px] text-[#e8edd4] outline-none focus:border-[#8cb34a] transition-colors"
+              className="bg-elevated border border-border-medium rounded-xl h-[42px] px-[13px] font-sans font-bold text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all"
             />
           </div>
         </div>
 
         {/* Row 2 */}
-        <div className="flex gap-[12px] items-center">
-          <div className="flex flex-col gap-[5px] flex-1">
-            <label className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.77px] uppercase text-[#5a752a]">
+        <div className="flex gap-3 items-center">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <label className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
               Cost of Prize (£)
             </label>
             <input
               type="text"
               value={costOfPrize}
               onChange={(e) => setCostOfPrize(e.target.value)}
-              className="bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] h-[40px] px-[13px] font-sans font-normal text-[14px] text-[#e8edd4] outline-none focus:border-[#8cb34a] transition-colors"
+              className="bg-elevated border border-border-medium rounded-xl h-[42px] px-[13px] font-sans font-bold text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all"
             />
           </div>
-          <div className="flex flex-col gap-[5px] flex-1">
-            <label className="font-sans font-medium text-[11px] leading-[16.5px] tracking-[0.77px] uppercase text-[#5a752a]">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <label className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
               Commission Rate (%)
             </label>
             <input
               type="text"
               value={commissionRate}
               onChange={(e) => setCommissionRate(e.target.value)}
-              className="bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] h-[40px] px-[13px] font-sans font-normal text-[14px] text-[#e8edd4] outline-none focus:border-[#8cb34a] transition-colors"
+              className="bg-elevated border border-border-medium rounded-xl h-[42px] px-[13px] font-sans font-bold text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all"
             />
           </div>
         </div>
@@ -90,27 +90,27 @@ export default function RaffleProfitCalculator() {
 
       <button
         onClick={handleCalculate}
-        className="w-full bg-[#8cb34a] hover:bg-[#72943a] transition-colors h-[44px] rounded-[8px] flex items-center justify-center shrink-0 mt-2"
+        className="w-full bg-primary hover:bg-primary-hover text-white transition-all h-[44px] rounded-xl flex items-center justify-center shrink-0 mt-1 shadow-md active:scale-98 cursor-pointer"
       >
-        <span className="font-heading font-medium text-[14px] leading-[21px] text-[#0d0d0b]">
-          Calculate
+        <span className="font-heading font-bold text-sm tracking-wider uppercase">
+          Calculate Profit
         </span>
       </button>
 
-      <div className="border-t border-[#2d3c13] mt-auto pt-[8px] flex gap-[12px] h-[52.5px] items-center">
-        <div className="flex flex-col flex-1 h-[44px] justify-between">
-          <span className="font-sans font-normal text-[11px] leading-[16.5px] tracking-[0.77px] uppercase text-[#5a752a]">
+      <div className="border-t border-divider mt-auto pt-3 flex gap-4 items-center">
+        <div className="flex flex-col flex-1 justify-between">
+          <span className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
             Gross Revenue
           </span>
-          <span className="font-heading font-medium text-[18px] leading-[27px] text-[#a0d056]">
+          <span className="font-heading font-black text-xl text-text-primary">
             {grossRevenue !== null ? `£${grossRevenue.toLocaleString()}` : "—"}
           </span>
         </div>
-        <div className="flex flex-col flex-1 h-[44px] justify-between">
-          <span className="font-sans font-normal text-[11px] leading-[16.5px] tracking-[0.77px] uppercase text-[#5a752a]">
-            Net Profit
+        <div className="flex flex-col flex-1 justify-between">
+          <span className="font-sans font-bold text-[10px] tracking-wider uppercase text-text-muted">
+            Est. Net Profit
           </span>
-          <span className="font-heading font-medium text-[18px] leading-[27px] text-[#8cb34a]">
+          <span className="font-heading font-black text-xl text-text-brand">
             {netProfit !== null ? `£${netProfit.toLocaleString()}` : "—"}
           </span>
         </div>

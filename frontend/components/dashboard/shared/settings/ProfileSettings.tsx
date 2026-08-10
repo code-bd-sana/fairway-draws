@@ -76,33 +76,33 @@ export default function ProfileSettings() {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-[#72943A]">Loading profile...</div>;
+    return <div className="p-8 text-text-muted font-sans text-sm animate-pulse">Loading profile...</div>;
   }
 
   return (
-    <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-8 flex flex-col gap-8 animate-fadeIn">
+    <div className="bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col gap-6 shadow-card animate-fadeIn">
       <div>
-        <h2 className="font-heading font-medium text-[20px] text-[#E8EDD4]">Profile Details</h2>
-        <p className="font-sans text-[13px] text-[#72943A] mt-1">Manage your public profile and contact information.</p>
+        <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">Profile Details</h2>
+        <p className="font-sans text-xs text-text-muted mt-1">Manage your public profile and contact information.</p>
       </div>
 
-      <div className="h-px w-full bg-[#2D3C13]/50" />
+      <div className="h-px w-full bg-divider" />
 
       {errors.form && (
-        <div className="bg-[#f76b6b]/10 border border-[#f76b6b]/20 text-[#f76b6b] text-[13px] p-3 rounded-[8px]">
-          {errors.form}
+        <div className="bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] text-xs font-sans font-semibold p-3 rounded-xl">
+          ⚠️ {errors.form}
         </div>
       )}
 
       {successMsg && (
-        <div className="bg-[#8CB34A]/10 border border-[#8CB34A]/20 text-[#8CB34A] text-[13px] p-3 rounded-[8px]">
-          {successMsg}
+        <div className="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xs font-sans font-semibold p-3 rounded-xl">
+          ✅ {successMsg}
         </div>
       )}
 
       {/* Avatar Section */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-        <div className="relative w-[80px] h-[80px] rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="relative w-20 h-20 rounded-full bg-elevated border border-border-medium flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
           {user?.avatarUrl ? (
             <Image 
               src={user.avatarUrl} 
@@ -112,18 +112,18 @@ export default function ProfileSettings() {
               unoptimized={true} 
             />
           ) : (
-            <span className="font-heading font-medium text-[24px] text-[#8CB34A]">
+            <span className="font-heading font-black text-2xl text-text-brand">
               {(user?.firstName?.[0] || user?.email?.[0] || 'U').toUpperCase()}
             </span>
           )}
           {avatarMutation.isPending && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <span className="text-[#8CB34A] text-[10px]">Uploading</span>
+              <span className="text-white text-[10px] font-bold">Uploading</span>
             </div>
           )}
         </div>
         
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <div className="flex gap-3">
             <input 
               type="file" 
@@ -136,57 +136,57 @@ export default function ProfileSettings() {
               type="button"
               disabled={avatarMutation.isPending}
               onClick={() => fileInputRef.current?.click()}
-              className="h-[36px] px-4 rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-sans font-medium text-[12px] transition-colors disabled:opacity-50"
+              className="h-[36px] px-4 rounded-xl bg-accent-bg border border-primary/30 hover:bg-primary hover:text-white text-text-brand font-heading font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer shadow-xs"
             >
-              Upload New
+              Upload New Picture
             </button>
           </div>
-          <p className="font-sans text-[11px] text-[#72943A]">Recommended: Square JPG, PNG. Max 5MB.</p>
+          <p className="font-sans text-[11px] text-text-muted">Recommended: Square JPG, PNG. Max 5MB.</p>
         </div>
       </div>
 
-      <div className="h-px w-full bg-[#2D3C13]/50" />
+      <div className="h-px w-full bg-divider" />
       
       {/* Form Fields */}
       <form onSubmit={handleSave} className="flex flex-col gap-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2">
-            <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">First Name</label>
+            <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">First Name</label>
             <input 
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
               disabled={updateMutation.isPending}
-              className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
+              className="w-full h-11 bg-elevated border border-border-medium rounded-xl px-4 text-sm text-text-primary focus:border-primary focus:outline-none transition-all"
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">Last Name</label>
+            <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">Last Name</label>
             <input 
               type="text" 
               name="lastName"
               value={formData.lastName}
               onChange={handleInputChange}
               disabled={updateMutation.isPending}
-              className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
+              className="w-full h-11 bg-elevated border border-border-medium rounded-xl px-4 text-sm text-text-primary focus:border-primary focus:outline-none transition-all"
             />
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">Email Address</label>
+          <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">Email Address</label>
           <input 
             type="email" 
             value={user?.email || ""} 
             disabled 
-            className="w-full h-[44px] bg-[#111210]/50 border border-[#2D3C13]/50 rounded-[8px] px-4 text-[14px] text-[#E8EDD4]/50 cursor-not-allowed outline-none transition-colors"
+            className="w-full h-11 bg-elevated border border-border-medium/60 rounded-xl px-4 text-sm text-text-muted cursor-not-allowed opacity-75"
           />
-          <span className="text-[11px] text-[#72943A]">Email address cannot be changed directly.</span>
+          <span className="text-[11px] text-text-muted">Email address cannot be changed directly.</span>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="font-sans font-medium text-[12px] text-[#A0D056] uppercase tracking-[0.5px]">Location</label>
+          <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">Location</label>
           <input 
             type="text" 
             name="location"
@@ -194,15 +194,15 @@ export default function ProfileSettings() {
             onChange={handleInputChange}
             placeholder="e.g. London, UK"
             disabled={updateMutation.isPending}
-            className="w-full h-[44px] bg-[#111210] border border-[#2D3C13] rounded-[8px] px-4 text-[14px] text-[#E8EDD4] outline-none focus:border-[#43581E] transition-colors"
+            className="w-full h-11 bg-elevated border border-border-medium rounded-xl px-4 text-sm text-text-primary focus:border-primary focus:outline-none transition-all"
           />
         </div>
         
-        <div className="flex justify-end pt-2 border-t border-[#2D3C13]/50 mt-2">
+        <div className="flex justify-end pt-4 border-t border-divider mt-2">
           <button 
             type="submit"
             disabled={updateMutation.isPending}
-            className="h-[44px] px-6 rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-heading font-medium text-[14px] transition-colors shadow-[0_0_15px_rgba(140,179,74,0.15)] disabled:opacity-50 disabled:shadow-none"
+            className="btn-glossy-red h-[42px] px-8 rounded-xl bg-[#dc2626] text-white font-heading font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
           >
             {updateMutation.isPending ? "Saving..." : "Save Changes"}
           </button>

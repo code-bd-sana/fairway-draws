@@ -16,7 +16,7 @@ const steps = [
 
 export default function CreateRaffleStepper({ currentStep, totalSteps }: CreateRaffleStepperProps) {
   return (
-    <div className="w-full flex items-start justify-between relative mb-[40px] px-[20px]">
+    <div className="w-full flex items-start justify-between relative mb-8 px-2 md:px-5">
       {steps.map((label, index) => {
         const stepNum = index + 1;
         const isCompleted = stepNum < currentStep;
@@ -27,17 +27,17 @@ export default function CreateRaffleStepper({ currentStep, totalSteps }: CreateR
         return (
           <React.Fragment key={label}>
             {/* Step Item */}
-            <div className="flex flex-col items-center gap-[12px] relative z-10 w-[80px] shrink-0">
+            <div className="flex flex-col items-center gap-2 relative z-10 w-[74px] sm:w-[90px] shrink-0">
               <div
                 className={cn(
-                  "w-[32px] h-[32px] rounded-full flex items-center justify-center font-sans font-medium text-[13px] transition-colors border",
-                  isCompleted && "bg-[#161810] border-[#43581e] text-[#8cb34a]",
-                  isActive && "bg-[#8cb34a] border-[#8cb34a] text-[#0d0d0b]",
-                  isPending && "bg-[#161810] border-[#2d3c13] text-[#43581e]"
+                  "w-9 h-9 rounded-full flex items-center justify-center font-heading font-black text-xs transition-all border shadow-xs",
+                  isCompleted && "bg-accent-bg border-primary/40 text-text-brand",
+                  isActive && "bg-primary border-primary text-white shadow-md scale-105",
+                  isPending && "bg-elevated border-border-medium text-text-muted"
                 )}
               >
                 {isCompleted ? (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg className="w-4 h-4 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
                 ) : (
@@ -46,8 +46,8 @@ export default function CreateRaffleStepper({ currentStep, totalSteps }: CreateR
               </div>
               <span
                 className={cn(
-                  "font-sans font-medium text-[11px] text-center whitespace-nowrap",
-                  (isCompleted || isActive) ? "text-[#e8edd4]" : "text-[#43581e]"
+                  "font-heading font-bold text-[11px] text-center uppercase tracking-wide truncate max-w-full",
+                  (isCompleted || isActive) ? "text-text-primary" : "text-text-muted"
                 )}
               >
                 {stepNum}. {label}
@@ -56,11 +56,11 @@ export default function CreateRaffleStepper({ currentStep, totalSteps }: CreateR
 
             {/* Connecting Line */}
             {!isLast && (
-              <div className="flex-1 h-[2px] mt-[15px] mx-[8px] shrink">
+              <div className="flex-1 h-[2px] mt-4 mx-1 sm:mx-2 shrink">
                 <div 
                   className={cn(
                     "w-full h-full transition-colors",
-                    isCompleted ? "bg-[#2d3c13]" : "bg-[#1a230a]"
+                    isCompleted ? "bg-primary" : "bg-border-medium"
                   )}
                 />
               </div>

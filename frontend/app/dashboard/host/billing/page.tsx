@@ -35,7 +35,9 @@ export default function SubscriptionBillingPage() {
       <CurrentPlanCard />
       <PaymentMethodCard />
       {isLoading ? (
-        <div className="text-white p-4">Loading billing history...</div>
+        <div className="p-8 bg-surface border border-border rounded-card text-text-muted font-sans text-sm animate-pulse shadow-card">
+          Loading billing transaction history...
+        </div>
       ) : (
         <BillingHistoryTable history={history} />
       )}

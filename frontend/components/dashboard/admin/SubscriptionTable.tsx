@@ -8,7 +8,11 @@ export default function SubscriptionTable() {
   const { data: subscriptions, isLoading } = useAllSubscriptionsAdmin();
 
   if (isLoading) {
-    return <div className="p-6 text-white">Loading subscriptions...</div>;
+    return (
+      <div className="w-full bg-surface border border-border rounded-card p-8 flex items-center justify-center shadow-card">
+        <span className="font-sans text-xs text-text-muted font-bold animate-pulse">Loading subscription records...</span>
+      </div>
+    );
   }
 
   const subs = subscriptions || [];
@@ -16,11 +20,11 @@ export default function SubscriptionTable() {
   const getStatusPill = (status: string) => {
     switch (status) {
       case "Active":
-        return <span className="px-3 py-1 rounded-full border border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80] font-sans font-medium text-[10px]">Active</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Active</span>;
       case "Past Due":
-        return <span className="px-3 py-1 rounded-full border border-[#EF4444]/30 bg-[#7F1D1D] text-[#f76b6b] font-sans font-medium text-[10px]">Past Due</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Past Due</span>;
       case "Cancelled":
-        return <span className="px-3 py-1 rounded-full border border-[#EF4444]/30 bg-[#7F1D1D] text-[#f76b6b] font-sans font-medium text-[10px]">Cancelled</span>;
+        return <span className="px-3 py-1 rounded-full border border-[#FECACA] bg-[#FEE2E2] text-[#DC2626] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Cancelled</span>;
       default:
         return null;
     }
@@ -31,23 +35,23 @@ export default function SubscriptionTable() {
       case "Pro":
       case "Premium":
       case "Free":
-        return <span className="px-3 py-1 rounded-full border border-[#8CB34A] bg-[#1A230A] text-[#A0D056] font-sans font-medium text-[10px]">{plan}</span>;
+        return <span className="px-3 py-1 rounded-full border border-primary/30 bg-accent-bg text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">{plan}</span>;
       default:
         return null;
     }
   };
 
   return (
-    <div className="w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto h-full flex flex-col">
+    <div className="w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto h-full flex flex-col shadow-card">
       <table className="w-full min-w-[1000px] text-left border-collapse">
         <thead>
-          <tr className="border-b border-[#2D3C13] bg-[#111210]">
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[25%]">HOST</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[12%]">PLAN</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[18%]">PURCHASE DATE</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[18%]">NEXT RENEWAL</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[17%]">PAYMENT</th>
-            <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center">STATUS</th>
+          <tr className="border-b border-divider bg-elevated">
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[25%]">HOST OPERATOR</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[12%]">PLAN</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[18%]">PURCHASE DATE</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[18%]">NEXT RENEWAL</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[17%]">PAYMENT</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center">STATUS</th>
           </tr>
         </thead>
         <tbody>
@@ -62,28 +66,28 @@ export default function SubscriptionTable() {
             const tx = sub.transaction;
 
             return (
-              <tr key={sub.id} className={`${i !== subs.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}>
+              <tr key={sub.id} className={`${i !== subs.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}>
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0">
-                      <span className="font-sans font-medium text-[11px] text-[#8CB34A]">{initials}</span>
+                    <div className="w-8 h-8 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
+                      <span className="font-sans font-bold text-xs text-text-brand">{initials}</span>
                     </div>
-                    <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{hostName}</span>
+                    <span className="font-heading font-bold text-xs text-text-primary">{hostName}</span>
                   </div>
                 </td>
                 <td className="py-4 px-6">
                   {getPlanPill(sub.plan?.name || "Free")}
                 </td>
                 <td className="py-4 px-6">
-                  <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{formattedStartDate}</span>
+                  <span className="font-sans font-semibold text-xs text-text-muted">{formattedStartDate}</span>
                 </td>
                 <td className="py-4 px-6">
-                  <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{formattedDate}</span>
+                  <span className="font-sans font-semibold text-xs text-text-muted">{formattedDate}</span>
                 </td>
                 <td className="py-4 px-6">
                   <div className="flex flex-col">
-                    <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">£{sub.plan?.price} - {tx?.status || 'COMPLETED'}</span>
-                    {tx?.gatewayTransactionId && <span className="font-sans text-[11px] text-[#5A752A] mt-1">{tx.gatewayTransactionId}</span>}
+                    <span className="font-heading font-bold text-xs text-text-primary">£{sub.plan?.price} - {tx?.status || 'COMPLETED'}</span>
+                    {tx?.gatewayTransactionId && <span className="font-mono text-[11px] text-text-muted mt-0.5">{tx.gatewayTransactionId}</span>}
                   </div>
                 </td>
                 <td className="py-4 px-6 text-center">

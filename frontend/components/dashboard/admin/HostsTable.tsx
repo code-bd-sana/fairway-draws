@@ -115,16 +115,16 @@ export default function HostsTable() {
 
   const getStatusPill = (isBlocked: boolean) => {
     if (isBlocked) {
-      return <span className="px-3 py-1 rounded-full border border-[#EF4444]/30 bg-[#7F1D1D] text-[#f76b6b] font-sans font-medium text-[10px]">Blocked</span>;
+      return <span className="px-3 py-1 rounded-full border border-[#FECACA] bg-[#FEE2E2] text-[#DC2626] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Blocked</span>;
     }
-    return <span className="px-3 py-1 rounded-full border border-[#4ADE80]/30 bg-[#083b18] text-[#4ADE80] font-sans font-medium text-[10px]">Active</span>;
+    return <span className="px-3 py-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">Active</span>;
   };
 
   const getPlanPill = (plan: string) => {
     if (plan === "Pending Approval") {
-      return <span className="px-3 py-1 rounded-full border border-[#D97706]/30 bg-[#78350F] text-[#F59E0B] font-sans font-medium text-[10px]">{plan}</span>;
+      return <span className="px-3 py-1 rounded-full border border-[#FDE68A] bg-[#FEF3C7] text-[#D97706] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">{plan}</span>;
     }
-    return <span className="px-3 py-1 rounded-full border border-[#8CB34A] bg-[#1A230A] text-[#A0D056] font-sans font-medium text-[10px]">{plan || 'Free'}</span>;
+    return <span className="px-3 py-1 rounded-full border border-primary/30 bg-accent-bg text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">{plan || 'Free'}</span>;
   };
 
   return (
@@ -134,18 +134,18 @@ export default function HostsTable() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         
         {/* Left: Search & Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-1">
           {/* Search Input */}
-          <div className="flex items-center h-[40px] w-full sm:w-[360px] bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] px-3">
-            <svg className="w-4 h-4 text-[#72943A] shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <div className="flex items-center h-10 w-full sm:w-[360px] bg-elevated border border-border-medium rounded-xl px-3 focus-within:border-primary transition-all">
+            <svg className="w-4 h-4 text-text-muted shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
             <input 
               type="text" 
-              placeholder="Search hosts..." 
+              placeholder="Search host brand name or email..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-[#E8EDD4] text-[13px] placeholder:text-[#5A752A] w-full ml-2 font-sans"
+              className="bg-transparent border-none outline-none text-text-primary text-xs placeholder:text-text-muted w-full ml-2 font-sans font-semibold"
             />
           </div>
 
@@ -155,10 +155,10 @@ export default function HostsTable() {
               <button
                 key={filter}
                 onClick={() => { setActiveFilter(filter); setPage(1); }}
-                className={`px-4 py-1.5 rounded-full text-[12px] font-sans font-medium transition-colors whitespace-nowrap ${
+                className={`px-4 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   activeFilter === filter 
-                    ? 'border border-[#8CB34A] text-[#8CB34A]' 
-                    : 'border border-[#2D3C13] text-[#72943A] hover:border-[#43581E] hover:text-[#E8EDD4]'
+                    ? 'bg-primary text-white shadow-xs' 
+                    : 'bg-surface border border-border text-text-muted hover:text-text-primary'
                 }`}
               >
                 {filter}
@@ -171,93 +171,93 @@ export default function HostsTable() {
         <button 
           onClick={handleExportCSV}
           disabled={!data?.hosts || data.hosts.length === 0}
-          className="h-[40px] px-4 bg-[#111210] border border-[#2D3C13] hover:border-[#5A752A] hover:bg-[#1A230A] rounded-[8px] flex items-center justify-center gap-2 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+          className="h-10 px-4 bg-surface border border-border hover:bg-elevated rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer shrink-0 shadow-xs"
         >
-          <svg className="w-4 h-4 text-[#8CB34A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-4 h-4 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
           </svg>
-          <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">Export CSV</span>
+          <span className="font-heading font-bold text-xs uppercase tracking-wider text-text-primary">Export CSV</span>
         </button>
       </div>
 
       {/* Table Container */}
-      <div className="w-full bg-[#161810] border border-[#2D3C13] rounded-[16px] overflow-hidden overflow-x-auto">
+      <div className="w-full bg-surface border border-border rounded-card overflow-hidden overflow-x-auto shadow-card">
         <table className="w-full min-w-[1000px] text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#2D3C13] bg-[#111210]">
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[25%]">HOST</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[20%]">EMAIL</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center">PLAN</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center">ACTIVE RAFFLES</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center">REVENUE</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-center">STATUS</th>
-              <th className="py-4 px-6 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[10%] text-right">ACTIONS</th>
+            <tr className="border-b border-divider bg-elevated">
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[25%]">HOST OPERATOR</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[20%]">EMAIL</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center">PLAN</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center">ACTIVE DRAWS</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center">REVENUE</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-center">STATUS</th>
+              <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[10%] text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, idx) => (
-                <tr key={idx} className="border-b border-[#2D3C13] last:border-b-0">
+                <tr key={idx} className="border-b border-divider last:border-b-0">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3 animate-pulse">
-                      <div className="w-8 h-8 rounded-full bg-[#1C2012] shrink-0" />
-                      <div className="h-4 w-28 bg-[#1C2012] rounded" />
+                      <div className="w-8 h-8 rounded-full bg-elevated shrink-0" />
+                      <div className="h-4 w-28 bg-elevated rounded" />
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="h-4 w-40 bg-[#1C2012] rounded animate-pulse" />
+                    <div className="h-4 w-40 bg-elevated rounded animate-pulse" />
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <div className="h-6 w-24 bg-[#1C2012] rounded-full animate-pulse mx-auto" />
+                    <div className="h-6 w-24 bg-elevated rounded-full animate-pulse mx-auto" />
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <div className="h-4 w-10 bg-[#1C2012] rounded animate-pulse mx-auto" />
+                    <div className="h-4 w-10 bg-elevated rounded animate-pulse mx-auto" />
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <div className="h-4 w-16 bg-[#1C2012] rounded animate-pulse mx-auto" />
+                    <div className="h-4 w-16 bg-elevated rounded animate-pulse mx-auto" />
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <div className="h-6 w-16 bg-[#1C2012] rounded-full animate-pulse mx-auto" />
+                    <div className="h-6 w-16 bg-elevated rounded-full animate-pulse mx-auto" />
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end gap-3">
-                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
-                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
-                      <div className="w-4.5 h-4.5 bg-[#1C2012] rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-elevated rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-elevated rounded animate-pulse" />
+                      <div className="w-4.5 h-4.5 bg-elevated rounded animate-pulse" />
                     </div>
                   </td>
                 </tr>
               ))
             ) : data?.hosts?.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-[#5A752A] font-sans text-sm">
+                <td colSpan={7} className="py-8 text-center text-text-muted font-sans text-xs">
                   No hosts found.
                 </td>
               </tr>
             ) : (
               data?.hosts?.map((host: HostData, i: number) => (
-                <tr key={host.id} className={`${i !== data.hosts.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}>
+                <tr key={host.id} className={`${i !== data.hosts.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0">
-                        <span className="font-sans font-medium text-[11px] text-[#8CB34A]">
+                      <div className="w-8 h-8 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
+                        <span className="font-sans font-bold text-xs text-text-brand">
                           {host.businessName?.substring(0, 2).toUpperCase() || 'NA'}
                         </span>
                       </div>
-                      <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{host.businessName || 'N/A'}</span>
+                      <span className="font-heading font-bold text-xs text-text-primary">{host.businessName || 'N/A'}</span>
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <span className="font-sans text-[13px] text-[#72943A]">{host.email}</span>
+                    <span className="font-sans font-semibold text-xs text-text-muted">{host.email}</span>
                   </td>
                   <td className="py-4 px-6 text-center">
                     {getPlanPill(host.plan)}
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{host.raffles}</span>
+                    <span className="font-heading font-bold text-xs text-text-primary">{host.raffles}</span>
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">£{host.revenue?.toFixed(2) || '0.00'}</span>
+                    <span className="font-heading font-black text-xs text-text-primary">£{host.revenue?.toFixed(2) || '0.00'}</span>
                   </td>
                   <td className="py-4 px-6 text-center">
                     {getStatusPill(host.isBlocked)}
@@ -269,11 +269,11 @@ export default function HostsTable() {
                           <button 
                             onClick={() => approveHostMutation.mutate(host.id)}
                             disabled={approveHostMutation.isPending || rejectHostMutation.isPending}
-                            className="text-[#4ADE80] hover:text-[#22c55e] hover:scale-125 active:scale-95 transition-all duration-200 mr-1 flex items-center justify-center shrink-0" 
+                            className="text-[#15803D] hover:text-[#166534] hover:scale-125 active:scale-95 transition-all duration-200 mr-1 flex items-center justify-center shrink-0 cursor-pointer" 
                             title="Approve Host"
                           >
                             {approveHostMutation.isPending && approveHostMutation.variables === host.id ? (
-                              <div className="w-4.5 h-4.5 border-2 border-[#4ADE80] border-t-transparent rounded-full animate-spin" />
+                              <div className="w-4.5 h-4.5 border-2 border-[#15803D] border-t-transparent rounded-full animate-spin" />
                             ) : (
                               <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -284,11 +284,11 @@ export default function HostsTable() {
                           <button 
                             onClick={() => rejectHostMutation.mutate(host.id)}
                             disabled={approveHostMutation.isPending || rejectHostMutation.isPending}
-                            className="text-[#EF4444] hover:text-[#dc2626] hover:scale-125 active:scale-95 transition-all duration-200 mr-2 flex items-center justify-center shrink-0" 
+                            className="text-[#DC2626] hover:text-[#b91c1c] hover:scale-125 active:scale-95 transition-all duration-200 mr-2 flex items-center justify-center shrink-0 cursor-pointer" 
                             title="Reject Host"
                           >
                             {rejectHostMutation.isPending && rejectHostMutation.variables === host.id ? (
-                              <div className="w-4.5 h-4.5 border-2 border-[#EF4444] border-t-transparent rounded-full animate-spin" />
+                              <div className="w-4.5 h-4.5 border-2 border-[#DC2626] border-t-transparent rounded-full animate-spin" />
                             ) : (
                               <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -300,7 +300,7 @@ export default function HostsTable() {
 
                       <button 
                         onClick={() => handleReview(host)}
-                        className="text-[#5A752A] hover:text-[#8CB34A] transition-colors" 
+                        className="text-text-muted hover:text-text-primary transition-colors cursor-pointer" 
                         title="View details"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -312,7 +312,7 @@ export default function HostsTable() {
                       <button 
                         onClick={() => setBlockModalHost(host)}
                         disabled={toggleBlockMutation.isPending}
-                        className={`transition-colors ${host.isBlocked ? 'text-[#f76b6b] hover:text-[#4ADE80]' : 'text-[#5A752A] hover:text-[#f76b6b]'}`} 
+                        className={`transition-colors cursor-pointer ${host.isBlocked ? 'text-[#15803D] hover:text-[#166534]' : 'text-[#DC2626] hover:text-[#b91c1c]'}`} 
                         title={host.isBlocked ? "Unblock Host" : "Block Host"}
                       >
                         {host.isBlocked ? (
@@ -336,19 +336,19 @@ export default function HostsTable() {
 
       {/* Pagination Controls */}
       {data && data.totalPages > 1 && (
-        <div className="flex justify-between items-center bg-[#161810] border border-[#2D3C13] rounded-[16px] px-6 py-4">
+        <div className="flex justify-between items-center bg-surface border border-border rounded-card px-6 py-4 shadow-card">
           <button 
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="text-[13px] font-sans font-medium text-[#E8EDD4] disabled:text-[#5A752A] hover:text-[#8CB34A] transition-colors disabled:opacity-50 cursor-pointer"
+            className="text-xs font-heading font-bold uppercase tracking-wider text-text-primary disabled:text-text-muted hover:text-text-brand transition-colors disabled:opacity-50 cursor-pointer"
           >
             Previous
           </button>
-          <span className="text-[13px] font-sans text-[#72943A]">Page {page} of {data.totalPages}</span>
+          <span className="text-xs font-sans font-bold text-text-muted">Page {page} of {data.totalPages}</span>
           <button 
             onClick={() => setPage(p => Math.min(data.totalPages, p + 1))}
             disabled={page === data.totalPages}
-            className="text-[13px] font-sans font-medium text-[#E8EDD4] disabled:text-[#5A752A] hover:text-[#8CB34A] transition-colors disabled:opacity-50 cursor-pointer"
+            className="text-xs font-heading font-bold uppercase tracking-wider text-text-primary disabled:text-text-muted hover:text-text-brand transition-colors disabled:opacity-50 cursor-pointer"
           >
             Next
           </button>

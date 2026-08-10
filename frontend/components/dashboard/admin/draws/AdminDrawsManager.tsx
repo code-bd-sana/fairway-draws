@@ -34,7 +34,7 @@ export default function AdminDrawsManager() {
     <div className="flex flex-col gap-6 w-full animate-fadeIn">
       
       {/* Top Filter Pills */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
         {filters.map((filter) => (
           <button
             key={filter}
@@ -42,10 +42,10 @@ export default function AdminDrawsManager() {
               setActiveFilter(filter);
               setSelectedDraw(null); // Reset selection on filter change
             }}
-            className={`px-4 py-2 rounded-[8px] font-sans font-medium text-[12px] transition-colors ${
+            className={`px-4 py-2 rounded-full font-heading font-bold text-xs uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
               activeFilter === filter
-                ? "bg-transparent border border-[#8CB34A] text-[#E8EDD4]"
-                : "bg-transparent border border-[#2D3C13] text-[#72943A] hover:bg-[#1A230A] hover:text-[#A0D056]"
+                ? "bg-primary text-white shadow-xs border border-primary"
+                : "bg-surface border border-border text-text-muted hover:text-text-primary"
             }`}
           >
             {filter}
@@ -58,7 +58,9 @@ export default function AdminDrawsManager() {
 
       {/* Main Table */}
       {isLoading ? (
-        <div className="text-[#E8EDD4] py-8 text-center">Loading...</div>
+        <div className="bg-surface border border-border rounded-card p-12 text-center text-text-muted font-sans text-xs font-bold animate-pulse shadow-card">
+          Loading competition draws...
+        </div>
       ) : (
         <DrawsTable draws={draws} onSelectDraw={setSelectedDraw} />
       )}

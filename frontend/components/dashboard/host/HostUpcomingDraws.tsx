@@ -19,25 +19,26 @@ export default function HostUpcomingDraws({ draws, isLoading: propIsLoading }: H
   const isLoading = propIsLoading ?? queryIsLoading;
 
   return (
-    <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[25px] w-full flex flex-col min-h-[330px]">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-heading font-normal text-[16px] leading-[normal] text-[#e8edd4]">
+    <div className="bg-surface border border-border rounded-card p-6 w-full flex flex-col min-h-[330px] shadow-card">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
           Upcoming Draws
         </h2>
-        <Link href="/dashboard/host/winners" className="text-[#8cb34a] font-sans font-medium text-[13px] hover:underline flex items-center">
-          View All <span className="ml-1">→</span>
+        <Link href="/dashboard/host/winners" className="text-text-brand hover:text-primary-hover font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1">
+          <span>View All</span>
+          <span>→</span>
         </Link>
       </div>
 
-      <div className="flex flex-col w-full gap-[16px]">
+      <div className="flex flex-col w-full gap-2">
         {isLoading && (
           <div className="flex flex-col gap-[16px]">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="flex items-center gap-[12px] animate-pulse">
-                <div className="w-[32px] h-[32px] rounded-[6px] bg-[#1a230a] shrink-0"></div>
+                <div className="w-[36px] h-[36px] rounded-xl bg-elevated shrink-0"></div>
                 <div className="flex flex-col flex-1 gap-2">
-                  <div className="h-[12px] bg-[#1a230a] rounded w-3/4"></div>
-                  <div className="h-[10px] bg-[#1a230a] rounded w-1/2"></div>
+                  <div className="h-[12px] bg-elevated rounded w-3/4"></div>
+                  <div className="h-[10px] bg-elevated rounded w-1/2"></div>
                 </div>
               </div>
             ))}
@@ -45,8 +46,8 @@ export default function HostUpcomingDraws({ draws, isLoading: propIsLoading }: H
         )}
 
         {!isLoading && upcomingDraws.length === 0 && (
-          <div className="py-8 text-center text-[#5a752a] font-sans text-sm">
-            No upcoming draws found.
+          <div className="py-12 text-center text-text-muted font-sans text-sm bg-bg rounded-xl border border-dashed border-border-medium">
+            No upcoming draws scheduled.
           </div>
         )}
 
@@ -58,21 +59,21 @@ export default function HostUpcomingDraws({ draws, isLoading: propIsLoading }: H
             <Link 
               href="/dashboard/host/winners"
               key={draw.id} 
-              className="flex items-center gap-[12px] hover:bg-[#1a230a]/30 p-2 -mx-2 rounded-md transition-colors cursor-pointer"
+              className="flex items-center gap-[12px] hover:bg-elevated py-2.5 px-3 -mx-3 rounded-xl transition-colors cursor-pointer"
             >
               {/* Date Badge */}
-              <div className="w-[32px] h-[32px] rounded-[6px] border border-[#2d3c13] bg-[#1a230a] flex items-center justify-center shrink-0">
-                <span className="font-heading font-bold text-[13px] text-[#8cb34a]">
+              <div className="w-10 h-10 rounded-xl border border-border-medium bg-accent-bg flex items-center justify-center shrink-0 shadow-xs">
+                <span className="font-heading font-black text-sm text-text-brand">
                   {dayNumber}
                 </span>
               </div>
 
               {/* Content */}
               <div className="flex flex-col flex-1 min-w-0">
-                <p className="font-heading font-medium text-[13px] text-[#e8edd4] truncate">
+                <p className="font-heading font-bold text-sm text-text-primary truncate">
                   {draw.title}
                 </p>
-                <p className="font-sans font-normal text-[11px] text-[#5a752a] truncate">
+                <p className="font-sans text-[11px] text-text-muted truncate">
                   {draw.ticketsSold} / {draw.totalTickets} tickets sold • Ends {dateObj.toLocaleDateString()}
                 </p>
               </div>

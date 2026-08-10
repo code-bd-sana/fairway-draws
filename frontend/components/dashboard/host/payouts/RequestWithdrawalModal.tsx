@@ -104,22 +104,22 @@ export default function RequestWithdrawalModal({
   };
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#161810] border border-[#2d3c13] rounded-[20px] w-full max-w-[540px] overflow-hidden shadow-2xl flex flex-col z-[10000]">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-surface border border-border rounded-card w-full max-w-[540px] overflow-hidden shadow-card flex flex-col z-[10000]">
         
         {/* Header */}
-        <div className="p-6 border-b border-[#2d3c13] flex items-center justify-between bg-[#111210]">
+        <div className="p-6 border-b border-divider flex items-center justify-between bg-surface">
           <div>
-            <h3 className="font-heading font-bold text-[20px] text-[#e8edd4]">
+            <h3 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
               Request Payout Withdrawal
             </h3>
-            <p className="font-sans text-[13px] text-[#8cb34a] mt-0.5">
-              Available Balance: <strong className="text-[#a0d056]">£{availableBalance.toFixed(2)}</strong>
+            <p className="font-sans text-xs text-text-muted mt-0.5">
+              Available Balance: <strong className="text-text-brand font-bold">£{availableBalance.toFixed(2)}</strong>
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-[#72943a] hover:text-[#e8edd4] transition-colors p-1 rounded-lg hover:bg-[#1a230a]"
+            className="text-text-muted hover:text-text-primary transition-colors p-1 rounded-xl hover:bg-elevated cursor-pointer"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -131,24 +131,24 @@ export default function RequestWithdrawalModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[80vh]">
           
           {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-red-950/50 border border-red-800/50 text-red-200 text-xs font-sans">
+            <div className="p-3.5 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] text-xs font-sans font-semibold">
               ⚠️ {errorMessage}
             </div>
           )}
 
           {successMessage && (
-            <div className="p-3.5 rounded-xl bg-emerald-950/50 border border-emerald-800/50 text-emerald-200 text-xs font-sans">
+            <div className="p-3.5 rounded-xl bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xs font-sans font-semibold">
               ✅ {successMessage}
             </div>
           )}
 
           {/* Amount Input */}
           <div className="space-y-1.5">
-            <label className="block text-[12px] font-sans font-medium text-[#b3b8aa] uppercase tracking-wider">
+            <label className="block text-[11px] font-sans font-bold text-text-muted uppercase tracking-wider">
               Withdrawal Amount (£)
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8cb34a] font-bold text-lg">£</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg">£</span>
               <input
                 type="number"
                 step="0.01"
@@ -157,13 +157,13 @@ export default function RequestWithdrawalModal({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full h-12 pl-9 pr-20 bg-[#0d0d0b] border border-[#2d3c13] rounded-xl text-[#e8edd4] font-heading text-lg font-bold focus:outline-none focus:border-[#8cb34a] transition-colors"
+                className="w-full h-12 pl-9 pr-20 bg-elevated border border-border-medium rounded-xl text-text-primary font-heading text-lg font-bold focus:outline-none focus:border-primary transition-all"
                 required
               />
               <button
                 type="button"
                 onClick={() => setAmount(availableBalance.toString())}
-                className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 text-xs font-sans font-bold bg-[#1a230a] text-[#a0d056] border border-[#2d3c13] rounded-lg hover:bg-[#2d3c13] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1 text-xs font-sans font-bold bg-accent-bg text-text-brand border border-primary/30 rounded-lg hover:bg-primary hover:text-white transition-all cursor-pointer"
               >
                 Max
               </button>
@@ -171,24 +171,24 @@ export default function RequestWithdrawalModal({
           </div>
 
           {/* 10% Fee Breakdown Card */}
-          <div className="bg-[#111210] border border-[#2d3c13] rounded-xl p-4 space-y-2 text-xs font-sans">
-            <div className="flex justify-between text-[#b3b8aa]">
+          <div className="bg-accent-bg border border-primary/30 rounded-xl p-4 space-y-2 text-xs font-sans">
+            <div className="flex justify-between text-text-muted">
               <span>Requested Gross Amount:</span>
-              <span className="font-semibold text-[#e8edd4]">£{numAmount.toFixed(2)}</span>
+              <span className="font-bold text-text-primary">£{numAmount.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-[#f76b6b]">
+            <div className="flex justify-between text-[#dc2626]">
               <span>Platform Fee (10%):</span>
-              <span className="font-semibold">-£{feeAmount.toFixed(2)}</span>
+              <span className="font-bold">-£{feeAmount.toFixed(2)}</span>
             </div>
-            <div className="pt-2 border-t border-[#2d3c13] flex justify-between text-sm font-bold">
-              <span className="text-[#8cb34a]">Net Amount You Receive:</span>
-              <span className="text-[#a0d056]">£{netAmount.toFixed(2)}</span>
+            <div className="pt-2 border-t border-primary/20 flex justify-between text-sm font-bold">
+              <span className="text-text-primary">Net Amount You Receive:</span>
+              <span className="text-text-brand">£{netAmount.toFixed(2)}</span>
             </div>
           </div>
 
           {/* Payout Method Tabs */}
           <div className="space-y-1.5">
-            <label className="block text-[12px] font-sans font-medium text-[#b3b8aa] uppercase tracking-wider">
+            <label className="block text-[11px] font-sans font-bold text-text-muted uppercase tracking-wider">
               Select Payout Method
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -196,10 +196,10 @@ export default function RequestWithdrawalModal({
                 type="button"
                 onClick={() => setPayoutMethod("BANK_TRANSFER")}
                 className={cn(
-                  "p-3.5 rounded-xl border font-sans text-xs font-semibold flex items-center justify-center gap-2 transition-all",
+                  "p-3.5 rounded-xl border font-sans text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
                   payoutMethod === "BANK_TRANSFER"
-                    ? "bg-[#1a230a] border-[#8cb34a] text-[#a0d056] shadow-sm"
-                    : "bg-[#0d0d0b] border-[#2d3c13] text-[#72943a] hover:bg-[#111210]"
+                    ? "bg-surface border-2 border-primary text-text-brand shadow-xs"
+                    : "bg-elevated border-border text-text-muted hover:text-text-primary"
                 )}
               >
                 🏦 Bank Transfer
@@ -209,10 +209,10 @@ export default function RequestWithdrawalModal({
                 type="button"
                 onClick={() => setPayoutMethod("PAYPAL")}
                 className={cn(
-                  "p-3.5 rounded-xl border font-sans text-xs font-semibold flex items-center justify-center gap-2 transition-all",
+                  "p-3.5 rounded-xl border font-sans text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
                   payoutMethod === "PAYPAL"
-                    ? "bg-[#1a230a] border-[#8cb34a] text-[#a0d056] shadow-sm"
-                    : "bg-[#0d0d0b] border-[#2d3c13] text-[#72943a] hover:bg-[#111210]"
+                    ? "bg-surface border-2 border-primary text-text-brand shadow-xs"
+                    : "bg-elevated border-border text-text-muted hover:text-text-primary"
                 )}
               >
                 🅿️ PayPal
@@ -224,49 +224,49 @@ export default function RequestWithdrawalModal({
           {payoutMethod === "BANK_TRANSFER" ? (
             <div className="space-y-3 pt-1">
               <div>
-                <label className="block text-xs text-[#b3b8aa] mb-1 font-sans">Account Holder Name *</label>
+                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Account Holder Name *</label>
                 <input
                   type="text"
                   value={accountHolderName}
                   onChange={(e) => setAccountHolderName(e.target.value)}
                   placeholder="e.g. John Doe / Business Ltd"
-                  className="w-full h-10 px-3.5 bg-[#0d0d0b] border border-[#2d3c13] rounded-lg text-xs text-[#e8edd4] focus:outline-none focus:border-[#8cb34a]"
+                  className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-[#b3b8aa] mb-1 font-sans">Bank Name *</label>
+                  <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Bank Name *</label>
                   <input
                     type="text"
                     value={bankName}
                     onChange={(e) => setBankName(e.target.value)}
                     placeholder="e.g. Barclays / HSBC"
-                    className="w-full h-10 px-3.5 bg-[#0d0d0b] border border-[#2d3c13] rounded-lg text-xs text-[#e8edd4] focus:outline-none focus:border-[#8cb34a]"
+                    className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#b3b8aa] mb-1 font-sans">Sort Code / Routing</label>
+                  <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Sort Code / Routing</label>
                   <input
                     type="text"
                     value={sortCode}
                     onChange={(e) => setSortCode(e.target.value)}
                     placeholder="e.g. 12-34-56"
-                    className="w-full h-10 px-3.5 bg-[#0d0d0b] border border-[#2d3c13] rounded-lg text-xs text-[#e8edd4] focus:outline-none focus:border-[#8cb34a]"
+                    className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs text-[#b3b8aa] mb-1 font-sans">Account Number / IBAN *</label>
+                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Account Number / IBAN *</label>
                 <input
                   type="text"
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
                   placeholder="e.g. 12345678 or GB82 WEST 1234 5678"
-                  className="w-full h-10 px-3.5 bg-[#0d0d0b] border border-[#2d3c13] rounded-lg text-xs text-[#e8edd4] focus:outline-none focus:border-[#8cb34a]"
+                  className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -274,13 +274,13 @@ export default function RequestWithdrawalModal({
           ) : (
             <div className="space-y-3 pt-1">
               <div>
-                <label className="block text-xs text-[#b3b8aa] mb-1 font-sans">PayPal Email Address *</label>
+                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">PayPal Email Address *</label>
                 <input
                   type="email"
                   value={paypalEmail}
                   onChange={(e) => setPaypalEmail(e.target.value)}
                   placeholder="your-paypal-email@domain.com"
-                  className="w-full h-10 px-3.5 bg-[#0d0d0b] border border-[#2d3c13] rounded-lg text-xs text-[#e8edd4] focus:outline-none focus:border-[#8cb34a]"
+                  className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -288,18 +288,18 @@ export default function RequestWithdrawalModal({
           )}
 
           {/* Footer Actions */}
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#2d3c13]">
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-divider">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-[#2d3c13] text-xs font-sans font-semibold text-[#b3b8aa] hover:bg-[#1a230a] transition-colors"
+              className="h-[42px] px-5 rounded-xl border border-border bg-elevated hover:bg-surface text-xs font-heading font-bold uppercase tracking-wider text-text-primary transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={withdrawMutation.isPending || numAmount <= 0}
-              className="px-6 py-2.5 rounded-xl bg-[#8cb34a] hover:bg-[#a0d056] text-[#0d0d0b] font-sans font-bold text-xs shadow-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="btn-glossy-red h-[42px] px-6 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider shadow-md transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {withdrawMutation.isPending ? "Submitting..." : `Confirm & Withdraw £${netAmount.toFixed(2)}`}
             </button>

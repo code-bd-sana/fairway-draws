@@ -102,13 +102,13 @@ export default function HostProfileForm() {
     : user?.firstName?.substring(0, 2).toUpperCase() || "TG";
 
   return (
-    <div className="bg-[#161810] border border-[#2d3c13] rounded-[16px] p-[24px] lg:p-[48px] flex flex-col lg:flex-row gap-[48px] lg:gap-[80px]">
+    <div className="bg-surface border border-border rounded-card p-6 lg:p-10 flex flex-col lg:flex-row gap-8 lg:gap-16 shadow-card">
       
       {/* Left Column: Avatar & Membership */}
-      <div className="flex flex-col items-center gap-[32px] w-full lg:w-[280px] shrink-0">
+      <div className="flex flex-col items-center gap-8 w-full lg:w-[280px] shrink-0">
         
         {/* Avatar Area */}
-        <div className="flex flex-col items-center gap-[16px]">
+        <div className="flex flex-col items-center gap-4">
           <input 
             type="file" 
             ref={fileInputRef} 
@@ -116,11 +116,11 @@ export default function HostProfileForm() {
             accept="image/*" 
             className="hidden" 
           />
-          <div className="relative w-[160px] h-[160px] rounded-full border-2 border-dashed border-[#2d3c13] flex items-center justify-center bg-[#0d0d0b] overflow-hidden">
+          <div className="relative w-40 h-40 rounded-full border-2 border-dashed border-border-medium flex items-center justify-center bg-elevated overflow-hidden shadow-xs">
             {user?.avatarUrl ? (
               <img src={user.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
             ) : (
-              <span className="font-heading font-bold text-[48px] text-[#8cb34a]">{initials}</span>
+              <span className="font-heading font-black text-4xl text-text-brand">{initials}</span>
             )}
             
             {/* Camera Icon Button */}
@@ -128,9 +128,9 @@ export default function HostProfileForm() {
               type="button"
               onClick={handleUploadClick}
               disabled={uploadAvatarMutation.isPending}
-              className="absolute bottom-2 right-2 w-[32px] h-[32px] rounded-full bg-[#8cb34a] flex items-center justify-center hover:bg-[#a0d056] transition-colors border-2 border-[#161810] disabled:opacity-50"
+              className="absolute bottom-2 right-2 w-9 h-9 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors border-2 border-surface text-white disabled:opacity-50 cursor-pointer shadow-md"
             >
-              <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="#0d0d0b" className="w-[16px] h-[16px]">
+              <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
               </svg>
@@ -140,20 +140,20 @@ export default function HostProfileForm() {
             type="button"
             onClick={handleUploadClick}
             disabled={uploadAvatarMutation.isPending}
-            className="font-sans font-medium text-[12px] text-[#5a752a] hover:text-[#8cb34a] transition-colors disabled:opacity-50"
+            className="font-sans font-bold text-xs text-text-brand hover:underline transition-all disabled:opacity-50 cursor-pointer"
           >
             {uploadAvatarMutation.isPending ? "Uploading..." : "Upload Logo"}
           </button>
         </div>
 
         {/* Membership Status Box */}
-        <div className="w-full bg-[#1a230a] border border-[#2d3c13] rounded-[12px] p-[24px] flex flex-col items-center justify-center gap-[16px]">
-          <h4 className="font-sans font-medium text-[13px] text-[#e8edd4]">
+        <div className="w-full bg-accent-bg border border-primary/30 rounded-xl p-6 flex flex-col items-center justify-center gap-3 shadow-xs">
+          <h4 className="font-heading font-black text-xs text-text-primary uppercase tracking-wider">
             Membership Status
           </h4>
-          <div className="px-[16px] py-[6px] rounded-full border border-[#8cb34a] bg-transparent">
-            <span className="font-sans font-medium text-[10px] text-[#8cb34a] uppercase tracking-wider">
-              {user?.hostProfile?.isVerified ? "VERIFIED HOST" : "HOST"}
+          <div className="px-3.5 py-1 rounded-full border border-[#BBF7D0] bg-success-bg">
+            <span className="font-sans font-bold text-[10px] text-success-text uppercase tracking-wider">
+              {user?.hostProfile?.isVerified ? "VERIFIED HOST" : "HOST ACCOUNT"}
             </span>
           </div>
         </div>
@@ -161,10 +161,10 @@ export default function HostProfileForm() {
       </div>
 
       {/* Right Column: Form */}
-      <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-[24px]">
+      <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-6">
         
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-wider">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
             Host / Brand Name
           </label>
           <input 
@@ -173,12 +173,12 @@ export default function HostProfileForm() {
             value={formData.brandName}
             onChange={handleChange}
             placeholder="e.g. Tactical Gear UK"
-            className="w-full h-[44px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] focus:outline-none focus:border-[#8cb34a] transition-colors"
+            className="w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl font-sans text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all"
           />
         </div>
 
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-wider">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
             Bio / Description
           </label>
           <textarea 
@@ -186,13 +186,13 @@ export default function HostProfileForm() {
             value={formData.bio}
             onChange={handleChange}
             placeholder="Tell entrants about your brand..."
-            className="w-full h-[120px] p-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] focus:outline-none focus:border-[#8cb34a] transition-colors resize-none"
+            className="w-full h-28 p-4 bg-elevated border border-border-medium rounded-xl font-sans text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all resize-none"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[24px]">
-          <div className="flex flex-col gap-[8px]">
-            <label className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-wider">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
               Contact Email
             </label>
             <input 
@@ -201,11 +201,11 @@ export default function HostProfileForm() {
               value={formData.email}
               disabled
               placeholder="host@example.com"
-              className="w-full h-[44px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13]/50 rounded-[8px] font-sans text-[14px] text-[#e8edd4]/50 cursor-not-allowed transition-colors"
+              className="w-full h-11 px-4 bg-elevated border border-border-medium/60 rounded-xl font-sans text-sm text-text-muted cursor-not-allowed opacity-75"
             />
           </div>
-          <div className="flex flex-col gap-[8px]">
-            <label className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-wider">
+          <div className="flex flex-col gap-2">
+            <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
               Phone Number
             </label>
             <input 
@@ -214,13 +214,13 @@ export default function HostProfileForm() {
               value={formData.phone}
               onChange={handleChange}
               placeholder="+44 7700 900000"
-              className="w-full h-[44px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] focus:outline-none focus:border-[#8cb34a] transition-colors"
+              className="w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl font-sans text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all"
             />
           </div>
         </div>
 
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[11px] text-[#5a752a] uppercase tracking-wider">
+        <div className="flex flex-col gap-2">
+          <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
             Business Address
           </label>
           <textarea 
@@ -228,18 +228,18 @@ export default function HostProfileForm() {
             value={formData.address}
             onChange={handleChange}
             placeholder="123 Street, City, Postcode"
-            className="w-full h-[120px] p-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] font-sans text-[14px] text-[#e8edd4] placeholder:text-[#5a752a] focus:outline-none focus:border-[#8cb34a] transition-colors resize-none"
+            className="w-full h-28 p-4 bg-elevated border border-border-medium rounded-xl font-sans text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all resize-none"
           />
         </div>
 
-        <div className="flex items-center justify-between mt-[8px]">
-          <span className="text-[13px] font-medium text-[#8cb34a]">{message}</span>
+        <div className="flex items-center justify-between mt-2 pt-4 border-t border-divider">
+          <span className="text-xs font-bold text-text-brand">{message}</span>
           <button 
             type="submit"
             disabled={isSubmitting}
-            className="h-[44px] px-[24px] bg-[#8cb34a] hover:bg-[#72943a] transition-colors rounded-[8px] flex items-center justify-center shrink-0 font-heading font-medium text-[14px] text-[#0d0d0b] disabled:opacity-50"
+            className="btn-glossy-red h-[42px] px-8 rounded-xl flex items-center justify-center shrink-0 font-heading font-bold text-xs uppercase tracking-wider text-white transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
           >
-            {isSubmitting ? "Saving..." : "Save Changes"}
+            {isSubmitting ? "Saving..." : "Save Profile Changes"}
           </button>
         </div>
 

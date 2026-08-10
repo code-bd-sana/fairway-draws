@@ -30,20 +30,20 @@ export default function VerifyWinnerModal({ isOpen, onClose, winner }: VerifyWin
   return (
     <>
       <div 
-        className="fixed inset-0 z-50 bg-[#0D0D0B]/80 backdrop-blur-sm transition-opacity" 
+        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity" 
         onClick={onClose} 
       />
       
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-[#161810] border border-[#2D3C13] rounded-[16px] shadow-2xl z-50 animate-fadeIn flex flex-col p-8">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-surface border border-border rounded-card shadow-card z-50 animate-fadeIn flex flex-col p-6 lg:p-8 font-sans">
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-heading font-medium text-[20px] text-[#E8EDD4]">
-            Verify & Publish Result
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
+            Verify & Publish Winner
           </h2>
           <button 
             onClick={onClose}
-            className="text-[#5A752A] hover:text-[#E8EDD4] transition-colors"
+            className="text-text-muted hover:text-text-primary transition-colors disabled:opacity-50 cursor-pointer"
             disabled={mutation.isPending}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -53,22 +53,22 @@ export default function VerifyWinnerModal({ isOpen, onClose, winner }: VerifyWin
         </div>
 
         {/* Winner Info Box */}
-        <div className="w-full bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] p-5 mb-8 flex flex-col gap-1">
-          <span className="font-sans text-[12px] text-[#72943A]">Winner</span>
-          <span className="font-sans font-medium text-[15px] text-[#E8EDD4]">
+        <div className="w-full bg-elevated border border-border-medium rounded-xl p-4 mb-6 flex flex-col gap-1">
+          <span className="font-sans font-bold text-xs text-text-muted">Verified Winner</span>
+          <span className="font-heading font-bold text-base text-text-primary">
             {name} — Ticket #{winner.ticket?.ticketNumber || 'N/A'}
           </span>
         </div>
 
         {/* Toggle */}
-        <div className="flex items-center justify-between mb-8">
-          <span className="font-sans text-[13px] text-[#E8EDD4]">Publish to Public Winners Page</span>
+        <div className="flex items-center justify-between mb-6 bg-surface border border-border rounded-xl p-4 shadow-xs">
+          <span className="font-sans font-bold text-xs text-text-primary">Publish to Public Winners Leaderboard</span>
           {/* Custom Toggle Switch */}
           <div 
             onClick={() => setIsPublishing(!isPublishing)}
-            className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors flex items-center px-0.5 ${isPublishing ? 'bg-[#8CB34A]' : 'bg-[#2D3C13]'}`}
+            className={`w-11 h-6 rounded-full relative cursor-pointer transition-colors flex items-center px-0.5 ${isPublishing ? 'bg-primary' : 'bg-border-medium'}`}
           >
-            <div className={`w-4 h-4 rounded-full bg-[#0D0D0B] absolute shadow-sm transform transition-transform ${isPublishing ? 'right-0.5' : 'left-0.5'}`} />
+            <div className={`w-5 h-5 rounded-full bg-white absolute shadow-xs transform transition-transform ${isPublishing ? 'right-0.5' : 'left-0.5'}`} />
           </div>
         </div>
 
@@ -76,9 +76,9 @@ export default function VerifyWinnerModal({ isOpen, onClose, winner }: VerifyWin
         <button 
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
-          className="w-full h-[48px] rounded-[8px] bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-heading font-medium text-[14px] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-md cursor-pointer active:scale-98"
         >
-          {mutation.isPending ? 'Verifying...' : 'Confirm & Publish'}
+          {mutation.isPending ? 'Verifying & Publishing...' : 'Confirm & Publish Winner'}
         </button>
 
       </div>

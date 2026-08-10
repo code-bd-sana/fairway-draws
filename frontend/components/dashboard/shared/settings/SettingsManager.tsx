@@ -15,14 +15,14 @@ export default function SettingsManager() {
       
       {/* Settings Sidebar */}
       <div className="w-full md:w-[240px] shrink-0">
-        <div className="bg-[#111210] border border-[#2D3C13] rounded-[16px] overflow-hidden flex flex-col p-2">
+        <div className="bg-surface border border-border rounded-card overflow-hidden flex flex-col p-2 shadow-card">
           
           <button 
             onClick={() => setActiveTab("profile")}
-            className={`flex items-center gap-3 w-full h-[48px] px-4 rounded-[8px] font-sans font-medium text-[13px] transition-colors ${
+            className={`flex items-center gap-3 w-full h-[46px] px-4 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === "profile" 
-                ? "bg-[#1A230A] text-[#8CB34A]" 
-                : "text-[#72943A] hover:bg-[#161810] hover:text-[#E8EDD4]"
+                ? "bg-accent-bg border border-primary/30 text-text-brand shadow-xs" 
+                : "text-text-muted hover:bg-elevated hover:text-text-primary border border-transparent"
             }`}
           >
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -33,10 +33,10 @@ export default function SettingsManager() {
           
           <button 
             onClick={() => setActiveTab("security")}
-            className={`flex items-center gap-3 w-full h-[48px] px-4 rounded-[8px] font-sans font-medium text-[13px] transition-colors ${
+            className={`flex items-center gap-3 w-full h-[46px] px-4 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === "security" 
-                ? "bg-[#1A230A] text-[#8CB34A]" 
-                : "text-[#72943A] hover:bg-[#161810] hover:text-[#E8EDD4]"
+                ? "bg-accent-bg border border-primary/30 text-text-brand shadow-xs" 
+                : "text-text-muted hover:bg-elevated hover:text-text-primary border border-transparent"
             }`}
           >
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -47,10 +47,10 @@ export default function SettingsManager() {
           
           <button 
             onClick={() => setActiveTab("notifications")}
-            className={`flex items-center gap-3 w-full h-[48px] px-4 rounded-[8px] font-sans font-medium text-[13px] transition-colors ${
+            className={`flex items-center gap-3 w-full h-[46px] px-4 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === "notifications" 
-                ? "bg-[#1A230A] text-[#8CB34A]" 
-                : "text-[#72943A] hover:bg-[#161810] hover:text-[#E8EDD4]"
+                ? "bg-accent-bg border border-primary/30 text-text-brand shadow-xs" 
+                : "text-text-muted hover:bg-elevated hover:text-text-primary border border-transparent"
             }`}
           >
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -61,15 +61,15 @@ export default function SettingsManager() {
 
           {/* Spacer */}
           <div className="w-full px-2 py-2">
-            <div className="h-px bg-[#1A230A] w-full" />
+            <div className="h-px bg-divider w-full" />
           </div>
 
           <button 
             onClick={() => setActiveTab("billing")}
-            className={`flex items-center gap-3 w-full h-[48px] px-4 rounded-[8px] font-sans font-medium text-[13px] transition-colors ${
+            className={`flex items-center gap-3 w-full h-[46px] px-4 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === "billing" 
-                ? "bg-[#1A230A] text-[#8CB34A]" 
-                : "text-[#72943A] hover:bg-[#161810] hover:text-[#E8EDD4]"
+                ? "bg-accent-bg border border-primary/30 text-text-brand shadow-xs" 
+                : "text-text-muted hover:bg-elevated hover:text-text-primary border border-transparent"
             }`}
           >
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -87,13 +87,13 @@ export default function SettingsManager() {
         {activeTab === "security" && <SecuritySettings />}
         {activeTab === "notifications" && <NotificationSettings />}
         {activeTab === "billing" && (
-          <div className="bg-[#161810] border border-[#2D3C13] rounded-[16px] p-8 flex flex-col gap-6 items-center justify-center min-h-[400px]">
-             <svg className="w-12 h-12 text-[#2D3C13] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+          <div className="bg-surface border border-border rounded-card p-8 flex flex-col gap-4 items-center justify-center min-h-[400px] shadow-card">
+             <svg className="w-12 h-12 text-primary mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
              </svg>
-             <h3 className="font-heading font-medium text-[18px] text-[#E8EDD4]">Billing coming soon</h3>
-             <p className="font-sans text-[13px] text-[#72943A] text-center max-w-[300px]">
-               Payment methods and invoices will be available in the upcoming release.
+             <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">Billing Portal Coming Soon</h3>
+             <p className="font-sans text-xs text-text-muted text-center max-w-[320px]">
+               Payment methods and subscription invoices will be manageable directly in your user dashboard in the upcoming release.
              </p>
           </div>
         )}
