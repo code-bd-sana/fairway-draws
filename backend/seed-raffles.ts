@@ -12,7 +12,7 @@ async function main() {
   console.log('Seeding dummy raffles for testing...');
 
   const hostUser = await prisma.user.findUnique({
-    where: { email: 'host@airsoftdraw.demo' },
+    where: { email: 'host@fairwaydraw.demo' },
   });
 
   if (!hostUser) {

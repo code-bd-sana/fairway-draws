@@ -41,7 +41,7 @@ export default function HostRulesPage() {
                 1. Prize Authenticity
               </h3>
               <p>
-                All items offered as prizes must be exactly as described in the competition listing. If an item is second-hand or has minor defects, this must be stated explicitly. All Airsoft Replicas must comply with the VCRA and the winner must provide a valid UKARA or equivalent defense.
+                All items offered as prizes must be authentic, brand new or pristine condition, and exactly as described in the competition listing. If an item is second-hand or has minor defects, this must be stated explicitly.
               </p>
 
               <h3 className="font-heading font-bold text-lg text-text-primary mt-8 mb-4">

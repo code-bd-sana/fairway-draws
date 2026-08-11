@@ -239,7 +239,7 @@ export default function TermsContent() {
                 6.1. The prize details are described on the Website. Prizes are non-transferable and subject to availability.
               </p>
               <p>
-                6.2. Vehicle & Airsoft Replica Prizes: Winners are solely responsible for ensuring appropriate UKARA / defence registration, safety gear, valid insurance, and lawful usage on public/private property.
+                6.2. Physical Prizes & Equipment: Winners are responsible for providing valid delivery details and ensuring proper care and lawful usage of delivered equipment and items.
               </p>
               <p>
                 6.3. Fairway Draws reserves the right to substitute a prize with an equivalent cash alternative if circumstances beyond reasonable control make it necessary.

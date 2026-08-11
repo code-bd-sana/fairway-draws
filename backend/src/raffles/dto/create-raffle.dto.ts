@@ -39,7 +39,7 @@ export class InstantWinPrizeDto {
 
 export class CreateRaffleDto {
   @ApiProperty({
-    example: 'Tactical Airsoft Rifle Raffle',
+    example: 'Custom Driver Golf Club Raffle',
     description: 'Title of the competition',
   })
   @IsString()
@@ -47,7 +47,7 @@ export class CreateRaffleDto {
   title: string;
 
   @ApiPropertyOptional({
-    example: 'Win a brand new custom tactical airsoft rifle!',
+    example: 'Win a brand new custom golf driver club set!',
     description: 'Raffle description',
   })
   @IsString()
