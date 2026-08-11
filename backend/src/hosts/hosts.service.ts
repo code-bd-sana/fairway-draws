@@ -122,7 +122,7 @@ export class HostsService {
           soldTickets: raffle.ticketsSold,
           endDate: `Ends ${formattedEndDate}`,
           status: raffle.status, // ACTIVE, ENDED, etc.
-          category: 'airsoft', // Default or add to schema later
+          category: 'golf', // Default or add to schema later
           isInstantWin: raffle.instantWins?.length > 0,
           instantWinsCount: raffle.instantWins?.length || 0,
         };
@@ -360,7 +360,7 @@ export class HostsService {
     const recentActivity = recentTickets.map((t) => ({
       id: t.id,
       ticketNumber: t.ticketNumber,
-      raffleTitle: t.raffle?.title || 'Airsoft Competition',
+      raffleTitle: t.raffle?.title || 'Fairway Golf Competition',
       buyerName: `${t.user?.firstName || 'User'} ${t.user?.lastName || ''}`.trim() || t.user?.email || 'Anonymous Client',
       amount: Number(t.raffle?.pricePerTicket || 0),
       createdAt: t.createdAt,

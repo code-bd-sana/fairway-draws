@@ -15,8 +15,8 @@ async function main() {
 
   const categoriesToSeed = [
     {
-      name: 'Airsoft Rifles',
-      slug: 'airsoft-rifles',
+      name: 'Golf Clubs',
+      slug: 'golf-clubs',
       icon: 'Crosshair',
       isActive: true,
       image: `${baseUrl}/uploads/categories/rifles.jpg`,
