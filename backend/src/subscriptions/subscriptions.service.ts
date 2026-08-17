@@ -21,18 +21,47 @@ export class SubscriptionsService {
     });
     if (!host) return null;
 
-    const sub = await this.prisma.hostSubscription.findFirst({
-      where: { hostId: host.id },
+    let sub = await this.prisma.hostSubscription.findFirst({
+      where: { hostId: host.id, status: 'ACTIVE' },
       include: { plan: true },
       orderBy: { createdAt: 'desc' },
     });
 
-    if (!sub) return null;
+    if (!sub) {
+      let freePlan = await this.prisma.subscriptionPlan.findFirst({
+        where: { name: { equals: 'Free', mode: 'insensitive' } },
+      });
+      if (!freePlan) {
+        freePlan = await this.prisma.subscriptionPlan.create({
+          data: {
+            id: 'free',
+            name: 'Free',
+            price: 0,
+            durationDays: 365,
+            maxActiveRaffles: 2,
+          },
+        });
+      }
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + (freePlan.durationDays || 365));
 
-    const transaction = await this.prisma.transaction.findFirst({
+      sub = await this.prisma.hostSubscription.create({
+        data: {
+          hostId: host.id,
+          planId: freePlan.id,
+          status: 'ACTIVE',
+          startDate,
+          endDate,
+        },
+        include: { plan: true },
+      });
+    }
+
+    const transaction = sub ? await this.prisma.transaction.findFirst({
       where: { relatedEntityId: sub.id, type: 'SUBSCRIPTION_FEE' },
       orderBy: { createdAt: 'desc' },
-    });
+    }) : null;
 
     return { ...sub, transaction };
   }

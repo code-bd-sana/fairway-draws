@@ -10,17 +10,17 @@ interface PricingPlanGridProps {
 }
 
 /**
- * Centered layout holding the two paid subscription plans (Premium and Pro).
+ * Centered layout holding subscription plans (Free, Premium, and Pro).
  */
 export default function PricingPlanGrid({ billingCycle }: PricingPlanGridProps) {
   const { data: dbPlans } = useSubscriptionPlans();
 
   return (
-    <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 lg:gap-10 w-full max-w-4xl mx-auto px-4 md:px-0">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full max-w-6xl mx-auto px-4 md:px-0">
       {PRICING_PLANS.map((plan) => {
-        const dbPlan = dbPlans?.find(p => p.name === plan.name);
+        const dbPlan = dbPlans?.find(p => p.name.toLowerCase() === plan.name.toLowerCase());
         return (
-          <div key={plan.id} className="flex-1 w-full max-w-[440px] mx-auto flex">
+          <div key={plan.id} className="w-full mx-auto flex">
             <PricingPlanCard plan={plan} billingCycle={billingCycle} dbPlan={dbPlan} />
           </div>
         );

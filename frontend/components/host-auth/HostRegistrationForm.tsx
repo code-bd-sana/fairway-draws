@@ -1072,8 +1072,8 @@ export default function HostRegistrationForm({
               </div>
 
               {/* Guidelines Agreement Alert */}
-              <div className="bg-[#1a230a] border border-divider p-4 rounded-card flex gap-3">
-                <div className="pt-0.5">
+              <div className="bg-[#e2efe0] border border-[#0b4d35]/30 p-4.5 rounded-card flex gap-3 items-start shadow-xs">
+                <div className="pt-0.5 shrink-0">
                   <input
                     type="checkbox"
                     id="acceptedTerms"
@@ -1081,14 +1081,14 @@ export default function HostRegistrationForm({
                     checked={formData.acceptedTerms}
                     onChange={handleInputChange}
                     disabled={formState.isSubmitting}
-                    className="w-4.5 h-4.5 rounded border border-border bg-bg text-primary focus:ring-0 focus:ring-offset-0 focus:outline-none accent-primary transition-all duration-200 cursor-pointer"
+                    className="w-4.5 h-4.5 rounded border border-[#0b4d35]/40 bg-white text-primary focus:ring-0 focus:ring-offset-0 focus:outline-none accent-[#0b4d35] transition-all duration-200 cursor-pointer"
                   />
                 </div>
-                <label htmlFor="acceptedTerms" className="font-sans text-xs text-text-secondary leading-normal select-none cursor-pointer">
+                <label htmlFor="acceptedTerms" className="font-sans text-xs md:text-sm text-[#0e1e17] font-medium leading-relaxed select-none cursor-pointer">
                   By going live, you confirm that all information is accurate and agree to our{" "}
-                  <button type="button" onClick={() => showToast("Host Guidelines document is not available in mock.")} className="text-text-brand hover:underline font-medium">Host Guidelines</button>
+                  <button type="button" onClick={() => showToast("Host Guidelines document is not available in mock.")} className="text-[#0b4d35] hover:underline font-bold underline decoration-[#0b4d35]/30">Host Guidelines</button>
                   {" "}and{" "}
-                  <button type="button" onClick={() => showToast("Platform Rules document is not available in mock.")} className="text-text-brand hover:underline font-medium">Platform Rules</button>.
+                  <button type="button" onClick={() => showToast("Platform Rules document is not available in mock.")} className="text-[#0b4d35] hover:underline font-bold underline decoration-[#0b4d35]/30">Platform Rules</button>.
                 </label>
               </div>
 

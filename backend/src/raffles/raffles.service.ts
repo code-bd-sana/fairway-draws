@@ -29,10 +29,68 @@ export class RafflesService {
       throw new BadRequestException('Host profile not found');
     }
 
-    const activeSub = hostProfile.subscriptions[0];
+    let activeSub = hostProfile.subscriptions[0];
     if (!activeSub) {
+      let freePlan = await this.prisma.subscriptionPlan.findFirst({
+        where: { name: { equals: 'Free', mode: 'insensitive' } },
+      });
+      if (!freePlan) {
+        freePlan = await this.prisma.subscriptionPlan.create({
+          data: {
+            id: 'free',
+            name: 'Free',
+            price: 0,
+            durationDays: 365,
+            maxActiveRaffles: 2,
+          },
+        });
+      }
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + (freePlan.durationDays || 365));
+
+      activeSub = (await this.prisma.hostSubscription.create({
+        data: {
+          hostId: hostProfile.id,
+          planId: freePlan.id,
+          status: 'ACTIVE',
+          startDate,
+          endDate,
+        },
+        include: { plan: true },
+      })) as any;
+    }
+
+    // Check active competitions limit
+    if (
+      activeSub.plan &&
+      activeSub.plan.maxActiveRaffles !== null &&
+      activeSub.plan.maxActiveRaffles !== undefined
+    ) {
+      const activeCount = await this.prisma.raffle.count({
+        where: {
+          hostId: hostProfile.id,
+          status: { in: ['ACTIVE', 'PENDING_APPROVAL', 'APPROVED'] },
+        },
+      });
+
+      if (activeCount >= activeSub.plan.maxActiveRaffles) {
+        throw new ForbiddenException(
+          `You have reached the maximum allowed active competitions (${activeSub.plan.maxActiveRaffles}) for your ${activeSub.plan.name} plan. Please upgrade your subscription to create more competitions.`,
+        );
+      }
+    }
+
+    // Restrict Instant Wins for Free Plan
+    if (
+      data.instantWins &&
+      Array.isArray(data.instantWins) &&
+      data.instantWins.length > 0 &&
+      activeSub.plan &&
+      activeSub.plan.name.toLowerCase() === 'free'
+    ) {
       throw new ForbiddenException(
-        'You must have an active paid subscription to create a competition.',
+        'Instant Wins are only available on Premium and Pro plans. Please upgrade your subscription.',
       );
     }
 

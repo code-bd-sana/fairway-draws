@@ -30,6 +30,19 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubscribe = () => {
+    if (plan.id === 'free' || plan.monthlyPrice === 0) {
+      if (!user) {
+        router.push('/host/register');
+        return;
+      }
+      if (user.role === 'HOST') {
+        router.push('/dashboard/host');
+        return;
+      }
+      router.push('/host/register');
+      return;
+    }
+
     if (!user) {
       router.push('/login');
       return;
@@ -95,7 +108,7 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
             £{isYearly ? price * 12 : price}
           </span>
           <span className="font-sans text-xs text-text-muted select-none">
-            {isYearly ? " billed yearly" : "/month"}
+            {price === 0 ? " forever" : isYearly ? " billed yearly" : "/month"}
           </span>
         </div>
         

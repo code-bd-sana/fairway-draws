@@ -61,13 +61,43 @@ export class AuthService {
       });
 
       if (role === 'HOST') {
-        await prisma.hostProfile.create({
+        const hostProfile = await prisma.hostProfile.create({
           data: {
             userId: newUser.id,
             businessName: registerDto.businessName!,
             bio: registerDto.bio,
             phone: registerDto.phone,
             address: registerDto.address,
+          },
+        });
+
+        // Find or fallback to Free plan
+        let freePlan = await prisma.subscriptionPlan.findFirst({
+          where: { name: { equals: 'Free', mode: 'insensitive' } },
+        });
+        if (!freePlan) {
+          freePlan = await prisma.subscriptionPlan.create({
+            data: {
+              id: 'free',
+              name: 'Free',
+              price: 0,
+              durationDays: 365,
+              maxActiveRaffles: 2,
+            },
+          });
+        }
+
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + (freePlan.durationDays || 365));
+
+        await prisma.hostSubscription.create({
+          data: {
+            hostId: hostProfile.id,
+            planId: freePlan.id,
+            status: 'ACTIVE',
+            startDate,
+            endDate,
           },
         });
       }

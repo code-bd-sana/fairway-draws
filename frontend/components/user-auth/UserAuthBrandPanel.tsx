@@ -57,7 +57,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
   ];
 
   return (
-    <div className="relative isolate flex h-full min-h-[500px] flex-col justify-between overflow-hidden border-b border-[#bdd3ba] bg-[#e5f0e2] bg-[url('/hero-banner.jpg')] bg-cover bg-center px-6 py-10 before:absolute before:inset-0 before:z-0 before:bg-gradient-to-b before:from-[#f4faf1]/94 before:via-[#e5f0e2]/88 before:to-[#c9dec4]/92 [&>*]:relative [&>*]:z-10 md:px-[80px] md:py-[64px] lg:min-h-screen lg:border-r lg:border-b-0">
+    <div className="relative isolate flex h-full flex-col justify-between overflow-hidden border-b border-[#bdd3ba] bg-[#e5f0e2] bg-[url('/hero-banner.jpg')] bg-cover bg-[position:left_center] px-6 py-8 before:absolute before:inset-0 before:z-0 before:bg-gradient-to-b before:from-[#f4faf1]/96 before:via-[#e5f0e2]/92 before:to-[#c9dec4]/96 [&>*]:relative [&>*]:z-10 md:px-[60px] lg:px-[80px] md:py-[50px] lg:py-[64px] lg:min-h-screen lg:border-r lg:border-b-0">
       {/* Top Branding Logo */}
       <div>
         <FairwayDrawsLogo variant="light" size="lg" priority />
@@ -99,7 +99,7 @@ export default function UserAuthBrandPanel({ mode }: UserAuthBrandPanelProps) {
 
       {/* Bottom Footer Copy */}
       <div className="mt-8 lg:mt-0 pt-6 border-t border-divider/40 lg:border-t-0">
-        <p className="font-sans font-normal text-[10px] md:text-[11px] text-border-medium">
+        <p className="font-sans font-medium text-[10px] md:text-[11px] text-text-secondary">
           © {new Date().getFullYear()} Fairway Draws · Privacy Policy · Terms
         </p>
       </div>

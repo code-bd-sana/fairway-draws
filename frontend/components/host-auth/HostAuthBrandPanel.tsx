@@ -95,7 +95,7 @@ export default function HostAuthBrandPanel({
   };
 
   return (
-    <div className="relative isolate flex h-full min-h-[500px] flex-col justify-between overflow-hidden border-b border-[#bdd3ba] bg-[#e5f0e2] bg-[url('/hero-banner.jpg')] bg-cover bg-center px-6 py-10 before:absolute before:inset-0 before:z-0 before:bg-gradient-to-b before:from-[#f4faf1]/94 before:via-[#e5f0e2]/88 before:to-[#c9dec4]/92 [&>*]:relative [&>*]:z-10 md:px-[80px] md:py-[64px] lg:min-h-screen lg:w-[795px] lg:border-r-0 lg:border-b-0">
+    <div className="relative isolate flex h-full flex-col justify-between overflow-hidden border-b border-[#bdd3ba] bg-[#e5f0e2] bg-[url('/hero-banner.jpg')] bg-cover bg-[position:left_center] px-6 py-8 before:absolute before:inset-0 before:z-0 before:bg-gradient-to-b before:from-[#f4faf1]/96 before:via-[#e5f0e2]/92 before:to-[#c9dec4]/96 [&>*]:relative [&>*]:z-10 md:px-[60px] lg:px-[80px] md:py-[50px] lg:py-[64px] lg:min-h-screen lg:w-[795px] lg:border-r-0 lg:border-b-0">
       {/* Top Branding Logo */}
       <div>
         <FairwayDrawsLogo variant="light" size="lg" priority />
@@ -158,10 +158,10 @@ export default function HostAuthBrandPanel({
                     <div className="flex flex-col items-center">
                       <div
                         className={cn(
-                          "flex items-center justify-center w-[32px] h-[32px] rounded-full border transition-all duration-300 font-heading text-[13px]",
-                          status === "active" && "bg-primary border-primary text-bg font-semibold",
-                          status === "completed" && "bg-accent-bg border-primary text-primary font-semibold",
-                          status === "inactive" && "bg-elevated border-border text-border-medium font-semibold"
+                          "flex items-center justify-center w-[34px] h-[34px] rounded-full border transition-all duration-300 font-heading text-[13px] shadow-sm",
+                          status === "active" && "bg-primary border-primary text-white font-bold ring-4 ring-primary/20",
+                          status === "completed" && "bg-primary border-primary text-white font-bold",
+                          status === "inactive" && "bg-white border-primary/50 text-primary font-bold shadow-xs"
                         )}
                       >
                         {status === "completed" ? (
@@ -183,7 +183,7 @@ export default function HostAuthBrandPanel({
                           <div
                             className={cn(
                               "w-px h-[36px] transition-colors duration-300",
-                              status === "completed" ? "bg-primary" : "bg-border"
+                              status === "completed" || status === "active" ? "bg-primary" : "bg-primary/30"
                             )}
                           />
                         </div>
@@ -194,10 +194,10 @@ export default function HostAuthBrandPanel({
                     <div className="pt-[6px] pb-[36px]">
                       <p
                         className={cn(
-                          "font-sans text-[13px] leading-[19.5px] transition-colors duration-300 whitespace-nowrap",
-                          status === "active" && "text-text-primary font-medium",
-                          status === "completed" && "text-text-primary/70 font-medium",
-                          status === "inactive" && "text-border-medium font-normal"
+                          "font-sans text-[14px] leading-[19.5px] transition-colors duration-300 whitespace-nowrap",
+                          status === "active" && "text-text-primary font-bold tracking-tight",
+                          status === "completed" && "text-text-primary font-semibold",
+                          status === "inactive" && "text-text-secondary font-semibold"
                         )}
                       >
                         {step.label}
@@ -213,7 +213,7 @@ export default function HostAuthBrandPanel({
 
       {/* Bottom Footer Copy */}
       <div className="mt-8 lg:mt-0">
-        <p className="font-sans font-normal text-[11px] leading-[16.5px] text-border-medium whitespace-nowrap">
+        <p className="font-sans font-medium text-[11px] leading-[16.5px] text-text-secondary whitespace-nowrap">
           © {new Date().getFullYear()} Fairway Draws · Privacy Policy · Terms
         </p>
       </div>
