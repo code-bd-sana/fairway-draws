@@ -11,7 +11,7 @@ import CreateRaffleStep6 from "./CreateRaffleStep6";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMySubscription } from "../../../../hooks/useSubscriptionHooks";
-import { useCreateRaffle, useUploadRaffleImage } from "../../../../hooks/useRaffleHooks";
+import { useCreateRaffle, useUploadRaffleImage, useHostRaffles } from "../../../../hooks/useRaffleHooks";
 import { extractApiError } from "../../../../lib/utils";
 
 export interface RaffleFormData {
@@ -65,6 +65,7 @@ export default function CreateRaffleWizard() {
   const router = useRouter();
 
   const { data: mySub, isLoading: isSubLoading } = useMySubscription();
+  const { data: hostRafflesData, isLoading: isRafflesLoading } = useHostRaffles({ limit: 100 });
   const createRaffle = useCreateRaffle();
   const uploadImage = useUploadRaffleImage();
 
@@ -134,7 +135,9 @@ export default function CreateRaffleWizard() {
     }
   };
 
-  if (isSubLoading) {
+  const isLoading = isSubLoading || isRafflesLoading;
+
+  if (isLoading) {
     return (
       <div className="w-full bg-surface border border-border rounded-card min-h-[400px] flex flex-col items-center justify-center p-8 shadow-card">
         <div className="relative flex items-center justify-center w-20 h-20 mb-6">
@@ -142,9 +145,9 @@ export default function CreateRaffleWizard() {
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary border-r-primary animate-spin" style={{ animationDuration: '0.8s' }}></div>
           <div className="w-4 h-4 bg-primary rounded-full animate-pulse shadow-md"></div>
         </div>
-        <h3 className="text-text-brand text-lg font-heading font-black uppercase tracking-tight mb-2">Verifying Host Subscription</h3>
+        <h3 className="text-text-brand text-lg font-heading font-black uppercase tracking-tight mb-2">Verifying Host Privileges</h3>
         <p className="text-text-muted text-xs max-w-[280px] text-center font-sans">
-          Please wait a moment while we check your active host privileges...
+          Checking your active plan & competition limits...
         </p>
       </div>
     );
@@ -152,14 +155,65 @@ export default function CreateRaffleWizard() {
 
   if (!mySub || mySub.status !== 'ACTIVE') {
     return (
-      <div className="w-full bg-surface border border-border rounded-card p-8 text-center shadow-card">
-        <h2 className="text-[#DC2626] font-heading font-black text-xl mb-3 uppercase tracking-tight">Active Subscription Required</h2>
-        <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">You must have an active host plan to create competitions on Fairway Draws.</p>
+      <div className="w-full bg-surface border border-border rounded-card p-8 md:p-12 text-center shadow-card max-w-lg mx-auto flex flex-col items-center">
+        <div className="w-14 h-14 rounded-2xl bg-[#FEE2E2] border border-[#FECACA] flex items-center justify-center text-[#DC2626] mb-5 shadow-xs shrink-0">
+          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+        </div>
+        <h2 className="text-text-primary font-heading font-black text-xl mb-2 uppercase tracking-tight">Active Subscription Required</h2>
+        <p className="text-text-muted text-xs leading-relaxed mb-6 max-w-md">You must have an active host plan to create competitions on Fairway Draws.</p>
         <button 
           onClick={() => router.push('/dashboard/host/billing')} 
-          className="btn-glossy-red px-6 py-2.5 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md cursor-pointer"
+          className="btn-glossy-red px-6 h-11 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md cursor-pointer transition-all active:scale-98"
         >
-          View Host Plans
+          View Host Subscription Plans
+        </button>
+      </div>
+    );
+  }
+
+  // Check active competitions limit
+  const maxAllowedRaffles = mySub.plan?.maxActiveRaffles;
+  const rafflesList = hostRafflesData?.data || [];
+  const activeCount = rafflesList.filter((r: any) =>
+    ['ACTIVE', 'PENDING_APPROVAL', 'APPROVED'].includes(r.status)
+  ).length;
+
+  const isLimitReached =
+    maxAllowedRaffles !== null &&
+    maxAllowedRaffles !== undefined &&
+    activeCount >= maxAllowedRaffles;
+
+  if (isLimitReached) {
+    return (
+      <div className="w-full bg-surface border border-border rounded-card p-8 md:p-12 text-center shadow-card max-w-lg mx-auto flex flex-col items-center animate-fadeIn">
+        <div className="w-14 h-14 rounded-2xl bg-[#FEF3C7] border border-[#FDE68A] flex items-center justify-center text-[#D97706] mb-5 shadow-xs shrink-0">
+          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3.75h.007v.008H12v-.008zM12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" />
+          </svg>
+        </div>
+
+        <h2 className="text-text-primary font-heading font-black text-xl mb-2 uppercase tracking-tight">
+          Active Competitions Limit Reached
+        </h2>
+
+        <p className="text-text-muted text-xs leading-relaxed mb-6 max-w-md font-sans">
+          You have reached the maximum allowed active competitions (<strong className="text-text-primary">{maxAllowedRaffles}</strong>) for your <strong className="text-text-brand">{mySub.plan?.name || "Free"}</strong> plan. Please upgrade your subscription to create more competitions.
+        </p>
+
+        <div className="w-full bg-elevated border border-border-medium rounded-xl p-4 mb-6 flex items-center justify-between font-sans text-xs">
+          <span className="text-text-muted font-medium">Active Competitions:</span>
+          <span className="font-heading font-bold text-text-primary text-sm">
+            {activeCount} / {maxAllowedRaffles}
+          </span>
+        </div>
+
+        <button 
+          onClick={() => router.push('/dashboard/host/billing')} 
+          className="btn-glossy-red px-6 h-11 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md cursor-pointer transition-all active:scale-98 flex items-center justify-center gap-2"
+        >
+          <span>Upgrade Subscription Plan</span>
         </button>
       </div>
     );

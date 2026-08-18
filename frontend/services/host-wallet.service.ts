@@ -106,6 +106,14 @@ export interface HostSalesAnalyticsData {
   }>;
 }
 
+export interface HostPerformanceAnalyticsData {
+  timeframe: string;
+  revenueTrend: Array<{ month: string; revenue: number }>;
+  categorySales: Array<{ name: string; value: number; percentage: number }>;
+  topRaffles: Array<{ id: string; name: string; percentage: number; revenue: number }>;
+  demographics: Array<{ region: string; percentage: number }>;
+}
+
 export const hostWalletService = {
   async getDashboardOverview(): Promise<HostDashboardOverviewData> {
     const response = await api.get('/hosts/dashboard');
@@ -114,6 +122,11 @@ export const hostWalletService = {
 
   async getSalesAnalytics(): Promise<HostSalesAnalyticsData> {
     const response = await api.get('/hosts/sales');
+    return response.data;
+  },
+
+  async getPerformanceAnalytics(timeframe?: string): Promise<HostPerformanceAnalyticsData> {
+    const response = await api.get('/hosts/performance', { params: { timeframe } });
     return response.data;
   },
 

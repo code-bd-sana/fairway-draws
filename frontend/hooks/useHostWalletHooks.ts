@@ -17,6 +17,14 @@ export const useHostSalesAnalytics = () => {
   });
 };
 
+export const useHostPerformanceAnalytics = (timeframe: string = '1M') => {
+  return useQuery({
+    queryKey: ['host-performance-analytics', timeframe],
+    queryFn: () => hostWalletService.getPerformanceAnalytics(timeframe),
+    staleTime: 30 * 1000,
+  });
+};
+
 export const useHostWalletStats = () => {
   return useQuery({
     queryKey: ['host-wallet-stats'],

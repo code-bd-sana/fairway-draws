@@ -48,23 +48,28 @@ export default function ManualWinnerSelectModal({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [winnerResult, setWinnerResult] = useState<any | null>(null);
 
+  // Lock scroll when modal is open
   useEffect(() => {
-    if (isOpen && raffle.id) {
-      fetchSoldTickets();
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
     }
-  }, [isOpen, raffle.id]);
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
-  const fetchSoldTickets = async () => {
-    setIsLoadingTickets(true);
-    try {
-      const data = await raffleService.getSoldTickets(raffle.id);
-      setSoldTickets(data || []);
-    } catch (e) {
-      console.error("Failed to load sold tickets:", e);
-    } finally {
-      setIsLoadingTickets(false);
-    }
-  };
+  // Handle ESC key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen && !isSubmitting) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isSubmitting, onClose]);
 
   if (!isOpen) return null;
 
@@ -111,31 +116,32 @@ export default function ManualWinnerSelectModal({
   };
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-      {/* Dark Overlay Backdrop */}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+      {/* Overlay Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        onClick={!isSubmitting ? onClose : undefined}
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-[620px] bg-[#111210] border border-[#2D3C13] rounded-[20px] p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] flex flex-col gap-6 z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div className="relative w-full max-w-[620px] bg-surface border border-border rounded-card p-6 sm:p-8 shadow-card flex flex-col gap-6 z-10 max-h-[90vh] overflow-y-auto">
         {/* Header Row */}
-        <div className="flex items-start justify-between border-b border-[#2D3C13] pb-4">
+        <div className="flex items-start justify-between border-b border-divider pb-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🏆</span>
-              <h3 className="font-heading font-bold text-[20px] text-[#E8EDD4]">
+              <h3 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
                 Winner Selection
               </h3>
             </div>
-            <p className="font-sans text-[12px] text-[#72943A]">
+            <p className="font-sans text-xs text-text-muted">
               {raffle.title}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-button text-[#72943A] hover:text-[#E8EDD4] hover:bg-[#1A230A] transition-colors"
+            disabled={isSubmitting}
+            className="p-1.5 rounded-xl text-text-muted hover:text-text-primary hover:bg-elevated transition-colors cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -144,16 +150,16 @@ export default function ManualWinnerSelectModal({
         </div>
 
         {/* Competition Info Badges */}
-        <div className="grid grid-cols-2 gap-3 bg-[#161810] border border-[#2D3C13] p-3.5 rounded-[12px] text-xs">
+        <div className="grid grid-cols-2 gap-3 bg-elevated border border-border-medium p-3.5 rounded-xl text-xs">
           <div className="flex flex-col">
-            <span className="text-[#5A752A] text-[10px] uppercase font-sans">Draw Mode</span>
-            <span className="font-semibold text-[#8CB34A] mt-0.5">
+            <span className="text-text-muted text-[10px] uppercase font-sans font-bold">Draw Mode</span>
+            <span className="font-heading font-bold text-xs text-text-brand mt-0.5">
               {raffle.isAutoDraw ? "Automatic Draw" : "Manual Winner Selection"}
             </span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[#5A752A] text-[10px] uppercase font-sans">Total Sold Tickets</span>
-            <span className="font-semibold text-[#E8EDD4] mt-0.5">
+            <span className="text-text-muted text-[10px] uppercase font-sans font-bold">Total Sold Tickets</span>
+            <span className="font-heading font-bold text-xs text-text-primary mt-0.5">
               {soldTickets.length || raffle.ticketsSold || 0} / {raffle.totalTickets}
             </span>
           </div>
@@ -161,7 +167,7 @@ export default function ManualWinnerSelectModal({
 
         {/* Error Message Alert */}
         {errorMessage && (
-          <div className="p-3.5 bg-red-950/80 border border-red-800 rounded-[10px] text-xs font-sans text-red-300 flex items-start gap-2">
+          <div className="p-3.5 bg-[#FEE2E2] border border-[#FECACA] rounded-xl text-xs font-sans text-[#991B1B] flex items-start gap-2">
             <span className="shrink-0 mt-0.5">⚠️</span>
             <span>{errorMessage}</span>
           </div>
@@ -169,37 +175,37 @@ export default function ManualWinnerSelectModal({
 
         {/* Winner Result Success Screen */}
         {winnerResult ? (
-          <div className="flex flex-col gap-4 bg-[#1A230A] border border-[#8CB34A]/40 rounded-[16px] p-6 text-center animate-in zoom-in-95 duration-300">
-            <div className="w-14 h-14 rounded-full bg-[#8CB34A] text-[#0D0D0B] flex items-center justify-center text-3xl mx-auto font-bold shadow-[0_0_25px_rgba(140,179,74,0.4)]">
+          <div className="flex flex-col gap-4 bg-accent-bg border border-primary/30 rounded-xl p-6 text-center animate-fadeIn">
+            <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center text-3xl mx-auto font-bold shadow-md">
               🎉
             </div>
             <div className="flex flex-col">
-              <h4 className="font-heading font-bold text-[20px] text-[#E8EDD4]">
+              <h4 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight">
                 Main Winner Declared!
               </h4>
-              <p className="font-sans text-[13px] text-[#8CB34A] mt-1 font-semibold">
+              <p className="font-sans text-xs text-text-brand mt-1 font-bold">
                 Winning Ticket #{winnerResult.ticket?.ticketNumber || ticketInput}
               </p>
             </div>
 
-            <div className="bg-[#111210] border border-[#2D3C13] p-4 rounded-[12px] text-left flex flex-col gap-2 text-xs">
-              <div className="flex justify-between items-center pb-2 border-b border-[#2D3C13]">
-                <span className="text-[#72943A]">Winner Name:</span>
-                <span className="font-bold text-[#E8EDD4] text-sm">
+            <div className="bg-surface border border-border p-4 rounded-xl text-left flex flex-col gap-2.5 text-xs">
+              <div className="flex justify-between items-center pb-2 border-b border-divider">
+                <span className="text-text-muted font-sans">Winner Name:</span>
+                <span className="font-heading font-bold text-text-primary text-sm">
                   {winnerResult.user?.firstName
                     ? `${winnerResult.user.firstName} ${winnerResult.user.lastName || ''}`.trim()
                     : "Winner"}
                 </span>
               </div>
-              <div className="flex justify-between items-center pb-2 border-b border-[#2D3C13]">
-                <span className="text-[#72943A]">Winner Email:</span>
-                <span className="font-mono text-[#A0D056]">
+              <div className="flex justify-between items-center pb-2 border-b border-divider">
+                <span className="text-text-muted font-sans">Winner Email:</span>
+                <span className="font-mono text-text-brand font-semibold">
                   {winnerResult.user?.email || "N/A"}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[#72943A]">Prize Title:</span>
-                <span className="font-semibold text-[#E8EDD4]">
+                <span className="text-text-muted font-sans">Prize Title:</span>
+                <span className="font-heading font-bold text-text-primary">
                   {winnerResult.prizeName || raffle.title}
                 </span>
               </div>
@@ -207,7 +213,7 @@ export default function ManualWinnerSelectModal({
 
             <button
               onClick={onClose}
-              className="w-full h-11 bg-[#8CB34A] hover:bg-[#A0D056] text-[#0D0D0B] font-heading font-semibold text-sm rounded-[10px] transition-colors mt-2"
+              className="w-full h-11 bg-primary hover:bg-primary-hover text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-98 cursor-pointer mt-2"
             >
               Done & Close
             </button>
@@ -215,17 +221,17 @@ export default function ManualWinnerSelectModal({
         ) : (
           <>
             {/* Draw Mode Tabs */}
-            <div className="flex items-center gap-2 p-1 bg-[#161810] border border-[#2D3C13] rounded-[10px]">
+            <div className="flex items-center gap-2 p-1 bg-elevated border border-border-medium rounded-xl">
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab("manual");
                   setErrorMessage(null);
                 }}
-                className={`flex-1 py-2 text-xs font-semibold rounded-[8px] transition-colors ${
+                className={`flex-1 py-2 text-xs font-heading font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
                   activeTab === "manual"
-                    ? "bg-[#1A230A] border border-[#8CB34A] text-[#8CB34A]"
-                    : "text-[#72943A] hover:text-[#E8EDD4]"
+                    ? "bg-surface border border-border text-text-brand shadow-xs"
+                    : "text-text-muted hover:text-text-primary"
                 }`}
               >
                 🔍 Search Buyer & Ticket Number
@@ -236,10 +242,10 @@ export default function ManualWinnerSelectModal({
                   setActiveTab("random");
                   setErrorMessage(null);
                 }}
-                className={`flex-1 py-2 text-xs font-semibold rounded-[8px] transition-colors ${
+                className={`flex-1 py-2 text-xs font-heading font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
                   activeTab === "random"
-                    ? "bg-[#1A230A] border border-[#8CB34A] text-[#8CB34A]"
-                    : "text-[#72943A] hover:text-[#E8EDD4]"
+                    ? "bg-surface border border-border text-text-brand shadow-xs"
+                    : "text-text-muted hover:text-text-primary"
                 }`}
               >
                 🎲 Certified Random Draw
@@ -251,7 +257,7 @@ export default function ManualWinnerSelectModal({
               <form onSubmit={handleManualSubmit} className="flex flex-col gap-4">
                 {/* Search Box */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-xs font-medium text-[#E8EDD4]">
+                  <label className="font-sans text-xs font-bold text-text-primary">
                     Search Sold Tickets (by Ticket #, Name, or Email)
                   </label>
                   <div className="relative">
@@ -260,20 +266,20 @@ export default function ManualWinnerSelectModal({
                       placeholder="Type ticket number, buyer name, or email to search..."
                       value={ticketSearch}
                       onChange={(e) => setTicketSearch(e.target.value)}
-                      className="w-full h-11 pl-10 pr-4 bg-[#0D0D0B] border border-[#2D3C13] rounded-[10px] font-sans text-xs text-[#E8EDD4] placeholder:text-[#5A752A] focus:border-[#8CB34A] outline-none transition-colors"
+                      className="w-full h-11 pl-10 pr-4 bg-elevated border border-border-medium rounded-xl font-sans text-xs text-text-primary placeholder:text-text-muted focus:border-primary outline-none transition-colors"
                     />
-                    <svg className="w-4 h-4 text-[#5A752A] absolute left-3.5 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-4 h-4 text-text-muted absolute left-3.5 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                   </div>
                 </div>
 
                 {/* Sold Tickets Search Results Dropdown List */}
-                <div className="flex flex-col gap-1 bg-[#0D0D0B] border border-[#2D3C13] rounded-[12px] p-2 max-h-[190px] overflow-y-auto custom-scrollbar">
+                <div className="flex flex-col gap-1 bg-elevated border border-border-medium rounded-xl p-2 max-h-[190px] overflow-y-auto">
                   {isLoadingTickets ? (
-                    <div className="py-6 text-center text-xs text-[#72943A]">Loading sold tickets list...</div>
+                    <div className="py-6 text-center text-xs text-text-muted font-sans">Loading sold tickets list...</div>
                   ) : filteredTickets.length === 0 ? (
-                    <div className="py-6 text-center text-xs text-[#5A752A]">
+                    <div className="py-6 text-center text-xs text-text-muted font-sans">
                       {soldTickets.length === 0 ? "No tickets sold yet in this competition." : "No matching tickets found for your search."}
                     </div>
                   ) : (
@@ -284,23 +290,23 @@ export default function ManualWinnerSelectModal({
                           key={t.id}
                           type="button"
                           onClick={() => handleSelectTicketFromList(t)}
-                          className={`flex items-center justify-between p-2.5 rounded-[8px] text-left transition-all ${
+                          className={`flex items-center justify-between p-2.5 rounded-lg text-left transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-[#1A230A] border border-[#8CB34A] text-[#8CB34A]"
-                              : "bg-[#161810] border border-transparent hover:border-[#2D3C13] text-[#E8EDD4]"
+                              ? "bg-accent-bg border border-primary text-text-brand"
+                              : "bg-surface border border-border hover:border-border-medium text-text-primary"
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <span className="font-heading font-bold text-xs bg-[#1A230A] border border-[#8CB34A]/40 text-[#8CB34A] px-2 py-1 rounded-[6px]">
+                            <span className="font-heading font-bold text-xs bg-accent-bg border border-primary/30 text-text-brand px-2 py-1 rounded-md">
                               Ticket #{t.ticketNumber}
                             </span>
                             <div className="flex flex-col">
-                              <span className="font-sans font-medium text-xs text-[#E8EDD4]">{t.userName}</span>
-                              <span className="font-sans text-[11px] text-[#72943A]">{t.userEmail}</span>
+                              <span className="font-sans font-semibold text-xs text-text-primary">{t.userName}</span>
+                              <span className="font-sans text-[11px] text-text-muted">{t.userEmail}</span>
                             </div>
                           </div>
 
-                          <span className={`text-[11px] font-semibold ${isSelected ? "text-[#8CB34A]" : "text-[#5A752A]"}`}>
+                          <span className={`text-[11px] font-bold ${isSelected ? "text-text-brand" : "text-text-muted"}`}>
                             {isSelected ? "Selected ✓" : "Select"}
                           </span>
                         </button>
@@ -310,8 +316,8 @@ export default function ManualWinnerSelectModal({
                 </div>
 
                 {/* Direct Number Input */}
-                <div className="flex flex-col gap-1.5 pt-2 border-t border-[#2D3C13]">
-                  <label className="font-sans text-xs font-medium text-[#E8EDD4]">
+                <div className="flex flex-col gap-1.5 pt-3 border-t border-divider">
+                  <label className="font-sans text-xs font-bold text-text-primary">
                     Selected Winning Ticket Number
                   </label>
                   <input
@@ -324,11 +330,11 @@ export default function ManualWinnerSelectModal({
                       setTicketInput(e.target.value);
                       setSelectedTicket(null);
                     }}
-                    className="h-11 px-4 bg-[#0D0D0B] border border-[#2D3C13] rounded-[10px] font-mono text-sm text-[#E8EDD4] placeholder:text-[#5A752A] focus:border-[#8CB34A] outline-none transition-colors"
+                    className="h-11 px-4 bg-elevated border border-border-medium rounded-xl font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-primary outline-none transition-colors"
                     required
                   />
                   {selectedTicket && (
-                    <span className="font-sans text-[11px] text-[#8CB34A] flex items-center gap-1 mt-0.5">
+                    <span className="font-sans text-[11px] text-text-brand flex items-center gap-1 mt-0.5">
                       ✓ Selected ticket #{selectedTicket.ticketNumber} belongs to <strong>{selectedTicket.userName}</strong> ({selectedTicket.userEmail})
                     </span>
                   )}
@@ -337,7 +343,7 @@ export default function ManualWinnerSelectModal({
                 <button
                   type="submit"
                   disabled={isSubmitting || !ticketInput}
-                  className="w-full h-12 bg-[#8CB34A] hover:bg-[#A0D056] disabled:opacity-50 disabled:cursor-not-allowed text-[#0D0D0B] font-heading font-semibold text-sm rounded-[10px] transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(140,179,74,0.15)] mt-1"
+                  className="w-full h-11 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow-md active:scale-98 cursor-pointer mt-1"
                 >
                   {isSubmitting ? (
                     <span className="animate-pulse font-bold">Validating & Setting Winner...</span>
@@ -351,7 +357,7 @@ export default function ManualWinnerSelectModal({
             {/* Tab 2: Random Draw */}
             {activeTab === "random" && (
               <div className="flex flex-col gap-4 py-2">
-                <p className="font-sans text-xs text-[#72943A] leading-relaxed bg-[#161810] border border-[#2D3C13] p-4 rounded-[12px]">
+                <p className="font-sans text-xs text-text-muted leading-relaxed bg-elevated border border-border-medium p-4 rounded-xl">
                   Clicking below will use the certified randomizer to instantly pick a winning ticket from all <strong>{soldTickets.length || raffle.ticketsSold || 0}</strong> sold tickets in this competition.
                 </p>
 
@@ -359,7 +365,7 @@ export default function ManualWinnerSelectModal({
                   type="button"
                   onClick={() => handleDrawWinner()}
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-[#8CB34A] hover:bg-[#A0D056] disabled:opacity-50 disabled:cursor-not-allowed text-[#0D0D0B] font-heading font-semibold text-sm rounded-[10px] transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(140,179,74,0.15)]"
+                  className="w-full h-11 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow-md active:scale-98 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span className="animate-pulse font-bold">Running Certified Random Draw...</span>

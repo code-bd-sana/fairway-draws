@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuthUser } from "../../../../hooks/useAuthHooks";
 import { userService } from "../../../../services/user.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function HostProfileForm() {
-  const { data: user, isLoading } = useAuthUser();
+  const { data: user, isLoading, refetch } = useAuthUser();
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
@@ -17,18 +18,27 @@ export default function HostProfileForm() {
     address: "",
   });
 
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Force fresh user fetch on component mount
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   useEffect(() => {
     if (user) {
       setFormData({
-        brandName: user.hostProfile?.businessName || "",
-        bio: user.hostProfile?.bio || "",
+        brandName: user.hostProfile?.businessName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || "",
+        bio: user.hostProfile?.bio || (user as any).bio || "",
         email: user.email || "",
-        phone: user.hostProfile?.phone || "",
-        address: user.hostProfile?.address || user.location || "",
+        phone: user.hostProfile?.phone || user.phone || "",
+        address: user.hostProfile?.address || user.address || user.location || "",
       });
+      if (user.avatarUrl) {
+        setLogoPreview(user.avatarUrl);
+      }
     }
   }, [user]);
 
@@ -37,37 +47,47 @@ export default function HostProfileForm() {
       return userService.updateProfile(data);
     },
     onSuccess: (data) => {
-      setMessage("Profile saved successfully!");
-      queryClient.setQueryData(["user"], data.user);
-      setTimeout(() => setMessage(""), 3000);
+      toast.success("Profile saved successfully!");
+      if (data?.user) {
+        queryClient.setQueryData(["user"], data.user);
+      }
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["host-dashboard-overview"] });
+      refetch();
     },
-    onError: () => {
-      setMessage("Failed to save profile. Please try again.");
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || "Failed to save profile. Please try again.");
     },
     onSettled: () => {
       setIsSubmitting(false);
     }
   });
 
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
   const uploadAvatarMutation = useMutation({
     mutationFn: async (file: File) => {
       return userService.uploadAvatar(file);
     },
     onSuccess: (data) => {
-      setMessage("Avatar updated successfully!");
-      queryClient.setQueryData(["user"], data.user);
-      setTimeout(() => setMessage(""), 3000);
+      toast.success("Logo updated successfully!");
+      if (data?.user) {
+        queryClient.setQueryData(["user"], data.user);
+        if (data.user.avatarUrl) {
+          setLogoPreview(data.user.avatarUrl);
+        }
+      }
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      refetch();
     },
     onError: () => {
-      setMessage("Failed to update avatar.");
+      toast.error("Failed to update logo image.");
     },
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      uploadAvatarMutation.mutate(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoPreview(URL.createObjectURL(file));
+      uploadAvatarMutation.mutate(file);
     }
   };
 
@@ -84,25 +104,32 @@ export default function HostProfileForm() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // We don't update email via profile (usually needs verification).
     updateProfileMutation.mutate({
       businessName: formData.brandName,
       bio: formData.bio,
       phone: formData.phone,
       address: formData.address,
+      avatarUrl: logoPreview || user?.avatarUrl || undefined,
     });
   };
 
   if (isLoading) {
-    return <div className="text-[#8cb34a] animate-pulse">Loading profile...</div>;
+    return (
+      <div className="bg-surface border border-border rounded-card p-10 flex flex-col items-center justify-center gap-3 animate-pulse">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <span className="font-sans font-semibold text-xs text-text-muted">Loading profile data...</span>
+      </div>
+    );
   }
 
   const initials = formData.brandName
     ? formData.brandName.substring(0, 2).toUpperCase()
-    : user?.firstName?.substring(0, 2).toUpperCase() || "TG";
+    : user?.firstName?.substring(0, 2).toUpperCase() || "FD";
+
+  const displayLogo = logoPreview || user?.avatarUrl;
 
   return (
-    <div className="bg-surface border border-border rounded-card p-6 lg:p-10 flex flex-col lg:flex-row gap-8 lg:gap-16 shadow-card">
+    <div className="bg-surface border border-border rounded-card p-6 lg:p-10 flex flex-col lg:flex-row gap-8 lg:gap-16 shadow-card animate-fadeIn">
       
       {/* Left Column: Avatar & Membership */}
       <div className="flex flex-col items-center gap-8 w-full lg:w-[280px] shrink-0">
@@ -117,8 +144,8 @@ export default function HostProfileForm() {
             className="hidden" 
           />
           <div className="relative w-40 h-40 rounded-full border-2 border-dashed border-border-medium flex items-center justify-center bg-elevated overflow-hidden shadow-xs">
-            {user?.avatarUrl ? (
-              <img src={user.avatarUrl} alt="Logo" className="w-full h-full object-cover" />
+            {displayLogo ? (
+              <img src={displayLogo} alt="Logo" className="w-full h-full object-cover" />
             ) : (
               <span className="font-heading font-black text-4xl text-text-brand">{initials}</span>
             )}
@@ -129,6 +156,7 @@ export default function HostProfileForm() {
               onClick={handleUploadClick}
               disabled={uploadAvatarMutation.isPending}
               className="absolute bottom-2 right-2 w-9 h-9 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors border-2 border-surface text-white disabled:opacity-50 cursor-pointer shadow-md"
+              title="Upload new brand logo"
             >
               <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -142,7 +170,7 @@ export default function HostProfileForm() {
             disabled={uploadAvatarMutation.isPending}
             className="font-sans font-bold text-xs text-text-brand hover:underline transition-all disabled:opacity-50 cursor-pointer"
           >
-            {uploadAvatarMutation.isPending ? "Uploading..." : "Upload Logo"}
+            {uploadAvatarMutation.isPending ? "Uploading Logo..." : "Upload Brand Logo"}
           </button>
         </div>
 
@@ -165,13 +193,14 @@ export default function HostProfileForm() {
         
         <div className="flex flex-col gap-2">
           <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
-            Host / Brand Name
+            Host / Brand Name *
           </label>
           <input 
             type="text"
             name="brandName"
             value={formData.brandName}
             onChange={handleChange}
+            required
             placeholder="e.g. Tactical Gear UK"
             className="w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl font-sans text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all"
           />
@@ -179,7 +208,7 @@ export default function HostProfileForm() {
 
         <div className="flex flex-col gap-2">
           <label className="font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
-            Bio / Description
+            Short Bio / Description
           </label>
           <textarea 
             name="bio"
@@ -232,14 +261,13 @@ export default function HostProfileForm() {
           />
         </div>
 
-        <div className="flex items-center justify-between mt-2 pt-4 border-t border-divider">
-          <span className="text-xs font-bold text-text-brand">{message}</span>
+        <div className="flex items-center justify-end mt-2 pt-4 border-t border-divider">
           <button 
             type="submit"
-            disabled={isSubmitting}
-            className="btn-glossy-red h-[42px] px-8 rounded-xl flex items-center justify-center shrink-0 font-heading font-bold text-xs uppercase tracking-wider text-white transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
+            disabled={isSubmitting || updateProfileMutation.isPending}
+            className="btn-glossy-red h-[44px] px-8 rounded-xl flex items-center justify-center shrink-0 font-heading font-bold text-xs uppercase tracking-wider text-white transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
           >
-            {isSubmitting ? "Saving..." : "Save Profile Changes"}
+            {isSubmitting || updateProfileMutation.isPending ? "Saving..." : "Save Profile Changes"}
           </button>
         </div>
 

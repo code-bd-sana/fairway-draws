@@ -48,7 +48,7 @@ export const useAuthUser = () => {
         return null;
       }
     },
-    staleTime: 5 * 60 * 1000, // keep user data fresh for 5 minutes
+    staleTime: 10 * 1000, // keep user data fresh for 10 seconds
     retry: false, // Do not retry on failure (e.g. 401)
   });
 };

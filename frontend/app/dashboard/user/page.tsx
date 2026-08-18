@@ -78,10 +78,10 @@ export default function UserDashboardPage() {
         </div>
       </div>
 
-      {/* Row 2: Chart & Affordability */}
-      <div className="flex flex-col xl:flex-row gap-5 w-full">
+      {/* Row 2: Ticket Spend Overview Chart */}
+      <div className="w-full">
         {/* Ticket Spend Overview */}
-        <div className="flex-[3] bg-surface border border-border rounded-card p-6 flex flex-col min-h-[346px] shadow-card">
+        <div className="w-full bg-surface border border-border rounded-card p-6 flex flex-col min-h-[346px] shadow-card">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 sm:gap-0">
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
@@ -149,56 +149,6 @@ export default function UserDashboardPage() {
                   </span>
                 )
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* How Many Tickets Can I Afford? */}
-        <div className="flex-[2] bg-surface border border-border rounded-card p-6 flex flex-col justify-between min-h-[346px] shadow-card">
-          <div>
-            <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight mb-5">
-              Ticket Budget Calculator
-            </h3>
-            
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="font-sans font-bold text-[11px] tracking-wider uppercase text-text-muted">
-                  Total Budget (£)
-                </label>
-                <div className="bg-elevated border border-border-medium h-10 rounded-xl flex items-center px-3 focus-within:border-primary transition-all">
-                  <input
-                    type="text"
-                    defaultValue="50"
-                    className="bg-transparent border-none outline-none text-text-primary text-sm font-sans w-full font-bold"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="font-sans font-bold text-[11px] tracking-wider uppercase text-text-muted">
-                  Ticket Price (£)
-                </label>
-                <div className="bg-elevated border border-border-medium h-10 rounded-xl flex items-center px-3 focus-within:border-primary transition-all">
-                  <input
-                    type="text"
-                    defaultValue="2.50"
-                    className="bg-transparent border-none outline-none text-text-primary text-sm font-sans w-full font-bold"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-4">
-            <button className="btn-glossy-red h-11 rounded-xl w-full font-heading font-bold text-xs uppercase tracking-wider text-white shadow-md active:scale-98 cursor-pointer">
-              Calculate Tickets
-            </button>
-            <div className="border-t border-divider pt-4 flex justify-between items-center">
-              <span className="font-sans font-bold text-[11px] tracking-wider uppercase text-text-muted">
-                Tickets You Can Buy
-              </span>
-              <span className="font-heading font-black text-2xl text-text-brand">
-                20 tickets
-              </span>
             </div>
           </div>
         </div>

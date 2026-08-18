@@ -100,38 +100,38 @@ export default function RaffleImageGallery({
 
         {/* Floating WOW Countdown Badge (Bottom Center) */}
         {timeData && !timeData.ended && (
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-6 bg-[#0a0e04]/85 backdrop-blur-md border border-[#8cb34a]/30 flex flex-col items-center justify-center gap-1.5 px-6 py-3 rounded-2xl select-none shadow-[0_4px_30px_rgba(140,179,74,0.15)] pointer-events-none z-20 transition-all duration-300">
-            <div className="flex items-center gap-1.5 text-[#8cb34a]">
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-6 bg-surface/90 backdrop-blur-md border border-border flex flex-col items-center justify-center gap-1 px-6 py-2.5 rounded-2xl select-none shadow-card pointer-events-none z-20 transition-all duration-300">
+            <div className="flex items-center gap-1.5 text-text-brand">
               <svg className="w-3.5 h-3.5 animate-[spin_3s_linear_infinite]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
-              <span className="text-[9px] font-bold tracking-widest uppercase">Ends In</span>
+              <span className="text-[9px] font-heading font-bold tracking-widest uppercase text-text-muted">Ends In</span>
             </div>
             
-            <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {timeData.d! > 0 && (
-                <div className="flex flex-col items-center min-w-[36px]">
-                  <span className="text-xl sm:text-2xl font-heading font-bold text-white tabular-nums tracking-tight">{timeData.d}</span>
-                  <span className="text-[9px] text-[#a0d056] font-semibold uppercase tracking-wider">Days</span>
+                <div className="flex flex-col items-center min-w-[32px]">
+                  <span className="text-xl sm:text-2xl font-heading font-black text-text-primary tabular-nums tracking-tight">{timeData.d}</span>
+                  <span className="text-[9px] text-text-muted font-sans font-bold uppercase tracking-wider">Days</span>
                 </div>
               )}
-              {timeData.d! > 0 && <span className="text-[#8cb34a]/30 text-xl font-light mb-2.5">:</span>}
+              {timeData.d! > 0 && <span className="text-border-medium text-xl font-light mb-2.5">:</span>}
 
-              <div className="flex flex-col items-center min-w-[36px]">
-                <span className="text-xl sm:text-2xl font-heading font-bold text-white tabular-nums tracking-tight">{timeData.h}</span>
-                <span className="text-[9px] text-[#a0d056] font-semibold uppercase tracking-wider">Hrs</span>
+              <div className="flex flex-col items-center min-w-[32px]">
+                <span className="text-xl sm:text-2xl font-heading font-black text-text-primary tabular-nums tracking-tight">{timeData.h}</span>
+                <span className="text-[9px] text-text-muted font-sans font-bold uppercase tracking-wider">Hrs</span>
               </div>
-              <span className="text-[#8cb34a]/30 text-xl font-light mb-2.5">:</span>
+              <span className="text-border-medium text-xl font-light mb-2.5">:</span>
 
-              <div className="flex flex-col items-center min-w-[36px]">
-                <span className="text-xl sm:text-2xl font-heading font-bold text-white tabular-nums tracking-tight">{timeData.m}</span>
-                <span className="text-[9px] text-[#a0d056] font-semibold uppercase tracking-wider">Mins</span>
+              <div className="flex flex-col items-center min-w-[32px]">
+                <span className="text-xl sm:text-2xl font-heading font-black text-text-primary tabular-nums tracking-tight">{timeData.m}</span>
+                <span className="text-[9px] text-text-muted font-sans font-bold uppercase tracking-wider">Mins</span>
               </div>
-              <span className="text-[#8cb34a]/30 text-xl font-light mb-2.5">:</span>
+              <span className="text-border-medium text-xl font-light mb-2.5">:</span>
 
-              <div className="flex flex-col items-center min-w-[36px]">
-                <span className="text-xl sm:text-2xl font-heading font-bold text-[#8cb34a] tabular-nums tracking-tight drop-shadow-[0_0_12px_rgba(140,179,74,0.5)] animate-pulse">{timeData.s}</span>
-                <span className="text-[9px] text-[#8cb34a] font-semibold uppercase tracking-wider">Secs</span>
+              <div className="flex flex-col items-center min-w-[32px]">
+                <span className="text-xl sm:text-2xl font-heading font-black text-text-brand tabular-nums tracking-tight animate-pulse">{timeData.s}</span>
+                <span className="text-[9px] text-text-brand font-sans font-bold uppercase tracking-wider">Secs</span>
               </div>
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function RaffleImageGallery({
 
         {/* Floating Host Name Badge (Top Left) */}
         {hostName && (
-          <div className="absolute left-4 top-4 bg-[#1a230a]/90 backdrop-blur-sm border border-[#2d3c13] px-3 py-1.5 rounded-[6px] text-[11px] font-bold text-[#a0d056] shadow-md truncate max-w-[200px] pointer-events-none z-20">
+          <div className="absolute left-4 top-4 bg-surface/90 backdrop-blur-sm border border-border px-3 py-1.5 rounded-xl text-xs font-heading font-bold text-text-brand shadow-xs truncate max-w-[200px] pointer-events-none z-20">
             By {hostName}
           </div>
         )}

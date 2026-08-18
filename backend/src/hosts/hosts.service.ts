@@ -95,7 +95,7 @@ export class HostsService {
       slug: host.slug || host.id,
       name: host.businessName,
       logo: host.user.avatarUrl,
-      bio: null,
+      bio: host.bio || null,
       isVerified: host.isVerified,
       drawsHosted: host._count.raffles,
       rating: 5.0, // Mocked
@@ -512,6 +512,189 @@ export class HostsService {
       },
       chartData,
       raffles: rafflesBreakdown,
+    };
+  }
+
+  async getPerformanceAnalytics(userId: string, timeframe: string = '1M') {
+    const host = await this.getHostProfileByUserId(userId);
+
+    const raffles = await this.prisma.raffle.findMany({
+      where: { hostId: host.id },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const raffleIds = raffles.map((r) => r.id);
+
+    // 1. Calculate Category Sales Breakdown
+    const categoryMap = new Map<string, number>();
+    let totalGrossRevenue = 0;
+
+    raffles.forEach((r) => {
+      const cat = r.category || 'General';
+      const rev = (r.ticketsSold || 0) * (r.pricePerTicket ? Number(r.pricePerTicket) : 0);
+      totalGrossRevenue += rev;
+      categoryMap.set(cat, (categoryMap.get(cat) || 0) + rev);
+    });
+
+    const categorySales = Array.from(categoryMap.entries()).map(([name, value]) => {
+      const percentage = totalGrossRevenue > 0 ? Math.round((value / totalGrossRevenue) * 100) : 0;
+      return { name, value, percentage };
+    });
+
+    if (categorySales.length === 0) {
+      categorySales.push(
+        { name: 'Golf Drivers', value: 0, percentage: 40 },
+        { name: 'Golf Irons', value: 0, percentage: 30 },
+        { name: 'Golf Putters', value: 0, percentage: 20 },
+        { name: 'Accessories', value: 0, percentage: 10 },
+      );
+    }
+
+    // 2. Calculate Top 5 Performing Raffles
+    const sortedRaffles = [...raffles].sort((a, b) => {
+      const pctA = a.totalTickets > 0 ? a.ticketsSold / a.totalTickets : 0;
+      const pctB = b.totalTickets > 0 ? b.ticketsSold / b.totalTickets : 0;
+      return pctB - pctA;
+    });
+
+    const topRaffles = sortedRaffles.slice(0, 5).map((r) => {
+      const pct = r.totalTickets > 0 ? Math.round((r.ticketsSold / r.totalTickets) * 100) : 0;
+      return {
+        id: r.id,
+        name: r.title,
+        percentage: pct,
+        revenue: (r.ticketsSold || 0) * (r.pricePerTicket ? Number(r.pricePerTicket) : 0),
+      };
+    });
+
+    // 3. Calculate Revenue Trend based on timeframe
+    const now = new Date();
+    let startDate = new Date();
+    if (timeframe === '7D') startDate.setDate(now.getDate() - 7);
+    else if (timeframe === '1M') startDate.setMonth(now.getMonth() - 1);
+    else if (timeframe === '3M') startDate.setMonth(now.getMonth() - 3);
+    else if (timeframe === '1Y') startDate.setFullYear(now.getFullYear() - 1);
+    else startDate.setMonth(now.getMonth() - 1);
+
+    let tickets: any[] = [];
+    if (raffleIds.length > 0) {
+      tickets = await this.prisma.ticket.findMany({
+        where: {
+          raffleId: { in: raffleIds },
+          createdAt: { gte: startDate },
+        },
+        include: {
+          raffle: {
+            select: { pricePerTicket: true },
+          },
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+    }
+
+    const trendMap = new Map<string, number>();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    if (timeframe === '7D') {
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        trendMap.set(dayNames[d.getDay()], 0);
+      }
+      tickets.forEach((t) => {
+        const dayKey = dayNames[new Date(t.createdAt).getDay()];
+        const price = t.raffle?.pricePerTicket ? Number(t.raffle.pricePerTicket) : 0;
+        if (trendMap.has(dayKey)) {
+          trendMap.set(dayKey, trendMap.get(dayKey)! + price);
+        }
+      });
+    } else {
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date();
+        d.setMonth(d.getMonth() - i);
+        trendMap.set(monthNames[d.getMonth()], 0);
+      }
+      tickets.forEach((t) => {
+        const monthKey = monthNames[new Date(t.createdAt).getMonth()];
+        const price = t.raffle?.pricePerTicket ? Number(t.raffle.pricePerTicket) : 0;
+        if (trendMap.has(monthKey)) {
+          trendMap.set(monthKey, trendMap.get(monthKey)! + price);
+        }
+      });
+    }
+
+    const revenueTrend = Array.from(trendMap.entries()).map(([month, revenue]) => ({
+      month,
+      revenue,
+    }));
+
+    // 4. Calculate Dynamic Entrant Demographics based on Ticket Buyers
+    let entrantTickets: any[] = [];
+    if (raffleIds.length > 0) {
+      entrantTickets = await this.prisma.ticket.findMany({
+        where: {
+          raffleId: { in: raffleIds },
+        },
+        include: {
+          user: {
+            select: {
+              location: true,
+              address: true,
+            },
+          },
+        },
+      });
+    }
+
+    const regionCounts = new Map<string, number>();
+    let totalEntrantsWithLocation = 0;
+
+    entrantTickets.forEach((t) => {
+      const loc = `${t.user?.location || ''} ${t.user?.address || ''}`.toLowerCase();
+      let region = 'England (London & South East)';
+
+      if (loc.includes('london') || loc.includes('kent') || loc.includes('surrey') || loc.includes('sussex') || loc.includes('essex') || loc.includes('south east')) {
+        region = 'England (London & South East)';
+      } else if (loc.includes('manchester') || loc.includes('birmingham') || loc.includes('leeds') || loc.includes('liverpool') || loc.includes('midlands') || loc.includes('north')) {
+        region = 'England (Midlands & North)';
+      } else if (loc.includes('scotland') || loc.includes('glasgow') || loc.includes('edinburgh') || loc.includes('aberdeen')) {
+        region = 'Scotland';
+      } else if (loc.includes('wales') || loc.includes('cardiff') || loc.includes('belfast') || loc.includes('ireland')) {
+        region = 'Wales & Northern Ireland';
+      } else if (t.user?.location?.trim()) {
+        const cleanLoc = t.user.location.trim();
+        region = cleanLoc.length > 28 ? cleanLoc.substring(0, 28) + '...' : cleanLoc;
+      }
+
+      regionCounts.set(region, (regionCounts.get(region) || 0) + 1);
+      totalEntrantsWithLocation++;
+    });
+
+    let demographics: Array<{ region: string; percentage: number }> = [];
+
+    if (totalEntrantsWithLocation > 0) {
+      demographics = Array.from(regionCounts.entries())
+        .map(([region, count]) => ({
+          region,
+          percentage: Math.round((count / totalEntrantsWithLocation) * 100),
+        }))
+        .sort((a, b) => b.percentage - a.percentage);
+    } else {
+      demographics = [
+        { region: 'England (London & South East)', percentage: 0 },
+        { region: 'England (Midlands & North)', percentage: 0 },
+        { region: 'Scotland', percentage: 0 },
+        { region: 'Wales & Northern Ireland', percentage: 0 },
+      ];
+    }
+
+    return {
+      timeframe,
+      revenueTrend,
+      categorySales,
+      topRaffles,
+      demographics,
     };
   }
 }

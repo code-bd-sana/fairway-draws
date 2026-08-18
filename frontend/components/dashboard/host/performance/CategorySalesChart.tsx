@@ -12,7 +12,7 @@ export default function CategorySalesChart({ data = [] }: Props) {
   // Use forest green & warm sage harmonious colors for pie chart
   const updatedData = data.map((d, i) => ({
     ...d,
-    color: i === 0 ? "#0b4d35" : i === 1 ? "#15803d" : i === 2 ? "#8cb34a" : "#dc2626"
+    color: d.color || (i === 0 ? "#0b4d35" : i === 1 ? "#15803d" : i === 2 ? "#8cb34a" : "#dc2626")
   }));
 
   return (

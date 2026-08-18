@@ -64,4 +64,13 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   address?: string;
+
+  @ApiProperty({
+    example: 'https://example.com/logo.png',
+    description: 'Avatar or logo image URL/data',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }

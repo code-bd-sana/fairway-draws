@@ -98,7 +98,7 @@ export interface PerformanceCategorySales {
   name: string;
   value: number;
   percentage: number;
-  color: string;
+  color?: string;
 }
 
 export interface PerformanceTopRaffle {
