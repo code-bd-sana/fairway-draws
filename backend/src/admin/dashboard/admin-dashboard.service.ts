@@ -152,7 +152,7 @@ export class AdminDashboardService {
     const filter = params.filter || 'All';
 
     // Query collections
-    const [users, hosts, raffles, transactions, withdrawals] = await Promise.all([
+    const [users, hosts, raffles, transactions, withdrawals, winners] = await Promise.all([
       this.prisma.user.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100,
@@ -174,6 +174,11 @@ export class AdminDashboardService {
       }),
       this.prisma.withdrawal.findMany({
         include: { host: { include: { user: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: 100,
+      }),
+      this.prisma.winner.findMany({
+        include: { user: true, raffle: true },
         orderBy: { createdAt: 'desc' },
         take: 100,
       }),
@@ -307,6 +312,23 @@ export class AdminDashboardService {
           status: 'Success',
         });
       }
+    });
+
+    // Map Winners to System Audit Logs
+    winners.forEach((w) => {
+      const winnerName = w.user ? `${w.user.firstName || ''} ${w.user.lastName || ''}`.trim() || w.user.email : 'Winner';
+      logs.push({
+        id: `win-${w.id}`,
+        timestamp: w.createdAt,
+        actor: {
+          name: 'System Engine',
+          initials: 'SE',
+          type: 'system',
+        },
+        description: `Winner declared for '${w.raffle?.title || 'Competition'}': Ticket #${w.ticketNumber} (${winnerName})`,
+        ip: '127.0.0.1',
+        status: 'Success',
+      });
     });
 
     // Filter list

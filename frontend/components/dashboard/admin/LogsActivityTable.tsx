@@ -19,7 +19,8 @@ export default function LogsActivityTable() {
   });
 
   const logs = data?.logs || [];
-  const totalPages = data?.meta?.totalPages || 1;
+  const totalItems = data?.meta?.total ?? 0;
+  const totalPages = data?.meta?.totalPages ?? 0;
 
   const filters = ["All", "User Actions", "Admin Actions", "System Events", "Errors"];
 
@@ -160,8 +161,14 @@ export default function LogsActivityTable() {
               </tr>
             ) : logs.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-text-muted font-sans text-xs font-bold">
-                  No log entries found.
+                <td colSpan={5} className="py-12 text-center text-text-muted font-sans text-xs">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <span className="text-2xl">📋</span>
+                    <p className="font-heading font-bold text-sm text-text-primary">No Audit Logs Found</p>
+                    <p className="font-sans text-xs text-text-muted">
+                      {search ? `No activity logs match search keyword "${search}".` : `No activity logs recorded under filter "${activeFilter}".`}
+                    </p>
+                  </div>
                 </td>
               </tr>
             ) : (
@@ -200,20 +207,29 @@ export default function LogsActivityTable() {
         </table>
         
         {/* Footer actions */}
-        <div className="flex items-center justify-between p-6 bg-elevated border-t border-divider">
-          <button 
-            onClick={handleExportCSV}
-            disabled={logs.length === 0}
-            className="flex items-center justify-center gap-2 h-9 px-4 rounded-xl bg-surface border border-border hover:bg-elevated text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
-          >
-            <svg className="w-4 h-4 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-            </svg>
-            Export Audit Logs
-          </button>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-6 bg-elevated border-t border-divider">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={handleExportCSV}
+              disabled={logs.length === 0}
+              className="flex items-center justify-center gap-2 h-9 px-4 rounded-xl bg-surface border border-border hover:bg-elevated text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
+            >
+              <svg className="w-4 h-4 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              Export Audit Logs
+            </button>
+            <span className="font-sans text-xs text-text-muted font-semibold">
+              {logs.length > 0 ? (
+                <>Showing <span className="text-text-primary font-bold">{logs.length}</span> of <span className="text-text-primary font-bold">{totalItems}</span> log entries</>
+              ) : (
+                "0 log entries"
+              )}
+            </span>
+          </div>
           
-          {/* Pagination */}
-          {!isLoading && !isError && totalPages > 1 && (
+          {/* Pagination Controls - Only shown when logs.length > 0 AND totalPages > 1 */}
+          {!isLoading && !isError && logs.length > 0 && totalPages > 1 && (
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setPage(p => Math.max(1, p - 1))}
