@@ -55,6 +55,7 @@ export interface PaginationMeta {
   page: number;
   limit: number;
   totalPages: number;
+  lastPage?: number;
 }
 
 export interface PaginatedResponse<T> {

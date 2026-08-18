@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useGetRaffleById, useUpdateRaffle } from "../../../../hooks/useRaffleHooks";
 import { cn } from "../../../../lib/utils";
@@ -20,17 +21,17 @@ export default function EditRaffleForm({ raffleId }: Props) {
   useEffect(() => {
     if (raffle) {
       setFormData({
-        title: raffle.title,
-        category: (raffle as any).category,
-        description: raffle.description,
-        prizeName: raffle.prizeName,
-        totalTickets: raffle.totalTickets,
-        pricePerTicket: raffle.pricePerTicket,
+        title: raffle.title || "",
+        category: (raffle as any).category || "Golf Drivers",
+        description: raffle.description || "",
+        prizeName: raffle.prizeName || "",
+        totalTickets: raffle.totalTickets || "",
+        pricePerTicket: raffle.pricePerTicket || "",
         startDate: raffle.startDate ? new Date(raffle.startDate).toISOString().slice(0, 16) : "",
         endDate: raffle.endDate ? new Date(raffle.endDate).toISOString().slice(0, 16) : "",
-        isAutoDraw: raffle.isAutoDraw,
-        autoDrawDate: raffle.autoDrawDate,
-        autoDrawSoldOut: raffle.autoDrawSoldOut,
+        isAutoDraw: raffle.isAutoDraw ?? true,
+        autoDrawDate: raffle.autoDrawDate ?? true,
+        autoDrawSoldOut: raffle.autoDrawSoldOut ?? false,
       });
     }
   }, [raffle]);
@@ -63,168 +64,298 @@ export default function EditRaffleForm({ raffleId }: Props) {
   };
 
   if (isLoading) {
-    return <div className="text-[#a0d056]">Loading competition data...</div>;
+    return (
+      <div className="w-full bg-surface border border-divider rounded-card p-10 flex flex-col items-center justify-center text-center gap-3 animate-pulse">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="font-sans font-semibold text-sm text-text-secondary">Loading competition details...</p>
+      </div>
+    );
   }
 
   if (!raffle) {
-    return <div className="text-red-500">Competition not found.</div>;
+    return (
+      <div className="w-full bg-surface border border-divider rounded-card p-10 flex flex-col items-center justify-center text-center gap-4">
+        <p className="font-sans font-bold text-base text-red-500">Competition not found.</p>
+        <Link
+          href="/dashboard/host/competitions"
+          className="font-heading font-bold text-xs uppercase tracking-wider text-primary hover:underline"
+        >
+          &larr; Back to Competitions
+        </Link>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full bg-[#161810] border border-[#2d3c13] rounded-[16px] overflow-hidden flex flex-col p-[24px]">
-      <h2 className="font-heading font-medium text-[24px] text-[#e8edd4] mb-[8px]">
-        Edit Competition
-      </h2>
-      <p className="font-sans text-[14px] text-[#b3b8aa] mb-[24px]">
-        Make changes to your competition. Note that some fields cannot be edited once tickets have been sold.
-      </p>
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-[24px]">
-        {/* Basic Info */}
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">Title</label>
-          <input
-            type="text"
-            value={formData.title || ""}
-            onChange={(e) => handleChange("title", e.target.value)}
-            required
-            className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a]"
-          />
+    <div className="w-full flex flex-col gap-6 animate-fadeIn">
+      {/* Header with Back Link */}
+      <div className="flex flex-col gap-2">
+        <Link
+          href="/dashboard/host/competitions"
+          className="inline-flex items-center gap-1.5 font-sans font-semibold text-xs text-text-secondary hover:text-text-primary transition-colors w-fit select-none"
+        >
+          &larr; Back to Competitions
+        </Link>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-divider">
+          <div>
+            <h1 className="font-heading font-black text-2xl md:text-3xl text-text-primary uppercase tracking-tight">
+              Edit Competition
+            </h1>
+            <p className="font-sans text-xs md:text-sm text-text-secondary mt-1">
+              Update competition details and draw settings for your entrants.
+            </p>
+          </div>
+          {hasSoldTickets && (
+            <div className="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-badge flex items-center gap-2 select-none shrink-0 w-fit">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+              <span className="font-sans font-semibold text-xs text-amber-700 dark:text-amber-400">
+                Tickets Sold ({raffle.ticketsSold}) — Ticket counts &amp; pricing locked
+              </span>
+            </div>
+          )}
         </div>
+      </div>
 
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">Prize Name</label>
-          <input
-            type="text"
-            value={formData.prizeName || ""}
-            onChange={(e) => handleChange("prizeName", e.target.value)}
-            className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a]"
-          />
-        </div>
+      {/* Main Form Card */}
+      <div className="w-full bg-surface border border-divider rounded-card p-6 md:p-8 shadow-card">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          
+          {/* Section 1: Basic Information */}
+          <div className="flex flex-col gap-4">
+            <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
+              1. Basic Competition Details
+            </h2>
 
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-sans font-medium text-[13px] text-[#e8edd4]">Description</label>
-          <textarea
-            value={formData.description || ""}
-            onChange={(e) => handleChange("description", e.target.value)}
-            rows={4}
-            className="p-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a]"
-          />
-        </div>
+            {/* Title */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="title" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                Competition Title *
+              </label>
+              <input
+                id="title"
+                type="text"
+                value={formData.title || ""}
+                onChange={(e) => handleChange("title", e.target.value)}
+                required
+                placeholder="e.g. Brand New TaylorMade Qi10 Driver"
+                className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              />
+            </div>
 
-        {/* Tickets & Pricing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
-          <div className="flex flex-col gap-[8px]">
-            <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
-              Total Tickets {hasSoldTickets && <span className="text-red-400 text-[11px]">(Locked)</span>}
-            </label>
-            <input
-              type="number"
-              value={formData.totalTickets || ""}
-              onChange={(e) => handleChange("totalTickets", e.target.value)}
-              disabled={hasSoldTickets}
-              className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a] disabled:opacity-50"
-            />
+            {/* Prize Name */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="prizeName" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                Main Prize Name
+              </label>
+              <input
+                id="prizeName"
+                type="text"
+                value={formData.prizeName || ""}
+                onChange={(e) => handleChange("prizeName", e.target.value)}
+                placeholder="e.g. TaylorMade Qi10 Driver Stiff Shaft"
+                className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              />
+            </div>
+
+            {/* Description */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="description" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                Full Description
+              </label>
+              <textarea
+                id="description"
+                value={formData.description || ""}
+                onChange={(e) => handleChange("description", e.target.value)}
+                rows={4}
+                placeholder="Describe the prize specs, condition, and terms..."
+                className="w-full p-4 bg-bg border border-border rounded-button font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-[8px]">
-            <label className="font-sans font-medium text-[13px] text-[#e8edd4]">
-              Price per Ticket (£) {hasSoldTickets && <span className="text-red-400 text-[11px]">(Locked)</span>}
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={formData.pricePerTicket || ""}
-              onChange={(e) => handleChange("pricePerTicket", e.target.value)}
-              disabled={hasSoldTickets}
-              className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a] disabled:opacity-50"
-            />
-          </div>
-        </div>
+          {/* Section 2: Tickets & Pricing */}
+          <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
+            <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
+              2. Ticket Allocation &amp; Pricing
+            </h2>
 
-        {/* Schedule */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
-          <div className="flex flex-col gap-[8px]">
-            <label className="font-sans font-medium text-[13px] text-[#e8edd4]">Start Date</label>
-            <input
-              type="datetime-local"
-              value={formData.startDate || ""}
-              onChange={(e) => handleChange("startDate", e.target.value)}
-              className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a] [color-scheme:dark]"
-            />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Total Tickets */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="totalTickets" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                    Total Tickets
+                  </label>
+                  {hasSoldTickets && (
+                    <span className="font-sans text-[11px] font-bold text-red-500 select-none">
+                      🔒 Locked (tickets sold)
+                    </span>
+                  )}
+                </div>
+                <input
+                  id="totalTickets"
+                  type="number"
+                  value={formData.totalTickets || ""}
+                  onChange={(e) => handleChange("totalTickets", e.target.value)}
+                  disabled={hasSoldTickets}
+                  placeholder="e.g. 500"
+                  className={cn(
+                    "w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all",
+                    hasSoldTickets && "opacity-60 bg-surface/60 cursor-not-allowed border-divider"
+                  )}
+                />
+              </div>
 
-          <div className="flex flex-col gap-[8px]">
-            <label className="font-sans font-medium text-[13px] text-[#e8edd4]">End/Draw Date</label>
-            <input
-              type="datetime-local"
-              value={formData.endDate || ""}
-              onChange={(e) => handleChange("endDate", e.target.value)}
-              className="h-[48px] px-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px] text-[#e8edd4] outline-none focus:border-[#8cb34a] [color-scheme:dark]"
-            />
-          </div>
-        </div>
-
-        {/* Draw Strategy */}
-        <div className="flex flex-col gap-[16px] mt-[16px]">
-          <div className="flex flex-col gap-[16px] p-[16px] bg-[#0d0d0b] border border-[#2d3c13] rounded-[8px]">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-[4px]">
-                <span className="font-sans font-medium text-[14px] text-[#e8edd4]">Draw Type</span>
-                <span className="font-sans font-normal text-[12px] text-[#5a752a]">How will the winner be selected?</span>
+              {/* Price Per Ticket */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="pricePerTicket" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                    Price per Ticket (£)
+                  </label>
+                  {hasSoldTickets && (
+                    <span className="font-sans text-[11px] font-bold text-red-500 select-none">
+                      🔒 Locked (tickets sold)
+                    </span>
+                  )}
+                </div>
+                <input
+                  id="pricePerTicket"
+                  type="number"
+                  step="0.01"
+                  value={formData.pricePerTicket || ""}
+                  onChange={(e) => handleChange("pricePerTicket", e.target.value)}
+                  disabled={hasSoldTickets}
+                  placeholder="e.g. 2.99"
+                  className={cn(
+                    "w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all",
+                    hasSoldTickets && "opacity-60 bg-surface/60 cursor-not-allowed border-divider"
+                  )}
+                />
               </div>
             </div>
+          </div>
 
-            <div className="flex flex-col gap-[12px] mt-[8px] pt-[16px] border-t border-[#2d3c13]">
-              <label className="flex items-start gap-[12px] cursor-pointer">
-                <input 
-                  type="radio"
-                  name="drawType"
-                  checked={!formData.isAutoDraw}
-                  onChange={() => setFormData((prev: any) => ({ ...prev, isAutoDraw: false, autoDrawDate: false, autoDrawSoldOut: false }))}
-                  className="mt-1 w-[16px] h-[16px] rounded-full border-[#2d3c13] bg-[#161810] text-[#8cb34a] focus:ring-[#8cb34a]"
-                />
-                <div className="flex flex-col gap-1">
-                  <span className="font-sans font-medium text-[14px] text-[#e8edd4]">Live Draw</span>
-                  <span className="font-sans font-normal text-[12px] text-[#b3b8aa]">You will manually run the draw from your dashboard (e.g., live on Instagram).</span>
-                </div>
-              </label>
+          {/* Section 3: Dates & Schedule */}
+          <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
+            <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
+              3. Competition Schedule
+            </h2>
 
-              <label className="flex items-start gap-[12px] cursor-pointer">
-                <input 
-                  type="radio"
-                  name="drawType"
-                  checked={formData.isAutoDraw}
-                  onChange={() => setFormData((prev: any) => ({ ...prev, isAutoDraw: true, autoDrawDate: true, autoDrawSoldOut: true }))}
-                  className="mt-1 w-[16px] h-[16px] rounded-full border-[#2d3c13] bg-[#161810] text-[#8cb34a] focus:ring-[#8cb34a]"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Start Date */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="startDate" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                  Start Date &amp; Time
+                </label>
+                <input
+                  id="startDate"
+                  type="datetime-local"
+                  value={formData.startDate || ""}
+                  onChange={(e) => handleChange("startDate", e.target.value)}
+                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
                 />
-                <div className="flex flex-col gap-1">
-                  <span className="font-sans font-medium text-[14px] text-[#e8edd4]">Automatic Draw</span>
-                  <span className="font-sans font-normal text-[12px] text-[#b3b8aa]">System automatically draws a winner when all tickets are sold out OR the end time expires.</span>
-                </div>
-              </label>
+              </div>
+
+              {/* End / Draw Date */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="endDate" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                  End / Draw Date &amp; Time
+                </label>
+                <input
+                  id="endDate"
+                  type="datetime-local"
+                  value={formData.endDate || ""}
+                  onChange={(e) => handleChange("endDate", e.target.value)}
+                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Actions */}
-        <div className="flex justify-end gap-[16px] mt-[24px] pt-[24px] border-t border-[#2d3c13]">
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard/host/competitions")}
-            className="px-[24px] h-[48px] rounded-[8px] border border-[#2d3c13] text-[#e8edd4] hover:bg-[#1a230a] transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={updateMutation.isPending}
-            className="px-[32px] h-[48px] rounded-[8px] bg-[#8cb34a] text-[#0d0d0b] font-medium hover:bg-[#72943a] transition-colors disabled:opacity-50"
-          >
-            {updateMutation.isPending ? "Saving..." : "Save Changes"}
-          </button>
-        </div>
-      </form>
+          {/* Section 4: Draw Mechanism */}
+          <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
+            <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
+              4. Winner Selection Strategy
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 select-none">
+              {/* Live Draw Option */}
+              <div
+                onClick={() => setFormData((prev: any) => ({ ...prev, isAutoDraw: false, autoDrawDate: false, autoDrawSoldOut: false }))}
+                className={cn(
+                  "flex items-start gap-3 p-4 rounded-button border cursor-pointer transition-all duration-200",
+                  !formData.isAutoDraw
+                    ? "bg-accent-bg border-primary text-text-brand shadow-glow"
+                    : "bg-bg border-border text-text-secondary hover:text-text-primary hover:border-border-medium"
+                )}
+              >
+                <input 
+                  type="radio"
+                  id="liveDraw"
+                  name="drawType"
+                  checked={!formData.isAutoDraw}
+                  onChange={() => {}}
+                  className="mt-1 w-4 h-4 text-primary focus:ring-primary accent-[#0b4d35] cursor-pointer"
+                />
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-heading font-bold text-xs md:text-sm text-text-primary uppercase tracking-wide">
+                    Live Draw
+                  </span>
+                  <span className="font-sans text-[11px] md:text-xs text-text-secondary leading-normal">
+                    You will manually trigger the random draw from your host portal (e.g. live stream).
+                  </span>
+                </div>
+              </div>
+
+              {/* Auto Draw Option */}
+              <div
+                onClick={() => setFormData((prev: any) => ({ ...prev, isAutoDraw: true, autoDrawDate: true, autoDrawSoldOut: true }))}
+                className={cn(
+                  "flex items-start gap-3 p-4 rounded-button border cursor-pointer transition-all duration-200",
+                  formData.isAutoDraw
+                    ? "bg-accent-bg border-primary text-text-brand shadow-glow"
+                    : "bg-bg border-border text-text-secondary hover:text-text-primary hover:border-border-medium"
+                )}
+              >
+                <input 
+                  type="radio"
+                  id="autoDraw"
+                  name="drawType"
+                  checked={formData.isAutoDraw}
+                  onChange={() => {}}
+                  className="mt-1 w-4 h-4 text-primary focus:ring-primary accent-[#0b4d35] cursor-pointer"
+                />
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-heading font-bold text-xs md:text-sm text-text-primary uppercase tracking-wide">
+                    Automatic Draw
+                  </span>
+                  <span className="font-sans text-[11px] md:text-xs text-text-secondary leading-normal">
+                    System automatically draws a winner when tickets sell out or end date is reached.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Action Buttons */}
+          <div className="flex items-center justify-between gap-4 pt-6 border-t border-divider mt-4">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/host/competitions")}
+              className="bg-surface border border-divider hover:border-border-medium text-text-secondary hover:text-text-primary font-heading font-bold text-xs uppercase tracking-wider h-[46px] px-6 rounded-xl transition-all cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={updateMutation.isPending}
+              className="btn-glossy-red h-[46px] px-8 text-white font-heading font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-98 disabled:opacity-50 cursor-pointer"
+            >
+              {updateMutation.isPending ? "Saving Changes..." : "Save Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -9,6 +9,14 @@ export const useHostDashboardOverview = () => {
   });
 };
 
+export const useHostSalesAnalytics = () => {
+  return useQuery({
+    queryKey: ['host-sales-analytics'],
+    queryFn: hostWalletService.getSalesAnalytics,
+    staleTime: 30 * 1000,
+  });
+};
+
 export const useHostWalletStats = () => {
   return useQuery({
     queryKey: ['host-wallet-stats'],

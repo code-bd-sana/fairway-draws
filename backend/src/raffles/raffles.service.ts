@@ -454,6 +454,7 @@ export class RafflesService {
         total,
         page: Number(page),
         lastPage: Math.ceil(total / Number(limit)) || 1,
+        totalPages: Math.ceil(total / Number(limit)) || 1,
       },
     };
   }
@@ -487,9 +488,35 @@ export class RafflesService {
 
     if (!raffle) throw new NotFoundException('Raffle not found');
 
+    const {
+      ticketPrice,
+      pricePerTicket,
+      id: _id,
+      hostId: _hostId,
+      ticketsSold: _ticketsSold,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      instantWins: _instantWins,
+      tickets: _tickets,
+      winners: _winners,
+      host: _host,
+      ...allowedData
+    } = data;
+
+    const updatePayload: any = { ...allowedData };
+
+    const effectiveTicketPrice = pricePerTicket !== undefined ? pricePerTicket : ticketPrice;
+    if (effectiveTicketPrice !== undefined && effectiveTicketPrice !== null) {
+      updatePayload.pricePerTicket = Number(effectiveTicketPrice);
+    }
+
+    if (updatePayload.totalTickets !== undefined && updatePayload.totalTickets !== null) {
+      updatePayload.totalTickets = Number(updatePayload.totalTickets);
+    }
+
     return this.prisma.raffle.update({
       where: { id },
-      data,
+      data: updatePayload,
     });
   }
 

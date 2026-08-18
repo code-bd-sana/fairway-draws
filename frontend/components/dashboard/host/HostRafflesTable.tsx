@@ -320,10 +320,10 @@ export default function HostRafflesTable() {
       </div>
 
       {/* Pagination component */}
-      {!isLoading && meta && meta.total > 0 && (
+      {!isLoading && meta && (meta.totalPages || meta.lastPage || 1) > 1 && (
         <Pagination 
           currentPage={meta.page}
-          totalPages={meta.totalPages}
+          totalPages={meta.totalPages || meta.lastPage || 1}
           onPageChange={setPage}
         />
       )}

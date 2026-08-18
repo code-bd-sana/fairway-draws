@@ -8,10 +8,8 @@ export const metadata = {
 export default async function EditCompetitionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
-    <div className="flex-1 w-full px-[20px] lg:px-[40px] py-[24px] lg:py-[32px] flex justify-center">
-      <div className="w-full max-w-[800px]">
-        <EditRaffleForm raffleId={id} />
-      </div>
+    <div className="flex-1 w-full max-w-[960px] mx-auto py-6 md:py-8 px-4 sm:px-6">
+      <EditRaffleForm raffleId={id} />
     </div>
   );
 }

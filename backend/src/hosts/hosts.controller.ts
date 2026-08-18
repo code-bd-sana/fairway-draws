@@ -32,7 +32,17 @@ export class HostsController {
   ) {}
 
   private extractUserId(req: Request): string {
-    const token = req.cookies?.accessToken;
+    const user = (req as any).user;
+    if (user?.id) return user.id;
+    if (user?.sub) return user.sub;
+
+    let token = req.cookies?.accessToken;
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
     if (!token)
       throw new UnauthorizedException('No authentication token found');
     try {
@@ -63,6 +73,18 @@ export class HostsController {
   getDashboardOverview(@Req() req: Request) {
     const userId = this.extractUserId(req);
     return this.hostsService.getHostDashboardOverview(userId);
+  }
+
+  @Get('sales')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('HOST')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current host sales analytics, metrics, chart data, and competition breakdown' })
+  @ApiResponse({ status: 200, description: 'Host sales analytics data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  getSalesAnalytics(@Req() req: Request) {
+    const userId = this.extractUserId(req);
+    return this.hostsService.getSalesAnalytics(userId);
   }
 
   @Get('wallet')

@@ -93,12 +93,12 @@ export default function WinnersGrid() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-12 pt-8 border-t border-divider select-none">
+              <div className="flex justify-center items-center gap-2 mt-12 pt-8 border-t border-divider select-none font-sans">
                 {/* Previous Button */}
                 <button
                   onClick={() => handlePageChange(activePage - 1)}
                   disabled={activePage === 1}
-                  className="px-4 py-2 border border-[#43581e] text-[#43581e] disabled:opacity-30 disabled:hover:text-[#43581e] disabled:hover:border-[#43581e] hover:text-text-primary hover:border-primary rounded-button text-xs font-semibold uppercase tracking-wider transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
+                  className="px-4 py-2 border border-[#bdd3ba] text-[#0b4d35] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#0b4d35] hover:text-white hover:border-[#0b4d35] rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-surface shadow-xs"
                 >
                   ← Previous
                 </button>
@@ -112,10 +112,10 @@ export default function WinnersGrid() {
                       key={pageNumber}
                       onClick={() => handlePageChange(pageNumber)}
                       className={cn(
-                        "w-9 h-9 rounded-button flex items-center justify-center font-sans text-xs font-semibold transition-all duration-200 cursor-pointer select-none",
+                        "w-9 h-9 rounded-full flex items-center justify-center font-sans text-xs font-bold transition-all duration-200 cursor-pointer select-none",
                         isActive
-                          ? "bg-primary text-primary-text font-bold"
-                          : "bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-border-medium"
+                          ? "bg-[#0b4d35] text-white border border-[#0b4d35] shadow-sm"
+                          : "bg-surface border border-[#bdd3ba] text-[#0b4d35] hover:bg-[#0b4d35] hover:text-white hover:border-[#0b4d35]"
                       )}
                     >
                       {pageNumber}
@@ -127,7 +127,7 @@ export default function WinnersGrid() {
                 <button
                   onClick={() => handlePageChange(activePage + 1)}
                   disabled={activePage === totalPages}
-                  className="px-4 py-2 border border-[#43581e] text-[#e8edd4] disabled:opacity-30 disabled:hover:text-[#e8edd4] disabled:hover:border-[#43581e] hover:text-[#a0d056] hover:border-[#a0d056] rounded-button text-xs font-semibold uppercase tracking-wider transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
+                  className="px-4 py-2 border border-[#bdd3ba] text-[#0b4d35] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#0b4d35] hover:text-white hover:border-[#0b4d35] rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-surface shadow-xs"
                 >
                   Next →
                 </button>

@@ -77,9 +77,43 @@ export interface HostDashboardOverviewData {
   }>;
 }
 
+export interface HostSalesAnalyticsData {
+  metrics: {
+    totalGrossRevenue: number;
+    totalNetRevenue: number;
+    totalTicketsSold: number;
+    activeCompetitions: number;
+    totalCompetitions: number;
+    avgRevenuePerRaffle: number;
+  };
+  chartData: Array<{
+    date: string;
+    sales: number;
+    revenue: number;
+  }>;
+  raffles: Array<{
+    id: string;
+    title: string;
+    image: string;
+    status: string;
+    ticketPrice: number;
+    totalTickets: number;
+    ticketsSold: number;
+    grossRevenue: number;
+    netRevenue: number;
+    progressPercentage: number;
+    createdAt: string;
+  }>;
+}
+
 export const hostWalletService = {
   async getDashboardOverview(): Promise<HostDashboardOverviewData> {
     const response = await api.get('/hosts/dashboard');
+    return response.data;
+  },
+
+  async getSalesAnalytics(): Promise<HostSalesAnalyticsData> {
+    const response = await api.get('/hosts/sales');
     return response.data;
   },
 

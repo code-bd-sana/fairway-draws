@@ -415,4 +415,103 @@ export class HostsService {
       recentActivity,
     };
   }
+
+  async getSalesAnalytics(userId: string) {
+    const host = await this.getHostProfileByUserId(userId);
+
+    const raffles = await this.prisma.raffle.findMany({
+      where: { hostId: host.id },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const totalCompetitions = raffles.length;
+    const activeCompetitions = raffles.filter((r) => r.status === 'ACTIVE').length;
+
+    let totalTicketsSold = 0;
+    let totalGrossRevenue = 0;
+
+    const rafflesBreakdown = raffles.map((raffle) => {
+      const price = raffle.pricePerTicket ? Number(raffle.pricePerTicket) : 0;
+      const sold = raffle.ticketsSold || 0;
+      const gross = sold * price;
+      const net = gross * 0.9;
+
+      totalTicketsSold += sold;
+      totalGrossRevenue += gross;
+
+      return {
+        id: raffle.id,
+        title: raffle.title,
+        image: raffle.mainImage || '/images/default-raffle.png',
+        status: raffle.status,
+        ticketPrice: price,
+        totalTickets: raffle.totalTickets,
+        ticketsSold: sold,
+        grossRevenue: gross,
+        netRevenue: net,
+        progressPercentage: raffle.totalTickets > 0 ? Math.round((sold / raffle.totalTickets) * 100) : 0,
+        createdAt: raffle.createdAt,
+      };
+    });
+
+    const totalNetRevenue = totalGrossRevenue * 0.9;
+    const avgRevenuePerRaffle = totalCompetitions > 0 ? totalGrossRevenue / totalCompetitions : 0;
+
+    // Fetch tickets for sales trend chart (last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const raffleIds = raffles.map((r) => r.id);
+
+    let recentTickets: any[] = [];
+    if (raffleIds.length > 0) {
+      recentTickets = await this.prisma.ticket.findMany({
+        where: {
+          raffleId: { in: raffleIds },
+          createdAt: { gte: sevenDaysAgo },
+        },
+        include: {
+          raffle: {
+            select: { pricePerTicket: true },
+          },
+        },
+      });
+    }
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const chartMap = new Map<string, { date: string; sales: number; revenue: number }>();
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dayKey = dayNames[d.getDay()];
+      chartMap.set(dayKey, { date: dayKey, sales: 0, revenue: 0 });
+    }
+
+    recentTickets.forEach((t) => {
+      const dayKey = dayNames[new Date(t.createdAt).getDay()];
+      const price = t.raffle?.pricePerTicket ? Number(t.raffle.pricePerTicket) : 0;
+      if (chartMap.has(dayKey)) {
+        const item = chartMap.get(dayKey)!;
+        item.sales += 1;
+        item.revenue += price;
+      }
+    });
+
+    const chartData = Array.from(chartMap.values());
+
+    return {
+      metrics: {
+        totalGrossRevenue,
+        totalNetRevenue,
+        totalTicketsSold,
+        activeCompetitions,
+        totalCompetitions,
+        avgRevenuePerRaffle,
+      },
+      chartData,
+      raffles: rafflesBreakdown,
+    };
+  }
 }
