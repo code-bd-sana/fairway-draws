@@ -22,7 +22,7 @@ export class SubscriptionsService {
     if (!host) return null;
 
     let sub = await this.prisma.hostSubscription.findFirst({
-      where: { hostId: host.id, status: 'ACTIVE' },
+      where: { hostId: host.id },
       include: { plan: true },
       orderBy: { createdAt: 'desc' },
     });

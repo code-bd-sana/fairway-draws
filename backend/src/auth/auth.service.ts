@@ -56,6 +56,7 @@ export class AuthService {
           location: registerDto.location,
           phone: registerDto.phone,
           address: registerDto.address,
+          avatarUrl: registerDto.avatarUrl,
           role,
         },
       });

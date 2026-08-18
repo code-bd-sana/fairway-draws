@@ -28,12 +28,20 @@ export class SubscriptionsController {
   ) {}
 
   private extractUserId(req: Request): string {
-    const token = req.cookies?.accessToken;
+    const user = (req as any).user;
+    if (user?.sub) return user.sub;
+    if (user?.id) return user.id;
+
+    const authHeader = req.headers?.authorization;
+    let token = req.cookies?.accessToken;
+    if (!token && authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+    }
     if (!token)
       throw new UnauthorizedException('No authentication token found');
     try {
       const payload = this.jwtService.verify(token);
-      return payload.sub;
+      return payload.sub || payload.id;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }

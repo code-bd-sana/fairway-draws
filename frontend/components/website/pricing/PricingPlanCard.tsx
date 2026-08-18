@@ -30,36 +30,28 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubscribe = () => {
-    if (plan.id === 'free' || plan.monthlyPrice === 0) {
-      if (!user) {
-        router.push('/host/register');
-        return;
-      }
-      if (user.role === 'HOST') {
-        router.push('/dashboard/host');
-        return;
-      }
+    if (!user) {
       router.push('/host/register');
       return;
     }
-
-    if (!user) {
-      router.push('/login');
-      return;
-    }
     if (user.role !== 'HOST') {
-      toast.error('Only Host accounts can purchase subscriptions. Please create a Host account.');
+      toast.error('Only Host accounts can activate subscriptions. Please create a Host account.');
       return;
     }
-    if (!dbPlan) {
+
+    const targetPlanId = dbPlan?.id || plan.id;
+    if (!targetPlanId) {
       toast.error('Subscription plan not found in database.');
       return;
     }
 
     setLoading(true);
-    createCheckout.mutate(dbPlan.id, {
-      onSuccess: (data) => {
-        if (data.isTest) {
+    createCheckout.mutate(targetPlanId, {
+      onSuccess: (data: any) => {
+        if (data.isFree) {
+          toast.success(data.message || 'Free subscription activated!');
+          window.location.href = data.url || '/dashboard/host/billing?status=success';
+        } else if (data.isTest) {
           setTimeout(() => {
             setLoading(false);
             setShowSuccessModal(true);
@@ -71,9 +63,10 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
           toast.error('No checkout URL returned.');
         }
       },
-      onError: () => {
+      onError: (err: any) => {
         setLoading(false);
-        toast.error('Failed to initiate checkout.');
+        const msg = err?.response?.data?.message || 'Failed to process subscription.';
+        toast.error(msg);
       }
     });
   };

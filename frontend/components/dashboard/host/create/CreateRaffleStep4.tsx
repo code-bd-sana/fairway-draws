@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { RaffleFormData } from "./CreateRaffleWizard";
+import { useMySubscription } from "../../../../hooks/useSubscriptionHooks";
+import { cn } from "../../../../lib/utils";
 
 interface Props {
   formData: RaffleFormData;
@@ -9,11 +11,15 @@ interface Props {
 }
 
 export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev }: Props) {
+  const { data: subscription } = useMySubscription();
+  const isFreePlan = !subscription || subscription.status !== 'ACTIVE' || subscription.plan?.name?.toLowerCase() === 'free' || Number(subscription.plan?.price) === 0;
+
   const [numInstantWins, setNumInstantWins] = useState(
     formData.instantWins.length > 0 ? formData.instantWins.length.toString() : "1"
   );
 
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isFreePlan) return;
     const hasInstantWins = e.target.checked;
     updateForm({ hasInstantWins });
     if (hasInstantWins && formData.instantWins.length === 0) {
@@ -77,29 +83,55 @@ export default function CreateRaffleStep4({ formData, updateForm, onNext, onPrev
     updateForm({ instantWins: updated });
   };
 
-  const isValid = !formData.hasInstantWins || formData.instantWins.every(iw => iw.prizeName.trim() !== "");
+  const isValid = isFreePlan || !formData.hasInstantWins || formData.instantWins.every(iw => iw.prizeName.trim() !== "");
 
   return (
     <div className="flex flex-col w-full animate-in fade-in zoom-in-95 duration-200">
-      <div className="flex flex-col gap-2 mb-8">
+      <div className="flex flex-col gap-2 mb-6">
         <h2 className="font-heading font-black text-2xl text-text-primary uppercase tracking-tight">
           Instant Wins
         </h2>
         <p className="font-sans text-sm text-text-muted">
-          Would you like to offer instant win prizes for this competition?
+          Would you like to offer instant wins for this competition?
         </p>
       </div>
 
       <div className="flex flex-col gap-6">
-        <label className="flex items-center gap-3 cursor-pointer select-none">
+        {/* Free Plan Locked Upgrade Banner matching requested design */}
+        {isFreePlan && (
+          <div className="bg-[#1e1b0d] border border-[#d97706]/70 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+            <div className="flex items-center gap-3.5">
+              {/* Padlock Icon */}
+              <div className="w-9 h-9 rounded-xl bg-[#d97706]/20 border border-[#d97706]/40 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5 text-[#f59e0b]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0V10.5m-1.5 0h12a1.5 1.5 0 011.5 1.5v7.5a1.5 1.5 0 01-1.5 1.5h-12A1.5 1.5 0 013 19.5v-7.5a1.5 1.5 0 011.5-1.5z" />
+                </svg>
+              </div>
+              <p className="font-sans text-xs md:text-sm text-amber-100/90 leading-relaxed">
+                Instant Wins is a <strong className="text-white font-bold">Premium &amp; Pro feature</strong>. Upgrade your subscription to add instant wins to your competition.
+              </p>
+            </div>
+            <a
+              href="/pricing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 bg-[#f59e0b] hover:bg-[#d97706] text-black font-heading font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer whitespace-nowrap text-center"
+            >
+              Upgrade Plan
+            </a>
+          </div>
+        )}
+
+        <label className={cn("flex items-center gap-3 select-none", isFreePlan ? "cursor-not-allowed opacity-50" : "cursor-pointer")}>
           <input 
             type="checkbox" 
-            className="w-5 h-5 rounded border-border-medium text-primary focus:ring-primary accent-[#0b4d35] cursor-pointer"
-            checked={formData.hasInstantWins}
+            disabled={isFreePlan}
+            className="w-5 h-5 rounded border-border-medium text-primary focus:ring-primary accent-[#0b4d35] disabled:cursor-not-allowed cursor-pointer"
+            checked={isFreePlan ? false : formData.hasInstantWins}
             onChange={handleToggle}
           />
           <span className="font-heading font-bold text-sm text-text-primary uppercase tracking-wide">
-            Enable Instant Win Prizes
+            Enable Instant Wins
           </span>
         </label>
 

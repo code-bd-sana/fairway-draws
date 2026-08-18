@@ -66,4 +66,9 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   bio?: string;
+
+  @ApiPropertyOptional({ example: 'https://example.com/logo.png', description: 'Avatar or logo image URL/data' })
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }

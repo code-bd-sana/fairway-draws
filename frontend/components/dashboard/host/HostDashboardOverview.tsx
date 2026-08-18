@@ -4,7 +4,6 @@ import React from "react";
 import HostStatCard from "./HostStatCard";
 import HostRevenueChart from "./HostRevenueChart";
 import HostActiveRaffles from "./HostActiveRaffles";
-import RaffleProfitCalculator from "./RaffleProfitCalculator";
 import HostUpcomingDraws from "./HostUpcomingDraws";
 import HostRecentActivity from "./HostRecentActivity";
 import { useHostDashboardOverview } from "../../../hooks/useHostWalletHooks";
@@ -72,9 +71,8 @@ export default function HostDashboardOverview() {
           <HostActiveRaffles raffles={dashboardData?.activeRaffles} isLoading={isLoading} />
         </div>
 
-        {/* Right Column (Profit Calculator + Upcoming Draws) */}
+        {/* Right Column (Upcoming Draws) */}
         <div className="flex flex-col gap-[20px] w-full xl:w-[635px] shrink-0">
-          <RaffleProfitCalculator />
           <HostUpcomingDraws draws={dashboardData?.upcomingDraws} isLoading={isLoading} />
         </div>
       </div>
