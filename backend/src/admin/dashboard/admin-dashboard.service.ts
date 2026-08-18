@@ -178,7 +178,7 @@ export class AdminDashboardService {
         take: 100,
       }),
       this.prisma.winner.findMany({
-        include: { user: true, raffle: true },
+        include: { user: true, raffle: true, ticket: true },
         orderBy: { createdAt: 'desc' },
         take: 100,
       }),
@@ -325,7 +325,7 @@ export class AdminDashboardService {
           initials: 'SE',
           type: 'system',
         },
-        description: `Winner declared for '${w.raffle?.title || 'Competition'}': Ticket #${w.ticketNumber} (${winnerName})`,
+        description: `Winner declared for '${w.raffle?.title || 'Competition'}': Ticket #${w.ticket?.ticketNumber || 'N/A'} (${winnerName})`,
         ip: '127.0.0.1',
         status: 'Success',
       });
