@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { raffleService } from "../../../services/raffle.service";
-import { toast } from "sonner";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 export interface TicketDetail {
   id: string;
   ticketNumber: number;
-  raffleId?: string;
+  raffleId: string;
   raffleTitle?: string;
   raffleCategory?: string;
   pricePerTicket?: number;
@@ -23,7 +23,7 @@ export interface TicketDetail {
   paymentGateway?: string;
   paymentStatus?: string;
   winStatus?: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 interface ViewSoldTicketsModalProps {
@@ -36,7 +36,6 @@ interface ViewSoldTicketsModalProps {
     ticketsSold?: number;
     pricePerTicket?: number;
     category?: string;
-    host?: any;
   } | null;
 }
 
@@ -85,7 +84,7 @@ export default function ViewSoldTicketsModal({
         }));
         setTickets(mapped);
       })
-      .catch((err) => {
+      .catch(() => {
         if (!isMounted) return;
         toast.error("Failed to load sold tickets for this competition.");
         setTickets([]);
@@ -219,7 +218,7 @@ export default function ViewSoldTicketsModal({
   };
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 md:p-6 animate-fadeIn">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -227,31 +226,31 @@ export default function ViewSoldTicketsModal({
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-surface border border-border rounded-card shadow-card flex flex-col overflow-hidden text-text-primary z-10">
+      <div className="relative w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] bg-surface border border-border rounded-2xl sm:rounded-card shadow-card flex flex-col overflow-hidden text-text-primary z-10">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-divider bg-surface">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-sans font-bold bg-accent-bg border border-primary/30 text-text-brand flex items-center gap-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5 border-b border-divider bg-surface">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-sans font-bold bg-accent-bg border border-primary/30 text-text-brand flex items-center gap-1 shrink-0">
                 <span>🎟️</span>
                 <span>Ticket Details</span>
               </span>
-              <h2 className="font-heading font-black text-xl text-text-primary uppercase tracking-tight truncate max-w-[450px]">
+              <h2 className="font-heading font-black text-base sm:text-xl text-text-primary uppercase tracking-tight truncate max-w-full sm:max-w-[450px]" title={raffle.title}>
                 {raffle.title}
               </h2>
             </div>
-            <p className="font-sans text-xs text-text-muted">
-              Total Sold: <strong className="text-text-primary">{tickets.length}</strong> / {raffle.totalTickets} tickets
+            <p className="font-sans text-[11px] sm:text-xs text-text-muted leading-relaxed">
+              Total Sold: <strong className="text-text-primary font-bold">{tickets.length}</strong> / {raffle.totalTickets} tickets
               {raffle.pricePerTicket && ` • £${Number(raffle.pricePerTicket).toFixed(2)} per ticket`}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-divider">
             <button
               onClick={handleExportCSV}
               disabled={tickets.length === 0}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-elevated border border-border-medium hover:bg-surface text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-elevated border border-border-medium hover:bg-surface text-text-primary font-heading font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer shadow-xs"
             >
               <svg className="w-4 h-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -270,24 +269,24 @@ export default function ViewSoldTicketsModal({
         </div>
 
         {/* Toolbar (Search & View Toggle) */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3 border-b border-divider bg-elevated">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 px-4 sm:px-6 py-3 border-b border-divider bg-elevated">
           <div className="flex items-center h-[38px] w-full sm:w-[320px] bg-surface border border-border-medium rounded-xl px-3 focus-within:border-primary transition-all">
             <svg className="w-4 h-4 text-text-muted shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
             <input
               type="text"
-              placeholder="Search by ticket #, buyer name, or email..."
+              placeholder="Search ticket #, buyer name, or email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="bg-transparent border-none outline-none text-text-primary text-xs placeholder:text-text-muted w-full ml-2 font-sans font-semibold"
             />
           </div>
 
-          <div className="flex items-center gap-1 bg-surface p-1 rounded-xl border border-border">
+          <div className="w-full sm:w-auto flex items-center justify-center gap-1 bg-surface p-1 rounded-xl border border-border">
             <button
               onClick={() => setViewMode("table")}
-              className={`px-3 py-1 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer text-center ${
                 viewMode === "table"
                   ? "bg-primary text-white shadow-xs"
                   : "text-text-muted hover:text-text-primary"
@@ -297,7 +296,7 @@ export default function ViewSoldTicketsModal({
             </button>
             <button
               onClick={() => setViewMode("grid")}
-              className={`px-3 py-1 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer text-center ${
                 viewMode === "grid"
                   ? "bg-primary text-white shadow-xs"
                   : "text-text-muted hover:text-text-primary"
@@ -309,7 +308,7 @@ export default function ViewSoldTicketsModal({
         </div>
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-6 max-h-[60vh]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 max-h-[60vh] custom-scrollbar">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -327,7 +326,7 @@ export default function ViewSoldTicketsModal({
             </div>
           ) : viewMode === "grid" ? (
             /* Badges Grid View */
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2.5">
+            <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 gap-2 sm:gap-2.5">
               {filteredTickets.map((t) => {
                 const isMainWin = t.winStatus?.includes("Main");
                 const isInstantWin = t.winStatus?.includes("Instant");
@@ -355,8 +354,8 @@ export default function ViewSoldTicketsModal({
             </div>
           ) : (
             /* Full Table View */
-            <div className="w-full border border-border rounded-xl overflow-hidden shadow-xs">
-              <table className="w-full text-left border-collapse text-xs">
+            <div className="w-full border border-border rounded-xl overflow-x-auto shadow-xs">
+              <table className="w-full min-w-[650px] text-left border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-divider bg-elevated text-text-muted font-sans font-bold text-[10px] uppercase tracking-wider">
                     <th className="py-3 px-4">TICKET #</th>
@@ -419,9 +418,9 @@ export default function ViewSoldTicketsModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-divider bg-elevated">
-          <p className="font-sans text-xs text-text-muted">
-            Showing <span className="text-text-primary font-bold">{filteredTickets.length}</span> of {tickets.length} total sold tickets
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-t border-divider bg-elevated">
+          <p className="font-sans text-[11px] sm:text-xs text-text-muted">
+            Showing <span className="text-text-primary font-bold">{filteredTickets.length}</span> of {tickets.length} total tickets
           </p>
           <button
             onClick={onClose}
