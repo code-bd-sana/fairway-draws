@@ -5,7 +5,7 @@ import SubscriptionTable from "../../../../components/dashboard/admin/Subscripti
 
 export default function AdminSubscriptionsManagementPage() {
   return (
-    <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
+    <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
       {/* Page Header */}
       <div className="flex flex-col gap-1">
         <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
