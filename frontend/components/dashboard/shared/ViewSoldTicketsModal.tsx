@@ -50,6 +50,55 @@ export default function ViewSoldTicketsModal({
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
 
+  // Fetch sold tickets when modal opens
+  useEffect(() => {
+    if (!isOpen || !raffle?.id) {
+      setTickets([]);
+      return;
+    }
+
+    let isMounted = true;
+    setIsLoading(true);
+
+    raffleService
+      .getSoldTickets(raffle.id)
+      .then((data) => {
+        if (!isMounted) return;
+        const mapped: TicketDetail[] = (data || []).map((t: any) => ({
+          id: t.id,
+          ticketNumber: t.ticketNumber,
+          raffleId: t.raffleId || raffle.id,
+          raffleTitle: t.raffleTitle || raffle.title,
+          raffleCategory: t.raffleCategory || raffle.category,
+          pricePerTicket: t.pricePerTicket || raffle.pricePerTicket,
+          buyerName: t.buyerName || t.userName || (t.user ? `${t.user.firstName || ''} ${t.user.lastName || ''}`.trim() : 'N/A'),
+          userName: t.userName || t.buyerName || (t.user ? `${t.user.firstName || ''} ${t.user.lastName || ''}`.trim() : 'N/A'),
+          userEmail: t.userEmail || t.user?.email || 'N/A',
+          userPhone: t.userPhone || t.user?.phone || 'N/A',
+          userLocation: t.userLocation || t.user?.location || 'N/A',
+          transactionId: t.transactionId || 'N/A',
+          gatewayTransactionId: t.gatewayTransactionId || 'N/A',
+          paymentGateway: t.paymentGateway || 'N/A',
+          paymentStatus: t.paymentStatus || 'COMPLETED',
+          winStatus: t.winStatus || (t.winners?.some((w: any) => w.winType === 'MAIN_DRAW') ? 'Main Winner' : t.winners?.some((w: any) => w.winType === 'INSTANT_WIN') ? 'Instant Winner' : 'Regular Entry'),
+          createdAt: t.createdAt,
+        }));
+        setTickets(mapped);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        toast.error("Failed to load sold tickets for this competition.");
+        setTickets([]);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, raffle?.id]);
+
   // Lock scroll when modal is open
   useEffect(() => {
     if (isOpen) {

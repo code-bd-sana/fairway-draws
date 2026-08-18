@@ -64,10 +64,15 @@ export class AdminOrdersService {
           tx.gatewayTransactionId?.substring(0, 8) || tx.id.substring(0, 8),
         buyerName,
         buyerInitials,
+        buyerEmail: tx.user?.email || 'N/A',
+        buyerPhone: tx.user?.phone || 'N/A',
+        buyerLocation: tx.user?.location || 'N/A',
         competition: competitionName,
         tickets: ticketsCount,
+        ticketNumbers: tx.tickets?.map((t) => `#${t.ticketNumber}`) || [],
         amount: Number(tx.amount),
         payment: tx.paymentGateway || 'Card',
+        gatewayTransactionId: tx.gatewayTransactionId || tx.id,
         status:
           tx.status === 'COMPLETED'
             ? 'Paid'

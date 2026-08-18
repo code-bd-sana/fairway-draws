@@ -67,10 +67,15 @@ export interface OrderData {
   orderId: string;
   buyerName: string;
   buyerInitials: string;
+  buyerEmail?: string;
+  buyerPhone?: string;
+  buyerLocation?: string;
   competition: string;
   tickets: number;
+  ticketNumbers?: string[];
   amount: number;
   payment: string;
+  gatewayTransactionId?: string;
   status: string;
   date: string;
 }
