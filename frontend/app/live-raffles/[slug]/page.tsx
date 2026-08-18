@@ -72,8 +72,10 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
         isClaimed: iw.isClaimed
       })) || [],
       isFeatured: false,
-      hostName: draw.host?.user ? `${draw.host.user.firstName} ${draw.host.user.lastName}` : "Fairway Draws Host",
-      hostLogo: draw.host?.user?.firstName?.[0] || "AD",
+      hostId: draw.hostId || draw.host?.id,
+      hostUserId: draw.host?.userId || draw.host?.user?.id,
+      hostName: draw.host?.businessName || (draw.host?.user ? `${draw.host.user.firstName} ${draw.host.user.lastName}` : "Fairway Draws Host"),
+      hostLogo: draw.host?.businessName?.[0] || draw.host?.user?.firstName?.[0] || "FD",
       hostDrawsCount: 1,
       hostVerified: true,
       isAutoDraw: draw.isAutoDraw,

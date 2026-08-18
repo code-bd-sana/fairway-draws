@@ -13,6 +13,7 @@ export interface User {
   createdAt?: string;
   isEmailVerified?: boolean;
   hostProfile?: {
+    id?: string;
     businessName: string;
     slug?: string;
     bio?: string;

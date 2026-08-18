@@ -29,6 +29,18 @@ export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
     </div>
   );
 
+  const isAuthorizedToViewInstantWins = Boolean(
+    user && (
+      user.role === 'ADMIN' ||
+      (user.role === 'HOST' && (
+        (raffle.hostUserId && user.id === raffle.hostUserId) ||
+        (raffle.hostId && user.hostProfile?.id === raffle.hostId) ||
+        (raffle.hostName && user.hostProfile?.businessName === raffle.hostName)
+      )) ||
+      (raffle.hostUserId && user.id === raffle.hostUserId)
+    )
+  );
+
   return (
     <div className="w-full flex flex-col font-sans mt-2 bg-surface border border-border rounded-card p-6 shadow-card">
       {/* Tabs Header */}
@@ -125,8 +137,8 @@ export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
         )}
       </div>
 
-      {/* Instant Win Prizes */}
-      {raffle.instantWinPrizes.length > 0 && (
+      {/* Instant Win Prizes (Only visible to Admin and creator Host) */}
+      {isAuthorizedToViewInstantWins && raffle.instantWinPrizes.length > 0 && (
         <div className="mt-6 bg-elevated border border-border-medium rounded-xl p-5 flex flex-col gap-3.5">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-base">🎁</span>
@@ -147,7 +159,7 @@ export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
                   <div className="flex flex-col">
                     <span className="font-sans font-semibold text-xs text-text-primary">{prize.title}</span>
                     <span className="font-sans text-[11px] text-text-muted">
-                      {user?.role === 'ADMIN' || user?.role === 'HOST' ? `Ticket #${prize.ticketNumber}` : "Ticket #???"}
+                      Ticket #{prize.ticketNumber}
                     </span>
                   </div>
                 </div>

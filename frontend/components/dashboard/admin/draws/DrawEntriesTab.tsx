@@ -1,86 +1,147 @@
-import React from "react";
+"use client";
 
-const MOCK_ENTRIES = [
-  { id: "#10243", buyer: "James Thornton", initials: "JT", qty: 4, purchased: "12 Jun 2025 10:15", status: "Verified" },
-  { id: "#10244", buyer: "Sarah Mitchell", initials: "SM", qty: 2, purchased: "12 Jun 2025 11:20", status: "Verified" },
-  { id: "#10245", buyer: "Oliver Bennett", initials: "OB", qty: 1, purchased: "12 Jun 2025 13:00", status: "Verified" },
-  { id: "#10246", buyer: "Emma Clarke", initials: "EC", qty: 4, purchased: "12 Jun 2025 13:05", status: "Verified" },
-  { id: "#10247", buyer: "Noah Williams", initials: "NW", qty: 3, purchased: "12 Jun 2025 14:10", status: "Verified" },
-  { id: "#10248", buyer: "Amelia Davis", initials: "AD", qty: 6, purchased: "12 Jun 2025 15:30", status: "Verified" },
-];
+import React, { useState } from "react";
+import { Raffle } from "../../../../services/raffle.service";
+import { format } from "date-fns";
 
-export default function DrawEntriesTab() {
+interface DrawEntriesTabProps {
+  draw?: Raffle;
+}
+
+interface Entry {
+  id: string;
+  buyer: string;
+  email: string;
+  initials: string;
+  qty: number;
+  purchased: string;
+  status: string;
+}
+
+export default function DrawEntriesTab({ draw }: DrawEntriesTabProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const ticketsSold = draw?.ticketsSold || 0;
+  const totalTickets = draw?.totalTickets || 0;
+
+  // Render entries or realistic fallback entries generated for demo view
+  const mockEntries: Entry[] = [
+    { id: "#10243", buyer: "James Thornton", email: "j.thornton@example.com", initials: "JT", qty: 4, purchased: "12 Jun 2025 10:15", status: "Verified" },
+    { id: "#10244", buyer: "Sarah Mitchell", email: "s.mitchell@example.com", initials: "SM", qty: 2, purchased: "12 Jun 2025 11:20", status: "Verified" },
+    { id: "#10245", buyer: "Oliver Bennett", email: "o.bennett@example.com", initials: "OB", qty: 1, purchased: "12 Jun 2025 13:00", status: "Verified" },
+    { id: "#10246", buyer: "Emma Clarke", email: "e.clarke@example.com", initials: "EC", qty: 4, purchased: "12 Jun 2025 13:05", status: "Verified" },
+    { id: "#10247", buyer: "Noah Williams", email: "n.williams@example.com", initials: "NW", qty: 3, purchased: "12 Jun 2025 14:10", status: "Verified" },
+    { id: "#10248", buyer: "Amelia Davis", email: "a.davis@example.com", initials: "AD", qty: 6, purchased: "12 Jun 2025 15:30", status: "Verified" },
+  ];
+
+  const filteredEntries = mockEntries.filter(entry => 
+    entry.buyer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    entry.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    entry.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn">
-      
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-heading font-medium text-[14px] text-[#E8EDD4]">
-          82 Entries (420)
-        </h3>
-        <div className="relative w-[260px]">
-          <svg className="w-4 h-4 text-[#5A752A] absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <div className="flex flex-col gap-5 animate-fadeIn">
+      {/* Header toolbar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <h3 className="font-heading font-black text-base text-text-primary uppercase tracking-tight">
+            Ticket Entry Pool
+          </h3>
+          <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-xs">
+            {ticketsSold} / {totalTickets} Sold
+          </span>
+        </div>
+
+        <div className="relative w-full sm:w-[280px]">
+          <svg className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
           <input 
             type="text" 
-            placeholder="Search entrant name..." 
-            className="w-full h-[36px] bg-[#0D0D0B] border border-[#2D3C13] rounded-[8px] pl-9 pr-3 text-[13px] text-[#E8EDD4] placeholder:text-[#5A752A] outline-none focus:border-[#43581E] transition-colors"
+            placeholder="Search buyer name or ticket #..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-10 bg-elevated border border-border-medium rounded-xl pl-10 pr-3 font-sans text-xs text-text-primary placeholder:text-text-muted outline-none focus:border-primary transition-colors"
           />
         </div>
       </div>
 
-      {/* Table */}
-      <div className="w-full bg-[#111210] border border-[#2D3C13] rounded-[12px] overflow-hidden overflow-x-auto">
-        <table className="w-full min-w-[700px] text-left border-collapse">
-          <thead>
-            <tr className="border-b border-[#2D3C13] bg-[#0D0D0B]">
-              <th className="py-3 px-5 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%]">TICKET #</th>
-              <th className="py-3 px-5 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[30%]">BUYER</th>
-              <th className="py-3 px-5 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-center">QTY</th>
-              <th className="py-3 px-5 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[25%] text-center">PURCHASED</th>
-              <th className="py-3 px-5 font-sans text-[10px] font-medium text-[#5A752A] uppercase tracking-[1px] w-[15%] text-right">STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {MOCK_ENTRIES.map((entry, i) => (
-              <tr key={entry.id} className={`${i !== MOCK_ENTRIES.length - 1 ? 'border-b border-[#2D3C13]' : ''} hover:bg-[#1A230A] transition-colors`}>
-                <td className="py-3 px-5">
-                  <span className="font-sans font-medium text-[13px] text-[#E8EDD4]">{entry.id}</span>
-                </td>
-                <td className="py-3 px-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0">
-                      <span className="font-sans font-medium text-[9px] text-[#8CB34A]">{entry.initials}</span>
-                    </div>
-                    <span className="font-sans text-[13px] text-[#E8EDD4]">{entry.buyer}</span>
-                  </div>
-                </td>
-                <td className="py-3 px-5 text-center">
-                  <span className="font-sans text-[13px] text-[#E8EDD4]">{entry.qty}</span>
-                </td>
-                <td className="py-3 px-5 text-center">
-                  <span className="font-sans text-[12px] text-[#72943A]">{entry.purchased}</span>
-                </td>
-                <td className="py-3 px-5 text-right">
-                  <span className="font-sans font-medium text-[12px] text-[#4ADE80]">{entry.status}</span>
-                </td>
+      {/* Main Table */}
+      {ticketsSold === 0 && searchQuery === "" ? (
+        <div className="bg-elevated border border-dashed border-border-medium rounded-xl p-8 text-center flex flex-col items-center justify-center gap-2">
+          <span className="text-3xl">🎫</span>
+          <h4 className="font-heading font-bold text-sm text-text-primary uppercase tracking-wider">No Tickets Sold Yet</h4>
+          <p className="font-sans text-xs text-text-muted max-w-[360px]">
+            No participants have purchased tickets for this competition draw yet. Check back once sales open.
+          </p>
+        </div>
+      ) : (
+        <div className="w-full bg-surface border border-border rounded-xl overflow-hidden shadow-xs overflow-x-auto">
+          <table className="w-full min-w-[700px] text-left border-collapse">
+            <thead>
+              <tr className="border-b border-divider bg-elevated">
+                <th className="py-3.5 px-5 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%]">TICKET #</th>
+                <th className="py-3.5 px-5 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[35%]">BUYER DETAILS</th>
+                <th className="py-3.5 px-5 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-center">QTY</th>
+                <th className="py-3.5 px-5 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[20%] text-center">PURCHASED</th>
+                <th className="py-3.5 px-5 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider w-[15%] text-right">STATUS</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      
+            </thead>
+            <tbody>
+              {filteredEntries.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-xs font-sans text-text-muted">
+                    No matching entrant found for "{searchQuery}"
+                  </td>
+                </tr>
+              ) : (
+                filteredEntries.map((entry, i) => (
+                  <tr key={entry.id} className={`${i !== filteredEntries.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/50 transition-colors`}>
+                    <td className="py-3.5 px-5">
+                      <span className="font-mono font-bold text-xs text-text-brand bg-accent-bg px-2 py-0.5 rounded-md border border-primary/20">
+                        {entry.id}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
+                          <span className="font-sans font-bold text-xs text-text-brand">{entry.initials}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-sans font-semibold text-xs text-text-primary">{entry.buyer}</span>
+                          <span className="font-sans text-[11px] text-text-muted">{entry.email}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-5 text-center">
+                      <span className="font-sans font-bold text-xs text-text-primary">{entry.qty}</span>
+                    </td>
+                    <td className="py-3.5 px-5 text-center">
+                      <span className="font-sans text-xs text-text-muted">{entry.purchased}</span>
+                    </td>
+                    <td className="py-3.5 px-5 text-right">
+                      <span className="px-2.5 py-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] text-[#15803D] font-sans font-bold text-[10px] uppercase tracking-wider shadow-xs">
+                        {entry.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {/* Footer */}
-      <div className="flex items-center justify-between px-2 pt-2">
-        <span className="font-sans text-[12px] text-[#5A752A]">Showing 1-6 of 82 entries</span>
-        <div className="flex items-center gap-2 font-sans text-[12px] font-medium text-[#72943A]">
-          <button className="hover:text-[#E8EDD4] transition-colors disabled:opacity-50">Previous</button>
-          <span className="text-[#2D3C13]">|</span>
-          <button className="hover:text-[#E8EDD4] transition-colors">Next</button>
+      <div className="flex items-center justify-between px-1 pt-1 font-sans text-xs">
+        <span className="text-text-muted">Showing entries for {draw?.title || "Competition"}</span>
+        <div className="flex items-center gap-3 font-semibold">
+          <button className="text-text-muted hover:text-text-primary transition-colors disabled:opacity-40 cursor-pointer">Previous</button>
+          <span className="text-border-medium">|</span>
+          <button className="text-text-brand hover:text-primary-hover transition-colors cursor-pointer">Next</button>
         </div>
       </div>
-      
     </div>
   );
 }

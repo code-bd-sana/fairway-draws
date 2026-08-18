@@ -32,6 +32,8 @@ export interface RaffleDetail {
   terms: string[];
   instantWinPrizes: InstantWinPrize[];
   isFeatured: boolean;
+  hostId?: string;
+  hostUserId?: string;
   hostName?: string;
   hostLogo?: string;
   hostDrawsCount?: number;
