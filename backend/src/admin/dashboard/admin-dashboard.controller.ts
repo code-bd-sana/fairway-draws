@@ -35,4 +35,13 @@ export class AdminDashboardController {
   ) {
     return this.adminDashboardService.getSystemLogs({ page, limit, search, filter });
   }
+
+  @Get('reports')
+  @ApiOperation({ summary: 'Get detailed system analytics and platform performance reports (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Platform analytics charts and distribution metrics' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  async getReports(@Query('timeFilter') timeFilter?: string) {
+    return this.adminDashboardService.getReports(timeFilter || '3M');
+  }
 }

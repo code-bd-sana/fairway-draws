@@ -143,6 +143,15 @@ export interface AdminDashboardOverview {
   }[];
 }
 
+export interface AdminReportsData {
+  revenueTrend: { name: string; value: number }[];
+  categorySales: { name: string; value: number; color: string }[];
+  popularCompetitions: { name: string; value: number }[];
+  userGrowth: { name: string; users: number }[];
+  hostPerformance: { name: string; percent: number }[];
+  geographicDistribution: { name: string; value: number }[];
+}
+
 
 export const adminService = {
   async getUsers(params: { page?: number; limit?: number; search?: string; role?: string }): Promise<GetUsersResponse> {
@@ -187,6 +196,11 @@ export const adminService = {
 
   async getSystemLogs(params: { page?: number; limit?: number; search?: string; filter?: string }): Promise<GetLogsResponse> {
     const { data } = await api.get('/admin/dashboard/logs', { params });
+    return data;
+  },
+
+  async getReports(timeFilter: string = '3M'): Promise<AdminReportsData> {
+    const { data } = await api.get('/admin/dashboard/reports', { params: { timeFilter } });
     return data;
   },
 
