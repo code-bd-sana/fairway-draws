@@ -217,7 +217,7 @@ export default function UserProfileForm() {
 
       {/* Right Column: Settings Forms */}
       <div className="flex-1 flex flex-col gap-6">
-        <form onSubmit={handleProfileSubmit} className="bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col gap-6 shadow-card">
+        <form onSubmit={handleProfileSubmit} className="flex-1 min-w-0 w-full bg-surface border border-border rounded-card p-6 lg:p-8 flex flex-col gap-6 shadow-card">
           
           {/* Account Information */}
           <section>

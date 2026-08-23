@@ -55,7 +55,7 @@ export default function HostDashboardOverview() {
   ];
 
   return (
-    <div className="flex flex-col gap-[20px] w-full max-w-[1660px] mx-auto">
+    <div className="flex flex-col gap-[20px] w-full max-w-[1660px] mx-auto p-4 sm:p-6 lg:p-8">
       {/* KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] w-full">
         {kpiStats.map((stat) => (
@@ -66,13 +66,13 @@ export default function HostDashboardOverview() {
       {/* Main Content Area */}
       <div className="flex flex-col xl:flex-row gap-[20px] w-full items-start">
         {/* Left Column (Earnings + Active Raffles) */}
-        <div className="flex flex-col gap-[20px] w-full xl:w-[924px] shrink-0">
+        <div className="flex flex-col gap-[20px] w-full xl:flex-1 min-w-0">
           <HostRevenueChart totalRevenue={dashboardData?.kpiStats?.totalNetRevenue} />
           <HostActiveRaffles raffles={dashboardData?.activeRaffles} isLoading={isLoading} />
         </div>
 
         {/* Right Column (Upcoming Draws) */}
-        <div className="flex flex-col gap-[20px] w-full xl:w-[635px] shrink-0">
+        <div className="flex flex-col gap-[20px] w-full xl:w-[420px] 2xl:w-[500px] shrink-0 min-w-0">
           <HostUpcomingDraws draws={dashboardData?.upcomingDraws} isLoading={isLoading} />
         </div>
       </div>
