@@ -83,6 +83,13 @@ export interface PublicLiveStats {
   totalPrizesValue: string;
 }
 
+export interface PublicHostPreviewStats {
+  activeDraws: number;
+  ticketsSold: number;
+  totalEarned: number;
+  targetPercent: number;
+}
+
 export interface UpdateRaffleData extends Partial<CreateRaffleData> {
   status?: 'DRAFT' | 'PENDING_APPROVAL' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
 }
@@ -95,6 +102,11 @@ export const raffleService = {
 
   async getPublicLiveStats(): Promise<PublicLiveStats> {
     const response = await api.get('/raffles/public/live-stats');
+    return response.data;
+  },
+
+  async getPublicHostPreviewStats(): Promise<PublicHostPreviewStats> {
+    const response = await api.get('/raffles/public/host-preview-stats');
     return response.data;
   },
 

@@ -1030,6 +1030,45 @@ export class RafflesService {
     };
   }
 
+  async getPublicHostPreviewStats() {
+    const activeDraws = await this.prisma.raffle.count({
+      where: { status: 'ACTIVE' },
+    });
+
+    const raffles = await this.prisma.raffle.findMany({
+      where: { status: { in: ['ACTIVE', 'ENDED'] } },
+      select: {
+        ticketsSold: true,
+        totalTickets: true,
+        pricePerTicket: true,
+      },
+    });
+
+    let ticketsSold = 0;
+    let totalEarned = 0;
+    let totalCapacity = 0;
+
+    for (const r of raffles) {
+      const sold = r.ticketsSold || 0;
+      const price = r.pricePerTicket ? Number(r.pricePerTicket) : 0;
+      ticketsSold += sold;
+      totalEarned += sold * price;
+      totalCapacity += r.totalTickets || 0;
+    }
+
+    const targetPercent =
+      totalCapacity > 0
+        ? Math.min(100, Math.round((ticketsSold / totalCapacity) * 100))
+        : 0;
+
+    return {
+      activeDraws,
+      ticketsSold,
+      totalEarned,
+      targetPercent,
+    };
+  }
+
   async getPublicWinnerStats() {
     const totalWinners = await this.prisma.winner.count();
 
@@ -1044,12 +1083,16 @@ export class RafflesService {
     // or we can sum totalTickets * pricePerTicket of ENDED draws.
     const endedRaffles = await this.prisma.raffle.findMany({
       where: { status: 'ENDED' },
-      select: { totalTickets: true, pricePerTicket: true },
+      select: { mainPrizeValue: true, totalTickets: true, pricePerTicket: true },
     });
 
     let totalValue = 0;
     endedRaffles.forEach((r) => {
-      totalValue += r.totalTickets * Number(r.pricePerTicket);
+      if (r.mainPrizeValue && Number(r.mainPrizeValue) > 0) {
+        totalValue += Number(r.mainPrizeValue);
+      } else {
+        totalValue += r.totalTickets * Number(r.pricePerTicket);
+      }
     });
 
     // Formatting currency for UK (£)

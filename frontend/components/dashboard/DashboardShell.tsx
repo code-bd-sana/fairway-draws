@@ -48,7 +48,7 @@ export default function DashboardShell({ account, children }: DashboardShellProp
       />
 
       {/* Main Content Area - shifts based on sidebar on desktop */}
-      <div className="flex-1 flex flex-col w-full lg:ml-[260px] min-h-screen relative">
+      <div className="flex-1 flex flex-col min-w-0 w-full lg:w-[calc(100%-260px)] lg:ml-[260px] min-h-screen relative">
         
         {/* Shared Topbar */}
         <DashboardTopbar 
@@ -59,8 +59,8 @@ export default function DashboardShell({ account, children }: DashboardShellProp
         />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col items-center">
-          <div className="w-full flex-1">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col items-center w-full min-w-0">
+          <div className="w-full flex-1 min-w-0">
             {children}
           </div>
         </main>
