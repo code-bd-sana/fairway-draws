@@ -74,46 +74,49 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
   return (
     <div
       className={cn(
-        "relative flex w-full flex-col rounded-[20px] border bg-[#edf5e9] p-8 shadow-[0_14px_32px_rgba(0,0,0,.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_42px_rgba(0,0,0,.25)]",
+        "relative flex w-full flex-col rounded-[24px] p-8 shadow-xl transition-all duration-300 hover:-translate-y-1.5",
         plan.isFeatured
-          ? "border-[#dc2626] ring-1 ring-[#dc2626]/35"
-          : "border-[#bdd3ba] hover:border-[#0b4d35]/45"
+          ? "border-2 border-[#0b4d35] bg-white ring-4 ring-[#0b4d35]/12 shadow-2xl"
+          : "border border-[#bdd3ba] bg-[#f8faf6] hover:border-[#0b4d35]/45 hover:shadow-2xl"
       )}
     >
       {/* Featured Ribbon Badge */}
       {plan.isFeatured && plan.badgeLabel && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary rounded-full px-4 py-1 shadow-md">
-          <span className="font-sans font-bold text-[10px] tracking-wider text-primary-text uppercase">
-            {plan.badgeLabel}
-          </span>
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#dc2626] text-white rounded-full px-4 py-1 shadow-md font-sans font-black text-[10px] tracking-widest uppercase flex items-center gap-1">
+          <span>🔥</span>
+          <span>{plan.badgeLabel}</span>
         </div>
       )}
 
       {/* Plan Header */}
       <div className="flex flex-col items-start mb-6">
-        <h3 className="font-heading font-bold text-lg text-text-primary uppercase tracking-wide">
+        <h3 className="font-heading font-black text-xl text-[#0b4d35] uppercase tracking-wide">
           {plan.name}
         </h3>
         
         {/* Price Tag */}
-        <div className="flex items-baseline gap-1 mt-3">
-          <span className="font-heading font-bold text-4xl text-text-brand select-none">
-            £{isYearly ? price * 12 : price}
+        <div className="flex items-baseline gap-1.5 mt-3">
+          <span className="font-heading font-black text-4xl sm:text-5xl text-[#0b4d35] select-none tracking-tight">
+            £{price}
           </span>
-          <span className="font-sans text-xs text-text-muted select-none">
-            {price === 0 ? " forever" : isYearly ? " billed yearly" : "/month"}
+          <span className="font-sans text-xs font-bold text-[#5e766c] select-none">
+            {price === 0 ? " forever" : "/month"}
           </span>
         </div>
         
-        {isYearly && plan.monthlyPrice > 0 && (
-          <span className="font-sans text-[10px] text-text-secondary mt-1 select-none">
-            Equivalent to £{price} per month
+        {isYearly && plan.monthlyPrice > 0 ? (
+          <span className="font-sans font-semibold text-[11px] text-[#16a34a] mt-1.5 select-none bg-[#f0fdf4] border border-[#bbf7d0] px-2.5 py-0.5 rounded-full">
+            £{price * 12}/yr billed annually (Save 20%)
           </span>
-        )}
+        ) : !isYearly && plan.monthlyPrice > 0 ? (
+          <span className="font-sans text-[11px] text-[#5e766c] mt-1.5 select-none">
+            Billed monthly
+          </span>
+        ) : null}
       </div>
 
       {/* Commission Level Label */}
-      <div className="inline-flex items-center bg-accent-bg border border-border px-3 py-1.5 rounded-full text-xs font-semibold text-text-brand select-none w-fit mb-6">
+      <div className="inline-flex items-center bg-[#0b4d35]/8 border border-[#0b4d35]/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#0b4d35] select-none w-fit mb-6">
         {plan.commissionLabel}
       </div>
 
@@ -126,33 +129,37 @@ export default function PricingPlanCard({ plan, billingCycle, dbPlan }: PricingP
           <li
             key={feature.id}
             className={cn(
-              "flex items-center gap-3 font-sans text-xs md:text-sm transition-all duration-200",
-              feature.included ? "text-text-primary" : "text-text-muted/40"
+              "flex items-center gap-3 font-sans text-xs md:text-sm font-medium transition-all duration-200",
+              feature.included ? "text-[#101811]" : "text-[#5e766c]/50 line-through"
             )}
           >
             {/* Check or Dash SVG icon */}
             {feature.included ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={3}
-                stroke="currentColor"
-                className="w-4 h-4 text-primary shrink-0"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
+              <div className="w-5 h-5 rounded-full bg-[#0b4d35]/12 flex items-center justify-center shrink-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={3}
+                  stroke="currentColor"
+                  className="w-3.5 h-3.5 text-[#0b4d35]"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+              </div>
             ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-4 h-4 text-text-muted/30 shrink-0"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-              </svg>
+              <div className="w-5 h-5 rounded-full bg-black/5 flex items-center justify-center shrink-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  stroke="currentColor"
+                  className="w-3.5 h-3.5 text-black/25"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+                </svg>
+              </div>
             )}
             <span>{feature.label}</span>
           </li>

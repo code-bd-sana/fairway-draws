@@ -35,15 +35,15 @@ export default function PricingHero() {
         </p>
 
         {/* Custom Toggle Billing Switcher */}
-        <div className="mb-14 flex w-fit items-center gap-1.5 rounded-full border border-white/20 bg-[#e8f2e5] p-1.5 shadow-xl select-none">
+        <div className="mb-14 flex w-fit items-center gap-2 rounded-full border border-white/25 bg-[#032b1d]/85 p-1.5 shadow-2xl backdrop-blur-md select-none">
           <button
             type="button"
             onClick={() => setBillingCycle("monthly")}
             className={cn(
-              "rounded-full px-5 py-2 text-xs md:text-sm font-semibold transition-all duration-300 cursor-pointer",
+              "rounded-full px-6 py-2.5 text-xs md:text-sm font-bold transition-all duration-300 cursor-pointer select-none",
               billingCycle === "monthly"
-                ? "bg-primary text-primary-text shadow-sm"
-                : "text-[#426256] hover:text-[#0b4d35]"
+                ? "bg-[#0b4d35] text-white shadow-md ring-1 ring-white/20"
+                : "text-white/70 hover:text-white"
             )}
           >
             Monthly
@@ -53,20 +53,20 @@ export default function PricingHero() {
             type="button"
             onClick={() => setBillingCycle("yearly")}
             className={cn(
-              "rounded-full px-5 py-2 text-xs md:text-sm font-semibold transition-all duration-300 cursor-pointer flex items-center gap-1.5",
+              "rounded-full px-6 py-2.5 text-xs md:text-sm font-bold transition-all duration-300 cursor-pointer flex items-center gap-2 select-none",
               billingCycle === "yearly"
-                ? "bg-primary text-primary-text shadow-sm"
-                : "text-[#426256] hover:text-[#0b4d35]"
+                ? "bg-[#0b4d35] text-white shadow-md ring-1 ring-white/20"
+                : "text-white/70 hover:text-white"
             )}
           >
             Yearly
             <span className={cn(
-              "text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide",
+              "text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider shadow-xs transition-all duration-300",
               billingCycle === "yearly"
-                ? "bg-[#1a230a] text-primary"
-                : "bg-accent-bg text-text-brand"
+                ? "bg-[#dc2626] text-white"
+                : "bg-[#dc2626]/20 border border-[#dc2626]/40 text-[#f87171]"
             )}>
-              save 20%
+              SAVE 20%
             </span>
           </button>
         </div>
