@@ -77,6 +77,12 @@ export interface CreateRaffleData {
   [key: string]: unknown;
 }
 
+export interface PublicLiveStats {
+  liveCount: number;
+  closingTodayCount: number;
+  totalPrizesValue: string;
+}
+
 export interface UpdateRaffleData extends Partial<CreateRaffleData> {
   status?: 'DRAFT' | 'PENDING_APPROVAL' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
 }
@@ -84,6 +90,11 @@ export interface UpdateRaffleData extends Partial<CreateRaffleData> {
 export const raffleService = {
   async getPublicStats(): Promise<{ id: number; value: string; label: string }[]> {
     const response = await api.get('/raffles/public/stats');
+    return response.data;
+  },
+
+  async getPublicLiveStats(): Promise<PublicLiveStats> {
+    const response = await api.get('/raffles/public/live-stats');
     return response.data;
   },
 

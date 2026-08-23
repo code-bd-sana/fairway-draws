@@ -10,17 +10,17 @@ export interface TrustBenefit {
 export const trustStatsData: StatItem[] = [
   {
     id: "trust-stat-1",
-    value: "2,400+",
+    value: "2,400",
     label: "Draws Completed",
   },
   {
     id: "trust-stat-2",
-    value: "£180,000+",
+    value: "£180,000",
     label: "Prizes Won",
   },
   {
     id: "trust-stat-3",
-    value: "12,000+",
+    value: "12,000",
     label: "Happy Winners",
   },
   {

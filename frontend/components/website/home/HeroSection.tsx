@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { raffleService } from '../../../services/raffle.service';
 
 /**
  * Homepage hero: a mobile-first, high-impact golf course composition.
@@ -10,6 +11,20 @@ import Image from 'next/image';
  * frame, while the copy stays readable through layered gradients.
  */
 export default function HeroSection() {
+  const [stats, setStats] = useState<{ id: number; value: string; label: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    raffleService.getPublicStats()
+      .then(data => {
+        if (data?.length) setStats(data);
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const drawsCompletedStat = stats.find(s => s.id === 1 || s.label.toLowerCase().includes('draws'));
+
   return (
     <section className="relative min-h-[810px] overflow-hidden bg-[#F8FAF6] pt-24 sm:min-h-[770px] md:pt-32 lg:min-h-[690px]">
       {/* Golden Hour Golf Course Background Image */}
@@ -103,7 +118,7 @@ export default function HeroSection() {
                 🏆
               </div>
               <span className="font-heading text-lg font-black tracking-tight text-white sm:text-2xl lg:text-3xl">
-                2,400+
+                {isLoading ? "..." : (drawsCompletedStat?.value || "0")}
               </span>
               <span className="mt-1 font-sans text-[8px] font-bold tracking-wide text-white/85 uppercase sm:text-[11px] sm:tracking-wider">
                 DRAWS COMPLETED

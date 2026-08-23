@@ -18,7 +18,7 @@ export default function HostAuthBrandPanel({
   // Trust stats for Login screen
   const trustStats = [
     {
-      label: "2,400+ Draws Completed",
+      label: "2,400 Draws Completed",
       icon: (
         <svg
           className="w-[18px] h-[18px]"
@@ -32,7 +32,7 @@ export default function HostAuthBrandPanel({
       ),
     },
     {
-      label: "£284,600+ Paid to Hosts",
+      label: "£284,600 Paid to Hosts",
       icon: (
         <svg
           className="w-[18px] h-[18px]"

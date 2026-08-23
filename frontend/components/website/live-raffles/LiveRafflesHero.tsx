@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePublicLiveStats } from "../../../hooks/useRaffleHooks";
 
 interface LiveRafflesHeroProps {
   liveCount?: number;
@@ -10,10 +13,16 @@ interface LiveRafflesHeroProps {
 
 /** Campaign-style header for the active competition catalogue. */
 export default function LiveRafflesHero({
-  liveCount = 24,
-  closingTodayCount = 6,
-  totalPrizesValue = "£1,200+",
+  liveCount,
+  closingTodayCount,
+  totalPrizesValue,
 }: LiveRafflesHeroProps) {
+  const { data: stats, isLoading } = usePublicLiveStats();
+
+  const displayLiveCount = liveCount ?? stats?.liveCount ?? 0;
+  const displayClosingTodayCount = closingTodayCount ?? stats?.closingTodayCount ?? 0;
+  const displayTotalPrizesValue = totalPrizesValue ?? stats?.totalPrizesValue ?? "£0";
+
   return (
     <section className="relative isolate overflow-hidden border-b border-[#174f36] bg-[#073826] pt-24 sm:pt-28">
       <Image
@@ -52,9 +61,9 @@ export default function LiveRafflesHero({
 
           <div className="grid w-full grid-cols-3 overflow-hidden rounded-2xl border border-white/30 bg-[#063d29]/88 shadow-2xl backdrop-blur-md lg:w-auto lg:min-w-[460px]">
             {[
-              ["●", `${liveCount}`, "Live draws"],
-              ["◷", `${closingTodayCount}`, "Closing today"],
-              ["★", totalPrizesValue, "In prizes"],
+              ["●", isLoading && !stats ? "..." : `${displayLiveCount}`, "Live draws"],
+              ["◷", isLoading && !stats ? "..." : `${displayClosingTodayCount}`, "Closing today"],
+              ["★", isLoading && !stats ? "..." : displayTotalPrizesValue, "In prizes"],
             ].map(([icon, value, label], index) => (
               <div key={label} className={`px-3 py-4 text-center sm:px-5 ${index < 2 ? "border-r border-white/20" : ""}`}>
                 <div className="mb-1 text-xs text-[#f04b45]">{icon}</div>

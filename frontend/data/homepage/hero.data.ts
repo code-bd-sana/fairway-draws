@@ -16,7 +16,7 @@ export interface HeroData {
 export const heroData: HeroData = {
   badgeText: "PREMIUM GOLF COMPETITIONS",
   headingText: "Win Premium Golf Gear For Less",
-  paragraphText: "Enter charity golf draws from just £1 per ticket. Fair, transparent & fully verified. Over £180k+ in luxury prizes already won by our community.",
+  paragraphText: "Enter charity golf draws from just £1 per ticket. Fair, transparent & fully verified. Over £180k in luxury prizes already won by our community.",
   primaryCtaLabel: "Browse Live Draws",
   primaryCtaHref: "#live-draws",
   secondaryCtaLabel: "How It Works",
@@ -24,7 +24,7 @@ export const heroData: HeroData = {
   stats: [
     {
       id: "hero-stat-1",
-      value: "2,400+",
+      value: "2,400",
       label: "Draws Completed",
     },
     {

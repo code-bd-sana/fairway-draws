@@ -22,7 +22,7 @@ export default function WinnersHero() {
 
   const metrics = [
     ["🏆", stats.prizesAwarded, "Prizes awarded"],
-    ["★", `${stats.totalWinners.toLocaleString()}+`, "Happy winners"],
+    ["★", `${stats.totalWinners.toLocaleString()}`, "Happy winners"],
     ["✓", stats.verifiedDraws, "Verified draws"],
   ];
 

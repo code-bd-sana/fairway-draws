@@ -961,7 +961,7 @@ export class RafflesService {
     return [
       {
         id: 1,
-        value: `${drawsCompleted}+`,
+        value: `${drawsCompleted.toLocaleString('en-GB')}`,
         label: 'Draws Completed',
       },
       {
@@ -975,6 +975,59 @@ export class RafflesService {
         label: 'Fair Draws',
       },
     ];
+  }
+
+  async getPublicLiveStats() {
+    const now = new Date();
+    const startOfToday = new Date(now);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date(now);
+    endOfToday.setHours(23, 59, 59, 999);
+
+    const liveCount = await this.prisma.raffle.count({
+      where: {
+        status: 'ACTIVE',
+      },
+    });
+
+    const closingTodayCount = await this.prisma.raffle.count({
+      where: {
+        status: 'ACTIVE',
+        endDate: {
+          gte: startOfToday,
+          lte: endOfToday,
+        },
+      },
+    });
+
+    const activeRaffles = await this.prisma.raffle.findMany({
+      where: {
+        status: 'ACTIVE',
+      },
+      select: {
+        mainPrizeValue: true,
+        pricePerTicket: true,
+        totalTickets: true,
+      },
+    });
+
+    let totalPrizes = 0;
+    for (const r of activeRaffles) {
+      if (r.mainPrizeValue) {
+        totalPrizes += Number(r.mainPrizeValue);
+      } else {
+        totalPrizes += r.totalTickets * Number(r.pricePerTicket);
+      }
+    }
+
+    const formattedTotalPrizes = `£${Math.round(totalPrizes).toLocaleString('en-GB')}`;
+
+    return {
+      liveCount,
+      closingTodayCount,
+      totalPrizesValue: formattedTotalPrizes,
+    };
   }
 
   async getPublicWinnerStats() {
@@ -1009,7 +1062,7 @@ export class RafflesService {
     return {
       prizesAwarded: formattedValue,
       totalWinners,
-      verifiedDraws: verifiedDraws > 0 ? `${verifiedDraws}+` : '0',
+      verifiedDraws: `${verifiedDraws.toLocaleString('en-GB')}`,
     };
   }
 }

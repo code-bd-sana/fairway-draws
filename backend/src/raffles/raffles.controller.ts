@@ -76,6 +76,16 @@ export class RafflesController {
     return this.rafflesService.getPublicStats();
   }
 
+  @Get('public/live-stats')
+  @ApiOperation({ summary: 'Get live raffle statistics (public)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Live raffle stats retrieved successfully',
+  })
+  getPublicLiveStats() {
+    return this.rafflesService.getPublicLiveStats();
+  }
+
   @Get('public/winner-stats')
   @ApiOperation({ summary: 'Get stats for the winners page hero (public)' })
   @ApiResponse({ status: 200, description: 'Winner stats page hero details' })
