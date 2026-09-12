@@ -56,10 +56,11 @@ async function main() {
   // 2. Seed Categories
   console.log('Seeding Categories...');
   const categories = [
-    { name: 'AEG Rifles', slug: 'aeg-rifles' },
-    { name: 'GBB Pistols', slug: 'gbb-pistols' },
-    { name: 'Sniper Rifles', slug: 'sniper-rifles' },
-    { name: 'Tactical Gear', slug: 'tactical-gear' },
+    { name: 'Drivers & Woods', slug: 'drivers' },
+    { name: 'Iron Sets & Wedges', slug: 'irons' },
+    { name: 'Putters', slug: 'putters' },
+    { name: 'Golf Experiences', slug: 'experiences' },
+    { name: 'Golf Bags & Apparel', slug: 'apparel' },
   ];
 
   for (const cat of categories) {
@@ -106,7 +107,7 @@ async function main() {
       passwordHash: hostPassword,
       role: 'HOST',
       isEmailVerified: true,
-      firstName: 'Tactical',
+      firstName: 'Fairway',
       lastName: 'Host',
     },
     create: {
@@ -114,7 +115,7 @@ async function main() {
       passwordHash: hostPassword,
       role: 'HOST',
       isEmailVerified: true,
-      firstName: 'Tactical',
+      firstName: 'Fairway',
       lastName: 'Host',
     },
   });
@@ -128,9 +129,9 @@ async function main() {
     hostProfile = await prisma.hostProfile.create({
       data: {
         userId: hostUser.id,
-        businessName: 'Airsoft Tactical Armory',
-        slug: 'airsoft-tactical-armory',
-        bio: 'Official verified supplier of custom airsoft builds.',
+        businessName: 'Fairway Golf Pro Shop',
+        slug: 'fairway-golf-pro-shop',
+        bio: 'Official verified supplier of custom golf clubs and tour equipment.',
         isVerified: true,
         walletBalance: 150.00,
       },

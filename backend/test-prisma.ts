@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   try {
     const raffle = await prisma.raffle.findFirst({
-      where: { slug: 'tokyo-marui-mws-gbbr-z6ox9v', status: 'ACTIVE' },
+      where: { slug: 'taylormade-qi10-max-driver', status: 'ACTIVE' },
       include: { 
         host: { include: { user: true } },
         instantWins: true 

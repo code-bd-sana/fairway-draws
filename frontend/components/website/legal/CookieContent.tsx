@@ -65,7 +65,7 @@ export default function CookieContent() {
             <div className="flex items-center gap-4 text-xs font-sans font-medium text-white/75 pt-1">
               <span>Last Updated: April 2026</span>
               <span>•</span>
-              <span>Applies to Domain: fairway-draws.com</span>
+              <span>Applies to Domain: fairwaydraws.com</span>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function CookieContent() {
               </p>
               <div className="bg-[#111210] border border-[#2D3C13] rounded-xl p-4 mt-2">
                 <span className="font-sans text-xs text-[#8CB34A] font-semibold block">Consent Domain Scope:</span>
-                <span className="font-sans text-xs text-[#E8EDD4]">Your cookie consent applies to the following domain: <strong>fairway-draws.com</strong></span>
+                <span className="font-sans text-xs text-[#E8EDD4]">Your cookie consent applies to the following domain: <strong>fairwaydraws.com</strong></span>
               </div>
             </section>
 

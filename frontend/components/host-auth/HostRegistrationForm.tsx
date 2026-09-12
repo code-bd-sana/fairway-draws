@@ -649,7 +649,7 @@ export default function HostRegistrationForm({
                   id="businessName"
                   name="businessName"
                   autoComplete="organization"
-                  placeholder="e.g. Tactical Gear UK"
+                  placeholder="e.g. Fairway Golf Club"
                   value={formData.businessName}
                   onChange={handleInputChange}
                   className={cn(
@@ -723,7 +723,7 @@ export default function HostRegistrationForm({
                     type="email"
                     id="businessEmail"
                     name="businessEmail"
-                    placeholder="hello@tacticalgear.co.uk"
+                    placeholder="hello@fairwaygolf.co.uk"
                     value={formData.businessEmail}
                     onChange={handleInputChange}
                     className={cn(

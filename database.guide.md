@@ -1,4 +1,4 @@
-# Database Design Guide for Airsoft Draws
+# Database Design Guide for Fairway Draws
 
 Designing a robust database is the most critical step for your backend architecture, especially for a raffle platform where transactions (ticket purchases) and data integrity are paramount. 
 
@@ -9,7 +9,7 @@ Follow this step-by-step guide to design your PostgreSQL database using Prisma.
 ## Step 1: Identify the Core Entities (Requirements Gathering)
 First, list out all the "nouns" in your system. What are the main objects your application needs to store data about?
 
-For **Airsoft Draws**, the core entities will likely be:
+For **Fairway Draws**, the core entities will likely be:
 1. **User**: The people using the platform (Customers, Hosts, Admins).
 2. **Raffle (or Draw/Competition)**: The event where prizes are given out.
 3. **Ticket**: The individual entries purchased by users for a specific raffle.

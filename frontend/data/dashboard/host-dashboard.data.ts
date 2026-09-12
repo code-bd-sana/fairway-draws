@@ -42,27 +42,27 @@ export const hostRevenueChartData: HostChartDataPoint[] = [
 ];
 
 export const hostUpcomingDraws: HostUpcomingDraw[] = [
-  { id: "ud-1", dateStr: "22", title: "VFC HK416 Bundle", subtitle: "Draws in 2 days" },
-  { id: "ud-2", dateStr: "25", title: "Sniper Rifle Set", subtitle: "Draws in 5 days" },
-  { id: "ud-3", dateStr: "30", title: "Tokyo Marui MWS", subtitle: "Draws in 10 days" },
-  { id: "ud-4", dateStr: "07", title: "Pistol & Holster Kit", subtitle: "Draws in 17 days" },
-  { id: "ud-5", dateStr: "07", title: "Pistol & Holster Kit", subtitle: "Draws in 17 days" },
+  { id: "ud-1", dateStr: "22", title: "Titleist T100 Iron Set", subtitle: "Draws in 2 days" },
+  { id: "ud-2", dateStr: "25", title: "TaylorMade Qi10 Driver", subtitle: "Draws in 5 days" },
+  { id: "ud-3", dateStr: "30", title: "Scotty Cameron Putter", subtitle: "Draws in 10 days" },
+  { id: "ud-4", dateStr: "07", title: "Bushnell Rangefinder Kit", subtitle: "Draws in 17 days" },
+  { id: "ud-5", dateStr: "12", title: "Titleist Stand Bag Bundle", subtitle: "Draws in 22 days" },
 ];
 
 export const hostRecentActivities: HostRecentActivity[] = [
-  { id: "ra-1", type: "purchase", title: "New ticket purchase", description: "VFC HK416 Bundle", timeAgo: "2 min ago" },
-  { id: "ra-2", type: "approved", title: "Raffle approved by admin", description: "Sniper Rifle Set", timeAgo: "1h ago" },
+  { id: "ra-1", type: "purchase", title: "New ticket purchase", description: "Titleist T100 Iron Set", timeAgo: "2 min ago" },
+  { id: "ra-2", type: "approved", title: "Raffle approved by admin", description: "TaylorMade Qi10 Driver", timeAgo: "1h ago" },
   { id: "ra-3", type: "payout", title: "Payout processed", description: "£840.00", timeAgo: "3h ago" },
-  { id: "ra-4", type: "joined", title: "New entrant joined", description: "Tokyo Marui MWS", timeAgo: "5h ago" },
+  { id: "ra-4", type: "joined", title: "New entrant joined", description: "Scotty Cameron Putter", timeAgo: "5h ago" },
   { id: "ra-5", type: "review", title: "Host review received", description: "5 stars", timeAgo: "1d ago" }
 ];
 
 export const hostRecentCompetitions: HostCompetitionSummary[] = [
   {
     id: "comp-1",
-    title: "Tokyo Marui Next Gen HK416 Delta Custom",
+    title: "TaylorMade Qi10 Max Driver 10.5°",
     status: "live",
-    image: "https://placehold.co/400x400/1a230a/8cb34a?text=HK416",
+    image: "https://placehold.co/400x400/0b4d35/ffffff?text=Driver",
     totalTickets: 500,
     soldTickets: 320,
     revenue: 1600,
@@ -71,9 +71,9 @@ export const hostRecentCompetitions: HostCompetitionSummary[] = [
   },
   {
     id: "comp-2",
-    title: "VFC BCM MCMR 11.5 GBBR with Accessories",
+    title: "Titleist T100 Iron Set (4-PW)",
     status: "live",
-    image: "https://placehold.co/400x400/1a230a/8cb34a?text=VFC",
+    image: "https://placehold.co/400x400/0b4d35/ffffff?text=Irons",
     totalTickets: 300,
     soldTickets: 125,
     revenue: 625,
@@ -82,8 +82,8 @@ export const hostRecentCompetitions: HostCompetitionSummary[] = [
   },
   {
     id: "comp-3",
-    title: "Sniper Rifle Set",
-    image: "https://placehold.co/400x400/1a230a/8cb34a?text=Sniper",
+    title: "Scotty Cameron Phantom X 11 Putter",
+    image: "https://placehold.co/400x400/0b4d35/ffffff?text=Putter",
     status: "ending-soon",
     soldTickets: 450,
     totalTickets: 500,
@@ -92,8 +92,8 @@ export const hostRecentCompetitions: HostCompetitionSummary[] = [
   },
   {
     id: "comp-4",
-    title: "Pistol & Holster Kit",
-    image: "https://placehold.co/400x400/1a230a/8cb34a?text=Pistol",
+    title: "Bushnell Pro X3+ Rangefinder",
+    image: "https://placehold.co/400x400/0b4d35/ffffff?text=Rangefinder",
     status: "live",
     soldTickets: 120,
     totalTickets: 300,
@@ -102,8 +102,8 @@ export const hostRecentCompetitions: HostCompetitionSummary[] = [
   },
   {
     id: "comp-5",
-    title: "Accessories Bundle",
-    image: "https://placehold.co/400x400/1a230a/8cb34a?text=Bundle",
+    title: "Titleist Tour Stand Bag Bundle",
+    image: "https://placehold.co/400x400/0b4d35/ffffff?text=GolfBag",
     status: "live",
     soldTickets: 250,
     totalTickets: 1000,
@@ -130,7 +130,7 @@ export const mockHostRafflesList: HostRaffleDetail[] = [
   },
   {
     id: "r-2",
-    name: "Charity Football Night",
+    name: "Club Championship Pro-Am",
     ticketsSold: 120,
     totalTickets: 200,
     raised: 300.00,
@@ -219,14 +219,14 @@ export const mockSalesChartData: HostSalesChartDataPoint[] = [
 export const mockDrawsList: HostDrawItem[] = [
   {
     id: "draw-1",
-    name: "Tokyo Marui Next Gen HK416 Delta Custom",
+    name: "TaylorMade Qi10 Max Driver 10.5°",
     drawDate: "Draws 22 Jun 2025",
     status: "Awaiting Draw",
     verifiedEntries: 500
   },
   {
     id: "draw-2",
-    name: "Sniper Rifle Set",
+    name: "Scotty Cameron Phantom X 11 Putter",
     drawDate: "Drawn 15 May 2024",
     status: "Drawn",
     winner: "Alex B.",
@@ -234,14 +234,14 @@ export const mockDrawsList: HostDrawItem[] = [
   },
   {
     id: "draw-3",
-    name: "Pistol & Holster Kit",
+    name: "Bushnell Pro X3+ Rangefinder",
     drawDate: "Draws 10 Jul 2024",
     status: "Awaiting Draw",
     verifiedEntries: 120
   },
   {
     id: "draw-4",
-    name: "VFC BCM MCMR 11.5 GBBR",
+    name: "Titleist T100 Iron Set (4-PW)",
     drawDate: "Drawn 01 Jun 2024",
     status: "Drawn",
     winner: "Sarah T.",
@@ -273,18 +273,18 @@ export const mockPerformanceRevenue: PerformanceRevenueDataPoint[] = [
 ];
 
 export const mockPerformanceCategories: PerformanceCategorySales[] = [
-  { name: "Rifles", value: 42, percentage: 42, color: "#8cb34a" },
-  { name: "Pistols", value: 28, percentage: 28, color: "#5a752a" },
-  { name: "Accessories", value: 18, percentage: 18, color: "#2d3c13" },
-  { name: "Bundles", value: 12, percentage: 12, color: "#e8edd4" },
+  { name: "Drivers", value: 42, percentage: 42, color: "#0b4d35" },
+  { name: "Irons", value: 28, percentage: 28, color: "#16a34a" },
+  { name: "Putters", value: 18, percentage: 18, color: "#073826" },
+  { name: "Experiences", value: 12, percentage: 12, color: "#8cb34a" },
 ];
 
 export const mockPerformanceTopRaffles: PerformanceTopRaffle[] = [
-  { id: "r1", name: "VFC HK416 Bundle", percentage: 94 },
-  { id: "r2", name: "Tokyo Marui MWS", percentage: 81 },
-  { id: "r3", name: "Sniper Rifle Set", percentage: 67 },
-  { id: "r4", name: "Pistol & Holster", percentage: 53 },
-  { id: "r5", name: "Accessories Pack", percentage: 39 },
+  { id: "r1", name: "TaylorMade Qi10 Driver", percentage: 94 },
+  { id: "r2", name: "Titleist T100 Iron Set", percentage: 81 },
+  { id: "r3", name: "Scotty Cameron Putter", percentage: 67 },
+  { id: "r4", name: "Bushnell Rangefinder", percentage: 53 },
+  { id: "r5", name: "Titleist Stand Bag", percentage: 39 },
 ];
 
 export const mockPerformanceDemographics: PerformanceDemographic[] = [

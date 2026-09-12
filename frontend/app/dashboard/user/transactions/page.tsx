@@ -15,7 +15,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     id: "1",
     transactionId: "#TRN-8821",
     date: "15 Jun 2025",
-    description: "5 tickets — VFC HK416 Bundle",
+    description: "5 tickets — Titleist T100 Iron Set",
     amount: "£12.50",
     paymentMethod: "**** 4242",
     status: "completed",
@@ -24,7 +24,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     id: "2",
     transactionId: "#TRN-8820",
     date: "10 Jun 2025",
-    description: "3 tickets — Tokyo Marui MWS",
+    description: "3 tickets — TaylorMade Qi10 Max Driver",
     amount: "£9.00",
     paymentMethod: "**** 4242",
     status: "completed",
@@ -33,7 +33,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     id: "3",
     transactionId: "#TRN-8815",
     date: "05 Jun 2025",
-    description: "8 tickets — Sniper Precision Set",
+    description: "8 tickets — Scotty Cameron Putter",
     amount: "£16.00",
     paymentMethod: "**** 4242",
     status: "refunded",
@@ -42,7 +42,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     id: "4",
     transactionId: "#TRN-8800",
     date: "01 Jun 2025",
-    description: "2 tickets — Tactical Loadout",
+    description: "2 tickets — Bushnell Rangefinder",
     amount: "£3.00",
     paymentMethod: "**** 4242",
     status: "completed",
@@ -51,7 +51,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     id: "5",
     transactionId: "#TRN-8790",
     date: "28 May 2025",
-    description: "10 tickets — G36 Bundle",
+    description: "10 tickets — Callaway Paradym Driver",
     amount: "£25.00",
     paymentMethod: "**** 4242",
     status: "completed",
@@ -60,7 +60,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     id: "6",
     transactionId: "#TRN-8780",
     date: "20 May 2025",
-    description: "1 ticket — Pistol Pack",
+    description: "1 ticket — Titleist StaDry Stand Bag",
     amount: "£2.00",
     paymentMethod: "**** 4242",
     status: "failed",
@@ -106,7 +106,7 @@ export default function UserTransactionsPage() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-              <span className="font-sans font-semibold text-xs text-text-primary">Rifles</span>
+              <span className="font-sans font-semibold text-xs text-text-primary">Clubs</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-success-text" />

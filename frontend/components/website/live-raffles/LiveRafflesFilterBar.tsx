@@ -33,12 +33,12 @@ export default function LiveRafflesFilterBar({
 
   const categories = [
     { label: "All", value: "all" },
-    { label: "Rifles", value: "rifles" },
-    { label: "Pistols", value: "pistols" },
-    { label: "Snipers", value: "sniper-rifles" },
-    { label: "Accessories", value: "accessories" },
-    { label: "Apparel", value: "gear-and-apparel" },
-    { label: "Cash Prizes", value: "cash-prizes" },
+    { label: "Drivers", value: "drivers" },
+    { label: "Irons & Wedges", value: "irons" },
+    { label: "Putters", value: "putters" },
+    { label: "Experiences", value: "experiences" },
+    { label: "Apparel & Bags", value: "apparel" },
+    { label: "Cash Prizes", value: "cash" },
   ];
 
   const sortOptions = [

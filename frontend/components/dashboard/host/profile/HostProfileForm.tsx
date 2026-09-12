@@ -201,7 +201,7 @@ export default function HostProfileForm() {
             value={formData.brandName}
             onChange={handleChange}
             required
-            placeholder="e.g. Tactical Gear UK"
+            placeholder="e.g. Fairway Pro Shop"
             className="w-full h-11 px-4 bg-elevated border border-border-medium rounded-xl font-sans text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-all"
           />
         </div>

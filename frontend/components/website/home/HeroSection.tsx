@@ -71,7 +71,7 @@ export default function HeroSection() {
 
             {/* Description Subtitle */}
             <p className="mb-8 max-w-[20rem] rounded-2xl border border-white/55 bg-white/40 p-3.5 font-sans text-sm font-medium leading-relaxed text-[#1e342b] shadow-xs backdrop-blur-xs sm:max-w-xl sm:text-base">
-              Discover charity golf competitions with premium prizes. Every draw is <strong className="font-bold text-[#073826]">fair, transparent, and fully verified</strong>—created for a community that loves the game.
+              Discover premium golf competitions with top-tier prizes. Every draw is <strong className="font-bold text-[#073826]">fair, transparent, and fully verified</strong>—created for a community that loves the game.
             </p>
 
             {/* Action Buttons */}

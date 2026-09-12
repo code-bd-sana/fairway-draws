@@ -9,7 +9,7 @@ const BULLETS = [
   "Set your own ticket price & volume",
   "Secure escrow-protected payouts",
   "Instant exposure to our active golf community",
-  "Zero platform fees for your first 3 charity draws",
+  "Zero platform fees for your first 3 competitions",
 ];
 
 /**
@@ -50,7 +50,7 @@ export default function FinalCtaSection() {
             </h2>
 
             <p className="font-sans text-base text-[#334e43] leading-relaxed mb-8 max-w-md">
-              Turn surplus golf equipment into cash or launch charity competitions as an established club or retailer. We handle payments, compliance, and winner selection.
+              Turn surplus golf equipment into cash or launch competitions as an established club, professional, or retailer. We handle payments, compliance, and winner selection.
             </p>
 
             {/* Bullets */}

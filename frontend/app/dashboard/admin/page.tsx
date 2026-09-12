@@ -284,11 +284,11 @@ export default function AdminDashboardPage() {
           
           <div className="flex flex-col gap-3">
             {[
-              { rank: 1, name: "Tactical Gear UK", revenue: "£12,400", initials: "TG" },
-              { rank: 2, name: "Golf World", revenue: "£10,800", initials: "GW" },
-              { rank: 3, name: "Combat Zone Ltd", revenue: "£9,200", initials: "CZ" },
-              { rank: 4, name: "Elite Shooters", revenue: "£7,800", initials: "ES" },
-              { rank: 5, name: "Strike Force Co", revenue: "£5,400", initials: "SF" },
+              { rank: 1, name: "Fairway Pro Shop", revenue: "£14,200", initials: "FP" },
+              { rank: 2, name: "Links & Fairways Club", revenue: "£11,800", initials: "LF" },
+              { rank: 3, name: "St Andrews Pro Golf", revenue: "£9,200", initials: "SA" },
+              { rank: 4, name: "Custom Club Studio", revenue: "£7,800", initials: "CC" },
+              { rank: 5, name: "The Surrey Golf Club", revenue: "£5,400", initials: "SG" },
             ].map((host) => (
               <div key={host.rank} className="flex items-center justify-between py-1.5 border-b border-divider last:border-b-0">
                 <div className="flex items-center gap-3">

@@ -1,4 +1,4 @@
-# Airsoft Draws - AI Project Context
+# Fairway Draws - AI Project Context
 
 **Target Audience:** AI Agents & LLMs acting as coding assistants. 
 **Purpose:** Read this file to instantly understand the project architecture, tech stack, folder structure, and how the frontend and backend communicate.
@@ -6,7 +6,7 @@
 ---
 
 ## 1. Project Overview
-Airsoft Draws is a B2B2C platform for hosting and participating in airsoft gear raffles/competitions. 
+Fairway Draws is a B2B2C platform for hosting and participating in premium golf gear raffles/competitions. 
 It uses a decoupled architecture:
 - **Backend:** NestJS (Node.js framework) + Prisma ORM + PostgreSQL.
 - **Frontend:** Next.js 16 (React 19, App Router) + Tailwind CSS v4 + React Query + Axios.

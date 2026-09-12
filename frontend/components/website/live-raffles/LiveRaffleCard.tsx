@@ -36,7 +36,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
   const soldPercent = totalTickets > 0 ? Math.min(Math.round((soldTickets / totalTickets) * 100), 100) : 0;
   const badgeText = r.badgeText || (soldPercent >= 90 ? "ALMOST GONE" : "HOT");
 
-  const category = r.category || "rifles";
+  const category = r.category || "drivers";
 
   const hostName = host?.businessName || (host?.user?.firstName ? `${host.user.firstName} ${host.user.lastName || ''}`.trim() : "");
   const hostLocation = host?.user?.location || host?.address || "";
@@ -140,11 +140,13 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
   // Human readable category mapping
   const categoryLabels: Record<string, string> = {
-    rifles: "Rifles",
-    pistols: "Pistols",
-    snipers: "Snipers",
+    drivers: "Drivers",
+    irons: "Irons & Wedges",
+    putters: "Putters",
+    experiences: "Experiences",
+    apparel: "Apparel & Bags",
+    tech: "Rangefinders & Tech",
     accessories: "Accessories",
-    apparel: "Apparel",
     cash: "Cash Prizes",
     bundles: "Bundles",
     luxury: "Luxury",

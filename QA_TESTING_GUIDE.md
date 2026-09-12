@@ -1,4 +1,4 @@
-# 🧪 Airsoft Draws — End-to-End QA Testing Master Plan & Jira Documentation Guide
+# 🧪 Fairway Draws — End-to-End QA Testing Master Plan & Jira Documentation Guide
 
 **Prepared by:** Lead Software Engineer & Principal QA Automation Lead  
 **Platform Version:** 1.0.0 (Decoupled Next.js + NestJS + PostgreSQL + Cashflows Gateway)  
@@ -8,7 +8,7 @@
 
 ## 📌 Executive Overview
 
-This master test plan provides a comprehensive, step-by-step blueprint to test every single feature, workflow, role, and edge case across **Airsoft Draws**.
+This master test plan provides a comprehensive, step-by-step blueprint to test every single feature, workflow, role, and edge case across **Fairway Draws**.
 
 It is structured into **10 Sequential Testing Phases**, complete with exact API endpoints, pre-requisite test data, expected behaviors, and **Jira Documentation Standards**.
 
@@ -24,7 +24,7 @@ Ensure your `backend/.env` contains the following active keys:
 ```env
 # Server & DB
 PORT=5000
-DATABASE_URL="postgresql://airsoft_draw_test:2E5kvUm$2b@localhost:5432/airsoft_draw_test"
+DATABASE_URL="postgresql://fairway_draw_test:2E5kvUm$2b@localhost:5432/fairway_draw_test"
 JWT_SECRET="super-secret-key-change-in-production"
 FRONTEND_URL="http://localhost:3000"
 
@@ -101,7 +101,7 @@ npm run prisma:seed # Runs seeds for active categories, plans, and demo accounts
 | Test ID | Feature | Steps to Execute | Expected Outcome | Jira Priority |
 | :--- | :--- | :--- | :--- | :--- |
 | **PUB-01** | Live Raffles Grid & Search | 1. Go to `/live-raffles`.<br>2. Enter search query. | Instant search results filtered dynamically. | Medium |
-| **PUB-02** | Category Filtering | 1. Click category tab (e.g. "AEG Rifles", "GBB Pistols"). | Grid displays only raffles matching selected category slug. | Medium |
+| **PUB-02** | Category Filtering | 1. Click category tab (e.g. "Drivers", "Irons"). | Grid displays only raffles matching selected category slug. | Medium |
 | **PUB-03** | Raffle Details Page & Countdown | 1. Click on a live raffle card.<br>2. Observe countdown timer. | Displays price, tickets remaining, pool value, and real-time live ticking countdown. | High |
 | **PUB-04** | Free Postal Entry Compliance Modal | 1. On Raffle details page, click "Free Postal Entry". | Modal opens displaying UK Gambling Act 2005 compliant postal entry instructions. | High |
 

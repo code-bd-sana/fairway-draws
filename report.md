@@ -1,7 +1,7 @@
-# Airsoft Draws - Project Analysis & Report
+# Fairway Draws - Project Analysis & Report
 
 ## 1. Project Overview & Site Description
-**Airsoft Draws** is a B2B2C Raffle and Competition platform specifically tailored for airsoft gear. The platform allows verified "Hosts" (businesses or individuals) to run raffles, while "Users" (clients) purchase tickets to participate in these draws, potentially winning either instantly or via a main draw. 
+**Fairway Draws** is a B2B2C Raffle and Competition platform specifically tailored for premium golf gear and experiences. The platform allows verified "Hosts" (businesses or individuals) to run raffles, while "Users" (clients) purchase tickets to participate in these draws, potentially winning either instantly or via a main draw. 
 
 The architecture is decoupled:
 - **Frontend:** Next.js 16 (App Router), React 19, Tailwind CSS v4.

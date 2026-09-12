@@ -143,7 +143,7 @@ export default function PrivacyContent() {
                   Phone: <a href="tel:+447984594833" className="text-[#8CB34A] hover:underline">+44 (0) 7984 594833</a>
                 </p>
                 <p className="text-xs text-[#B3B8AA]">
-                  Email: <a href="mailto:privacy@fairwaydraws.com" className="text-[#8CB34A] hover:underline">privacy@fairwaydraws.com</a> / <a href="mailto:win@fairwaydraws.com" className="text-[#8CB34A] hover:underline">win@fairwaydraws.com</a>
+                  Email: <a href="mailto:privacy@fairwaydraws.com" className="text-[#8CB34A] hover:underline">privacy@fairwaydraws.com</a> / <a href="mailto:info@fairwaydraws.com" className="text-[#8CB34A] hover:underline">info@fairwaydraws.com</a>
                 </p>
               </div>
               <p className="text-xs text-[#72943A]">
@@ -212,7 +212,7 @@ export default function PrivacyContent() {
                 You will receive marketing communications from Fairway Draws if you have requested information, purchased tickets, entered a competition, or explicitly subscribed to our newsletter.
               </p>
               <p>
-                <strong className="text-[#E8EDD4]">Opting Out:</strong> You can unsubscribe from marketing communications at any time by clicking the "Unsubscribe" link in any promotional email or contacting us directly at <a href="mailto:win@fairwaydraws.com" className="text-[#8CB34A] underline">win@fairwaydraws.com</a>. Opting out of marketing does not affect essential transaction emails (e.g. ticket purchase receipts or winner notifications).
+                <strong className="text-[#E8EDD4]">Opting Out:</strong> You can unsubscribe from marketing communications at any time by clicking the "Unsubscribe" link in any promotional email or contacting us directly at <a href="mailto:info@fairwaydraws.com" className="text-[#8CB34A] underline">info@fairwaydraws.com</a>. Opting out of marketing does not affect essential transaction emails (e.g. ticket purchase receipts or winner notifications).
               </p>
             </section>
 

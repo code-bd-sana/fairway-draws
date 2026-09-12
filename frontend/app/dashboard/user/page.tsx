@@ -187,8 +187,8 @@ export default function UserDashboardPage() {
                   </svg>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-heading font-bold text-sm text-text-primary">Tokyo Marui MK18</span>
-                  <span className="font-sans text-xs text-text-muted">Hosted by Tactical Gear UK</span>
+                  <span className="font-heading font-bold text-sm text-text-primary">TaylorMade Qi10 Max Driver</span>
+                  <span className="font-sans text-xs text-text-muted">Hosted by Fairway Pro Shop</span>
                 </div>
               </div>
               <div className="col-span-3 flex items-center">
@@ -210,8 +210,8 @@ export default function UserDashboardPage() {
                   </svg>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-heading font-bold text-sm text-text-primary">VFC BCM MCMR</span>
-                  <span className="font-sans text-xs text-text-muted">Hosted by Golf Hub</span>
+                  <span className="font-heading font-bold text-sm text-text-primary">Titleist T100 Iron Set</span>
+                  <span className="font-sans text-xs text-text-muted">Hosted by Links & Fairways Club</span>
                 </div>
               </div>
               <div className="col-span-3 flex items-center">
@@ -233,8 +233,8 @@ export default function UserDashboardPage() {
                   </svg>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-heading font-bold text-sm text-text-primary">Novritsch SSP5</span>
-                  <span className="font-sans text-xs text-text-muted">Hosted by Precision Golf</span>
+                  <span className="font-heading font-bold text-sm text-text-primary">Scotty Cameron Phantom X 11 Putter</span>
+                  <span className="font-sans text-xs text-text-muted">Hosted by St Andrews Pro Golf</span>
                 </div>
               </div>
               <div className="col-span-3 flex items-center">

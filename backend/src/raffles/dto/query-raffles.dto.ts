@@ -29,8 +29,8 @@ export class FindAllPublicRafflesQueryDto {
   limit?: number;
 
   @ApiPropertyOptional({
-    example: 'Rifles',
-    description: 'Filter by category name (e.g. "Rifles", "Pistols", "All")',
+    example: 'Drivers',
+    description: 'Filter by category name (e.g. "Drivers", "Putters", "All")',
   })
   @IsOptional()
   @IsString()

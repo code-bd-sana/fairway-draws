@@ -512,7 +512,7 @@ export class AdminDashboardService {
 
     if (categorySales.length === 0) {
       categorySales = [
-        { name: 'Guns & Rifles', value: 45, color: '#0B4D35' },
+        { name: 'Drivers & Woods', value: 45, color: '#0B4D35' },
         { name: 'Apparel', value: 25, color: '#15803D' },
         { name: 'Gear & Bags', value: 20, color: '#16A34A' },
         { name: 'Accessories', value: 10, color: '#4ADE80' },

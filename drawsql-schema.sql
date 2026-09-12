@@ -1,4 +1,4 @@
--- SQL Schema for Airsoft Draws (Detailed Version v2 with Winners Table)
+-- SQL Schema for Fairway Draws (Detailed Version v2 with Winners Table)
 -- Import this directly into DrawSQL
 
 CREATE TABLE "users" (

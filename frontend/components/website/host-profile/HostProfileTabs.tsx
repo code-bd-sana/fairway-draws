@@ -100,13 +100,13 @@ export default function HostProfileTabs({ raffles = [] }: { raffles?: any[] }) {
 
         {activeTab === "about" && (
           <div className="animate-in fade-in duration-300 flex flex-col gap-4 max-w-[800px]">
-            <h3 className="font-heading font-medium text-[18px] text-[#E8EDD4]">About TacticalGear UK</h3>
+            <h3 className="font-heading font-medium text-[18px] text-[#E8EDD4]">About Fairway Pro Shop</h3>
             <p className="font-sans text-[14px] text-[#72943A] leading-relaxed">
               We are a premium golf equipment retailer based in the UK, supplying the community with the highest quality clubs, from drivers and irons to putters and premium accessories. 
               Our competitions give you the chance to win top-tier equipment for a fraction of the cost, fully audited and guaranteed.
             </p>
             <div className="flex gap-4 mt-2">
-              <span className="font-sans text-[13px] text-[#A0D056]">🔗 www.tacticalgear.co.uk</span>
+              <span className="font-sans text-[13px] text-[#A0D056]">🔗 www.fairwaydraws.com</span>
               <span className="font-sans text-[13px] text-[#A0D056]">📍 Manchester, UK</span>
             </div>
           </div>

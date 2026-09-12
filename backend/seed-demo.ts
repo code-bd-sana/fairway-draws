@@ -41,7 +41,7 @@ async function main() {
       passwordHash: hostPassword,
       role: 'HOST',
       isEmailVerified: true,
-      firstName: 'Tactical',
+      firstName: 'Fairway',
       lastName: 'Host',
     },
     create: {
@@ -49,7 +49,7 @@ async function main() {
       passwordHash: hostPassword,
       role: 'HOST',
       isEmailVerified: true,
-      firstName: 'Tactical',
+      firstName: 'Fairway',
       lastName: 'Host',
     },
   });
@@ -61,9 +61,9 @@ async function main() {
     await prisma.hostProfile.create({
       data: {
         userId: hostUser.id,
-        businessName: 'Airsoft Tactical Armory',
-        slug: 'airsoft-tactical-armory',
-        bio: 'Official verified supplier of custom airsoft builds.',
+        businessName: 'Fairway Golf Pro Shop',
+        slug: 'fairway-golf-pro-shop',
+        bio: 'Official verified supplier of custom golf clubs and tour equipment.',
         isVerified: true,
         walletBalance: 150.00,
       },

@@ -34,7 +34,7 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
       id: draw.id,
       title: draw.title,
       slug: draw.slug || draw.id,
-      category: "Rifles", // static for now
+      category: draw.category || "Drivers",
       status: draw.status === "ACTIVE" ? "live" : "ending_soon",
       images: [draw.mainImage || "https://placehold.co/800x600/1a230a/8cb34a?text=No+Image"],
       ticketPrice: Number(draw.pricePerTicket),

@@ -60,9 +60,9 @@ async function bootstrap() {
 
   // Configure Swagger API Documentation
   const config = new DocumentBuilder()
-    .setTitle('🎯 Airsoft Draws API Reference')
+    .setTitle('⛳ Fairway Draws API Reference')
     .setDescription(
-      'Welcome to the Airsoft Draws Platform API Documentation.\n\n' +
+      'Welcome to the Fairway Draws Platform API Documentation.\n\n' +
         'Here you can find all the public, client, host, and admin endpoints for managing ' +
         'raffles, purchasing tickets, processing payments, tracking winners, and managing subscriptions.\n\n' +
         '### Authorization\n' +
@@ -111,7 +111,7 @@ async function bootstrap() {
       displayRequestDuration: true,
       defaultModelsExpandDepth: 2,
     },
-    customSiteTitle: 'Airsoft Draws API Reference',
+    customSiteTitle: 'Fairway Draws API Reference',
     customCss: customCss,
   });
 

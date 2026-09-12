@@ -14,7 +14,7 @@ const BENEFITS = [
     emoji: "💰",
     title: "Zero Host Fees",
     description:
-      "Golf clubs & organizers who register early lock in zero platform commission for their first 3 charity draws.",
+      "Golf clubs & organizers who register early lock in zero platform commission for their first 3 competitions.",
     tag: "Hosts",
   },
   {
@@ -84,7 +84,7 @@ export default function InterestBenefits() {
       {/* Bottom strip */}
       <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 py-5 px-6 bg-white border border-[#0b4d35]/10 rounded-2xl shadow-sm">
         {[
-          { icon: "⛳", text: "UK Charity Raffle Compliant" },
+          { icon: "⛳", text: "UK Prize Competition Compliant" },
           { icon: "🔐", text: "GDPR & Data Protected" },
           { icon: "📦", text: "Prizes Dispatched Within 7 Days" },
         ].map((item) => (

@@ -6,9 +6,9 @@ import EarlyAccessForm from "../../components/website/coming-soon/EarlyAccessFor
 import InterestBenefits from "../../components/website/coming-soon/InterestBenefits";
 
 export const metadata: Metadata = {
-  title: "Fairway Draws | Premier Golf & Luxury Charity Raffles",
+  title: "Fairway Draws | Premier Golf & Luxury Equipment Draws",
   description:
-    "Join the official waitlist for Fairway Draws. Win luxury golf equipment, premium club memberships, and exclusive PGA tournament experiences for charity.",
+    "Join the official waitlist for Fairway Draws. Win luxury golf equipment, premium club memberships, and exclusive PGA tournament experiences.",
 };
 
 /**

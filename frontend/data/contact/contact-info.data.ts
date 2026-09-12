@@ -5,8 +5,8 @@ export const CONTACT_INFO_ITEMS: ContactInfoCardItem[] = [
     id: "email",
     title: "Email Support",
     description: "Get in touch via email.",
-    value: "win@fairwaydraws.com",
-    href: "mailto:win@fairwaydraws.com",
+    value: "info@fairwaydraws.com",
+    href: "mailto:info@fairwaydraws.com",
     type: "email",
   },
   {

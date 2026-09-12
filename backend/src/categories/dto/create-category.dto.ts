@@ -2,17 +2,17 @@ import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCategoryDto {
-  @ApiProperty({ example: 'Rifles' })
+  @ApiProperty({ example: 'Drivers & Woods' })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiPropertyOptional({ example: 'rifles' })
+  @ApiPropertyOptional({ example: 'drivers' })
   @IsString()
   @IsOptional()
   slug?: string;
 
-  @ApiPropertyOptional({ example: 'icon-rifles' })
+  @ApiPropertyOptional({ example: 'icon-drivers' })
   @IsString()
   @IsOptional()
   icon?: string;

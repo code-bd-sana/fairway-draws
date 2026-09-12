@@ -55,10 +55,10 @@ async function main() {
   ];
 
   const dummyRaffles = [
-    { title: 'Tokyo Marui NGRS', prizeName: 'Tokyo Marui NGRS', mainImage: `${baseUrl}/uploads/categories/rifles.jpg`, slug: 'past-tokyo-marui' },
-    { title: 'Viper Tactical Bundle', prizeName: 'Viper Tactical Bundle', mainImage: `${baseUrl}/uploads/categories/tactical_vests.jpg`, slug: 'past-viper-bundle' },
-    { title: 'Mystery Box Ultimate', prizeName: 'Mystery Box Ultimate', mainImage: `${baseUrl}/uploads/categories/mysterybox.jpg`, slug: 'past-mystery-box' },
-    { title: 'Glock 19 Gen 4', prizeName: 'Glock 19 Gen 4', mainImage: `${baseUrl}/uploads/categories/pistols.jpg`, slug: 'past-glock-19' },
+    { title: 'TaylorMade Qi10 Max Driver', prizeName: 'TaylorMade Qi10 Max Driver', mainImage: `${baseUrl}/uploads/categories/drivers.jpg`, slug: 'past-taylormade-qi10' },
+    { title: 'Titleist Tour Stand Bag Bundle', prizeName: 'Titleist Tour Stand Bag Bundle', mainImage: `${baseUrl}/uploads/categories/bags.jpg`, slug: 'past-titleist-bag-bundle' },
+    { title: 'Scotty Cameron Phantom X 11', prizeName: 'Scotty Cameron Phantom X 11', mainImage: `${baseUrl}/uploads/categories/putters.jpg`, slug: 'past-scotty-cameron' },
+    { title: 'Titleist T100 Iron Set (4-PW)', prizeName: 'Titleist T100 Iron Set (4-PW)', mainImage: `${baseUrl}/uploads/categories/irons.jpg`, slug: 'past-titleist-t100' },
   ];
 
   const createdRaffles: any[] = [];

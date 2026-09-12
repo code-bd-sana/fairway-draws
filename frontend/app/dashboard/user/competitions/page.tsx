@@ -82,7 +82,7 @@ export default function UserRafflesPage() {
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
           <div className="flex flex-wrap items-center gap-2">
-            {["All", "Rifles", "Pistols", "Snipers", "Gas Blowback", "Gear", "Accessories"].map((cat) => (
+            {["All", "Drivers", "Irons", "Putters", "Experiences", "Apparel & Bags", "Accessories"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => { setCategory(cat); setPage(1); }}

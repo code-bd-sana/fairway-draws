@@ -65,7 +65,7 @@ export default function ComingSoonHero() {
           {/* Tagline */}
           <p className="text-[#334e43] text-base sm:text-lg leading-relaxed mb-8 max-w-md font-sans">
             Win <strong className="text-[#0b4d35] font-semibold">luxury golf equipment</strong>, premium club memberships &amp; exclusive{" "}
-            <strong className="text-[#0b4d35] font-semibold">PGA tournament access</strong> — while making a real difference for charity.
+            <strong className="text-[#0b4d35] font-semibold">PGA tournament access</strong> — for passionate golfers across the UK.
           </p>
 
           {/* Stat Pills */}

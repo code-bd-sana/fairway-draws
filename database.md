@@ -1,6 +1,6 @@
-# Airsoft Draws - Database Logic & Flow Guide
+# Fairway Draws - Database Logic & Flow Guide
 
-This document explains the step-by-step logic and connection between the tables in your PostgreSQL database for the Airsoft Draws platform. 
+This document explains the step-by-step logic and connection between the tables in your PostgreSQL database for the Fairway Draws platform.
 
 ## 1. User Management (Roles: Admin, Host, Client)
 **Table**: `users`

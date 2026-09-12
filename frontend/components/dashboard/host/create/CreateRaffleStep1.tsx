@@ -9,11 +9,11 @@ interface Props {
 
 const categories = [
   "Golf Drivers",
+  "Golf Irons",
   "Golf Putters",
-  "Tactical Gear",
-  "Accessories",
-  "Sniper Rifles",
-  "Bundles",
+  "Golf Bags & Apparel",
+  "Rangefinders & Tech",
+  "Experiences & Bundles",
 ];
 
 export default function CreateRaffleStep1({ formData, updateForm, onNext }: Props) {

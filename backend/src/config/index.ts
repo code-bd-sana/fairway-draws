@@ -40,7 +40,7 @@ export const config: AppConfig = {
   database: {
     url:
       process.env.DATABASE_URL ||
-      'postgresql://postgres:password@localhost:5432/airsoft_draws?schema=public',
+      'postgresql://postgres:password@localhost:5432/fairway_draws?schema=public',
   },
   security: {
     jwtSecret: process.env.JWT_SECRET || 'super-secret-default',

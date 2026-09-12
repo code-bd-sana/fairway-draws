@@ -25,10 +25,10 @@ The project is located in `frontend/` and is built using Next.js 16 (App Router)
 # Product Overview
 
 **What kind of product is this?**
-Airsoft Draws is a B2B2C Raffle/Competition platform. It allows verified "Hosts" to run raffles or draws for airsoft gear (and potentially other items), while normal "Users" can buy tickets to participate in these draws. 
+Fairway Draws is a B2B2C Raffle/Competition platform. It allows verified "Hosts" to run raffles or draws for golf gear (and potentially other items), while normal "Users" can buy tickets to participate in these draws. 
 
 **What problem does it solve?**
-It provides a centralized, trustworthy platform for hosting and participating in airsoft gear competitions. It solves the problem of independent hosts running fragmented, untrusted raffles by bringing them under one verified platform.
+It provides a centralized, trustworthy platform for hosting and participating in golf equipment competitions. It solves the problem of independent hosts running fragmented, untrusted raffles by bringing them under one verified platform.
 
 **Who are the users?**
 1. **Admins**: Platform owners who verify hosts and monitor the system.
@@ -65,7 +65,7 @@ I recommend **NestJS**.
 - **Maintainability & Folder Structure**: NestJS enforces a modular structure (`UsersModule`, `RafflesModule`, `PaymentsModule`). This keeps the codebase clean as the platform grows.
 - **Developer Experience**: It leverages TypeScript natively with robust decorators for validation (`class-validator`), Swagger generation, and routing.
 - **Enterprise Readiness**: Built-in dependency injection makes testing a breeze. It has native wrappers for WebSockets, Microservices, and Queues (BullMQ).
-- **Scalability**: When Airsoft Draws needs to break out the payment processing into a separate microservice due to load, NestJS handles this transition smoothly.
+- **Scalability**: When Fairway Draws needs to break out the payment processing into a separate microservice due to load, NestJS handles this transition smoothly.
 
 # Database Recommendation
 

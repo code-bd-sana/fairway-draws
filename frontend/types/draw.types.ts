@@ -15,9 +15,9 @@ export interface Draw {
   endDate: string; // String format for display (e.g., "Ends in 3d 14h" or ISO Date string)
   status: DrawStatus;
   isFeatured?: boolean;
-  category: string; // e.g. "rifles", "pistols", "accessories", "cash", "bundles", "gaming", "tech", "travel", "luxury"
+  category: string; // e.g. "drivers", "irons", "putters", "experiences", "apparel", "cash", "luxury"
   worthPrice?: number; // Valuation of the prize (e.g. 1200)
-  slug?: string; // Optional SEO-friendly URL slug (e.g. 'novritsch-ssg10-a3-sniper')
+  slug?: string; // Optional SEO-friendly URL slug (e.g. 'callaway-paradym-ai-smoke-driver')
   instantWinsCount?: number; // For Instant Win draws (e.g. 3)
   isInstantWin?: boolean; // Flag to separate standard draws from instant win draws
   badgeText?: string; // Optional label badge on the card (e.g., "ALMOST GONE", "NEW")
