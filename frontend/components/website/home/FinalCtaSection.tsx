@@ -9,7 +9,7 @@ const BULLETS = [
   "Set your own ticket price & volume",
   "Secure escrow-protected payouts",
   "Instant exposure to our active golf community",
-  "Fair and transparent 15% platform commission",
+  "Fair and transparent 10% platform commission",
 ];
 
 /**
