@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useAuthUser } from '../../../hooks/useAuthHooks';
-import { NAV_LINKS } from '../../../lib/constants';
+import { NAV_LINKS, SOCIAL_LINKS } from '../../../lib/constants';
 import { cn } from '../../../lib/utils';
 import FairwayDrawsLogo from '../shared/FairwayDrawsLogo';
 import PrimaryButton from '../shared/PrimaryButton';
@@ -185,6 +185,31 @@ export default function WebsiteNavbar() {
               </PrimaryButton>
             </>
           )}
+
+          {/* Social Links */}
+          <div className="flex items-center justify-center gap-3 pt-4 border-t border-divider/40">
+            {SOCIAL_LINKS.map((link) => (
+              <a
+                key={link.platform}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-9 h-9 rounded-xl bg-surface border border-border text-text-muted hover:text-text-brand hover:border-primary/40 transition-all shadow-xs"
+                aria-label={`${link.platform} Profile`}
+              >
+                {link.platform.toLowerCase() === 'facebook' ? (
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01" />
+                  </svg>
+                )}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </>

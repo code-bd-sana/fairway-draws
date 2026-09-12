@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { CONTACT_INFO_ITEMS } from "../../../data/contact/contact-info.data";
+import { SOCIAL_LINKS } from "../../../lib/constants";
 
 /**
  * Sidebar contact details stack including support schedule, FAQ promo,
@@ -167,6 +168,39 @@ export default function ContactInfoCards() {
             <span className="text-text-secondary">Sunday</span>
             <span className="text-text-muted/40">Closed</span>
           </div>
+        </div>
+      </div>
+
+      {/* Official Social Channels Card */}
+      <div className="flex flex-col rounded-[16px] border border-[#bdd3ba] bg-[#edf5e9] p-5.5 shadow-[0_8px_20px_rgba(11,77,53,.08)]">
+        <h4 className="font-sans font-medium text-sm text-text-primary mb-2">
+          Connect With Us
+        </h4>
+        <p className="font-sans text-[13px] text-text-secondary leading-relaxed mb-4">
+          Follow our official social accounts for live draw announcements, winners, and prize reveals.
+        </p>
+        <div className="flex items-center gap-3">
+          {SOCIAL_LINKS.map((link) => (
+            <a
+              key={link.platform}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-[#0b4d35]/15 text-[#0b4d35] font-sans text-xs font-bold hover:border-[#0b4d35]/40 hover:shadow-sm transition-all"
+            >
+              {link.platform.toLowerCase() === 'facebook' ? (
+                <svg className="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 text-[#E4405F]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01" />
+                </svg>
+              )}
+              <span>{link.platform}</span>
+            </a>
+          ))}
         </div>
       </div>
 

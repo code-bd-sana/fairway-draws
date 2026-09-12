@@ -13,8 +13,8 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { platform: "Facebook", href: "https://www.facebook.com/share/18zThK3JPJ/?mibextid=wwXIfr", iconName: "facebook" },
-  { platform: "Instagram", href: "https://instagram.com/fairwaydraws", iconName: "instagram" },
+  { platform: "Facebook", href: "https://www.facebook.com/share/p/1CgGzyPthk/", iconName: "facebook" },
+  { platform: "Instagram", href: "https://www.instagram.com/fairwaydrawsltd?stkn=N3dwcTA5a3AycHJq&utm_source=qr", iconName: "instagram" },
 ];
 
 export const FOOTER_SECTIONS = [
