@@ -41,7 +41,13 @@ export class UsersController {
   ) {}
 
   private extractUserId(req: Request): string {
-    const token = req.cookies?.accessToken;
+    let token = req.cookies?.accessToken;
+    if (!token) {
+      const authHeader = req.headers?.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
+    }
     if (!token) {
       throw new UnauthorizedException('No authentication token found');
     }
@@ -51,6 +57,33 @@ export class UsersController {
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
+  }
+
+  @Get('unclaimed-instant-wins')
+  @ApiOperation({ summary: 'Get all unclaimed instant wins for the current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of unclaimed instant wins for current user',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getUnclaimedInstantWins(@Req() req: Request) {
+    const userId = this.extractUserId(req);
+    return this.usersService.getUnclaimedInstantWins(userId);
+  }
+
+  @Post('claim-instant-wins')
+  @ApiOperation({ summary: 'Claim instant wins for the current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Instant wins claimed successfully',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async claimInstantWins(
+    @Req() req: Request,
+    @Body() body: { winnerIds?: string[] },
+  ) {
+    const userId = this.extractUserId(req);
+    return this.usersService.claimInstantWins(userId, body?.winnerIds);
   }
 
   @Get('my-winners')

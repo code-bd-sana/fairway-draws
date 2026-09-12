@@ -30,6 +30,26 @@ export interface UserWinner {
   } | null;
 }
 
+export interface UnclaimedInstantWin {
+  id: string;
+  raffleId: string;
+  ticketId: string;
+  winType: 'INSTANT_WIN';
+  prizeName: string;
+  title: string;
+  prizeImage: string | null;
+  rrpValue: number | null;
+  ticketNumber: number;
+  isClaimed: boolean;
+  createdAt: string;
+  raffle: {
+    id: string;
+    title: string;
+    slug: string;
+    mainImage: string | null;
+  };
+}
+
 export const userService = {
   async changePassword(data: any) {
     const response = await api.patch('/users/change-password', data);
@@ -54,6 +74,16 @@ export const userService = {
 
   async getMyWinners(): Promise<UserWinner[]> {
     const response = await api.get('/users/my-winners');
+    return response.data;
+  },
+
+  async getUnclaimedInstantWins(): Promise<UnclaimedInstantWin[]> {
+    const response = await api.get('/users/unclaimed-instant-wins');
+    return response.data;
+  },
+
+  async claimInstantWins(winnerIds?: string[]): Promise<{ success: boolean; claimedCount: number; message: string }> {
+    const response = await api.post('/users/claim-instant-wins', { winnerIds });
     return response.data;
   },
 };

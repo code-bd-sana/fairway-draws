@@ -258,5 +258,87 @@ export class UsersService {
       };
     });
   }
+
+  async getUnclaimedInstantWins(userId: string) {
+    const winners = await this.prisma.winner.findMany({
+      where: {
+        userId,
+        winType: 'INSTANT_WIN',
+        isClaimed: false,
+      },
+      include: {
+        raffle: {
+          include: {
+            host: true,
+            instantWins: true,
+          },
+        },
+        ticket: {
+          select: {
+            ticketNumber: true,
+            createdAt: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return winners.map((w) => {
+      const instantWinDetails = w.raffle.instantWins.find(
+        (iw) => iw.ticketNumber === w.ticket?.ticketNumber,
+      );
+
+      const prizeImage = instantWinDetails?.image || w.raffle.mainImage;
+      const prizeName =
+        w.prizeName || instantWinDetails?.prizeName || 'Instant Win Prize';
+
+      return {
+        id: w.id,
+        raffleId: w.raffleId,
+        ticketId: w.ticketId,
+        winType: w.winType,
+        prizeName,
+        title: prizeName, // for frontend compatibility
+        prizeImage: prizeImage || null,
+        rrpValue: instantWinDetails?.rrpValue
+          ? Number(instantWinDetails.rrpValue)
+          : null,
+        ticketNumber: w.ticket?.ticketNumber || 0,
+        isClaimed: w.isClaimed,
+        createdAt: w.createdAt,
+        raffle: {
+          id: w.raffle.id,
+          title: w.raffle.title,
+          slug: w.raffle.slug,
+          mainImage: w.raffle.mainImage,
+        },
+      };
+    });
+  }
+
+  async claimInstantWins(userId: string, winnerIds?: string[]) {
+    const whereClause: any = {
+      userId,
+      winType: 'INSTANT_WIN',
+      isClaimed: false,
+    };
+
+    if (winnerIds && Array.isArray(winnerIds) && winnerIds.length > 0) {
+      whereClause.id = { in: winnerIds };
+    }
+
+    const updated = await this.prisma.winner.updateMany({
+      where: whereClause,
+      data: {
+        isClaimed: true,
+      },
+    });
+
+    return {
+      success: true,
+      claimedCount: updated.count,
+      message: 'Instant win prize(s) claimed successfully',
+    };
+  }
 }
 

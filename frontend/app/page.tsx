@@ -12,6 +12,7 @@ import FinalCtaSection from '../components/website/home/FinalCtaSection';
 import TestimonialsSection from '../components/website/home/TestimonialsSection';
 import FaqSection from '../components/website/home/FaqSection';
 import NewsletterSection from '../components/website/home/NewsletterSection';
+import HomepagePaymentAndInstantWinModal from '../components/website/home/HomepagePaymentAndInstantWinModal';
 
 /**
  * Public Homepage for the Fairway Draws application.
@@ -20,6 +21,9 @@ import NewsletterSection from '../components/website/home/NewsletterSection';
 export default function Home() {
   return (
     <>
+      {/* Payment return & Instant Win Modal */}
+      <HomepagePaymentAndInstantWinModal />
+
       {/* Sticky Top Navigation */}
       <WebsiteNavbar />
 

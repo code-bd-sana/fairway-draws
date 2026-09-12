@@ -6,8 +6,11 @@ import { usePurchaseTicketsMutation } from "../../../hooks/useTicketHooks";
 import { useAuth } from "../../../features/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import TicketPurchaseSuccessModal, { TicketPurchaseSuccessData } from "./TicketPurchaseSuccessModal";
+import WinAnimationModal, { WinPrizeItem } from "../../ui/WinAnimationModal";
 import FreePostalEntryButton from "../legal/FreePostalEntryButton";
 import { paymentService } from "../../../services/payment.service";
+import { userService } from "../../../services/user.service";
+import { toast } from "sonner";
 
 interface RaffleEntryCardProps {
   raffle: RaffleDetail;
@@ -17,6 +20,8 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const [quantity, setQuantity] = useState(1);
   const [statusMessage, setStatusMessage] = useState<{type: 'success'|'error'|'info', text: string} | null>(null);
   const [purchaseSuccessData, setPurchaseSuccessData] = useState<TicketPurchaseSuccessData | null>(null);
+  const [winAnimationPrizes, setWinAnimationPrizes] = useState<WinPrizeItem[]>([]);
+  const [isWinModalOpen, setIsWinModalOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
 
   const { isAuthenticated } = useAuth();
@@ -62,6 +67,22 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
                 ticketNumber: tk ? tk.ticketNumber : undefined,
               };
             });
+
+            if (res.instantWins && res.instantWins.length > 0) {
+              const instantPrizes: WinPrizeItem[] = res.instantWins.map((iw: any) => {
+                const tk = (res.tickets || []).find((t: any) => t.id === iw.ticketId);
+                return {
+                  id: iw.id,
+                  title: iw.prizeName || iw.title || "Instant Win Prize",
+                  ticketNumber: tk ? tk.ticketNumber : (iw.ticketNumber || 0),
+                  rrpValue: iw.rrpValue,
+                  prizeImage: iw.prizeImage || iw.image,
+                };
+              });
+              setWinAnimationPrizes(instantPrizes);
+              setIsWinModalOpen(true);
+            }
+
             setPurchaseSuccessData({
               raffleTitle: raffle.title,
               tickets: res.tickets,
@@ -145,6 +166,21 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           };
         });
 
+        if (data.instantWins && data.instantWins.length > 0) {
+          const instantPrizes: WinPrizeItem[] = data.instantWins.map((iw: any) => {
+            const tk = (data.tickets || []).find((t: any) => t.id === iw.ticketId);
+            return {
+              id: iw.id,
+              title: iw.prizeName || iw.title || "Instant Win Prize",
+              ticketNumber: tk ? tk.ticketNumber : (iw.ticketNumber || 0),
+              rrpValue: iw.rrpValue,
+              prizeImage: iw.prizeImage || iw.image,
+            };
+          });
+          setWinAnimationPrizes(instantPrizes);
+          setIsWinModalOpen(true);
+        }
+
         setPurchaseSuccessData({
           raffleTitle: raffle.title,
           tickets: data.tickets || [],
@@ -161,6 +197,19 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         });
       }
     });
+  };
+
+  const handleClaimWin = async () => {
+    try {
+      const winnerIds = winAnimationPrizes.map((p) => p.id).filter((id): id is string => !!id);
+      await userService.claimInstantWins(winnerIds.length > 0 ? winnerIds : undefined);
+      toast.success("Prize claimed successfully! View your wins in your profile.");
+      setIsWinModalOpen(false);
+      setWinAnimationPrizes([]);
+    } catch (err: any) {
+      console.error("Claim error:", err);
+      toast.error(err?.response?.data?.message || "Failed to claim prize.");
+    }
   };
 
   return (
@@ -290,9 +339,17 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
       {/* Instant Ticket Numbers & Instant Win Purchase Confirmation Modal */}
       <TicketPurchaseSuccessModal
-        isOpen={!!purchaseSuccessData}
+        isOpen={!!purchaseSuccessData && !isWinModalOpen}
         onClose={() => setPurchaseSuccessData(null)}
         data={purchaseSuccessData}
+      />
+
+      {/* Instant Win Rolling Slot Animation Modal */}
+      <WinAnimationModal
+        isOpen={isWinModalOpen}
+        onClose={() => setIsWinModalOpen(false)}
+        onClaim={handleClaimWin}
+        prizes={winAnimationPrizes}
       />
     </div>
   );

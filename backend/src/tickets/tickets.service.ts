@@ -145,10 +145,21 @@ export class TicketsService {
                 winType: 'INSTANT_WIN',
                 prizeName: matchedInstantWin.prizeName,
                 deliveryStatus: 'PENDING',
+                isClaimed: false,
               },
             });
 
-            userInstantWins.push(winner);
+            userInstantWins.push({
+              ...winner,
+              ticketNumber: ticket.ticketNumber,
+              title: matchedInstantWin.prizeName,
+              prizeName: matchedInstantWin.prizeName,
+              prizeImage: matchedInstantWin.image,
+              image: matchedInstantWin.image,
+              rrpValue: matchedInstantWin.rrpValue
+                ? Number(matchedInstantWin.rrpValue)
+                : null,
+            });
           }
         }
 
@@ -296,7 +307,7 @@ export class TicketsService {
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
       },
-      returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/live-raffles/${raffle.slug || raffle.id}?payment=success&ordernumber=${orderNumber}`,
+      returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?payment=success&ordernumber=${orderNumber}&raffle=${raffle.slug || raffle.id}`,
       cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/live-raffles/${raffle.slug || raffle.id}?payment=cancel`,
     };
 
