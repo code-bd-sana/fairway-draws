@@ -104,7 +104,14 @@ export default function DashboardTopbar({ account, onMenuClick, title = "Dashboa
           >
             <div className="w-[34px] h-[34px] shrink-0 rounded-full border border-border-medium bg-accent-bg flex items-center justify-center overflow-hidden shadow-xs">
                {/* eslint-disable-next-line @next/next/no-img-element */}
-               <img src={account.avatar} alt="Profile" className="w-full h-full object-cover" />
+               <img
+                 src={account.avatar}
+                 alt="Profile"
+                 className="w-full h-full object-cover"
+                 onError={(e) => {
+                   (e.currentTarget as HTMLElement).style.display = 'none';
+                 }}
+               />
             </div>
             <span className="font-sans font-bold text-[14px] text-text-primary hidden lg:block">
               {account.name}

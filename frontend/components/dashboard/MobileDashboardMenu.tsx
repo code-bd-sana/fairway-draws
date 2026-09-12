@@ -120,7 +120,14 @@ export default function MobileDashboardMenu({ account, isOpen, onClose }: Mobile
           <div className="flex items-center gap-[12px] pb-[17px] pt-[16px] px-[20px] w-full">
             <div className="w-[42px] h-[42px] shrink-0 rounded-full border border-border-medium bg-accent-bg flex items-center justify-center overflow-hidden shadow-xs">
                {/* eslint-disable-next-line @next/next/no-img-element */}
-               <img src={account.avatar} alt="Profile" className="w-full h-full object-cover" />
+               <img
+                 src={account.avatar}
+                 alt="Profile"
+                 className="w-full h-full object-cover"
+                 onError={(e) => {
+                   (e.currentTarget as HTMLElement).style.display = 'none';
+                 }}
+               />
             </div>
             <div className="flex flex-col min-w-0 flex-1">
               <span className="font-heading font-bold text-[14px] text-text-primary truncate leading-tight">

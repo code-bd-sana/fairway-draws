@@ -8,6 +8,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +40,39 @@ export class UsersService {
     return { message: 'Password updated successfully' };
   }
 
+  saveBase64Image(dataUri: string): string {
+    try {
+      const matches = dataUri.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (!matches || matches.length !== 3) {
+        return dataUri;
+      }
+      const mimeType = matches[1];
+      const buffer = Buffer.from(matches[2], 'base64');
+      let ext = '.png';
+      if (mimeType.includes('jpeg') || mimeType.includes('jpg')) ext = '.jpg';
+      else if (mimeType.includes('webp')) ext = '.webp';
+      else if (mimeType.includes('gif')) ext = '.gif';
+      else if (mimeType.includes('svg')) ext = '.svg';
+
+      const randomName = Array(32)
+        .fill(null)
+        .map(() => Math.round(Math.random() * 16).toString(16))
+        .join('');
+      const filename = `${randomName}${ext}`;
+      const uploadDir = path.join(process.cwd(), 'uploads', 'avatars');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(uploadDir, filename), buffer);
+
+      const baseUrl = process.env.APP_URL || 'http://localhost:5000';
+      return `${baseUrl}/uploads/avatars/${filename}`;
+    } catch (e) {
+      console.error('Failed to save base64 avatar', e);
+      return dataUri;
+    }
+  }
+
   async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -50,10 +85,15 @@ export class UsersService {
 
     const { businessName, bio, avatarUrl, ...userData } = updateProfileDto;
 
+    let finalAvatarUrl = avatarUrl;
+    if (finalAvatarUrl && finalAvatarUrl.startsWith('data:image')) {
+      finalAvatarUrl = this.saveBase64Image(finalAvatarUrl);
+    }
+
     const updatedUser = await this.prisma.$transaction(async (prisma) => {
       const userUpdateData: any = { ...userData };
-      if (avatarUrl !== undefined) {
-        userUpdateData.avatarUrl = avatarUrl;
+      if (finalAvatarUrl !== undefined) {
+        userUpdateData.avatarUrl = finalAvatarUrl;
       }
 
       const u = await prisma.user.update({
@@ -71,6 +111,27 @@ export class UsersService {
           hostProfileData.phone = userData.phone;
         if (userData.address !== undefined)
           hostProfileData.address = userData.address;
+
+        // Ensure host has a valid URL-safe slug
+        if (businessName || !u.hostProfile?.slug) {
+          const rawName = businessName || u.hostProfile?.businessName || `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'host';
+          let baseSlug = rawName
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+          if (!baseSlug) baseSlug = 'host';
+
+          let slug = baseSlug;
+          let counter = 1;
+          while (true) {
+            const existing = await prisma.hostProfile.findUnique({ where: { slug } });
+            if (!existing || existing.userId === userId) break;
+            slug = `${baseSlug}-${counter}`;
+            counter++;
+          }
+          hostProfileData.slug = slug;
+        }
 
         if (Object.keys(hostProfileData).length > 0) {
           if (u.hostProfile) {

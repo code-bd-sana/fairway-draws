@@ -19,6 +19,7 @@ export default function HostProfileForm() {
   });
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,6 +39,7 @@ export default function HostProfileForm() {
       });
       if (user.avatarUrl) {
         setLogoPreview(user.avatarUrl);
+        setLogoError(false);
       }
     }
   }, [user]);
@@ -53,6 +55,7 @@ export default function HostProfileForm() {
       }
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["host-dashboard-overview"] });
+      queryClient.invalidateQueries({ queryKey: ["verified-hosts"] });
       refetch();
     },
     onError: (err: any) => {
@@ -73,9 +76,12 @@ export default function HostProfileForm() {
         queryClient.setQueryData(["user"], data.user);
         if (data.user.avatarUrl) {
           setLogoPreview(data.user.avatarUrl);
+          setLogoError(false);
         }
       }
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["host-dashboard-overview"] });
+      queryClient.invalidateQueries({ queryKey: ["verified-hosts"] });
       refetch();
     },
     onError: () => {
@@ -87,6 +93,7 @@ export default function HostProfileForm() {
     const file = e.target.files?.[0];
     if (file) {
       setLogoPreview(URL.createObjectURL(file));
+      setLogoError(false);
       uploadAvatarMutation.mutate(file);
     }
   };
@@ -144,8 +151,13 @@ export default function HostProfileForm() {
             className="hidden" 
           />
           <div className="relative w-40 h-40 rounded-full border-2 border-dashed border-border-medium flex items-center justify-center bg-elevated overflow-hidden shadow-xs">
-            {displayLogo ? (
-              <img src={displayLogo} alt="Logo" className="w-full h-full object-cover" />
+            {displayLogo && !logoError ? (
+              <img
+                src={displayLogo}
+                alt="Logo"
+                onError={() => setLogoError(true)}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <span className="font-heading font-black text-4xl text-text-brand">{initials}</span>
             )}

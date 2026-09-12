@@ -39,7 +39,7 @@ export class HostsService {
       slug: host.slug || host.id,
       name: host.businessName,
       logo: host.user.avatarUrl,
-      description: null, // Host description can be added later
+      description: host.bio || null,
       category: null,
       competitionCount: host._count.raffles,
       averageRating: 5.0, // Mocked for now

@@ -7,6 +7,27 @@ interface VerifiedHostCardProps {
 }
 
 export default function VerifiedHostCard({ host }: VerifiedHostCardProps) {
+  const [imgError, setImgError] = React.useState(false);
+
+  const isImage = Boolean(
+    host.logo &&
+    !imgError &&
+    (host.logo.startsWith('http://') ||
+     host.logo.startsWith('https://') ||
+     host.logo.startsWith('/') ||
+     host.logo.startsWith('data:image/'))
+  );
+
+  const initials = host.name
+    ? host.name
+        .split(' ')
+        .filter(Boolean)
+        .map((w) => w[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase()
+    : 'FD';
+
   return (
     <Link href={`/hosts/${host.slug}`} className="block h-full">
       <div className="group relative flex min-h-[200px] w-full flex-col justify-between overflow-hidden rounded-[18px] border border-[#bdd3ba] bg-[#edf5e9] p-6 shadow-[0_10px_25px_rgba(11,77,53,.09)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0b4d35]/45 hover:shadow-[0_18px_32px_rgba(11,77,53,.16)]">
@@ -17,10 +38,15 @@ export default function VerifiedHostCard({ host }: VerifiedHostCardProps) {
         <div className="flex flex-col gap-4 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex h-[56px] w-[56px] shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#0b4d35]/20 bg-[#dcebd8] shadow-sm">
-              {host.logo && (host.logo.startsWith('http') || host.logo.startsWith('/')) ? (
-                <img src={host.logo} alt={host.name} className="w-full h-full object-cover" />
+              {isImage ? (
+                <img
+                  src={host.logo}
+                  alt={host.name}
+                  onError={() => setImgError(true)}
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <span className="font-heading text-[20px] font-bold text-[#0b4d35]">{host.logo || host.name.charAt(0)}</span>
+                <span className="font-heading text-[18px] font-black text-[#0b4d35] tracking-tight">{initials}</span>
               )}
             </div>
             {host.isVerified && (
@@ -35,7 +61,7 @@ export default function VerifiedHostCard({ host }: VerifiedHostCardProps) {
               {host.name}
             </h3>
             <span className="line-clamp-2 font-sans text-[13px] leading-relaxed text-[#5e766c]">
-              {host.description}
+              {host.description || "Verified Fairway Draws partner hosting premium golf competitions."}
             </span>
           </div>
         </div>

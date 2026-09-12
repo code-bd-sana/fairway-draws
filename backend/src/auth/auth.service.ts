@@ -8,6 +8,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+import * as path from 'path';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -22,6 +24,39 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
   ) {}
+
+  saveBase64Image(dataUri: string): string {
+    try {
+      const matches = dataUri.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (!matches || matches.length !== 3) {
+        return dataUri;
+      }
+      const mimeType = matches[1];
+      const buffer = Buffer.from(matches[2], 'base64');
+      let ext = '.png';
+      if (mimeType.includes('jpeg') || mimeType.includes('jpg')) ext = '.jpg';
+      else if (mimeType.includes('webp')) ext = '.webp';
+      else if (mimeType.includes('gif')) ext = '.gif';
+      else if (mimeType.includes('svg')) ext = '.svg';
+
+      const randomName = Array(32)
+        .fill(null)
+        .map(() => Math.round(Math.random() * 16).toString(16))
+        .join('');
+      const filename = `${randomName}${ext}`;
+      const uploadDir = path.join(process.cwd(), 'uploads', 'avatars');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(uploadDir, filename), buffer);
+
+      const baseUrl = process.env.APP_URL || 'http://localhost:5000';
+      return `${baseUrl}/uploads/avatars/${filename}`;
+    } catch (e) {
+      console.error('Failed to save base64 avatar', e);
+      return dataUri;
+    }
+  }
 
   async register(registerDto: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -43,6 +78,12 @@ export class AuthService {
       );
     }
 
+    // If an avatar was passed as base64 data URI, safely convert and persist to disk
+    let finalAvatarUrl = registerDto.avatarUrl;
+    if (finalAvatarUrl && finalAvatarUrl.startsWith('data:image')) {
+      finalAvatarUrl = this.saveBase64Image(finalAvatarUrl);
+    }
+
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(registerDto.password, salt);
 
@@ -56,16 +97,31 @@ export class AuthService {
           location: registerDto.location,
           phone: registerDto.phone,
           address: registerDto.address,
-          avatarUrl: registerDto.avatarUrl,
+          avatarUrl: finalAvatarUrl,
           role,
         },
       });
 
       if (role === 'HOST') {
+        let baseSlug = (registerDto.businessName || `${registerDto.firstName || ''} ${registerDto.lastName || ''}`)
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+        if (!baseSlug) baseSlug = 'host';
+
+        let slug = baseSlug;
+        let counter = 1;
+        while (await prisma.hostProfile.findUnique({ where: { slug } })) {
+          slug = `${baseSlug}-${counter}`;
+          counter++;
+        }
+
         const hostProfile = await prisma.hostProfile.create({
           data: {
             userId: newUser.id,
             businessName: registerDto.businessName!,
+            slug,
             bio: registerDto.bio,
             phone: registerDto.phone,
             address: registerDto.address,

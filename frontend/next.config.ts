@@ -30,11 +30,16 @@ const nextConfig: NextConfig = {
     
     // Ensure we don't end up with double slashes if backendUrl has a trailing slash
     const normalizedBackendUrl = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+    const backendOrigin = normalizedBackendUrl.replace(/\/api\/v1$/, '');
     
     return [
       {
         source: '/api/v1/:path*',
         destination: `${normalizedBackendUrl}/:path*`,
+      },
+      {
+        source: '/uploads/:path*',
+        destination: `${backendOrigin}/uploads/:path*`,
       },
     ];
   },

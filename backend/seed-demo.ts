@@ -43,6 +43,7 @@ async function main() {
       isEmailVerified: true,
       firstName: 'Fairway',
       lastName: 'Host',
+      avatarUrl: 'http://localhost:5000/uploads/avatars/ef6734d3d6c19d4ab982e5aa1b5bb10f6.webp',
     },
     create: {
       email: 'host@gmail.com',
@@ -51,24 +52,27 @@ async function main() {
       isEmailVerified: true,
       firstName: 'Fairway',
       lastName: 'Host',
+      avatarUrl: 'http://localhost:5000/uploads/avatars/ef6734d3d6c19d4ab982e5aa1b5bb10f6.webp',
     },
   });
 
-  const hostProfile = await prisma.hostProfile.findUnique({
+  await prisma.hostProfile.upsert({
     where: { userId: hostUser.id },
+    update: {
+      businessName: 'Fairway Golf Pro Shop',
+      slug: 'fairway-golf-pro-shop',
+      bio: 'Official verified supplier of custom golf clubs, tour fittings, and premium golf gear in the UK.',
+      isVerified: true,
+    },
+    create: {
+      userId: hostUser.id,
+      businessName: 'Fairway Golf Pro Shop',
+      slug: 'fairway-golf-pro-shop',
+      bio: 'Official verified supplier of custom golf clubs, tour fittings, and premium golf gear in the UK.',
+      isVerified: true,
+      walletBalance: 150.00,
+    },
   });
-  if (!hostProfile) {
-    await prisma.hostProfile.create({
-      data: {
-        userId: hostUser.id,
-        businessName: 'Fairway Golf Pro Shop',
-        slug: 'fairway-golf-pro-shop',
-        bio: 'Official verified supplier of custom golf clubs and tour equipment.',
-        isVerified: true,
-        walletBalance: 150.00,
-      },
-    });
-  }
 
   // 3. Client
   const clientPassword = await bcrypt.hash('client@gmail.com', salt);

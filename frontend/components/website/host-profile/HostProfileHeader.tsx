@@ -21,14 +21,35 @@ export default function HostProfileHeader({
   rating,
   memberSince
 }: HostProfileHeaderProps) {
+  const [imgError, setImgError] = React.useState(false);
+
+  const isImage = Boolean(
+    logo &&
+    !imgError &&
+    (logo.startsWith('http://') ||
+     logo.startsWith('https://') ||
+     logo.startsWith('/') ||
+     logo.startsWith('data:image/'))
+  );
+
+  const initials = name
+    ? name
+        .split(' ')
+        .filter(Boolean)
+        .map((w) => w[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase()
+    : 'FD';
+
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-[#2D3C13]">
       <div className="flex items-center gap-5">
         <div className="w-[88px] h-[88px] rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0 overflow-hidden">
-          {logo && (logo.startsWith('http') || logo.startsWith('/')) ? (
-            <img src={logo} alt={name} className="w-full h-full object-cover" />
+          {isImage ? (
+            <img src={logo} alt={name} onError={() => setImgError(true)} className="w-full h-full object-cover" />
           ) : (
-            <span className="font-heading font-bold text-[#8CB34A] text-[32px]">{logo}</span>
+            <span className="font-heading font-bold text-[#8CB34A] text-[32px]">{initials}</span>
           )}
         </div>
 

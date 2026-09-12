@@ -16,6 +16,7 @@ import AuthSuccessState from "./AuthSuccessState";
 import { cn } from "../../lib/utils";
 import { useRegisterMutation } from "../../hooks/useAuthHooks";
 import { extractApiError } from "../../lib/utils";
+import { authService } from "../../services/auth.service";
 
 interface HostRegistrationFormProps {
   step: HostRegistrationStep;
@@ -98,18 +99,44 @@ export default function HostRegistrationForm({
     }
   };
 
-  // Profile photo file selection with local uploader data URL preview
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>, field: "profilePhoto" | "businessLogo") => {
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+
+  // Profile photo & business logo file selection with server uploader and local preview fallback
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "profilePhoto" | "businessLogo") => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          [field]: reader.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
+      // 1. Instant local preview
+      const previewUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({
+        ...prev,
+        [field]: previewUrl,
+      }));
+
+      // 2. Upload to server
+      if (field === "businessLogo") {
+        setIsUploadingLogo(true);
+        try {
+          const res = await authService.uploadLogo(file);
+          if (res?.url) {
+            setFormData((prev) => ({
+              ...prev,
+              businessLogo: res.url,
+            }));
+          }
+        } catch (err) {
+          console.error("Failed to upload logo to server, falling back to base64", err);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setFormData((prev) => ({
+              ...prev,
+              businessLogo: reader.result as string,
+            }));
+          };
+          reader.readAsDataURL(file);
+        } finally {
+          setIsUploadingLogo(false);
+        }
+      }
     }
   };
 
@@ -826,9 +853,14 @@ export default function HostRegistrationForm({
                 <div className="flex gap-4 items-start">
                   <div
                     onClick={() => businessLogoInputRef.current?.click()}
-                    className="w-32 h-32 bg-bg border border-dashed border-border hover:border-primary rounded-card flex flex-col items-center justify-center cursor-pointer overflow-hidden text-center transition-all duration-200"
+                    className="relative w-32 h-32 bg-bg border border-dashed border-border hover:border-primary rounded-card flex flex-col items-center justify-center cursor-pointer overflow-hidden text-center transition-all duration-200"
                   >
-                    {formData.businessLogo ? (
+                    {isUploadingLogo ? (
+                      <div className="flex flex-col items-center gap-2 p-2">
+                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        <span className="text-[10px] text-text-secondary">Uploading...</span>
+                      </div>
+                    ) : formData.businessLogo ? (
                       <img
                         alt="Business Logo preview"
                         src={formData.businessLogo}

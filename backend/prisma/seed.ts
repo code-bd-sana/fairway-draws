@@ -100,6 +100,7 @@ async function main() {
 
   // 4. Seed Host Account
   console.log('Seeding Host Account...');
+  const baseUrl = process.env.APP_URL || 'http://localhost:5000';
   const hostPassword = await bcrypt.hash('host@gmail.com', salt);
   const hostUser = await prisma.user.upsert({
     where: { email: 'host@gmail.com' },
@@ -109,6 +110,7 @@ async function main() {
       isEmailVerified: true,
       firstName: 'Fairway',
       lastName: 'Host',
+      avatarUrl: `${baseUrl}/uploads/avatars/ef6734d3d6c19d4ab982e5aa1b5bb10f6.webp`,
     },
     create: {
       email: 'host@gmail.com',
@@ -117,27 +119,29 @@ async function main() {
       isEmailVerified: true,
       firstName: 'Fairway',
       lastName: 'Host',
+      avatarUrl: `${baseUrl}/uploads/avatars/ef6734d3d6c19d4ab982e5aa1b5bb10f6.webp`,
     },
   });
 
   // Ensure Host Profile exists
-  let hostProfile = await prisma.hostProfile.findUnique({
+  const hostProfile = await prisma.hostProfile.upsert({
     where: { userId: hostUser.id },
+    update: {
+      businessName: 'Fairway Golf Pro Shop',
+      slug: 'fairway-golf-pro-shop',
+      bio: 'Official verified supplier of custom golf clubs, tour fittings, and premium golf gear in the UK.',
+      isVerified: true,
+    },
+    create: {
+      userId: hostUser.id,
+      businessName: 'Fairway Golf Pro Shop',
+      slug: 'fairway-golf-pro-shop',
+      bio: 'Official verified supplier of custom golf clubs, tour fittings, and premium golf gear in the UK.',
+      isVerified: true,
+      walletBalance: 150.00,
+    },
   });
-
-  if (!hostProfile) {
-    hostProfile = await prisma.hostProfile.create({
-      data: {
-        userId: hostUser.id,
-        businessName: 'Fairway Golf Pro Shop',
-        slug: 'fairway-golf-pro-shop',
-        bio: 'Official verified supplier of custom golf clubs and tour equipment.',
-        isVerified: true,
-        walletBalance: 150.00,
-      },
-    });
-    console.log('✅ Created Host Profile');
-  }
+  console.log('✅ Host Profile ready (fairway-golf-pro-shop)');
 
   // Active Host Subscription
   const proPlan = createdPlans.find((p) => p.name === 'Pro') || createdPlans[0];

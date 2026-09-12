@@ -14,7 +14,7 @@ export default function DashboardLayout({
 
   const account = user ? {
     id: user.id,
-    name: `${user.firstName} ${user.lastName}`.trim() || user.email,
+    name: (user.role === 'HOST' && user.hostProfile?.businessName ? user.hostProfile.businessName : `${user.firstName || ''} ${user.lastName || ''}`).trim() || user.email,
     email: user.email,
     role: (user.role === 'CLIENT' || user.role === 'USER' ? 'user' : user.role.toLowerCase()) as "user" | "host" | "admin",
     avatar: user.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.id,
