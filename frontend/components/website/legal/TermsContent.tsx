@@ -124,7 +124,7 @@ export default function TermsContent() {
                 1. The Promoter
               </h2>
               <p>
-                1.1. The Promoter is: <strong className="text-[#073826]">Fairway Draws Ltd</strong> ("Fairway Draws") whose registered office is at Synergy House, Lawson Street, North Shields NE29 6TG.
+                1.1. The Promoter is: <strong className="text-[#073826]">Fairway Draws Ltd — Company No. 17396815</strong> ("Fairway Draws") whose registered office is at Synergy House, Lawson Street, North Shields NE29 6TG.
               </p>
               <p>
                 1.2. Our correspondence address is: <span className="text-[#073826] font-medium">Synergy House, Lawson Street, North Shields NE29 6TG</span>.
@@ -155,7 +155,7 @@ export default function TermsContent() {
                 >
                   https://fairwaydraws.com
                 </a>{" "}
-                (the “Website”). Competitions are operated by <strong className="text-[#073826]">Fairway Draws Ltd</strong> (Company No. 17396815).
+                (the “Website”).
               </p>
               <p>
                 2.2. All competitions listed on the Website operate as prize draws. Entry fees for online entries are payable each time you enter. A free postal entry route is available for every competition.
