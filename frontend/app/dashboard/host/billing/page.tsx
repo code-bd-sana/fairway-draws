@@ -5,21 +5,39 @@ import { useSearchParams } from "next/navigation";
 import CurrentPlanCard from "../../../../components/dashboard/host/billing/CurrentPlanCard";
 import PaymentMethodCard from "../../../../components/dashboard/host/billing/PaymentMethodCard";
 import BillingHistoryTable from "../../../../components/dashboard/host/billing/BillingHistoryTable";
-import { useMyBillingHistory } from "../../../../hooks/useSubscriptionHooks";
+import { useMyBillingHistory, useMySubscription } from "../../../../hooks/useSubscriptionHooks";
+import { paymentService } from "../../../../services/payment.service";
 import { toast } from "sonner";
 
 export default function SubscriptionBillingPage() {
   const searchParams = useSearchParams();
-  const { data: rawHistory, isLoading } = useMyBillingHistory();
+  const { data: rawHistory, isLoading, refetch: refetchHistory } = useMyBillingHistory();
+  const { refetch: refetchSub } = useMySubscription();
 
   useEffect(() => {
     const status = searchParams.get("status");
-    if (status === "success") {
-      toast.success("Payment successful! Your subscription is now active.");
+    const orderNumber = searchParams.get("ordernumber") || searchParams.get("orderNumber");
+    const paymentJobRef = searchParams.get("paymentJobReference") || searchParams.get("paymentJobRef");
+
+    if (status === "success" || orderNumber || paymentJobRef) {
+      paymentService
+        .confirmPayment({ orderNumber: orderNumber || undefined, paymentJobRef: paymentJobRef || undefined })
+        .then(() => {
+          toast.success("Payment successful! Your subscription is now active.");
+          refetchHistory();
+          refetchSub();
+          window.history.replaceState({}, document.title, window.location.pathname);
+        })
+        .catch((err) => {
+          console.error("Subscription payment confirmation error:", err);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        });
     } else if (status === "cancel") {
       toast.error("Payment was cancelled.");
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [searchParams]);
+  }, [searchParams, refetchHistory, refetchSub]);
+
 
   const history = rawHistory?.map((tx: any) => ({
     id: tx.id,

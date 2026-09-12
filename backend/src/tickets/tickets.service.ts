@@ -296,7 +296,7 @@ export class TicketsService {
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
       },
-      returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/live-raffles/${raffle.slug || raffle.id}?payment=success`,
+      returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/live-raffles/${raffle.slug || raffle.id}?payment=success&ordernumber=${orderNumber}`,
       cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/live-raffles/${raffle.slug || raffle.id}?payment=cancel`,
     };
 
@@ -343,6 +343,7 @@ export class TicketsService {
       console.log('CASHFLOWS SUCCESS RESPONSE DATA:', JSON.stringify(data, null, 2));
 
       let redirectUrl =
+        data.links?.action?.href ||
         data.links?.action?.url ||
         (typeof data.links?.action === 'string' ? data.links.action : null) ||
         data.redirectUrl ||

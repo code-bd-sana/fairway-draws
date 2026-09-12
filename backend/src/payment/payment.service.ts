@@ -232,6 +232,7 @@ export class PaymentService {
       this.logger.log(`CASHFLOWS SUCCESS RESPONSE DATA: ${JSON.stringify(data, null, 2)}`);
 
       let redirectUrl =
+        data.links?.action?.href ||
         data.links?.action?.url ||
         (typeof data.links?.action === 'string' ? data.links.action : null) ||
         data.redirectUrl ||

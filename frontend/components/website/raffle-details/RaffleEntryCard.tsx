@@ -7,6 +7,7 @@ import { useAuth } from "../../../features/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import TicketPurchaseSuccessModal, { TicketPurchaseSuccessData } from "./TicketPurchaseSuccessModal";
 import FreePostalEntryButton from "../legal/FreePostalEntryButton";
+import { paymentService } from "../../../services/payment.service";
 
 interface RaffleEntryCardProps {
   raffle: RaffleDetail;
@@ -33,6 +34,57 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   } = raffle;
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get("payment");
+    const orderNumber = urlParams.get("ordernumber") || urlParams.get("orderNumber");
+    const paymentJobRef = urlParams.get("paymentJobReference") || urlParams.get("paymentJobRef");
+
+    if (paymentStatus === "cancel") {
+      setStatusMessage({ type: "error", text: "Payment was cancelled." });
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    if (paymentStatus === "success" || orderNumber || paymentJobRef) {
+      setStatusMessage({ type: "info", text: "Confirming ticket purchase..." });
+      paymentService
+        .confirmPayment({ orderNumber: orderNumber || undefined, paymentJobRef: paymentJobRef || undefined })
+        .then((res) => {
+          window.history.replaceState({}, document.title, window.location.pathname);
+          if (res.tickets && res.tickets.length > 0) {
+            const formattedWins = (res.instantWins || []).map((iw: any) => {
+              const tk = (res.tickets || []).find((t: any) => t.id === iw.ticketId);
+              return {
+                id: iw.id,
+                ticketId: iw.ticketId,
+                prizeName: iw.prizeName,
+                ticketNumber: tk ? tk.ticketNumber : undefined,
+              };
+            });
+            setPurchaseSuccessData({
+              raffleTitle: raffle.title,
+              tickets: res.tickets,
+              instantWins: formattedWins,
+              totalAmount: res.tickets.length * ticketPrice,
+            });
+            setStatusMessage(null);
+          } else {
+            setStatusMessage({ type: "success", text: "Payment confirmed successfully!" });
+          }
+        })
+        .catch((err) => {
+          console.error("Payment confirmation error:", err);
+          window.history.replaceState({}, document.title, window.location.pathname);
+          setStatusMessage({
+            type: "error",
+            text: err?.response?.data?.message || "Failed to confirm payment status.",
+          });
+        });
+    }
+  }, [raffle.title, ticketPrice]);
+
+  useEffect(() => {
     if (!endDate) {
       setTimeLeft("Ended");
       return;
@@ -54,6 +106,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
     const interval = setInterval(() => setTimeLeft(calc()), 1000);
     return () => clearInterval(interval);
   }, [endDate]);
+
 
   const soldPercent = Math.min(Math.round((soldTickets / totalTickets) * 100), 100);
   const remainingTickets = Math.max(totalTickets - soldTickets, 0);

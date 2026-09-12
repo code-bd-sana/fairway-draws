@@ -62,6 +62,18 @@ export class PaymentController {
     return this.paymentService.createSubscriptionCheckout(hostId, body.planId);
   }
 
+  @Post('confirm')
+  @ApiOperation({ summary: 'Confirm returned Cashflows payment job / order' })
+  @ApiResponse({
+    status: 200,
+    description: 'Payment return confirmed successfully',
+  })
+  async confirmPaymentReturn(
+    @Body() body: { paymentJobRef?: string; orderNumber?: string },
+  ) {
+    return this.paymentService.confirmPaymentReturn(body);
+  }
+
   @Post('webhook')
   @ApiOperation({ summary: 'Cashflows Webhook Endpoint' })
   @ApiResponse({
@@ -80,3 +92,4 @@ export class PaymentController {
     return this.paymentService.handleWebhook(signature, req.body);
   }
 }
+
