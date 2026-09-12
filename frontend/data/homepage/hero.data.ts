@@ -53,3 +53,7 @@ export const heroData: HeroData = {
     isFeatured: true,
   },
 };
+
+//   s = {tt, th, hh, ht}
+//  a complimant = 1/4
+//  e = 1 - 1/4 = 3/4

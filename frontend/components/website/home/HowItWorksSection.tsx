@@ -12,13 +12,13 @@ const STEPS = [
     n: 2,
     emoji: "🎟️",
     title: "Buy Your Tickets",
-    desc: "Answer a quick entry question and purchase tickets securely from £1. Buy more tickets to boost your winning odds.",
+    desc: "Answer a quick entry question and choose your tickets securely. Free and paid competitions may be available, depending on the draw.",
   },
   {
     n: 3,
     emoji: "🏆",
     title: "Win Your Prize",
-    desc: "When tickets sell out or the timer ends, a winner is drawn live using a verified public randomiser. Transparent & fair.",
+    desc: "When ticket sales close or the timer ends, the winner is drawn live using a random lottery ball machine for a fair and transparent result.",
   },
 ];
 

@@ -210,6 +210,72 @@ body {
 
 .legal-campaign a {
   color: #0b4d35 !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
+}
+
+.legal-campaign a:hover {
+  color: #073826 !important;
+  text-decoration-color: #073826 !important;
+}
+
+.legal-campaign aside a,
+.legal-campaign aside a.bg-\[\#1A230A\],
+.legal-campaign aside a.bg-\[\#0b4d35\] {
+  background: #0b4d35 !important;
+  border-color: #0b4d35 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.legal-campaign aside a:hover,
+.legal-campaign aside a.bg-\[\#1A230A\]:hover,
+.legal-campaign aside a.bg-\[\#0b4d35\]:hover {
+  background: #073826 !important;
+  border-color: #073826 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.legal-campaign aside button:not(.bg-\[\#1A230A\]):not(.bg-\[\#0b4d35\]) {
+  color: #426256 !important;
+}
+
+.legal-campaign aside button:hover {
+  background: #dcebd8 !important;
+  color: #073826 !important;
+}
+
+.legal-campaign aside button.bg-\[\#1A230A\],
+.legal-campaign aside button.bg-\[\#0b4d35\] {
+  background: #0b4d35 !important;
+  border-color: #0b4d35 !important;
+  color: #ffffff !important;
+}
+
+/* Guard against legacy dark Tailwind utilities within Terms copy */
+.legal-campaign [class~="bg-[#161810]"],
+.legal-campaign [class~="bg-[#111210]"] {
+  background-color: #edf5e9 !important;
+  background-image: none !important;
+  border-color: #bdd3ba !important;
+}
+
+.legal-campaign [class~="text-[#E8EDD4]"],
+.legal-campaign [class~="text-[#B3B8AA]"],
+.legal-campaign [class~="text-[#72943A]"],
+.legal-campaign [class~="text-[#5A752A]"] {
+  color: #426256 !important;
+}
+
+.legal-campaign [class~="text-[#A0D056]"],
+.legal-campaign [class~="text-[#8CB34A]"] {
+  color: #0b4d35 !important;
+}
+
+.legal-campaign strong {
+  color: #073826 !important;
 }
 
 /* Cookie Policy gets its own full campaign treatment rather than inheriting the

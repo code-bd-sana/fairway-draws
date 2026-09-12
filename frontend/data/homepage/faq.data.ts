@@ -4,36 +4,112 @@ export const faqData: FaqItem[] = [
   {
     id: "faq-1",
     question: "How are winners selected?",
-    answer: "Once a draw sells out or its timer expires, the winner is selected live using a verified public randomiser streamed on our <a href=\"https://instagram.com/fairwaydraws\" target=\"_blank\" class=\"text-[#0b4d35] font-semibold hover:underline\">Instagram</a>. Every draw is fully transparent and independently verifiable."
+    answer:
+      'Main draw winners are selected live using a lottery ball machine. Draws are streamed live so the process is clear, fair and transparent for everyone taking part.'
   },
+
   {
     id: "faq-2",
-    question: "How do I receive my prize?",
-    answer: "Prizes are shipped directly by the verified host using a tracked UK courier service within 7 working days of the draw. You'll receive a tracking number and can confirm delivery through your Fairway Draws dashboard."
+    question: "What are Instant Wins?",
+    answer:
+      "Instant Wins give you the chance to win a prize immediately when your randomly allocated ticket number matches a pre-determined winning number. If your ticket is an Instant Winner, you'll be notified with the prize details."
   },
+
   {
     id: "faq-3",
-    question: "Can I enter multiple times?",
-    answer: "Yes, you can purchase multiple tickets for any active draw up to the maximum limit set by the host (typically capped at 10–20% of total tickets per user). Buying more tickets increases your chances of winning."
+    question: "How do I receive my prize?",
+    answer:
+      "Once you have been confirmed as a winner, the competition host will arrange delivery or collection of your prize. Where applicable, tracking or collection details will be provided to you."
   },
+
   {
     id: "faq-4",
-    question: "Do I need a golf club membership to enter?",
-    answer: "No membership is required. Fairway Draws is open to all golfers and golf enthusiasts aged 18 and over, regardless of whether you hold a club membership or handicap certificate."
+    question: "Can I enter multiple times?",
+    answer:
+      "Yes. You can purchase multiple tickets for a competition, subject to any ticket limit set for that draw. More tickets mean more entries into the competition."
   },
+
   {
     id: "faq-5",
-    question: "Do I need to be 18 to enter?",
-    answer: "Yes, 18+ is a legal requirement under the UK Gambling Act 2005. Age and identity verification are required before any prize items are dispatched to the winner."
+    question: "Can I enter competitions for free?",
+    answer:
+      "Yes. Fairway Draws may feature both free and paid competitions. If a competition is free to enter, this will be clearly shown on the competition page."
   },
+
   {
     id: "faq-6",
-    question: "Are the prizes brand new?",
-    answer: "Absolutely. All prize items on Fairway Draws are 100% brand new from authorised retailers — Titleist, TaylorMade, Callaway, Scotty Cameron, and more. Second-hand or refurbished items are strictly prohibited."
+    question: "Do I need a golf club membership to enter?",
+    answer:
+      "No. You do not need to be a member of a golf club to enter Fairway Draws competitions. Golfers and golf enthusiasts can enter eligible competitions subject to the individual competition terms."
   },
+
   {
     id: "faq-7",
-    question: "Can I enter for free?",
-    answer: "Yes! Under UK law (Gambling Act 2005), every competition includes an equal Free Postal Entry route. Click the 'Free Entry' option on any competition page to view full instructions for submitting a postcard entry."
+    question: "Do I need to be 18 to enter?",
+    answer:
+      "Yes. Fairway Draws competitions are available to users aged 18 and over. Additional identity or eligibility checks may be required before a prize is released."
+  },
+
+  {
+    id: "faq-8",
+    question: "How much does it cost to become a host?",
+    answer:
+      "Fairway Draws offers three host plans: Free at £0, Premium at £29 per month, and Pro at £79 per month. All plans are subject to a 10% commission on competition sales."
+  },
+
+  {
+    id: "faq-9",
+    question: "What is included in the Free host plan?",
+    answer:
+      "The Free plan includes up to 2 active draws, access to the host dashboard and standard email support. It costs £0 and has a 10% commission."
+  },
+
+  {
+    id: "faq-10",
+    question: "What is included in the Premium host plan?",
+    answer:
+      "The Premium plan costs £29 per month and includes up to 5 active draws, host dashboard access, priority email support, 3 featured listing slots per month, priority payout and access to Instant Wins. A 10% commission applies."
+  },
+
+  {
+    id: "faq-11",
+    question: "What is included in the Pro host plan?",
+    answer:
+      "The Pro plan costs £79 per month and includes unlimited active draws, host dashboard access, 24/7 priority support, unlimited featured listing slots, priority payout, access to Instant Wins, custom branding, advanced analytics and a dedicated account manager. A 10% commission applies."
+  },
+
+  {
+    id: "faq-12",
+    question: "Can I upgrade my host plan?",
+    answer:
+      "Yes. Hosts can upgrade their plan as their competition needs grow. Moving to Premium or Pro gives access to additional active draws and more advanced host features."
+  },
+
+  {
+    id: "faq-13",
+    question: "Which plans include Instant Wins?",
+    answer:
+      "Instant Wins are available to Premium and Pro hosts. The Free plan does not include access to the Instant Win feature."
+  },
+
+  {
+    id: "faq-14",
+    question: "What are featured listing slots?",
+    answer:
+      "Featured listing slots give selected competitions additional visibility across Fairway Draws. Premium hosts receive up to 3 featured listing slots per month, while Pro hosts receive unlimited featured slots."
+  },
+
+  {
+    id: "faq-15",
+    question: "When are hosts paid?",
+    answer:
+      "Hosts are paid on the next working day after the live draw, subject to the competition being successfully completed and any required checks being satisfied."
+  },
+
+  {
+    id: "faq-16",
+    question: "Can hosts create unlimited competitions?",
+    answer:
+      "The number of active competitions depends on your host plan. Free hosts can have up to 2 active draws, Premium hosts can have up to 5 active draws, and Pro hosts can run unlimited active draws."
   }
 ];
