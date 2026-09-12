@@ -31,7 +31,7 @@ export default function WebsiteFooter() {
             <FairwayDrawsLogo variant="light" size="lg" />
 
             <p className="font-sans text-xs text-[#5e766c] leading-relaxed max-w-xs">
-              The premier platform for luxury golf prize competitions. Win top-tier equipment, club memberships &amp; PGA tournament access — all for Fairway Draws.
+              The premier platform for luxury golf prize competitions. Win top-tier equipment, club memberships &amp; PGA tournament access — all for a fraction of the price.
             </p>
 
             {/* Trust badge */}
