@@ -11,8 +11,8 @@ export interface AdminPayoutData {
   hostUserEmail: string;
   hostUserName: string;
   amount: number; // Gross amount requested
-  feeAmount: number; // 10% platform fee
-  netAmount: number; // 90% net payout
+  feeAmount: number; // 15% platform fee
+  netAmount: number; // 85% net payout
   status: string;
   payoutMethod: string;
   payoutDetails: any;
@@ -44,8 +44,8 @@ export default function ConfirmPayoutModal({
   if (!isOpen || !payout || !mounted) return null;
 
   const grossAmount = payout.amount || 0;
-  const feeAmount = payout.feeAmount !== undefined ? payout.feeAmount : grossAmount * 0.10;
-  const netAmount = payout.netAmount !== undefined ? payout.netAmount : grossAmount * 0.90;
+  const feeAmount = payout.feeAmount !== undefined ? payout.feeAmount : grossAmount * 0.15;
+  const netAmount = payout.netAmount !== undefined ? payout.netAmount : grossAmount * 0.85;
 
   const handleConfirm = (newStatus: "APPROVED" | "COMPLETED" | "REJECTED") => {
     updateStatusMutation.mutate(
@@ -130,7 +130,7 @@ export default function ConfirmPayoutModal({
           </div>
         </div>
 
-        {/* Financial Breakdown (10% Commission) */}
+        {/* Financial Breakdown (15% Commission) */}
         <div className="bg-elevated border border-border-medium rounded-xl p-4 mb-4 space-y-2">
           <span className="font-sans font-bold text-[10px] text-text-muted uppercase tracking-wider block">Financial & Commission Breakdown</span>
           
@@ -140,7 +140,7 @@ export default function ConfirmPayoutModal({
           </div>
 
           <div className="flex justify-between text-xs font-sans text-[#DC2626]">
-            <span className="font-bold">Platform Commission (10%):</span>
+            <span className="font-bold">Platform Commission (15%):</span>
             <span className="font-bold">-£{feeAmount.toFixed(2)}</span>
           </div>
 

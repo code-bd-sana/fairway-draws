@@ -18,14 +18,14 @@ async function main() {
       name: 'Free',
       price: 0,
       durationDays: 365,
-      maxActiveRaffles: 2,
+      maxActiveRaffles: 1,
     },
     {
       id: 'premium',
       name: 'Premium',
       price: 29,
       durationDays: 30,
-      maxActiveRaffles: 5,
+      maxActiveRaffles: 3,
     },
     {
       id: 'pro',

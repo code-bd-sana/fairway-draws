@@ -16,7 +16,7 @@ export default function AdminWithdrawalsClient() {
           Host Payout & Withdrawal Requests
         </h1>
         <p className="font-sans text-xs text-text-muted">
-          Review host payout requests, verify bank account details, and process net transfers after the 10% platform commission fee deduction.
+          Review host payout requests, verify bank account details, and process net transfers after the 15% platform commission fee deduction.
         </p>
       </div>
       

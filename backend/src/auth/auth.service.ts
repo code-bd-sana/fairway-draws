@@ -139,7 +139,7 @@ export class AuthService {
               name: 'Free',
               price: 0,
               durationDays: 365,
-              maxActiveRaffles: 2,
+              maxActiveRaffles: 1,
             },
           });
         }

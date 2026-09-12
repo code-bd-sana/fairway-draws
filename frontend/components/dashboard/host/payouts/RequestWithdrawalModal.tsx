@@ -41,8 +41,8 @@ export default function RequestWithdrawalModal({
   if (!isOpen || !mounted) return null;
 
   const numAmount = parseFloat(amount) || 0;
-  const feeAmount = numAmount * 0.10;
-  const netAmount = numAmount * 0.90;
+  const feeAmount = numAmount * 0.15;
+  const netAmount = numAmount * 0.85;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,14 +170,14 @@ export default function RequestWithdrawalModal({
             </div>
           </div>
 
-          {/* 10% Fee Breakdown Card */}
+          {/* 15% Fee Breakdown Card */}
           <div className="bg-accent-bg border border-primary/30 rounded-xl p-4 space-y-2 text-xs font-sans">
             <div className="flex justify-between text-text-muted">
               <span>Requested Gross Amount:</span>
               <span className="font-bold text-text-primary">£{numAmount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-[#dc2626]">
-              <span>Platform Fee (10%):</span>
+              <span>Platform Fee (15%):</span>
               <span className="font-bold">-£{feeAmount.toFixed(2)}</span>
             </div>
             <div className="pt-2 border-t border-primary/20 flex justify-between text-sm font-bold">

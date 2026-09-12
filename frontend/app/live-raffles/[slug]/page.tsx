@@ -20,11 +20,15 @@ interface PageProps {
 
 async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
   try {
-    const apiUrl = process.env.BACKEND_API_URL || 'http://127.0.0.1:5000/api/v1';
+    const apiUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api/v1';
     const res = await fetch(`${apiUrl}/raffles/public/${slug}`, {
       cache: 'no-store' // or next: { revalidate: 60 }
     });
-    if (!res.ok) return undefined;
+    if (!res.ok) {
+      console.error(`getRaffle failed for slug "${slug}" at ${apiUrl}/raffles/public/${slug}: status ${res.status}`);
+      return undefined;
+    }
+
     const json = await res.json();
     const draw = json.data || json; // Handle wrapped response
 

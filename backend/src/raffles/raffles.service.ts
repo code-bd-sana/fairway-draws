@@ -41,7 +41,7 @@ export class RafflesService {
             name: 'Free',
             price: 0,
             durationDays: 365,
-            maxActiveRaffles: 2,
+            maxActiveRaffles: 1,
           },
         });
       }
@@ -415,10 +415,9 @@ export class RafflesService {
   async findOnePublic(slug: string) {
     const raffle = await this.prisma.raffle.findFirst({
       where: {
-        slug,
-        status: 'ACTIVE',
+        OR: [{ slug }, { id: slug }],
+        status: { in: ['ACTIVE', 'ENDED'] },
         host: {
-          isVerified: true,
           user: {
             isBlocked: false,
           },
@@ -432,6 +431,7 @@ export class RafflesService {
     if (!raffle) throw new NotFoundException('Raffle not found or is unavailable');
     return raffle;
   }
+
 
   async findHostRaffles(hostId: string, query: any = {}) {
     const hostProfile = await this.prisma.hostProfile.findUnique({

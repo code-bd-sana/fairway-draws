@@ -54,28 +54,28 @@ export const faqData: FaqItem[] = [
     id: "faq-8",
     question: "How much does it cost to become a host?",
     answer:
-      "Fairway Draws offers three host plans: Free at £0, Premium at £29 per month, and Pro at £79 per month. All plans are subject to a 10% commission on competition sales."
+      "Fairway Draws offers three host plans: Free at £0, Premium at £29 per month, and Pro at £79 per month. All plans are subject to a 15% commission on competition sales."
   },
 
   {
     id: "faq-9",
     question: "What is included in the Free host plan?",
     answer:
-      "The Free plan includes up to 2 active draws, access to the host dashboard and standard email support. It costs £0 and has a 10% commission."
+      "The Free plan includes 1 active draw, access to the host dashboard and standard email support. It costs £0 and has a 15% commission."
   },
 
   {
     id: "faq-10",
     question: "What is included in the Premium host plan?",
     answer:
-      "The Premium plan costs £29 per month and includes up to 5 active draws, host dashboard access, priority email support, 3 featured listing slots per month, priority payout and access to Instant Wins. A 10% commission applies."
+      "The Premium plan costs £29 per month and includes up to 3 active draws, host dashboard access, priority email support, 3 featured listing slots per month, priority payout and access to Instant Wins. A 15% commission applies."
   },
 
   {
     id: "faq-11",
     question: "What is included in the Pro host plan?",
     answer:
-      "The Pro plan costs £79 per month and includes unlimited active draws, host dashboard access, 24/7 priority support, unlimited featured listing slots, priority payout, access to Instant Wins, custom branding, advanced analytics and a dedicated account manager. A 10% commission applies."
+      "The Pro plan costs £79 per month and includes unlimited active draws, host dashboard access, 24/7 priority support, unlimited featured listing slots, priority payout, access to Instant Wins, custom branding, advanced analytics and a dedicated account manager. A 15% commission applies."
   },
 
   {
@@ -110,6 +110,6 @@ export const faqData: FaqItem[] = [
     id: "faq-16",
     question: "Can hosts create unlimited competitions?",
     answer:
-      "The number of active competitions depends on your host plan. Free hosts can have up to 2 active draws, Premium hosts can have up to 5 active draws, and Pro hosts can run unlimited active draws."
+      "The number of active competitions depends on your host plan. Free hosts can have 1 active draw, Premium hosts can have up to 3 active draws, and Pro hosts can run unlimited active draws."
   }
 ];

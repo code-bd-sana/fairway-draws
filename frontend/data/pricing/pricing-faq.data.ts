@@ -9,12 +9,12 @@ export const PRICING_FAQ: FaqItem[] = [
   {
     id: "plan-features",
     question: "What features are included in Premium and Pro plans?",
-    answer: "Premium (£29/mo) provides 5 active competition slots, 3 featured listings per month, 10% host commission, priority payouts, and Instant Wins access. Pro (£79/mo) unlocks unlimited active draws, unlimited featured slots, custom branding, advanced analytics, and a dedicated account manager.",
+    answer: "Premium (£29/mo) provides 3 active competition slots, 3 featured listings per month, 15% host commission, priority payouts, and Instant Wins access. Pro (£79/mo) unlocks unlimited active draws, unlimited featured slots, custom branding, advanced analytics, and a dedicated account manager.",
   },
   {
     id: "commission-fee",
-    question: "How is the 10% host commission handled?",
-    answer: "Hosts receive 90% net payout on all completed competition ticket sales. The 10% platform commission is automatically calculated and deducted when requesting a withdrawal, covering escrow security, payment gateways, and draw auditing.",
+    question: "How is the 15% host commission handled?",
+    answer: "Hosts receive 85% net payout on all completed competition ticket sales. The 15% platform commission is automatically calculated and deducted when requesting a withdrawal, covering escrow security, payment gateways, and draw auditing.",
   },
   {
     id: "payout-process",

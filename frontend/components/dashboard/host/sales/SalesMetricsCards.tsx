@@ -25,9 +25,9 @@ export default function SalesMetricsCards({ metrics }: Props) {
     },
     {
       id: "net",
-      label: "Net Earnings (90%)",
+      label: "Net Earnings (85%)",
       value: `£${(metrics?.totalNetRevenue || 0).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      subtitle: "After 10% platform fee",
+      subtitle: "After 15% platform fee",
       badge: "Net Payout",
       badgeColor: "bg-success-bg border-[#BBF7D0] text-success-text",
     },

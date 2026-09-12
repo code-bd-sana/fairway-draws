@@ -196,14 +196,14 @@ export class HostsService {
 
     const availableBalance = Number(host.walletBalance);
     const pendingClearance = Number(pendingWithdrawals._sum?.amount || 0);
-    const totalFeesPaid = Number(completedWithdrawals._sum?.amount || 0) * 0.10;
+    const totalFeesPaid = Number(completedWithdrawals._sum?.amount || 0) * 0.15;
 
     return {
       availableBalance,
       pendingClearance,
       totalLifetimeEarnings,
       totalFeesPaid,
-      commissionRate: 10.0, // 10% Platform fee
+      commissionRate: 15.0, // 15% Platform fee
     };
   }
 
@@ -228,9 +228,9 @@ export class HostsService {
       );
     }
 
-    // 10% platform fee calculation
-    const feeAmount = dto.amount * 0.1;
-    const netAmount = dto.amount * 0.9;
+    // 15% platform fee calculation
+    const feeAmount = dto.amount * 0.15;
+    const netAmount = dto.amount * 0.85;
 
     const result = await this.prisma.$transaction(async (tx) => {
       // Deduct requested amount from host's wallet balance
@@ -278,9 +278,9 @@ export class HostsService {
       withdrawal: {
         id: result.id,
         grossAmount: Number(result.amount),
-        feeAmount: Number(resObj.feeAmount || Number(result.amount) * 0.10),
-        feePercent: 10,
-        netAmount: Number(resObj.netAmount || Number(result.amount) * 0.90),
+        feeAmount: Number(resObj.feeAmount || Number(result.amount) * 0.15),
+        feePercent: 15,
+        netAmount: Number(resObj.netAmount || Number(result.amount) * 0.85),
         payoutMethod: result.payoutMethod,
         status: result.status,
         createdAt: result.createdAt,
@@ -299,8 +299,8 @@ export class HostsService {
     return withdrawals.map((w) => {
       const wObj = w as any;
       const grossAmount = Number(w.amount);
-      const feeDeducted = Number(wObj.feeAmount || grossAmount * 0.1);
-      const netAmount = Number(wObj.netAmount || grossAmount * 0.9);
+      const feeDeducted = Number(wObj.feeAmount || grossAmount * 0.15);
+      const netAmount = Number(wObj.netAmount || grossAmount * 0.85);
 
       let parsedDetails = {};
       try {
@@ -318,7 +318,7 @@ export class HostsService {
         }),
         grossAmount,
         feeDeducted,
-        feePercent: 10,
+        feePercent: 15,
         netAmount,
         method: w.payoutMethod || 'Bank Transfer',
         status:
@@ -356,7 +356,7 @@ export class HostsService {
       (sum, r) => sum + Number(r.pricePerTicket) * r.ticketsSold,
       0,
     );
-    const totalNetRevenue = totalGrossRevenue * 0.9; // 10% platform fee deducted
+    const totalNetRevenue = totalGrossRevenue * 0.85; // 15% platform fee deducted
 
     const totalWinnersCount = await this.prisma.winner.count({
       where: { raffle: { hostId: host.id } },
@@ -450,7 +450,7 @@ export class HostsService {
       const price = raffle.pricePerTicket ? Number(raffle.pricePerTicket) : 0;
       const sold = raffle.ticketsSold || 0;
       const gross = sold * price;
-      const net = gross * 0.9;
+      const net = gross * 0.85;
 
       totalTicketsSold += sold;
       totalGrossRevenue += gross;
@@ -470,7 +470,7 @@ export class HostsService {
       };
     });
 
-    const totalNetRevenue = totalGrossRevenue * 0.9;
+    const totalNetRevenue = totalGrossRevenue * 0.85;
     const avgRevenuePerRaffle = totalCompetitions > 0 ? totalGrossRevenue / totalCompetitions : 0;
 
     // Fetch tickets for sales trend chart (last 7 days)

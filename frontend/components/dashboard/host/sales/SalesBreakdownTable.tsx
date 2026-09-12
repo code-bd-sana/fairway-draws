@@ -85,7 +85,7 @@ export default function SalesBreakdownTable({ raffles = [] }: Props) {
                 Gross Revenue
               </th>
               <th className="py-4 px-6 font-sans font-bold text-[11px] text-text-muted uppercase tracking-wider">
-                Net Earnings (90%)
+                Net Earnings (85%)
               </th>
             </tr>
           </thead>

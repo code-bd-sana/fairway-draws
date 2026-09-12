@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 export default async function VerifiedHostsPage() {
   let verifiedHosts = [];
   try {
-    const apiUrl = process.env.BACKEND_API_URL || 'http://127.0.0.1:5000/api/v1';
+    const apiUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api/v1';
     const res = await fetch(`${apiUrl}/hosts/verified`, {
       cache: 'no-store'
     });
+
     if (res.ok) {
       const json = await res.json();
       const rawHosts = json.data || json;

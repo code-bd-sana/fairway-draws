@@ -3,9 +3,15 @@ import { ComparisonRow } from "../../types/pricing.types";
 export const COMPARISON_ROWS: ComparisonRow[] = [
   {
     featureName: "Active draws",
-    freeValue: "2",
-    premiumValue: "5",
+    freeValue: "1",
+    premiumValue: "3",
     proValue: "Unlimited",
+  },
+  {
+    featureName: "Platform commission",
+    freeValue: "15%",
+    premiumValue: "15%",
+    proValue: "15%",
   },
   {
     featureName: "Host dashboard",

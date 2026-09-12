@@ -58,7 +58,7 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
           <tr className="border-b border-divider bg-elevated">
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider">HOST BUSINESS</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">REQUESTED GROSS</th>
-            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">FEE (10%)</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">FEE (15%)</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">NET PAYOUT</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">PAYMENT METHOD</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">REQUEST DATE</th>
@@ -76,8 +76,8 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
           ) : (
             withdrawals.map((payout, i) => {
               const grossAmount = payout.amount || 0;
-              const feeAmount = payout.feeAmount !== undefined ? payout.feeAmount : grossAmount * 0.10;
-              const netAmount = payout.netAmount !== undefined ? payout.netAmount : grossAmount * 0.90;
+              const feeAmount = payout.feeAmount !== undefined ? payout.feeAmount : grossAmount * 0.15;
+              const netAmount = payout.netAmount !== undefined ? payout.netAmount : grossAmount * 0.85;
               const dateStr = payout.createdAt ? new Date(payout.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
 
               return (

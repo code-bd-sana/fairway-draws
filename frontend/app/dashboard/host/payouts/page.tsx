@@ -40,7 +40,7 @@ export default function PayoutsAndEarningsPage() {
             </span>
           </div>
           <p className="font-sans text-xs text-text-muted pl-7">
-            Every withdrawal deducts a standard <strong className="text-text-primary">10% platform fee</strong>. Net payouts are sent directly to your bank account or PayPal.
+            Every withdrawal deducts a standard <strong className="text-text-primary">15% platform fee</strong>. Net payouts are sent directly to your bank account or PayPal.
           </p>
         </div>
 
