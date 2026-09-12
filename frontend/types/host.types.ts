@@ -9,4 +9,5 @@ export interface VerifiedHost {
   averageRating?: number;
   totalReviews?: number;
   isVerified: boolean;
+  isBlocked?: boolean;
 }

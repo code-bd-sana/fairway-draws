@@ -19,7 +19,12 @@ export default async function VerifiedHostsPage() {
     });
     if (res.ok) {
       const json = await res.json();
-      verifiedHosts = json.data || json;
+      const rawHosts = json.data || json;
+      if (Array.isArray(rawHosts)) {
+        verifiedHosts = rawHosts.filter(
+          (host: any) => host && host.isVerified === true && !host.isBlocked
+        );
+      }
     }
   } catch (err) {
     console.error("Failed to fetch verified hosts", err);

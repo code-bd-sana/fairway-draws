@@ -14,9 +14,13 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 export default function VerifiedHostsList({ hosts }: VerifiedHostsListProps) {
   const [activeLetter, setActiveLetter] = useState<string>("ALL");
 
+  const verifiedOnlyHosts = hosts.filter(
+    (host) => host && host.isVerified === true && !host.isBlocked
+  );
+
   const filteredHosts = activeLetter === "ALL" 
-    ? hosts 
-    : hosts.filter(host => host.name.toUpperCase().startsWith(activeLetter));
+    ? verifiedOnlyHosts 
+    : verifiedOnlyHosts.filter(host => host.name.toUpperCase().startsWith(activeLetter));
 
   return (
     <div className="flex flex-col w-full">

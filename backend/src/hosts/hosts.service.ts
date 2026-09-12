@@ -13,6 +13,10 @@ export class HostsService {
     const hosts = await this.prisma.hostProfile.findMany({
       where: {
         isVerified: true,
+        user: {
+          isBlocked: false,
+          role: 'HOST',
+        },
       },
       include: {
         user: {
@@ -20,6 +24,7 @@ export class HostsService {
             firstName: true,
             lastName: true,
             avatarUrl: true,
+            isBlocked: true,
           },
         },
         _count: {
@@ -31,6 +36,9 @@ export class HostsService {
             },
           },
         },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -45,6 +53,7 @@ export class HostsService {
       averageRating: 5.0, // Mocked for now
       totalReviews: 12, // Mocked for now
       isVerified: host.isVerified,
+      isBlocked: host.user.isBlocked,
     }));
   }
 
@@ -52,6 +61,11 @@ export class HostsService {
     const host = await this.prisma.hostProfile.findFirst({
       where: {
         OR: [{ slug }, { id: slug }],
+        isVerified: true,
+        user: {
+          isBlocked: false,
+          role: 'HOST',
+        },
       },
       include: {
         user: {
@@ -59,6 +73,7 @@ export class HostsService {
             firstName: true,
             lastName: true,
             avatarUrl: true,
+            isBlocked: true,
           },
         },
         raffles: {
@@ -87,7 +102,7 @@ export class HostsService {
     });
 
     if (!host) {
-      throw new NotFoundException('Host not found');
+      throw new NotFoundException('Host not found or is unavailable');
     }
 
     return {
@@ -97,6 +112,7 @@ export class HostsService {
       logo: host.user.avatarUrl,
       bio: host.bio || null,
       isVerified: host.isVerified,
+      isBlocked: host.user.isBlocked,
       drawsHosted: host._count.raffles,
       rating: 5.0, // Mocked
       memberSince: host.createdAt.getFullYear(),

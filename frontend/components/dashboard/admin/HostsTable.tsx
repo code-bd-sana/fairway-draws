@@ -32,6 +32,7 @@ export default function HostsTable() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-hosts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-hosts-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['verified-hosts'] });
       setBlockModalHost(null);
     },
   });
@@ -41,6 +42,7 @@ export default function HostsTable() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-hosts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-hosts-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['verified-hosts'] });
       setIsModalOpen(false);
       setSelectedHost(null);
     },
@@ -51,6 +53,7 @@ export default function HostsTable() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-hosts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-hosts-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['verified-hosts'] });
       setIsModalOpen(false);
       setSelectedHost(null);
     },

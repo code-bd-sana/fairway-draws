@@ -18,7 +18,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (res.ok) {
       const json = await res.json();
       const host = json.data || json;
-      name = host.name;
+      if (host && host.isVerified && !host.isBlocked) {
+        name = host.name;
+      }
     }
   } catch (e) {}
 
@@ -45,14 +47,18 @@ export default async function HostProfilePage({ params }: PageProps) {
     console.error("Failed to fetch host", e);
   }
 
-  if (!host) {
+  if (!host || !host.isVerified || host.isBlocked) {
     return (
       <>
         <WebsiteNavbar />
         <main className="flex min-h-screen items-center justify-center bg-[#cfdfcb] pt-[80px]">
-          <div className="text-center">
-            <h1 className="text-2xl text-[#E8EDD4] mb-4">Host Not Found</h1>
-            <p className="text-[#72943A]">This host does not exist or has been removed.</p>
+          <div className="mx-auto flex w-full max-w-[500px] flex-col items-center justify-center gap-3 rounded-[20px] border border-[#0b4d35]/25 bg-[#edf5e9] px-8 py-16 text-center shadow-[0_12px_28px_rgba(11,77,53,.1)]">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-[#0b4d35]/20 bg-[#dcebd8] text-[26px]">🔒</span>
+            <span className="font-sans text-[10px] font-black tracking-[.16em] text-[#dc2626] uppercase">Host Profile</span>
+            <h1 className="font-heading text-2xl font-black text-[#073826] uppercase">Host Unavailable</h1>
+            <p className="max-w-[340px] font-sans text-xs leading-relaxed text-[#5e766c]">
+              This host profile is currently unverified, pending admin review, or has been deactivated.
+            </p>
           </div>
         </main>
         <WebsiteFooter />

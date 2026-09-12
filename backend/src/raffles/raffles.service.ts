@@ -197,6 +197,12 @@ export class RafflesService {
     // Base where clause
     const whereClause: any = {
       status: 'ACTIVE',
+      host: {
+        isVerified: true,
+        user: {
+          isBlocked: false,
+        },
+      },
     };
 
     // Category filter
@@ -408,13 +414,22 @@ export class RafflesService {
 
   async findOnePublic(slug: string) {
     const raffle = await this.prisma.raffle.findFirst({
-      where: { slug, status: 'ACTIVE' },
+      where: {
+        slug,
+        status: 'ACTIVE',
+        host: {
+          isVerified: true,
+          user: {
+            isBlocked: false,
+          },
+        },
+      },
       include: {
         host: { include: { user: true } },
         instantWins: true,
       },
     });
-    if (!raffle) throw new NotFoundException('Raffle not found');
+    if (!raffle) throw new NotFoundException('Raffle not found or is unavailable');
     return raffle;
   }
 
