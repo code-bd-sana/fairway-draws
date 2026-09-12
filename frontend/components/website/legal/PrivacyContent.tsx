@@ -140,7 +140,7 @@ export default function PrivacyContent() {
                   Correspondence Address: Synergy House, Lawson Street, North Shields NE29 6TG
                 </p>
                 <p className="text-xs text-[#B3B8AA]">
-                  Phone: <a href="tel:+447984594833" className="text-[#8CB34A] hover:underline">+44 (0) 7984 594833</a>
+                  Phone: <a href="tel:+447466347548" className="text-[#8CB34A] hover:underline">+44 (0) 7466 347548</a>
                 </p>
                 <p className="text-xs text-[#B3B8AA]">
                   Email: <a href="mailto:privacy@fairwaydraws.com" className="text-[#8CB34A] hover:underline">privacy@fairwaydraws.com</a> / <a href="mailto:info@fairwaydraws.com" className="text-[#8CB34A] hover:underline">info@fairwaydraws.com</a>

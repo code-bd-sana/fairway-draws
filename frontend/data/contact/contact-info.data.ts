@@ -11,10 +11,10 @@ export const CONTACT_INFO_ITEMS: ContactInfoCardItem[] = [
   },
   {
     id: "whatsapp",
-    title: "WhatsApp Support",
-    description: "Chat directly with Fairway Draws Support on WhatsApp.",
-    value: "+44 (0) 7984 594833",
-    href: "https://wa.me/447984594833?text=Hello%20Fairway%20Draws%20Support%2C%20I%20have%20an%20inquiry",
+    title: "Customer Service",
+    description: "Chat directly with Fairway Draws Customer Service on WhatsApp.",
+    value: "07466 347548",
+    href: "https://wa.me/447466347548?text=Hello%20Fairway%20Draws%20Customer%20Service%2C%20I%20have%20an%20inquiry",
     type: "whatsapp",
   },
   {

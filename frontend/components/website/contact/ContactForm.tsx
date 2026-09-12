@@ -157,7 +157,7 @@ export default function ContactForm() {
           </svg>
           <h3 className="font-heading font-bold text-base md:text-lg mb-2">Message Sent to Support!</h3>
           <p className="font-sans text-xs md:text-sm text-text-muted leading-relaxed max-w-sm mb-4">
-            Thank you for reaching out. Your message has been dispatched to our admin support team. We will respond via email within 24 hours.
+            Thank you for reaching out. Your message has been dispatched to our customer service team. We will respond via email within 24 hours.
           </p>
           <PrimaryButton onClick={() => setIsSuccess(false)} className="px-5 py-2 text-xs">
             Send Another Message

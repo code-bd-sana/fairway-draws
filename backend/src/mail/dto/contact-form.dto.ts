@@ -12,7 +12,7 @@ export class ContactFormDto {
   @IsEmail()
   email: string;
 
-  @ApiPropertyOptional({ example: '+447984594833', description: 'Sender phone / whatsapp number' })
+  @ApiPropertyOptional({ example: '+447466347548', description: 'Sender phone / whatsapp number' })
   @IsOptional()
   @IsString()
   phone?: string;

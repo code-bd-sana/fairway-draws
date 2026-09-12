@@ -54,9 +54,6 @@ export default function LiveRafflesHero({
             <h1 className="font-heading text-4xl font-black leading-[.92] tracking-[-.055em] text-white uppercase [text-shadow:0_5px_18px_rgba(0,0,0,.3)] sm:text-5xl md:text-6xl">
               Find your next<br />winning shot
             </h1>
-            <p className="mt-5 max-w-xl rounded-2xl border border-white/15 bg-[#042d1e]/58 p-3.5 font-sans text-sm font-medium leading-relaxed text-white/85 shadow-xl backdrop-blur-sm sm:text-base">
-              Browse every live Fairway Draws competition. Choose your prize, enter from £1, and follow every draw with complete transparency.
-            </p>
           </div>
 
           <div className="grid w-full grid-cols-3 overflow-hidden rounded-2xl border border-white/30 bg-[#063d29]/88 shadow-2xl backdrop-blur-md lg:w-auto lg:min-w-[460px]">
