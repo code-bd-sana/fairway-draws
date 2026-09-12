@@ -155,7 +155,7 @@ export default function TermsContent() {
                 >
                   https://fairwaydraws.com
                 </a>{" "}
-                (the “Website”).
+                (the “Website”). Competitions are operated by <strong className="text-[#073826]">Fairway Draws Ltd</strong> (Company No. 17396815).
               </p>
               <p>
                 2.2. All competitions listed on the Website operate as prize draws. Entry fees for online entries are payable each time you enter. A free postal entry route is available for every competition.
