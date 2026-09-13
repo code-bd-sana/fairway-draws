@@ -18,6 +18,7 @@ model User {
   location        String?  @db.VarChar(255)
   phone           String?  @db.VarChar(50)
   address         String?  @db.Text
+  dateOfBirth     DateTime? @map("date_of_birth")
   role            String   @default("CLIENT") @db.VarChar(50) // ADMIN, HOST, CLIENT
   isBlocked       Boolean  @default(false) @map("is_blocked")
   createdAt       DateTime @default(now()) @map("created_at")

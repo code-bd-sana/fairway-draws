@@ -10,6 +10,7 @@ export interface User {
   location?: string | null;
   phone?: string | null;
   address?: string | null;
+  dateOfBirth?: string | null;
   createdAt?: string;
   isEmailVerified?: boolean;
   hostProfile?: {

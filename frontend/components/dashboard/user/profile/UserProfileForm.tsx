@@ -14,6 +14,7 @@ export default function UserProfileForm() {
     lastName: "",
     email: "",
     phone: "",
+    dateOfBirth: "",
     address: "",
   });
 
@@ -32,11 +33,22 @@ export default function UserProfileForm() {
 
   useEffect(() => {
     if (user) {
+      let formattedDob = "";
+      if (user.dateOfBirth) {
+        try {
+          const d = new Date(user.dateOfBirth);
+          if (!isNaN(d.getTime())) {
+            formattedDob = d.toISOString().split("T")[0];
+          }
+        } catch {}
+      }
+
       setFormData({
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         email: user.email || "",
         phone: user.phone || user.hostProfile?.phone || "",
+        dateOfBirth: formattedDob,
         address: user.address || user.location || user.hostProfile?.address || "",
       });
     }
@@ -112,12 +124,27 @@ export default function UserProfileForm() {
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.dateOfBirth) {
+      const dob = new Date(formData.dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        setProfileMessage("You must be at least 18 years of age. Update refused.");
+        return;
+      }
+    }
+
     setIsSubmittingProfile(true);
     
     updateProfileMutation.mutate({
       firstName: formData.firstName,
       lastName: formData.lastName,
       phone: formData.phone,
+      dateOfBirth: formData.dateOfBirth || undefined,
       address: formData.address,
     });
   };
@@ -252,6 +279,19 @@ export default function UserProfileForm() {
                 <label className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">Phone Number</label>
                 <div className="bg-elevated border border-border-medium h-10 rounded-xl px-3 flex items-center focus-within:border-primary transition-all">
                   <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+44 7700 900123" className="bg-transparent outline-none w-full text-sm text-text-primary font-sans" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5 md:col-span-2">
+                <label className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">Date of Birth (18+ Only)</label>
+                <div className="bg-elevated border border-border-medium h-10 rounded-xl px-3 flex items-center focus-within:border-primary transition-all">
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    max={new Date().toISOString().split("T")[0]}
+                    className="bg-transparent outline-none w-full text-sm text-text-primary font-sans"
+                  />
                 </div>
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">

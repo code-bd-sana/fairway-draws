@@ -10,6 +10,7 @@ export interface ShippingDetails {
   lastName: string;
   email: string;
   phone: string;
+  dateOfBirth: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;

@@ -53,6 +53,11 @@ export class ShippingDetailsDto {
   @IsNotEmpty()
   phone: string;
 
+  @ApiProperty({ example: '1995-06-15', description: 'Buyer date of birth (YYYY-MM-DD)' })
+  @IsString()
+  @IsNotEmpty()
+  dateOfBirth: string;
+
   @ApiProperty({ example: '12 Fairway Lane', description: 'Street address line 1' })
   @IsString()
   @IsNotEmpty()

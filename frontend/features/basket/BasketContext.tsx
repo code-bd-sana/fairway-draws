@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 export interface BasketItem {
@@ -62,7 +62,30 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [items, isInitialized]);
 
-  const addItem = (item: Omit<BasketItem, "quantity">, quantity = 1) => {
+  // Listen for clear events and cross-tab/window storage updates
+  useEffect(() => {
+    const handleCleared = () => {
+      setItems([]);
+    };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) {
+        try {
+          const val = e.newValue ? JSON.parse(e.newValue) : [];
+          setItems(Array.isArray(val) ? val : []);
+        } catch {
+          setItems([]);
+        }
+      }
+    };
+    window.addEventListener("fairway_basket_cleared", handleCleared);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("fairway_basket_cleared", handleCleared);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  const addItem = useCallback((item: Omit<BasketItem, "quantity">, quantity = 1) => {
     if (quantity <= 0) return;
 
     setItems((prev) => {
@@ -96,9 +119,9 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
       toast.success(`Added ${initialQty} ticket(s) to basket!`);
       return [...prev, { ...item, quantity: initialQty }];
     });
-  };
+  }, []);
 
-  const removeItem = (raffleId: string) => {
+  const removeItem = useCallback((raffleId: string) => {
     setItems((prev) => {
       const target = prev.find((i) => i.raffleId === raffleId);
       if (target) {
@@ -106,9 +129,9 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
       }
       return prev.filter((i) => i.raffleId !== raffleId);
     });
-  };
+  }, []);
 
-  const updateQuantity = (raffleId: string, quantity: number) => {
+  const updateQuantity = useCallback((raffleId: string, quantity: number) => {
     setItems((prev) => {
       if (quantity <= 0) {
         return prev.filter((i) => i.raffleId !== raffleId);
@@ -127,16 +150,20 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
         };
       });
     });
-  };
+  }, []);
 
-  const clearBasket = () => {
+  const clearBasket = useCallback(() => {
     setItems([]);
     try {
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("fairway_basket_cleared"));
+      }
     } catch (e) {
       console.error("Failed to clear basket storage", e);
     }
-  };
+  }, []);
 
   const itemCount = items.length;
   const totalTickets = items.reduce((sum, item) => sum + item.quantity, 0);

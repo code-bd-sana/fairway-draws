@@ -1,33 +1,126 @@
-import React from "react";
+"use client";
+
+import React, { useState, useMemo } from "react";
+import Link from "next/link";
 import Image from "next/image";
+import { format } from "date-fns";
+import { useAuthUser } from "@/hooks/useAuthHooks";
+import { useMyWinnersQuery } from "@/hooks/useUserHooks";
+import { useMyTicketsQuery, useMyTransactionsQuery } from "@/hooks/useTicketHooks";
+import { UserWinner } from "@/services/user.service";
 
 export default function UserDashboardPage() {
+  const { data: user } = useAuthUser();
+  const { data: winners, isLoading: isWinnersLoading } = useMyWinnersQuery();
+  const { data: rawTickets, isLoading: isTicketsLoading } = useMyTicketsQuery();
+  const { data: rawTransactions, isLoading: isTransactionsLoading } = useMyTransactionsQuery();
+
+  const [timeframe, setTimeframe] = useState<"7D" | "1M" | "3M" | "1Y">("1M");
+
+  const allWinners: UserWinner[] = useMemo(() => winners || [], [winners]);
+  const instantWinsCount = useMemo(
+    () => allWinners.filter((w) => w.winType === "INSTANT_WIN").length,
+    [allWinners]
+  );
+  const mainDrawWinsCount = useMemo(
+    () => allWinners.filter((w) => w.winType === "MAIN_DRAW").length,
+    [allWinners]
+  );
+  const totalWins = allWinners.length;
+  const recentWins = useMemo(() => allWinners.slice(0, 5), [allWinners]);
+
+  const allTickets: any[] = useMemo(() => rawTickets || [], [rawTickets]);
+  const activeTickets = useMemo(
+    () => allTickets.filter((t: any) => t.raffle && t.raffle.status === "ACTIVE"),
+    [allTickets]
+  );
+
+  // Group active tickets by competition
+  const activeCompetitions = useMemo(() => {
+    const map = new Map<string, { raffle: any; ticketCount: number; latestDate: string }>();
+    activeTickets.forEach((t: any) => {
+      const r = t.raffle;
+      if (!r) return;
+      const existing = map.get(r.id);
+      if (existing) {
+        existing.ticketCount += 1;
+        if (new Date(t.createdAt) > new Date(existing.latestDate)) {
+          existing.latestDate = t.createdAt;
+        }
+      } else {
+        map.set(r.id, {
+          raffle: r,
+          ticketCount: 1,
+          latestDate: t.createdAt,
+        });
+      }
+    });
+    return Array.from(map.values()).slice(0, 5);
+  }, [activeTickets]);
+
+  // Transactions & Total Spend
+  const transactions: any[] = useMemo(() => rawTransactions || [], [rawTransactions]);
+  const totalLifetimeSpent = useMemo(() => {
+    const completed = transactions.filter(
+      (t: any) => (t.status || "").toUpperCase() === "COMPLETED"
+    );
+    if (completed.length > 0) {
+      return completed.reduce((sum: number, t: any) => {
+        const val =
+          parseFloat(String(t.amount || "0").replace(/[^0-9.-]+/g, "")) || 0;
+        return sum + val;
+      }, 0);
+    }
+    // Fallback: sum of all tickets purchased
+    return allTickets.reduce((sum: number, t: any) => {
+      const price = Number(t.raffle?.pricePerTicket || 0);
+      return sum + price;
+    }, 0);
+  }, [transactions, allTickets]);
+
+  const firstName = user?.firstName || "Player";
+
   return (
     <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
-      
       {/* Header */}
-      <div className="flex flex-col gap-1">
-        <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
-          Player Dashboard
-        </h1>
-        <p className="font-sans text-xs text-text-muted">
-          Welcome back! Track your active competition entries, ticket spend, and recent prize wins.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
+            Player Dashboard
+          </h1>
+          <p className="font-sans text-xs text-text-muted">
+            Welcome back, {firstName}! Track your active competition entries, ticket spend, and recent prize wins.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/user/winners"
+            className="px-4 py-2 rounded-xl bg-surface border border-border hover:bg-elevated text-text-primary font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-xs"
+          >
+            <span>🏆</span> My Winnings ({totalWins})
+          </Link>
+          <Link
+            href="/live-raffles"
+            className="btn-glossy-red px-4 py-2 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider shadow-md active:scale-98 transition-all flex items-center gap-1.5"
+          >
+            <span>🎯</span> Browse Draws
+          </Link>
+        </div>
       </div>
 
       {/* KPI Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 w-full">
         {/* Total Tickets */}
         <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-3 shadow-card">
           <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
             Total Tickets Purchased
           </p>
           <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            142
+            {isTicketsLoading ? "..." : allTickets.length}
           </p>
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] w-fit">
             <span className="font-sans text-[10px] font-bold text-success-text">
-              ▲ 12 this month
+              {allTickets.length > 0 ? "Lifetime entries" : "No entries yet"}
             </span>
           </div>
         </div>
@@ -38,41 +131,43 @@ export default function UserDashboardPage() {
             Active Entries
           </p>
           <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            8
+            {isTicketsLoading ? "..." : activeTickets.length}
           </p>
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 w-fit">
             <span className="font-sans text-[10px] font-bold text-text-brand">
-              Awaiting live draw
+              {activeCompetitions.length} live draw{activeCompetitions.length === 1 ? "" : "s"}
             </span>
           </div>
         </div>
 
-        {/* Won Competitions */}
+        {/* Won Competitions / Prizes */}
         <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-3 shadow-card">
           <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
-            Won Competitions
+            Won Prizes
           </p>
           <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            3
+            {isWinnersLoading ? "..." : totalWins}
           </p>
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] w-fit">
             <span className="font-sans text-[10px] font-bold text-success-text">
-              🏆 1 new prize
+              {instantWinsCount > 0 ? `⚡ ${instantWinsCount} Instant Win(s)` : `🏆 ${totalWins} Total Prize(s)`}
             </span>
           </div>
         </div>
 
-        {/* Total Spent */}
+        {/* Total Lifetime Spent */}
         <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-3 shadow-card">
           <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
             Total Lifetime Spent
           </p>
           <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            £286.50
+            {isTransactionsLoading && isTicketsLoading
+              ? "..."
+              : `£${totalLifetimeSpent.toFixed(2)}`}
           </p>
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-elevated border border-border-medium w-fit">
             <span className="font-sans text-[10px] font-bold text-text-muted">
-              Lifetime total
+              Lifetime purchases
             </span>
           </div>
         </div>
@@ -80,17 +175,16 @@ export default function UserDashboardPage() {
 
       {/* Row 2: Ticket Spend Overview Chart */}
       <div className="w-full">
-        {/* Ticket Spend Overview */}
-        <div className="w-full bg-surface border border-border rounded-card p-6 flex flex-col min-h-[346px] shadow-card">
+        <div className="w-full bg-surface border border-border rounded-card p-6 flex flex-col min-h-[320px] shadow-card">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 sm:gap-0">
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
-                <span className="font-heading font-black text-3xl text-text-primary leading-none">
-                  £286.50
+                <span className="font-heading font-black text-2xl lg:text-3xl text-text-primary leading-none">
+                  £{totalLifetimeSpent.toFixed(2)}
                 </span>
                 <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0]">
                   <span className="font-sans text-[11px] font-bold text-success-text">
-                    ▲ 8%
+                    Audited Transactions
                   </span>
                 </div>
               </div>
@@ -100,22 +194,23 @@ export default function UserDashboardPage() {
             </div>
 
             <div className="flex items-center gap-1.5 bg-elevated p-1 rounded-xl border border-border-medium">
-              <button className="px-3 py-1 rounded-lg border border-transparent font-heading font-bold text-xs text-text-muted hover:text-text-primary cursor-pointer">
-                7D
-              </button>
-              <button className="px-3 py-1 rounded-lg border border-border bg-surface font-heading font-bold text-xs text-text-brand shadow-xs cursor-pointer">
-                1M
-              </button>
-              <button className="px-3 py-1 rounded-lg border border-transparent font-heading font-bold text-xs text-text-muted hover:text-text-primary cursor-pointer">
-                3M
-              </button>
-              <button className="px-3 py-1 rounded-lg border border-transparent font-heading font-bold text-xs text-text-muted hover:text-text-primary cursor-pointer">
-                1Y
-              </button>
+              {(["7D", "1M", "3M", "1Y"] as const).map((period) => (
+                <button
+                  key={period}
+                  onClick={() => setTimeframe(period)}
+                  className={`px-3 py-1 rounded-lg font-heading font-bold text-xs transition-all cursor-pointer ${
+                    timeframe === period
+                      ? "border border-border bg-surface text-text-brand shadow-xs"
+                      : "border border-transparent text-text-muted hover:text-text-primary"
+                  }`}
+                >
+                  {period}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="mt-8 flex-1 w-full relative min-h-[200px]">
+          <div className="mt-8 flex-1 w-full relative min-h-[180px]">
             {/* Area Chart Graphic */}
             <svg
               className="absolute inset-0 w-full h-full text-primary opacity-10"
@@ -136,7 +231,7 @@ export default function UserDashboardPage() {
             >
               <path d="M0 50 Q 15 70 25 40 T 50 60 T 75 30 T 100 45" />
             </svg>
-            
+
             {/* X-axis labels */}
             <div className="absolute bottom-0 w-full flex justify-between px-4">
               {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"].map(
@@ -155,128 +250,250 @@ export default function UserDashboardPage() {
       </div>
 
       {/* Row 3: Active Entries & Recent Wins */}
-      <div className="flex flex-col xl:flex-row gap-5 w-full">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 w-full items-start">
         {/* My Active Entries */}
-        <div className="flex-[3] bg-surface border border-border rounded-card p-6 flex flex-col shadow-card">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
-              My Active Entries
-            </h3>
-            <button className="flex items-center gap-1 font-sans font-bold text-xs text-text-brand hover:underline transition-all cursor-pointer">
+        <div className="xl:col-span-6 bg-surface border border-border rounded-card p-6 flex flex-col shadow-card">
+          <div className="flex justify-between items-center mb-4 pb-3 border-b border-divider">
+            <div>
+              <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
+                My Active Entries
+              </h3>
+              <p className="font-sans text-[11px] text-text-muted">
+                Competitions you are currently participating in
+              </p>
+            </div>
+            <Link
+              href="/dashboard/user/tickets"
+              className="flex items-center gap-1 font-sans font-bold text-xs text-text-brand hover:underline transition-all cursor-pointer"
+            >
               View All
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
               </svg>
-            </button>
+            </Link>
           </div>
-          
-          <div className="flex flex-col">
-            {/* List Header */}
-            <div className="grid grid-cols-12 gap-4 pb-3 border-b border-divider font-sans text-[11px] font-bold text-text-muted uppercase tracking-wider">
-              <div className="col-span-6">Competition</div>
-              <div className="col-span-3">Draw Date</div>
-              <div className="col-span-3 text-right">Tickets</div>
-            </div>
-            
-            {/* List Item 1 */}
-            <div className="grid grid-cols-12 gap-4 py-4 border-b border-divider items-center hover:bg-elevated/40 transition-colors">
-              <div className="col-span-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 text-primary shadow-xs">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-sm text-text-primary">TaylorMade Qi10 Max Driver</span>
-                  <span className="font-sans text-xs text-text-muted">Hosted by Fairway Pro Shop</span>
-                </div>
-              </div>
-              <div className="col-span-3 flex items-center">
-                <span className="font-sans font-semibold text-xs text-text-primary">12 Oct 2024</span>
-              </div>
-              <div className="col-span-3 flex items-center justify-end">
-                <div className="px-3 py-1 bg-elevated border border-border-medium rounded-lg">
-                  <span className="font-sans font-bold text-xs text-text-brand">15</span>
-                </div>
-              </div>
-            </div>
 
-            {/* List Item 2 */}
-            <div className="grid grid-cols-12 gap-4 py-4 border-b border-divider items-center hover:bg-elevated/40 transition-colors">
-              <div className="col-span-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 text-primary shadow-xs">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-sm text-text-primary">Titleist T100 Iron Set</span>
-                  <span className="font-sans text-xs text-text-muted">Hosted by Links & Fairways Club</span>
-                </div>
-              </div>
-              <div className="col-span-3 flex items-center">
-                <span className="font-sans font-semibold text-xs text-text-primary">15 Oct 2024</span>
-              </div>
-              <div className="col-span-3 flex items-center justify-end">
-                <div className="px-3 py-1 bg-elevated border border-border-medium rounded-lg">
-                  <span className="font-sans font-bold text-xs text-text-brand">3</span>
-                </div>
-              </div>
+          {isTicketsLoading ? (
+            <div className="py-12 flex flex-col items-center justify-center">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+              <span className="font-sans text-xs text-text-muted">Loading active entries...</span>
             </div>
-            
-            {/* List Item 3 */}
-            <div className="grid grid-cols-12 gap-4 py-4 items-center hover:bg-elevated/40 transition-colors">
-              <div className="col-span-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 text-primary shadow-xs">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-heading font-bold text-sm text-text-primary">Scotty Cameron Phantom X 11 Putter</span>
-                  <span className="font-sans text-xs text-text-muted">Hosted by St Andrews Pro Golf</span>
-                </div>
+          ) : activeCompetitions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+              <div className="w-14 h-14 bg-accent-bg rounded-full border border-primary/30 flex items-center justify-center mb-3 text-primary">
+                🎟️
               </div>
-              <div className="col-span-3 flex items-center">
-                <span className="font-sans font-semibold text-xs text-text-primary">22 Oct 2024</span>
-              </div>
-              <div className="col-span-3 flex items-center justify-end">
-                <div className="px-3 py-1 bg-elevated border border-border-medium rounded-lg">
-                  <span className="font-sans font-bold text-xs text-text-brand">10</span>
-                </div>
-              </div>
+              <h4 className="font-heading font-bold text-sm text-text-primary mb-1">
+                No active entries found
+              </h4>
+              <p className="font-sans text-xs text-text-muted max-w-[280px] mb-4">
+                You do not have any tickets in active draws. Browse live competitions to participate!
+              </p>
+              <Link
+                href="/live-raffles"
+                className="btn-glossy-red px-4 py-2 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider shadow-sm"
+              >
+                Browse Live Draws
+              </Link>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col divide-y divide-divider">
+              {activeCompetitions.map((item) => (
+                <div
+                  key={item.raffle.id}
+                  className="py-3.5 flex items-center justify-between gap-3 hover:bg-elevated/40 px-2 rounded-xl transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-accent-bg shrink-0 border border-border">
+                      <Image
+                        src={
+                          item.raffle.images?.[0] ||
+                          item.raffle.mainImage ||
+                          "https://placehold.co/400x300/1a230a/8cb34a?text=Draw"
+                        }
+                        alt={item.raffle.title}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <Link
+                        href={`/live-raffles/${item.raffle.slug || item.raffle.id}`}
+                        className="font-heading font-bold text-xs text-text-primary truncate hover:text-text-brand"
+                      >
+                        {item.raffle.title}
+                      </Link>
+                      <span className="font-sans text-[11px] text-text-muted truncate">
+                        Hosted by {item.raffle.host?.businessName || "Fairway Draws Host"}
+                      </span>
+                      <span className="font-sans text-[10px] text-text-muted mt-0.5">
+                        Draw Date:{" "}
+                        {item.raffle.endDate
+                          ? format(new Date(item.raffle.endDate), "dd MMM yyyy")
+                          : "TBA"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="px-3 py-1 bg-elevated border border-border-medium rounded-lg text-center">
+                      <span className="font-sans font-bold text-xs text-text-brand">
+                        {item.ticketCount} {item.ticketCount === 1 ? "ticket" : "tickets"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Recent Wins */}
-        <div className="flex-[2] bg-surface border border-border rounded-card p-6 flex flex-col shadow-card">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
-              Recent Wins
-            </h3>
-            <button className="flex items-center gap-1 font-sans font-bold text-xs text-text-brand hover:underline transition-all cursor-pointer">
-              View All
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        {/* Recent Wins (Instant Wins & Main Draw Wins) */}
+        <div className="xl:col-span-6 bg-surface border border-border rounded-card p-6 flex flex-col shadow-card">
+          <div className="flex justify-between items-center mb-4 pb-3 border-b border-divider">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
+                  Recent Wins
+                </h3>
+                {instantWinsCount > 0 && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#FEF3C7] border border-[#FDE68A] text-[#D97706] font-sans font-bold text-[9px] uppercase tracking-wider">
+                    ⚡ {instantWinsCount} Instant Win{instantWinsCount === 1 ? "" : "s"}
+                  </span>
+                )}
+              </div>
+              <p className="font-sans text-[11px] text-text-muted">
+                Your recent Instant Win prizes and Competition victories
+              </p>
+            </div>
+            <Link
+              href="/dashboard/user/winners"
+              className="flex items-center gap-1 font-sans font-bold text-xs text-text-brand hover:underline transition-all cursor-pointer"
+            >
+              View All ({totalWins})
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
               </svg>
-            </button>
+            </Link>
           </div>
-          
-          <div className="flex flex-col h-full justify-center min-h-[220px]">
-             {/* Empty State for Wins */}
-             <div className="flex flex-col items-center justify-center text-center py-8">
-                <div className="w-16 h-16 bg-accent-bg rounded-full border border-primary/30 flex items-center justify-center mb-4 text-primary shadow-xs">
-                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
-                   </svg>
+
+          {isWinnersLoading ? (
+            <div className="py-12 flex flex-col items-center justify-center">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+              <span className="font-sans text-xs text-text-muted">Loading your winning records...</span>
+            </div>
+          ) : recentWins.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+              <div className="w-14 h-14 bg-accent-bg rounded-full border border-primary/30 flex items-center justify-center mb-3 text-primary shadow-xs">
+                🏆
+              </div>
+              <h4 className="font-heading font-bold text-sm text-text-primary mb-1">
+                No wins recorded yet
+              </h4>
+              <p className="font-sans text-xs text-text-muted max-w-[280px] mb-4">
+                Enter active competitions for your chance to win instant prizes and premium golf equipment.
+              </p>
+              <Link
+                href="/dashboard/user/competitions"
+                className="btn-glossy-red px-4 py-2 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider shadow-sm"
+              >
+                Explore Competitions
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-col divide-y divide-divider">
+              {recentWins.map((win) => (
+                <div
+                  key={win.id}
+                  className="py-3.5 flex items-center justify-between gap-3 hover:bg-elevated/40 px-2 rounded-xl transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-accent-bg shrink-0 border border-border">
+                      <Image
+                        src={
+                          win.prizeImage ||
+                          win.raffle?.mainImage ||
+                          "https://placehold.co/400x300/1a230a/8cb34a?text=Prize"
+                        }
+                        alt={win.prizeName}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-heading font-bold text-xs text-text-primary truncate">
+                          {win.prizeName}
+                        </span>
+                        {win.winType === "INSTANT_WIN" ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FEF3C7] border border-[#FDE68A] text-[#D97706] font-sans font-bold text-[9px] uppercase tracking-wider">
+                            ⚡ Instant Win
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] font-sans font-bold text-[9px] uppercase tracking-wider">
+                            🏆 Main Draw
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="font-sans text-[11px] text-text-muted truncate">
+                        {win.raffle?.title || "Fairway Draws Competition"}
+                      </p>
+
+                      <div className="flex items-center gap-2 mt-0.5 text-[10px] font-sans text-text-muted">
+                        <span className="font-mono font-semibold text-text-primary">
+                          Ticket #{win.ticketNumber}
+                        </span>
+                        {win.rrpValue ? (
+                          <>
+                            <span>•</span>
+                            <span className="font-semibold text-[#15803d]">
+                              Value: £{Number(win.rrpValue).toFixed(2)}
+                            </span>
+                          </>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end shrink-0 gap-1.5">
+                    <span className="font-sans text-[10px] text-text-muted">
+                      {win.createdAt ? format(new Date(win.createdAt), "dd MMM yyyy") : ""}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[9px] font-sans font-bold uppercase tracking-wider ${
+                        win.deliveryStatus === "DELIVERED"
+                          ? "bg-green-100 text-green-700 border border-green-200"
+                          : win.deliveryStatus === "SHIPPED"
+                          ? "bg-blue-100 text-blue-700 border border-blue-200"
+                          : "bg-amber-100 text-amber-700 border border-amber-200"
+                      }`}
+                    >
+                      {win.deliveryStatus === "DELIVERED"
+                        ? "Delivered"
+                        : win.deliveryStatus === "SHIPPED"
+                        ? "Shipped"
+                        : "Won / Pending"}
+                    </span>
+                  </div>
                 </div>
-                <h4 className="font-heading font-bold text-sm text-text-primary mb-1">No wins recorded yet</h4>
-                <p className="font-sans text-xs text-text-muted max-w-[220px]">
-                   Enter active competitions for a chance to win premium golf gear &amp; prizes.
-                </p>
-             </div>
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

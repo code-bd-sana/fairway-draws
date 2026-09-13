@@ -4,11 +4,13 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useAuthUser } from "../../../hooks/useAuthHooks";
 import { paymentService } from "../../../services/payment.service";
 import { userService, UnclaimedInstantWin } from "../../../services/user.service";
+import { useBasket } from "../../../features/basket/BasketContext";
 import WinAnimationModal, { WinPrizeItem } from "../../ui/WinAnimationModal";
 import { toast } from "sonner";
 
 export default function HomepagePaymentAndInstantWinModal() {
   const { data: user } = useAuthUser();
+  const { clearBasket } = useBasket();
   const [prizes, setPrizes] = useState<WinPrizeItem[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const paymentProcessedRef = useRef(false);
@@ -56,6 +58,14 @@ export default function HomepagePaymentAndInstantWinModal() {
           // Clean the query parameters from the URL
           window.history.replaceState({}, document.title, window.location.pathname);
           toast.dismiss(toastId);
+          clearBasket();
+          try {
+            localStorage.removeItem("fairway_basket_v1");
+            localStorage.setItem("fairway_basket_v1", "[]");
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new Event("fairway_basket_cleared"));
+            }
+          } catch {}
 
           if (res.tickets && res.tickets.length > 0) {
             toast.success(`Purchase confirmed! ${res.tickets.length} ticket(s) allocated.`);

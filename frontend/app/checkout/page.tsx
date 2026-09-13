@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
 import { useBasket } from "../../features/basket/BasketContext";
 import { useAuthUser } from "../../hooks/useAuthHooks";
 import { ticketService } from "../../services/ticket.service";
+import { userService } from "../../services/user.service";
 import { toast } from "sonner";
 
 interface FormErrors {
@@ -16,21 +17,37 @@ interface FormErrors {
   lastName?: string;
   email?: string;
   phone?: string;
+  dateOfBirth?: string;
   addressLine1?: string;
   city?: string;
   postcode?: string;
+}
+
+export function calculateAge(dobString: string): number {
+  if (!dobString) return 0;
+  const dob = new Date(dobString);
+  if (isNaN(dob.getTime())) return 0;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age;
 }
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { data: user, isLoading: isUserLoading } = useAuthUser();
   const { items, itemCount, totalTickets, totalPrice, clearBasket, isInitialized } = useBasket();
+  const isOrderCompletedRef = useRef(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
+    dateOfBirth: "",
     addressLine1: "",
     addressLine2: "",
     city: "",
@@ -58,12 +75,23 @@ export default function CheckoutPage() {
         if (parts.length >= 3) code = parts[2];
       }
 
+      let formattedDob = "";
+      if (user.dateOfBirth) {
+        try {
+          const d = new Date(user.dateOfBirth);
+          if (!isNaN(d.getTime())) {
+            formattedDob = d.toISOString().split("T")[0];
+          }
+        } catch {}
+      }
+
       setFormData((prev) => ({
         ...prev,
         firstName: prev.firstName || user.firstName || "",
         lastName: prev.lastName || user.lastName || "",
         email: prev.email || user.email || "",
         phone: prev.phone || user.phone || "",
+        dateOfBirth: prev.dateOfBirth || formattedDob,
         addressLine1: prev.addressLine1 || street,
         city: prev.city || town,
         postcode: prev.postcode || code,
@@ -71,12 +99,25 @@ export default function CheckoutPage() {
     }
   }, [user]);
 
-  // Redirect if basket is empty
+  // Redirect if basket is empty (except when completing/redirecting an order)
   useEffect(() => {
-    if (isInitialized && items.length === 0) {
+    if (isInitialized && items.length === 0 && !isSubmitting && !isOrderCompletedRef.current) {
       router.replace("/basket");
     }
-  }, [isInitialized, items.length, router]);
+  }, [isInitialized, items.length, router, isSubmitting]);
+
+  // Auto-save Date of Birth to user profile on blur if 18+
+  const handleDobBlur = async () => {
+    if (!user || !formData.dateOfBirth) return;
+    const age = calculateAge(formData.dateOfBirth);
+    if (age >= 18) {
+      try {
+        await userService.updateProfile({ dateOfBirth: formData.dateOfBirth });
+      } catch (err) {
+        console.error("Auto-save DOB error:", err);
+      }
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -109,18 +150,35 @@ export default function CheckoutPage() {
       newErrors.phone = "Phone number is required for prize delivery";
     }
 
+    if (!formData.dateOfBirth) {
+      newErrors.dateOfBirth = "Date of birth is required to verify age (18+ only)";
+    } else {
+      const age = calculateAge(formData.dateOfBirth);
+      if (age < 18) {
+        newErrors.dateOfBirth = "You must be at least 18 years old. Processing refused.";
+      }
+    }
+
     if (!formData.addressLine1.trim()) newErrors.addressLine1 = "Street address is required";
     if (!formData.city.trim()) newErrors.city = "Town or City is required";
     if (!formData.postcode.trim()) newErrors.postcode = "Postal code is required";
 
     setErrors(newErrors);
+
+    if (newErrors.dateOfBirth && newErrors.dateOfBirth.includes("refused")) {
+      toast.error("You must be at least 18 years of age to purchase tickets. Processing refused.");
+      return false;
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) {
-      toast.error("Please fill in all required shipping fields");
+      if (!errors.dateOfBirth?.includes("refused")) {
+        toast.error("Please fill in all required fields");
+      }
       return;
     }
 
@@ -144,6 +202,7 @@ export default function CheckoutPage() {
           lastName: formData.lastName.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
+          dateOfBirth: formData.dateOfBirth,
           addressLine1: formData.addressLine1.trim(),
           addressLine2: formData.addressLine2?.trim() || undefined,
           city: formData.city.trim(),
@@ -153,7 +212,11 @@ export default function CheckoutPage() {
         },
       };
 
+      isOrderCompletedRef.current = true;
       const res = await ticketService.checkout(payload);
+
+      // ALWAYS clear basket upon ordering & payment initiation
+      clearBasket();
 
       // If gateway returns redirect URL (Cashflows)
       if (res?.url) {
@@ -162,12 +225,12 @@ export default function CheckoutPage() {
       }
 
       // If simulated/test payment completed immediately
-      clearBasket();
       toast.success("Order confirmed successfully! Revealing ticket entries...");
 
       const orderRef = res.orderNumber || res.transaction?.id || "COMPLETED";
       router.push(`/checkout/success?payment=success&ordernumber=${orderRef}`);
     } catch (err: any) {
+      isOrderCompletedRef.current = false;
       console.error("Checkout error:", err);
       const msg =
         err?.response?.data?.message ||
@@ -332,6 +395,45 @@ export default function CheckoutPage() {
                       <span className="text-[10px] text-red-500">{errors.phone}</span>
                     )}
                   </div>
+
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <label className="font-sans font-bold text-[11px] uppercase tracking-wider text-text-muted">
+                        Date of Birth (18+ Only) <span className="text-red-500">*</span>
+                      </label>
+                      {formData.dateOfBirth && (
+                        <span
+                          className={`text-[10px] font-sans font-bold ${
+                            calculateAge(formData.dateOfBirth) < 18
+                              ? "text-red-600"
+                              : "text-[#15803d]"
+                          }`}
+                        >
+                          {calculateAge(formData.dateOfBirth) < 18
+                            ? `Age: ${calculateAge(formData.dateOfBirth)} (Under 18 — Processing Refused)`
+                            : `Age: ${calculateAge(formData.dateOfBirth)} (Eligible)`}
+                        </span>
+                      )}
+                    </div>
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      value={formData.dateOfBirth}
+                      onChange={handleChange}
+                      onBlur={handleDobBlur}
+                      max={new Date().toISOString().split("T")[0]}
+                      className={`h-11 px-3.5 rounded-xl border bg-elevated text-xs font-sans text-text-primary outline-none focus:border-primary transition-all ${
+                        errors.dateOfBirth ? "border-red-500 bg-red-50/20" : "border-border-medium"
+                      }`}
+                    />
+                    {errors.dateOfBirth ? (
+                      <span className="text-[10px] text-red-500 font-bold">{errors.dateOfBirth}</span>
+                    ) : (
+                      <span className="text-[10px] text-text-muted">
+                        You must be 18 years or older to participate. Automatically saved to your profile.
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -451,7 +553,11 @@ export default function CheckoutPage() {
               <div className="hidden lg:block">
                 <button
                   type="submit"
-                  disabled={isSubmitting || items.length === 0}
+                  disabled={
+                    isSubmitting ||
+                    items.length === 0 ||
+                    (!!formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18)
+                  }
                   className="btn-glossy-red w-full h-14 rounded-xl font-heading font-bold text-sm uppercase tracking-wider text-white shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
@@ -459,6 +565,8 @@ export default function CheckoutPage() {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span>Securing Your Tickets...</span>
                     </div>
+                  ) : formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18 ? (
+                    <span>Entry Refused (Must be 18+)</span>
                   ) : (
                     <span>Confirm & Pay — £{totalPrice.toFixed(2)}</span>
                   )}
@@ -534,10 +642,18 @@ export default function CheckoutPage() {
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    disabled={isSubmitting || items.length === 0}
+                    disabled={
+                      isSubmitting ||
+                      items.length === 0 ||
+                      (!!formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18)
+                    }
                     className="btn-glossy-red w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider text-white shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
-                    {isSubmitting ? "Processing..." : `Confirm & Pay — £${totalPrice.toFixed(2)}`}
+                    {isSubmitting
+                      ? "Processing..."
+                      : formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18
+                      ? "Entry Refused (Must be 18+)"
+                      : `Confirm & Pay — £${totalPrice.toFixed(2)}`}
                   </button>
                 </div>
 

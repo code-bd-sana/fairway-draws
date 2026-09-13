@@ -25,7 +25,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const [timeLeft, setTimeLeft] = useState("");
 
   const { isAuthenticated } = useAuth();
-  const { addItem } = useBasket();
+  const { addItem, clearBasket } = useBasket();
   const router = useRouter();
 
   const {
@@ -38,7 +38,6 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   } = raffle;
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get("payment");
     const orderNumber = urlParams.get("ordernumber") || urlParams.get("orderNumber");
@@ -52,6 +51,14 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
     if (paymentStatus === "success" || orderNumber || paymentJobRef) {
       setStatusMessage({ type: "info", text: "Confirming ticket purchase..." });
+      clearBasket();
+      try {
+        localStorage.removeItem("fairway_basket_v1");
+        localStorage.setItem("fairway_basket_v1", "[]");
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("fairway_basket_cleared"));
+        }
+      } catch {}
       paymentService
         .confirmPayment({ orderNumber: orderNumber || undefined, paymentJobRef: paymentJobRef || undefined })
         .then((res) => {

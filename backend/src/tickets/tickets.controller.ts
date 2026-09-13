@@ -60,7 +60,15 @@ export class TicketsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async checkout(@Req() req: Request, @Body() body: BasketCheckoutDto) {
     const userId = this.extractUserId(req);
-    return this.ticketsService.checkout(userId, body);
+    let clientBaseUrl: string | undefined = undefined;
+    if (req.headers.origin) {
+      clientBaseUrl = req.headers.origin as string;
+    } else if (req.headers.referer) {
+      try {
+        clientBaseUrl = new URL(req.headers.referer as string).origin;
+      } catch {}
+    }
+    return this.ticketsService.checkout(userId, body, clientBaseUrl);
   }
 
   @Post('purchase/:raffleId')

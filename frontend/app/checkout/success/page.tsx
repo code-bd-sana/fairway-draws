@@ -41,6 +41,13 @@ function CheckoutSuccessContent() {
 
     // Always clear basket once user lands here on success
     clearBasket();
+    try {
+      localStorage.removeItem("fairway_basket_v1");
+      localStorage.setItem("fairway_basket_v1", "[]");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("fairway_basket_cleared"));
+      }
+    } catch {}
 
     if (orderNumber) {
       setOrderRef(orderNumber);

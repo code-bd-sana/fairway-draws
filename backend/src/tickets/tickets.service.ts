@@ -421,10 +421,35 @@ export class TicketsService {
     }
   }
 
-  async checkout(userId: string, dto: BasketCheckoutDto) {
+  private validateAgeAndDob(dobString?: string): Date {
+    if (!dobString) {
+      throw new BadRequestException('Date of birth is required');
+    }
+    const dob = new Date(dobString);
+    if (isNaN(dob.getTime())) {
+      throw new BadRequestException('Invalid date of birth format');
+    }
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    if (age < 18) {
+      throw new BadRequestException(
+        'You must be at least 18 years of age to purchase tickets. Processing refused.',
+      );
+    }
+    return dob;
+  }
+
+  async checkout(userId: string, dto: BasketCheckoutDto, clientBaseUrl?: string) {
     if (!dto.items || dto.items.length === 0) {
       throw new BadRequestException('Basket must contain at least one item');
     }
+
+    // Strictly validate Date of Birth and enforce 18+ requirement
+    this.validateAgeAndDob(dto.shippingDetails?.dateOfBirth);
 
     const isTestPayment =
       process.env.USE_TEST_PAYMENT === 'true' ||
@@ -442,6 +467,7 @@ export class TicketsService {
       userId,
       dto.items,
       dto.shippingDetails,
+      clientBaseUrl,
     );
   }
 
@@ -465,7 +491,16 @@ export class TicketsService {
 
     const result = await this.prisma.$transaction(
       async (tx) => {
-        // 1. If saveToProfile is true and shippingDetails is provided, update user record
+        // Auto-save date of birth and/or profile address details
+        const dob = shippingDetails?.dateOfBirth
+          ? this.validateAgeAndDob(shippingDetails.dateOfBirth)
+          : undefined;
+
+        const profileUpdate: any = {};
+        if (dob) {
+          profileUpdate.dateOfBirth = dob;
+        }
+
         if (shippingDetails?.saveToProfile) {
           const fullAddress = [
             shippingDetails.addressLine1,
@@ -477,14 +512,16 @@ export class TicketsService {
             .filter(Boolean)
             .join(', ');
 
+          profileUpdate.firstName = shippingDetails.firstName;
+          profileUpdate.lastName = shippingDetails.lastName;
+          profileUpdate.phone = shippingDetails.phone;
+          profileUpdate.address = fullAddress;
+        }
+
+        if (Object.keys(profileUpdate).length > 0) {
           await tx.user.update({
             where: { id: userId },
-            data: {
-              firstName: shippingDetails.firstName,
-              lastName: shippingDetails.lastName,
-              phone: shippingDetails.phone,
-              address: fullAddress,
-            },
+            data: profileUpdate,
           });
         }
 
@@ -734,10 +771,13 @@ export class TicketsService {
     userId: string,
     items: { raffleId: string; quantity: number }[],
     shippingDetails?: ShippingDetailsDto,
+    clientBaseUrl?: string,
   ) {
     if (!items || items.length === 0) {
       throw new BadRequestException('Basket must contain at least one item');
     }
+
+    const dob = this.validateAgeAndDob(shippingDetails?.dateOfBirth);
 
     let totalAmount = 0;
     const raffleTitles: string[] = [];
@@ -782,7 +822,10 @@ export class TicketsService {
       },
     });
 
-    // Update user address if requested
+    // Auto-save date of birth and update user address if requested
+    const profileUpdate: any = {
+      dateOfBirth: dob,
+    };
     if (shippingDetails?.saveToProfile) {
       const fullAddress = [
         shippingDetails.addressLine1,
@@ -794,16 +837,16 @@ export class TicketsService {
         .filter(Boolean)
         .join(', ');
 
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          firstName: shippingDetails.firstName,
-          lastName: shippingDetails.lastName,
-          phone: shippingDetails.phone,
-          address: fullAddress,
-        },
-      });
+      profileUpdate.firstName = shippingDetails.firstName;
+      profileUpdate.lastName = shippingDetails.lastName;
+      profileUpdate.phone = shippingDetails.phone;
+      profileUpdate.address = fullAddress;
     }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: profileUpdate,
+    });
 
     const orderNumber = `BSK_${pendingTransaction.id}_${Date.now()}`;
 
@@ -818,6 +861,11 @@ export class TicketsService {
     const configId = process.env.CASHFLOWS_CONFIGURATION_ID || '';
     const apiKey = process.env.CASHFLOWS_API_KEY || '';
 
+    const frontendUrl =
+      clientBaseUrl ||
+      process.env.FRONTEND_URL ||
+      'http://localhost:3000';
+
     const innerRequestPayload = {
       type: 'Payment',
       amountToCollect: formattedAmount,
@@ -831,8 +879,8 @@ export class TicketsService {
         firstName: shippingDetails?.firstName || user?.firstName || '',
         lastName: shippingDetails?.lastName || user?.lastName || '',
       },
-      returnUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/checkout/success?payment=success&ordernumber=${orderNumber}`,
-      cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/basket?payment=cancel`,
+      returnUrl: `${frontendUrl}/checkout/success?payment=success&ordernumber=${orderNumber}`,
+      cancelUrl: `${frontendUrl}/basket?payment=cancel`,
     };
 
     const innerRequestString = JSON.stringify(innerRequestPayload);

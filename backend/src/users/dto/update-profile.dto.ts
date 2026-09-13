@@ -57,6 +57,15 @@ export class UpdateProfileDto {
   phone?: string;
 
   @ApiProperty({
+    example: '1995-06-15',
+    description: 'Date of Birth (YYYY-MM-DD)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  dateOfBirth?: string;
+
+  @ApiProperty({
     example: '123 Fairway Green, London, UK',
     description: 'Business Address',
     required: false,

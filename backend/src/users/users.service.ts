@@ -85,6 +85,23 @@ export class UsersService {
 
     const { businessName, bio, avatarUrl, ...userData } = updateProfileDto;
 
+    if (userData.dateOfBirth) {
+      const dob = new Date(userData.dateOfBirth);
+      if (isNaN(dob.getTime())) {
+        throw new BadRequestException('Invalid date of birth format');
+      }
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        throw new BadRequestException('You must be at least 18 years of age. Profile update refused.');
+      }
+      (userData as any).dateOfBirth = dob;
+    }
+
     let finalAvatarUrl = avatarUrl;
     if (finalAvatarUrl && finalAvatarUrl.startsWith('data:image')) {
       finalAvatarUrl = this.saveBase64Image(finalAvatarUrl);
