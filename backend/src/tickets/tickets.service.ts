@@ -8,6 +8,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import * as crypto from 'crypto';
 import { RafflesService } from '../raffles/raffles.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import {
   BasketCheckoutDto,
   ShippingDetailsDto,
@@ -19,6 +20,7 @@ export class TicketsService {
     private readonly prisma: PrismaService,
     @Inject(forwardRef(() => RafflesService))
     private readonly rafflesService: RafflesService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async purchaseTickets(userId: string, raffleId: string, quantity: number) {
@@ -233,6 +235,84 @@ export class TicketsService {
       } catch (err) {
         console.error('Failed to update manual raffle status on sold out:', err);
       }
+    }
+
+    // Non-blocking notification dispatches
+    try {
+      const raffleTitle = result.updatedRaffle.title;
+      const amount = Number(result.transaction.amount);
+
+      // 1. Buyer order confirmation
+      this.notificationsService.notifyUser(
+        userId,
+        'PURCHASE',
+        '🎟️ Tickets Confirmed',
+        `You successfully purchased ${quantity} ticket(s) for "${raffleTitle}" (£${amount.toFixed(2)}). Good luck!`,
+        '/dashboard/user/tickets',
+        { raffleId, quantity, amount, transactionId: result.transaction.id },
+      );
+
+      // 2. Host ticket sale notification
+      if (result.updatedRaffle.hostId) {
+        this.notificationsService.notifyHost(
+          result.updatedRaffle.hostId,
+          'PURCHASE',
+          '🎟️ New Ticket Sale',
+          `${quantity} ticket(s) purchased for "${raffleTitle}" (£${amount.toFixed(2)}).`,
+          '/dashboard/host/competitions',
+          { raffleId, quantity, amount },
+        );
+      }
+
+      // 3. Admin order alert
+      this.notificationsService.notifyAdmins(
+        'PURCHASE',
+        '🎟️ Ticket Order Completed',
+        `Order of ${quantity} ticket(s) (£${amount.toFixed(2)}) for "${raffleTitle}".`,
+        '/dashboard/admin/orders',
+        { raffleId, quantity, amount },
+      );
+
+      // 4. Instant win alerts (if any)
+      if (result.userInstantWins && result.userInstantWins.length > 0) {
+        for (const win of result.userInstantWins) {
+          const prizeName = win.prizeName || win.instantWin?.prizeName || 'Instant Win Prize';
+          const ticketNum = win.ticket?.ticketNumber || win.instantWin?.ticketNumber;
+
+          // Winner user
+          this.notificationsService.notifyUser(
+            userId,
+            'WIN',
+            '⚡ Instant Win Prize Won!',
+            `You won ${prizeName} on ticket #${ticketNum} for "${raffleTitle}"! Claim your prize now.`,
+            '/dashboard/user/winners',
+            { raffleId, prizeName, ticketNumber: ticketNum },
+          );
+
+          // Host
+          if (result.updatedRaffle.hostId) {
+            this.notificationsService.notifyHost(
+              result.updatedRaffle.hostId,
+              'WIN',
+              '⚡ Instant Win Claimed',
+              `An entrant won instant prize "${prizeName}" on ticket #${ticketNum} for "${raffleTitle}".`,
+              '/dashboard/host/competitions',
+              { raffleId, prizeName, ticketNumber: ticketNum },
+            );
+          }
+
+          // Admin
+          this.notificationsService.notifyAdmins(
+            'WIN',
+            '⚡ Instant Win Claimed',
+            `Instant prize "${prizeName}" claimed on ticket #${ticketNum} for "${raffleTitle}".`,
+            '/dashboard/admin/winners',
+            { raffleId, prizeName, ticketNumber: ticketNum },
+          );
+        }
+      }
+    } catch (e) {
+      // Non-blocking
     }
 
     return {
@@ -757,6 +837,100 @@ export class TicketsService {
           console.error(`Failed to update manual raffle status on sold out for ${updatedRaffle.id}:`, err);
         }
       }
+    }
+
+    // Non-blocking notification dispatches for Basket Checkout
+    try {
+      const totalTicketsCount = result.allCreatedTickets.length;
+      const totalAmount = Number(result.transaction.amount);
+      const competitionCount = result.updatedRaffles.length;
+
+      // 1. Buyer order confirmation
+      this.notificationsService.notifyUser(
+        userId,
+        'PURCHASE',
+        '🎟️ Basket Order Confirmed',
+        `Your order of ${totalTicketsCount} ticket(s) across ${competitionCount} competition(s) is confirmed (£${totalAmount.toFixed(2)}). Good luck!`,
+        '/dashboard/user/tickets',
+        { transactionId: result.transaction.id, ticketCount: totalTicketsCount, amount: totalAmount },
+      );
+
+      // 2. Consolidated Host notifications per host
+      const hostMap = new Map<string, { count: number; subtotal: number }>();
+      for (const item of items) {
+        const raffle = result.updatedRaffles.find((r) => r.id === item.raffleId);
+        if (raffle?.hostId) {
+          const prev = hostMap.get(raffle.hostId) || { count: 0, subtotal: 0 };
+          const itemSubtotal = (Number(raffle.pricePerTicket) || 0) * item.quantity;
+          hostMap.set(raffle.hostId, {
+            count: prev.count + item.quantity,
+            subtotal: prev.subtotal + itemSubtotal,
+          });
+        }
+      }
+
+      for (const [hostId, data] of hostMap.entries()) {
+        this.notificationsService.notifyHost(
+          hostId,
+          'PURCHASE',
+          '🎟️ New Ticket Sales',
+          `${data.count} ticket(s) purchased across your competitions (£${data.subtotal.toFixed(2)}).`,
+          '/dashboard/host/competitions',
+          { hostId, ticketCount: data.count, amount: data.subtotal },
+        );
+      }
+
+      // 3. Admin order alert
+      this.notificationsService.notifyAdmins(
+        'PURCHASE',
+        '🎟️ New Basket Order Placed',
+        `Basket checkout completed: ${totalTicketsCount} ticket(s) (£${totalAmount.toFixed(2)}) across ${competitionCount} competition(s).`,
+        '/dashboard/admin/orders',
+        { transactionId: result.transaction.id, amount: totalAmount },
+      );
+
+      // 4. Instant win alerts (if any)
+      if (result.allInstantWins && result.allInstantWins.length > 0) {
+        for (const win of result.allInstantWins) {
+          const prizeName = win.prizeName || win.title || 'Instant Win Prize';
+          const ticketNum = win.ticketNumber;
+          const raffleTitle = win.raffleTitle || 'Competition';
+
+          // Winner user
+          this.notificationsService.notifyUser(
+            userId,
+            'WIN',
+            '⚡ Instant Win Prize Won!',
+            `You won ${prizeName} on ticket #${ticketNum} for "${raffleTitle}"! Claim your prize now.`,
+            '/dashboard/user/winners',
+            { raffleId: win.raffleId, prizeName, ticketNumber: ticketNum },
+          );
+
+          // Find raffle host
+          const raffle = result.updatedRaffles.find((r) => r.id === win.raffleId);
+          if (raffle?.hostId) {
+            this.notificationsService.notifyHost(
+              raffle.hostId,
+              'WIN',
+              '⚡ Instant Win Claimed',
+              `An entrant won instant prize "${prizeName}" on ticket #${ticketNum} for "${raffleTitle}".`,
+              '/dashboard/host/competitions',
+              { raffleId: win.raffleId, prizeName, ticketNumber: ticketNum },
+            );
+          }
+
+          // Admin
+          this.notificationsService.notifyAdmins(
+            'WIN',
+            '⚡ Instant Win Claimed',
+            `Instant prize "${prizeName}" claimed on ticket #${ticketNum} for "${raffleTitle}".`,
+            '/dashboard/admin/winners',
+            { raffleId: win.raffleId, prizeName, ticketNumber: ticketNum },
+          );
+        }
+      }
+    } catch (e) {
+      // Non-blocking
     }
 
     return {

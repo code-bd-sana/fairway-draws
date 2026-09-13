@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class RafflesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async create(hostId: string, data: any) {
     const hostProfile = await this.prisma.hostProfile.findUnique({
@@ -157,6 +161,27 @@ export class RafflesService {
           data: instantWinsData,
         });
       }
+    }
+
+    // Non-blocking notification dispatches
+    try {
+      this.notificationsService.notifyUser(
+        hostId,
+        'RAFFLE',
+        'Competition Submitted for Approval',
+        `Your competition "${raffle.title}" has been created and submitted for administrator review.`,
+        '/dashboard/host/competitions',
+        { raffleId: raffle.id },
+      );
+      this.notificationsService.notifyAdmins(
+        'RAFFLE',
+        'New Competition Awaiting Approval',
+        `Host "${hostProfile.businessName}" submitted a new competition: "${raffle.title}".`,
+        '/dashboard/admin/raffles',
+        { raffleId: raffle.id, hostId: hostProfile.id },
+      );
+    } catch (e) {
+      // Non-blocking
     }
 
     return raffle;
@@ -588,7 +613,7 @@ export class RafflesService {
   }
 
   async drawWinner(raffleId: string, winningTicketNumber?: number) {
-    return this.prisma.$transaction(async (tx) => {
+    const winner = await this.prisma.$transaction(async (tx) => {
       // 1. Get the raffle and check its status
       const raffle = await tx.raffle.findUnique({
         where: { id: raffleId },
@@ -652,6 +677,53 @@ export class RafflesService {
 
       return winner;
     });
+
+    // Non-blocking notification dispatches
+    try {
+      const winnerName = `${winner.user?.firstName || ''} ${winner.user?.lastName || ''}`.trim() || winner.user?.email || 'Entrant';
+      const prizeTitle = winner.prizeName || 'Main Prize';
+
+      // 1. Notify Winner
+      this.notificationsService.notifyUser(
+        winner.userId,
+        'WIN',
+        '🏆 Congratulations! You Won the Main Draw!',
+        `You won ${prizeTitle} with winning ticket #${winner.ticket?.ticketNumber}! Visit your dashboard to claim.`,
+        '/dashboard/user/winners',
+        { winnerId: winner.id, raffleId, ticketNumber: winner.ticket?.ticketNumber },
+      );
+
+      // 2. Notify Host
+      if (winner.raffleId) {
+        const raffleWithHost = await this.prisma.raffle.findUnique({
+          where: { id: winner.raffleId },
+          select: { hostId: true, title: true },
+        });
+        if (raffleWithHost?.hostId) {
+          this.notificationsService.notifyHost(
+            raffleWithHost.hostId,
+            'WIN',
+            '🏆 Main Draw Winner Drawn',
+            `Main draw completed for "${raffleWithHost.title}". Winner: ${winnerName} (Ticket #${winner.ticket?.ticketNumber}).`,
+            '/dashboard/host/competitions',
+            { winnerId: winner.id, raffleId },
+          );
+        }
+      }
+
+      // 3. Notify Admins
+      this.notificationsService.notifyAdmins(
+        'WIN',
+        '🏆 Competition Draw Concluded',
+        `Winner drawn for ${prizeTitle}: ${winnerName} (Ticket #${winner.ticket?.ticketNumber}).`,
+        '/dashboard/admin/winners',
+        { winnerId: winner.id, raffleId },
+      );
+    } catch (e) {
+      // Non-blocking
+    }
+
+    return winner;
   }
 
   async getRaffleSoldTickets(raffleId: string) {

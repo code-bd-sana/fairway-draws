@@ -28,6 +28,7 @@ model User {
   tickets      Ticket[]
   transactions Transaction[]
   winners      Winner[]
+  notifications Notification[]
 
   @@map("users")
 }
@@ -196,4 +197,23 @@ model Withdrawal {
   host HostProfile @relation(fields: [hostId], references: [id])
 
   @@map("withdrawals")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.VarChar(255)
+  userId    String    @map("user_id") @db.VarChar(255)
+  type      String    @db.VarChar(50)
+  title     String    @db.VarChar(255)
+  message   String    @db.Text
+  link      String?   @db.VarChar(500)
+  metadata  Json?
+  isRead    Boolean   @default(false) @map("is_read")
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }

@@ -17,12 +17,15 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
 
+import { NotificationsService } from '../notifications/notifications.service';
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   saveBase64Image(dataUri: string): string {
@@ -170,6 +173,46 @@ export class AuthService {
 
     // Send email without awaiting, so it doesn't block the request
     this.mailService.sendVerificationEmail(user.email, verificationToken);
+
+    // Dispatch in-app notifications (fail-safe, fire-and-forget)
+    try {
+      const userName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
+      if (user.role === 'HOST') {
+        this.notificationsService.notifyUser(
+          user.id,
+          'SYSTEM',
+          'Welcome to Fairway Draws Host Portal!',
+          'Your host account is ready. Start by creating your first golf competition.',
+          '/dashboard/host/competitions',
+          { role: 'HOST' },
+        );
+        this.notificationsService.notifyAdmins(
+          'SYSTEM',
+          'New Host Registered',
+          `Host account registered for "${registerDto.businessName || userName}" (${user.email}).`,
+          '/dashboard/admin/hosts',
+          { userId: user.id, role: 'HOST' },
+        );
+      } else {
+        this.notificationsService.notifyUser(
+          user.id,
+          'SYSTEM',
+          'Welcome to Fairway Draws!',
+          'Your account is ready! Explore our live golf competitions and win luxury prizes.',
+          '/live-raffles',
+          { role: 'CLIENT' },
+        );
+        this.notificationsService.notifyAdmins(
+          'SYSTEM',
+          'New User Registered',
+          `New entrant registered: ${userName} (${user.email}).`,
+          '/dashboard/admin/users',
+          { userId: user.id, role: 'CLIENT' },
+        );
+      }
+    } catch (e) {
+      // Non-blocking
+    }
 
     return {
       userId: user.id,
