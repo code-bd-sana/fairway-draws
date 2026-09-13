@@ -38,17 +38,19 @@ export default function UserTicketsPage() {
 
   if (isTicketsLoading && isPendingLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-        <p className="font-sans text-xs text-text-muted">Loading your tickets and orders...</p>
+      <div className="flex flex-col items-center justify-center min-h-[420px] gap-3">
+        <div className="w-9 h-9 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="font-sans text-xs font-semibold text-text-muted animate-pulse">
+          Loading your tickets and orders...
+        </p>
       </div>
     );
   }
 
   if (isTicketsError) {
     return (
-      <div className="p-8 text-center text-red-500 font-sans text-sm">
-        Failed to load tickets. Please refresh the page.
+      <div className="p-8 text-center bg-red-500/10 border border-red-500/20 rounded-2xl text-red-600 font-sans text-sm font-semibold max-w-lg mx-auto my-12">
+        Failed to load tickets. Please refresh the page or try again later.
       </div>
     );
   }
@@ -83,121 +85,181 @@ export default function UserTicketsPage() {
   return (
     <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
       
-      {/* Header */}
-      <div className="flex flex-col gap-1">
-        <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
-          My Tickets &amp; Orders
-        </h1>
-        <p className="font-sans text-xs text-text-muted">
-          View all your confirmed ticket numbers, pending checkout orders, and competition outcomes.
-        </p>
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-divider">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold shadow-2xs">
+              🎟️
+            </div>
+            <h1 className="font-heading font-black text-2xl lg:text-3xl text-text-primary uppercase tracking-tight">
+              My Tickets &amp; Orders
+            </h1>
+          </div>
+          <p className="font-sans text-xs text-text-muted">
+            View all your confirmed ticket numbers, pending checkout orders, and competition outcomes.
+          </p>
+        </div>
       </div>
 
       {/* Warning notification banner if there are unpaid orders */}
       {unpaidOrdersCount > 0 && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs">
-          <div className="flex items-center gap-2.5">
-            <span className="text-lg">⏳</span>
-            <span>
-              You have <strong className="font-bold">{unpaidOrdersCount} unpaid order(s)</strong>. Complete payment now before competitions sell out!
-            </span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 lg:p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 text-amber-950 shadow-xs">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl shrink-0 shadow-2xs">
+              ⏳
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-heading font-black text-sm text-amber-950 uppercase tracking-tight">
+                Attention Required ({unpaidOrdersCount} Unpaid {unpaidOrdersCount === 1 ? 'Order' : 'Orders'})
+              </span>
+              <span className="font-sans text-xs text-amber-900 font-medium">
+                You have <strong className="font-bold text-amber-950 underline decoration-amber-600">{unpaidOrdersCount} pending order(s)</strong> waiting for checkout. Complete payment before tickets sell out!
+              </span>
+            </div>
           </div>
+
           <button
             onClick={() => setActiveTab("pending")}
-            className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-heading font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer shrink-0"
+            className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0 shadow-md hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-0"
           >
-            Review Unpaid Orders
+            Review Unpaid Orders →
           </button>
         </div>
       )}
 
       {/* KPI Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
+        
         {/* Total Tickets Owned */}
-        <div className="bg-surface border border-border rounded-card p-5 sm:p-6 flex flex-col gap-2.5 shadow-card">
-          <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
-            Confirmed Tickets
-          </p>
-          <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            {totalOwned}
-          </p>
-          <span className="font-sans font-semibold text-xs text-text-muted">
-            Lifetime entries
-          </span>
-        </div>
-
-        {/* Active Tickets */}
-        <div className="bg-surface border border-border rounded-card p-5 sm:p-6 flex flex-col gap-2.5 shadow-card">
-          <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
-            Live Draw Tickets
-          </p>
-          <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            {activeTickets}
-          </p>
-          <span className="font-sans font-bold text-xs text-text-brand">
-            Awaiting live draw
-          </span>
-        </div>
-
-        {/* Tickets in Won Competitions */}
-        <div className="bg-surface border border-border rounded-card p-5 sm:p-6 flex flex-col gap-2.5 shadow-card">
-          <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
-            Won Prizes
-          </p>
-          <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-text-primary">
-            {wonTickets}
-          </p>
-          <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] w-fit">
-            <span className="font-sans text-[10px] font-bold text-success-text">
-              🏆 {wonTickets} winning entries
+        <div className="bg-surface border border-border hover:border-border-medium rounded-2xl p-5 sm:p-6 flex flex-col gap-3 shadow-xs hover:shadow-card transition-all">
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+              Confirmed Tickets
+            </p>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 text-sm">
+              🎟️
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-heading font-black text-3xl lg:text-4xl leading-none text-text-primary">
+              {totalOwned}
+            </p>
+            <span className="font-sans font-semibold text-xs text-text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">
+              Lifetime entries
             </span>
           </div>
         </div>
 
+        {/* Active Tickets */}
+        <div className="bg-surface border border-border hover:border-border-medium rounded-2xl p-5 sm:p-6 flex flex-col gap-3 shadow-xs hover:shadow-card transition-all">
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+              Live Draw Tickets
+            </p>
+            <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-sm">
+              🎯
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-heading font-black text-3xl lg:text-4xl leading-none text-text-primary">
+              {activeTickets}
+            </p>
+            <span className="font-sans font-bold text-xs text-text-brand bg-accent-bg border border-primary/20 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Awaiting draw
+            </span>
+          </div>
+        </div>
+
+        {/* Tickets in Won Competitions */}
+        <div className="bg-surface border border-border hover:border-border-medium rounded-2xl p-5 sm:p-6 flex flex-col gap-3 shadow-xs hover:shadow-card transition-all">
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+              Won Prizes
+            </p>
+            <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 text-sm">
+              🏆
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-heading font-black text-3xl lg:text-4xl leading-none text-text-primary">
+              {wonTickets}
+            </p>
+            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-900 font-sans font-bold text-[11px]">
+              🏆 {wonTickets} winning {wonTickets === 1 ? 'entry' : 'entries'}
+            </div>
+          </div>
+        </div>
+
         {/* Pending Orders */}
-        <div className="bg-surface border border-border rounded-card p-5 sm:p-6 flex flex-col gap-2.5 shadow-card">
-          <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
-            Unpaid Orders
-          </p>
-          <p className="font-heading font-black text-3xl lg:text-4xl leading-tight text-amber-600 dark:text-amber-400">
-            {unpaidOrdersCount}
-          </p>
-          <span className="font-sans font-semibold text-xs text-text-muted">
-            {unpaidOrdersCount > 0 ? "Awaiting payment" : "No pending checkouts"}
-          </span>
+        <div className={`bg-surface border rounded-2xl p-5 sm:p-6 flex flex-col gap-3 shadow-xs hover:shadow-card transition-all ${
+          unpaidOrdersCount > 0 ? 'border-amber-500/40 bg-amber-500/10' : 'border-border hover:border-border-medium'
+        }`}>
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+              Unpaid Orders
+            </p>
+            <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-600 text-sm">
+              ⏳
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between gap-2">
+            <p className={`font-heading font-black text-3xl lg:text-4xl leading-none ${
+              unpaidOrdersCount > 0 ? 'text-amber-800' : 'text-text-primary'
+            }`}>
+              {unpaidOrdersCount}
+            </p>
+            <span className={`font-sans font-bold text-xs px-2.5 py-0.5 rounded-full ${
+              unpaidOrdersCount > 0 
+                ? 'bg-amber-200 border border-amber-400 text-amber-950 font-black animate-pulse'
+                : 'bg-elevated border border-border text-text-muted'
+            }`}>
+              {unpaidOrdersCount > 0 ? "⚠️ Payment Pending" : "✓ All Paid"}
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex border-b border-divider gap-3 mt-2">
+      <div className="flex border-b border-divider gap-2 sm:gap-4 mt-3 select-none">
         <button
           onClick={() => setActiveTab("tickets")}
-          className={`py-3 px-4 text-xs font-heading font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
+          className={`py-3.5 px-5 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2.5 focus:outline-none focus-visible:outline-none focus:ring-0 ${
             activeTab === "tickets"
-              ? "border-primary text-text-brand"
-              : "border-transparent text-text-muted hover:text-text-primary"
+              ? "border-primary text-text-brand bg-accent-bg/50 rounded-t-xl"
+              : "border-transparent text-text-muted hover:text-text-primary hover:bg-elevated/40 rounded-t-xl"
           }`}
         >
           <span>🎟️ Confirmed Tickets</span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] bg-accent-bg border border-primary/20 text-text-brand font-bold">
+          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+            activeTab === "tickets"
+              ? "bg-primary text-white"
+              : "bg-elevated border border-border text-text-muted"
+          }`}>
             {totalOwned}
           </span>
         </button>
 
         <button
           onClick={() => setActiveTab("pending")}
-          className={`py-3 px-4 text-xs font-heading font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
+          className={`py-3.5 px-5 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2.5 focus:outline-none focus-visible:outline-none focus:ring-0 ${
             activeTab === "pending"
-              ? "border-amber-500 text-amber-600"
-              : "border-transparent text-text-muted hover:text-text-primary"
+              ? "border-amber-500 text-amber-900 bg-amber-500/10 rounded-t-xl"
+              : "border-transparent text-text-muted hover:text-text-primary hover:bg-elevated/40 rounded-t-xl"
           }`}
         >
-          <span>⏳ Pending / Unpaid Orders</span>
+          <span className="flex items-center gap-1.5">
+            ⏳ Pending / Unpaid Orders
+            {unpaidOrdersCount > 0 && (
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping inline-block" />
+            )}
+          </span>
           <span
-            className={`px-2 py-0.5 rounded-full text-[10px] ${
+            className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
               unpaidOrdersCount > 0
-                ? "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 font-bold"
-                : "bg-elevated text-text-muted"
+                ? "bg-amber-600 text-white shadow-xs"
+                : "bg-elevated border border-border text-text-muted"
             }`}
           >
             {unpaidOrdersCount}
@@ -210,19 +272,21 @@ export default function UserTicketsPage() {
         <TicketsTable tickets={formattedTickets} />
       ) : (
         /* PENDING ORDERS TAB */
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
           {pendingOrders.length === 0 ? (
-            <div className="w-full bg-surface border border-border rounded-card p-12 text-center flex flex-col items-center justify-center gap-2">
-              <span className="text-4xl">🎉</span>
-              <p className="font-heading font-bold text-base text-text-primary">
+            <div className="w-full bg-surface border border-border rounded-2xl p-12 lg:p-16 text-center flex flex-col items-center justify-center gap-3 shadow-xs">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-3xl mb-1 shadow-2xs">
+                🎉
+              </div>
+              <p className="font-heading font-bold text-lg text-text-primary">
                 No Pending Orders
               </p>
-              <p className="font-sans text-xs text-text-muted max-w-md">
-                You do not have any pending orders. When you enter a competition and proceed to checkout, any unpaid orders will be stored here.
+              <p className="font-sans text-xs text-text-muted max-w-md leading-relaxed">
+                You do not have any pending checkout orders. When you select tickets for a competition, any unpaid orders will safely be saved here.
               </p>
               <Link
-                href="/raffles"
-                className="mt-3 px-4 py-2 rounded-xl bg-primary text-white font-heading font-bold text-xs uppercase tracking-wider hover:bg-primary-hover transition-all"
+                href="/live-raffles"
+                className="mt-3 px-5 py-2.5 rounded-xl bg-primary text-white font-heading font-bold text-xs uppercase tracking-wider hover:bg-primary-hover transition-all shadow-md active:scale-95"
               >
                 Browse Competitions
               </Link>
@@ -236,26 +300,27 @@ export default function UserTicketsPage() {
               return (
                 <div
                   key={order.id}
-                  className="bg-surface border border-border rounded-card p-5 sm:p-6 shadow-card flex flex-col gap-5 transition-all"
+                  className="bg-surface border border-border hover:border-border-medium rounded-2xl p-5 sm:p-7 shadow-card flex flex-col gap-5 transition-all"
                 >
                   {/* Order Top Bar */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-divider">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-divider">
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                      <span className="font-mono font-bold text-xs text-text-brand bg-accent-bg border border-primary/20 px-2.5 py-1 rounded-lg">
+                      <span className="font-mono font-bold text-xs text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-xl shadow-2xs">
                         #{order.orderNumber ? order.orderNumber.slice(0, 16) : order.id.slice(0, 8)}
                       </span>
-                      <span className="font-sans text-xs text-text-muted">
-                        Initiated {format(new Date(order.createdAt), "dd MMM yyyy, HH:mm")}
+                      <span className="font-sans text-xs text-text-muted flex items-center gap-1">
+                        📅 Initiated {format(new Date(order.createdAt), "dd MMM yyyy, HH:mm")}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-sans font-bold text-[10px] uppercase tracking-wider">
+                      <span className="px-3 py-1 rounded-full bg-amber-200 border border-amber-400 text-amber-950 font-sans font-black text-[10px] uppercase tracking-wider shadow-2xs flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
                         ⏳ Awaiting Payment
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <span className="font-sans text-[10px] text-text-muted uppercase block">Total Due</span>
-                        <span className="font-heading font-black text-xl text-text-primary">
+                    <div className="flex items-center justify-between md:justify-end gap-5 pt-2 md:pt-0 border-t md:border-t-0 border-divider">
+                      <div className="text-left md:text-right">
+                        <span className="font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider block">Total Due</span>
+                        <span className="font-heading font-black text-2xl text-text-primary">
                           £{Number(order.amount).toFixed(2)}
                         </span>
                       </div>
@@ -263,15 +328,15 @@ export default function UserTicketsPage() {
                       <button
                         onClick={() => handlePayOrder(order.id)}
                         disabled={!canPay || payingOrderId === order.id}
-                        className={`h-[40px] px-5 rounded-xl font-heading font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs ${
+                        className={`h-[44px] px-6 rounded-xl font-heading font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer focus:outline-none focus:ring-0 ${
                           canPay
-                            ? "btn-glossy-red text-white hover:scale-102 active:scale-98"
+                            ? "btn-glossy-red text-white hover:scale-102 active:scale-98 shadow-md"
                             : "bg-elevated border border-border text-text-muted cursor-not-allowed opacity-60"
                         }`}
                       >
                         {payingOrderId === order.id ? (
                           <>
-                            <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                             <span>Processing...</span>
                           </>
                         ) : canPay ? (
@@ -292,10 +357,10 @@ export default function UserTicketsPage() {
                     {order.items.map((item: any) => (
                       <div
                         key={item.raffleId}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 rounded-xl bg-elevated/60 border border-divider"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-elevated/70 border border-divider hover:bg-elevated transition-colors"
                       >
-                        <div className="flex items-center gap-3.5 min-w-0">
-                          <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-surface shrink-0 border border-border">
+                        <div className="flex items-center gap-4 min-w-0">
+                          <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-surface shrink-0 border border-border-medium shadow-2xs">
                             <Image
                               src={item.raffleImage || "https://placehold.co/400x300/1a230a/8cb34a?text=Draw"}
                               alt={item.raffleTitle}
@@ -305,41 +370,41 @@ export default function UserTicketsPage() {
                             />
                           </div>
 
-                          <div className="flex flex-col min-w-0">
-                            <h4 className="font-heading font-bold text-sm text-text-primary truncate" title={item.raffleTitle}>
+                          <div className="flex flex-col min-w-0 gap-0.5">
+                            <h4 className="font-heading font-bold text-sm sm:text-base text-text-primary truncate" title={item.raffleTitle}>
                               {item.raffleTitle}
                             </h4>
-                            <span className="font-sans text-xs text-text-muted">
+                            <span className="font-sans font-semibold text-xs text-text-secondary">
                               {item.quantity} {item.quantity === 1 ? "ticket" : "tickets"} × £{Number(item.pricePerTicket).toFixed(2)}
                             </span>
                           </div>
                         </div>
 
-                        {/* Status Guard for this item */}
-                        <div className="flex items-center gap-3 shrink-0">
+                        {/* Status Guard & High-Contrast Badges for this item */}
+                        <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-divider">
                           {item.isSoldOut ? (
-                            <span className="px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800 font-sans font-bold text-xs flex items-center gap-1.5">
+                            <span className="px-3.5 py-1.5 rounded-full bg-red-100 text-red-950 border border-red-300 font-sans font-black text-xs flex items-center gap-1.5 shadow-2xs">
                               <span>🚫</span>
                               <span>SOLD OUT! Capacity reached.</span>
                             </span>
                           ) : item.isExpired ? (
-                            <span className="px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800 font-sans font-bold text-xs flex items-center gap-1.5">
+                            <span className="px-3.5 py-1.5 rounded-full bg-red-100 text-red-950 border border-red-300 font-sans font-black text-xs flex items-center gap-1.5 shadow-2xs">
                               <span>⛔</span>
                               <span>Draw Ended</span>
                             </span>
                           ) : item.remainingTickets < item.quantity ? (
-                            <span className="px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 border border-amber-300 dark:border-amber-800 font-sans font-bold text-xs flex items-center gap-1.5">
+                            <span className="px-3.5 py-1.5 rounded-full bg-amber-200 text-amber-950 border border-amber-400 font-sans font-black text-xs flex items-center gap-1.5 shadow-2xs">
                               <span>⚠️</span>
                               <span>Only {item.remainingTickets} tickets left</span>
                             </span>
                           ) : (
-                            <span className="px-3 py-1 rounded-full bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-800 font-sans font-semibold text-xs flex items-center gap-1.5">
-                              <span>✅</span>
+                            <span className="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 font-sans font-black text-xs flex items-center gap-1.5 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-emerald-700" />
                               <span>Tickets Available ({item.remainingTickets} left)</span>
                             </span>
                           )}
 
-                          <span className="font-heading font-bold text-sm text-text-primary min-w-[70px] text-right">
+                          <span className="font-heading font-black text-base text-text-primary min-w-[70px] text-right">
                             £{Number(item.subtotal).toFixed(2)}
                           </span>
                         </div>
@@ -349,10 +414,10 @@ export default function UserTicketsPage() {
 
                   {/* Informational warning if sold out */}
                   {hasSoldOut && (
-                    <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 text-red-700 dark:text-red-400 text-xs flex items-center gap-2">
-                      <span className="text-base">⚠️</span>
+                    <div className="p-3.5 rounded-xl bg-red-100 border border-red-300 text-red-950 text-xs flex items-center gap-2.5 font-bold">
+                      <span className="text-base shrink-0">⚠️</span>
                       <span>
-                        One or more competitions in this pending order reached 100% capacity before payment was made. You cannot pay for sold-out draws.
+                        One or more competitions in this pending order reached capacity before payment was completed. You cannot checkout sold-out items.
                       </span>
                     </div>
                   )}
@@ -365,3 +430,4 @@ export default function UserTicketsPage() {
     </div>
   );
 }
+
