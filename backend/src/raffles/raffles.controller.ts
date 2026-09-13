@@ -272,6 +272,13 @@ export class RafflesController {
     return this.rafflesService.getRaffleSoldTickets(id);
   }
 
+  @Get(':id/pending-orders')
+  @ApiOperation({ summary: 'Get all pending uncompleted ticket entries for a competition' })
+  @ApiParam({ name: 'id', description: 'Raffle ID' })
+  getPendingOrders(@Param('id') id: string) {
+    return this.rafflesService.getRafflePendingOrders(id);
+  }
+
   @Get('host/:id/winners')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('HOST')

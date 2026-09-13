@@ -7,6 +7,7 @@ import { cn } from "../../../lib/utils";
 import { Pagination } from "../../ui/Pagination";
 import { toast } from "sonner";
 import ConfirmDeleteRaffleModal, { RaffleDeleteTarget } from "../shared/ConfirmDeleteRaffleModal";
+import ViewSoldTicketsModal from "../shared/ViewSoldTicketsModal";
 
 const filters = ["All", "Live", "Pending Review", "Ended", "Drafts"];
 
@@ -16,6 +17,7 @@ export default function HostRafflesTable() {
   const [drawingId, setDrawingId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [selectedCompForDelete, setSelectedCompForDelete] = useState<RaffleDeleteTarget | null>(null);
+  const [viewingTicketsRaffle, setViewingTicketsRaffle] = useState<any | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: response, isLoading } = useHostRaffles({ page, limit: 10, status: activeFilter });
@@ -253,6 +255,16 @@ export default function HostRafflesTable() {
                         
                         {/* Action buttons */}
                         <div className="mt-5 md:absolute md:bottom-0 md:right-0 md:mt-0 flex flex-wrap gap-3 items-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setViewingTicketsRaffle(raffle);
+                            }}
+                            className="font-sans font-bold text-xs uppercase px-3 py-2 bg-elevated text-text-primary border border-border hover:bg-surface rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+                          >
+                            <span>🎟️</span>
+                            <span>View Entries ({raffle.ticketsSold})</span>
+                          </button>
                           {raffle.status === "ACTIVE" && (
                             <button
                               onClick={async (e) => {
@@ -335,6 +347,14 @@ export default function HostRafflesTable() {
           onConfirm={handleConfirmDelete}
           isLoading={isDeleting}
           raffle={selectedCompForDelete}
+        />
+      )}
+
+      {viewingTicketsRaffle && (
+        <ViewSoldTicketsModal
+          isOpen={!!viewingTicketsRaffle}
+          onClose={() => setViewingTicketsRaffle(null)}
+          raffle={viewingTicketsRaffle}
         />
       )}
     </div>

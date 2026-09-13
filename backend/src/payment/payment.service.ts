@@ -269,6 +269,22 @@ export class PaymentService {
     }
   }
 
+  private isPaymentSuccessful(status?: string): boolean {
+    if (!status) return false;
+    const s = status.toUpperCase().trim();
+    const successStatuses = [
+      'COMPLETED',
+      'SUCCESS',
+      'SETTLED',
+      'AUTHORISED',
+      'AUTHORIZED',
+      'PAID',
+      'CAPTURED',
+      'PAYMENT_COMPLETE',
+    ];
+    return successStatuses.includes(s);
+  }
+
   async handleWebhook(signature: string, payload: any) {
     this.logger.log(`Received Cashflow webhook signature: ${signature}`);
     
@@ -350,12 +366,26 @@ export class PaymentService {
 
       this.logger.log(`Webhook Processing - Event Status: "${status}", OrderNumber: "${orderNumber}"`);
 
-      // Handle Ticket Purchase Order (orderNumber format: TCK_raffleIdPrefix_userIdPrefix_quantity_timestamp)
+      const isSuccess = this.isPaymentSuccessful(status);
+
+      if (!isSuccess) {
+        this.logger.log(
+          `Webhook received non-success or pending status "${status}" for order "${orderNumber}". Skipping ticket allocation.`,
+        );
+        return {
+          status: 'ignored_uncompleted',
+          eventStatus: status,
+          orderNumber,
+        };
+      }
+
+      // Handle Ticket Purchase Order (orderNumber format: TCK_raffleIdPrefix_userIdPrefix_quantity_[pendingTxId]_timestamp)
       if (orderNumber && orderNumber.startsWith('TCK_')) {
         const parts = orderNumber.split('_');
         const rafflePrefix = parts[1];
         const userPrefix = parts[2];
         const quantity = parseInt(parts[3] || '1', 10);
+        const pendingTransactionId = parts.length >= 6 ? parts[4] : undefined;
 
         if (rafflePrefix && userPrefix && quantity > 0) {
           const raffle = await this.prisma.raffle.findFirst({
@@ -366,12 +396,77 @@ export class PaymentService {
           });
 
           if (raffle && user) {
-            this.logger.log(`Allocating ${quantity} tickets for user ${user.id} in raffle ${raffle.id} via webhook...`);
+            // Check if tickets for this transaction were already allocated to prevent double allocation
+            const existingTx = await this.prisma.transaction.findFirst({
+              where: {
+                OR: [
+                  ...(pendingTransactionId ? [{ id: pendingTransactionId, status: 'COMPLETED' }] : []),
+                  { gatewayTransactionId: orderNumber, status: 'COMPLETED' },
+                ],
+              },
+            });
+
+            if (existingTx) {
+              this.logger.log(`Tickets for order ${orderNumber} already allocated.`);
+              return { success: true, message: 'Already allocated' };
+            }
+
+            this.logger.log(`Allocating ${quantity} tickets for user ${user.id} in raffle ${raffle.id} via confirmed webhook...`);
             try {
-              const ticketResult: any = await this.ticketsService.allocateTicketsInDatabase(user.id, raffle.id, quantity);
-              this.logger.log(`Successfully allocated ${quantity} ticket(s) via webhook: ${JSON.stringify(ticketResult?.tickets?.map((t: any) => t.ticketNumber))}`);
+              const ticketResult: any = await this.ticketsService.allocateTicketsInDatabase(
+                user.id,
+                raffle.id,
+                quantity,
+                'CASHFLOWS',
+                orderNumber,
+                pendingTransactionId,
+              );
+              this.logger.log(
+                `Successfully allocated ${quantity} ticket(s) via webhook for order ${orderNumber}`,
+              );
             } catch (tckErr: any) {
               this.logger.warn(`Webhook ticket allocation notice: ${tckErr.message}`);
+            }
+          }
+        }
+      }
+
+      // Handle Basket Ticket Purchase Order (orderNumber format: BSK_transactionId_timestamp)
+      if (orderNumber && orderNumber.startsWith('BSK_')) {
+        const parts = orderNumber.split('_');
+        const transactionId = parts[1];
+
+        if (transactionId) {
+          const pendingTx = await this.prisma.transaction.findUnique({
+            where: { id: transactionId },
+            include: { tickets: true },
+          });
+
+          if (pendingTx && pendingTx.status !== 'COMPLETED') {
+            const serializedItems = pendingTx.relatedEntityId || '';
+            const items = serializedItems
+              .split(';')
+              .filter(Boolean)
+              .map((part) => {
+                const [rId, q] = part.split(':');
+                return { raffleId: rId, quantity: parseInt(q || '1', 10) };
+              });
+
+            if (items.length > 0) {
+              this.logger.log(`Allocating basket tickets for transaction ${transactionId} via webhook...`);
+              try {
+                const result = await this.ticketsService.allocateBasketTicketsInDatabase(
+                  pendingTx.userId,
+                  items,
+                  undefined,
+                  'CASHFLOWS',
+                  orderNumber,
+                  pendingTx.id,
+                );
+                this.logger.log(`Successfully allocated basket tickets via webhook for tx ${transactionId}`);
+              } catch (bskErr: any) {
+                this.logger.warn(`Webhook basket ticket allocation notice: ${bskErr.message}`);
+              }
             }
           }
         }
@@ -434,6 +529,8 @@ export class PaymentService {
 
     this.logger.log(`confirmPaymentReturn called with paymentJobRef: "${paymentJobRef}", orderNumber: "${orderNumber}"`);
 
+    let isVerifiedSuccess = false;
+
     if (!orderNumber && paymentJobRef) {
       const apiKey = process.env.CASHFLOWS_API_KEY || '';
       const configId = process.env.CASHFLOWS_CONFIGURATION_ID || '';
@@ -454,8 +551,36 @@ export class PaymentService {
         if (fetchedOrder?.orderNumber) {
           orderNumber = fetchedOrder.orderNumber;
         }
+        const fetchedStatus = jobData.data?.paymentStatus || jobData.paymentStatus || jobData.status;
+        if (this.isPaymentSuccessful(fetchedStatus)) {
+          isVerifiedSuccess = true;
+        }
       } catch (err: any) {
         this.logger.error(`Failed to fetch job ref ${paymentJobRef} in confirmation: ${err.message}`);
+      }
+    } else if (paymentJobRef) {
+      // If orderNumber is present but paymentJobRef is also present, verify status
+      const apiKey = process.env.CASHFLOWS_API_KEY || '';
+      const configId = process.env.CASHFLOWS_CONFIGURATION_ID || '';
+      const baseUrl = process.env.CASHFLOWS_BASE_URL || 'https://gateway-int.cashflows.com';
+      const getHash = crypto.createHash('sha512').update(apiKey).digest('hex').toUpperCase();
+
+      try {
+        const jobResponse = await fetch(`${baseUrl}/api/gateway/payment-jobs/${paymentJobRef}`, {
+          method: 'GET',
+          headers: {
+            ConfigurationId: configId,
+            Hash: getHash,
+            'Content-Type': 'application/json',
+          },
+        });
+        const jobData = await jobResponse.json();
+        const fetchedStatus = jobData.data?.paymentStatus || jobData.paymentStatus || jobData.status;
+        if (this.isPaymentSuccessful(fetchedStatus)) {
+          isVerifiedSuccess = true;
+        }
+      } catch (err: any) {
+        this.logger.error(`Failed to verify job ref ${paymentJobRef}: ${err.message}`);
       }
     }
 
@@ -469,6 +594,43 @@ export class PaymentService {
       const rafflePrefix = parts[1];
       const userPrefix = parts[2];
       const quantity = parseInt(parts[3] || '1', 10);
+      const pendingTransactionId = parts.length >= 6 ? parts[4] : undefined;
+
+      // Check if already completed (by webhook)
+      const existingTx = await this.prisma.transaction.findFirst({
+        where: {
+          OR: [
+            ...(pendingTransactionId ? [{ id: pendingTransactionId, status: 'COMPLETED' }] : []),
+            { gatewayTransactionId: orderNumber, status: 'COMPLETED' },
+          ],
+        },
+      });
+
+      if (existingTx) {
+        const existingTickets = await this.prisma.ticket.findMany({
+          where: { transactionId: existingTx.id },
+        });
+        return {
+          success: true,
+          type: 'TICKET_PURCHASE',
+          transaction: existingTx,
+          createdTickets: existingTickets,
+        };
+      }
+
+      // Unless USE_TEST_PAYMENT is explicitly 'true', payment MUST be verified by Cashflows or completed webhook!
+      const isTestPayment =
+        process.env.USE_TEST_PAYMENT === 'true' ||
+        process.env.USE_TEST_PAYMENT === '"true"';
+
+      if (!isTestPayment && !isVerifiedSuccess) {
+        this.logger.warn(`Unverified ticket return confirmation attempt for order ${orderNumber}. Awaiting Cashflows webhook.`);
+        return {
+          success: false,
+          status: 'PENDING',
+          message: 'Payment is being processed by Cashflows. Your tickets will appear once confirmed by webhook.',
+        };
+      }
 
       if (rafflePrefix && userPrefix && quantity > 0) {
         const raffle = await this.prisma.raffle.findFirst({
@@ -480,7 +642,14 @@ export class PaymentService {
 
         if (raffle && user) {
           try {
-            const result: any = await this.ticketsService.allocateTicketsInDatabase(user.id, raffle.id, quantity);
+            const result: any = await this.ticketsService.allocateTicketsInDatabase(
+              user.id,
+              raffle.id,
+              quantity,
+              'CASHFLOWS',
+              orderNumber,
+              pendingTransactionId,
+            );
             this.logger.log(`Confirmed & allocated ${quantity} tickets for user ${user.id} in raffle ${raffle.id}`);
             return {
               success: true,
@@ -494,6 +663,82 @@ export class PaymentService {
               type: 'TICKET_PURCHASE',
               message: err.message || 'Tickets confirmed',
             };
+          }
+        }
+      }
+    }
+
+    // Process Basket Ticket Purchase Order
+    if (orderNumber.startsWith('BSK_')) {
+      const parts = orderNumber.split('_');
+      const transactionId = parts[1];
+
+      if (transactionId) {
+        const pendingTx = await this.prisma.transaction.findUnique({
+          where: { id: transactionId },
+          include: { tickets: true },
+        });
+
+        if (pendingTx) {
+          if (pendingTx.status === 'COMPLETED') {
+            const existingTickets = await this.prisma.ticket.findMany({
+              where: { transactionId: pendingTx.id },
+            });
+            return {
+              success: true,
+              type: 'TICKET_PURCHASE',
+              transaction: pendingTx,
+              tickets: existingTickets,
+            };
+          }
+
+          // Unless USE_TEST_PAYMENT is explicitly 'true', payment MUST be verified by Cashflows or completed webhook!
+          const isTestPayment =
+            process.env.USE_TEST_PAYMENT === 'true' ||
+            process.env.USE_TEST_PAYMENT === '"true"';
+
+          if (!isTestPayment && !isVerifiedSuccess) {
+            this.logger.warn(`Unverified basket return confirmation attempt for order ${orderNumber}. Awaiting Cashflows webhook.`);
+            return {
+              success: false,
+              status: 'PENDING',
+              message: 'Payment is being processed by Cashflows. Your tickets will appear once confirmed by webhook.',
+            };
+          }
+
+          const serializedItems = pendingTx.relatedEntityId || '';
+          const items = serializedItems
+            .split(';')
+            .filter(Boolean)
+            .map((part) => {
+              const [rId, q] = part.split(':');
+              return { raffleId: rId, quantity: parseInt(q || '1', 10) };
+            });
+
+          if (items.length > 0) {
+            try {
+              const result: any = await this.ticketsService.allocateBasketTicketsInDatabase(
+                pendingTx.userId,
+                items,
+                undefined,
+                'CASHFLOWS',
+                orderNumber,
+                pendingTx.id,
+              );
+              this.logger.log(`Confirmed & allocated basket tickets for tx ${pendingTx.id}`);
+              return {
+                success: true,
+                type: 'TICKET_PURCHASE',
+                ...result,
+              };
+            } catch (err: any) {
+              this.logger.warn(`Basket ticket confirmation notice: ${err.message}`);
+              return {
+                success: true,
+                type: 'TICKET_PURCHASE',
+                message: err.message || 'Basket tickets confirmed',
+              };
+            }
           }
         }
       }

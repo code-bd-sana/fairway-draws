@@ -263,7 +263,7 @@ export class RafflesService {
         where: whereClause,
         include: {
           host: { include: { user: true } },
-          _count: { select: { instantWins: true } },
+          _count: { select: { instantWins: true, tickets: true } },
         },
         skip,
         take: Number(limit),
@@ -272,8 +272,14 @@ export class RafflesService {
       this.prisma.raffle.count({ where: whereClause }),
     ]);
 
+    const formattedRaffles = raffles.map((r: any) => ({
+      ...r,
+      ticketsSold:
+        r._count?.tickets !== undefined ? r._count.tickets : (r.ticketsSold || 0),
+    }));
+
     return {
-      data: raffles,
+      data: formattedRaffles,
       meta: {
         total,
         page: Number(page),
@@ -426,10 +432,17 @@ export class RafflesService {
       include: {
         host: { include: { user: true } },
         instantWins: true,
+        _count: { select: { tickets: true } },
       },
     });
     if (!raffle) throw new NotFoundException('Raffle not found or is unavailable');
-    return raffle;
+    return {
+      ...raffle,
+      ticketsSold:
+        (raffle as any)._count?.tickets !== undefined
+          ? (raffle as any)._count.tickets
+          : (raffle.ticketsSold || 0),
+    };
   }
 
 
@@ -456,6 +469,9 @@ export class RafflesService {
     const [raffles, total] = await Promise.all([
       this.prisma.raffle.findMany({
         where: whereClause,
+        include: {
+          _count: { select: { tickets: true } },
+        },
         orderBy: { createdAt: 'desc' },
         skip,
         take: Number(limit),
@@ -463,8 +479,14 @@ export class RafflesService {
       this.prisma.raffle.count({ where: whereClause }),
     ]);
 
+    const formattedRaffles = raffles.map((r: any) => ({
+      ...r,
+      ticketsSold:
+        r._count?.tickets !== undefined ? r._count.tickets : (r.ticketsSold || 0),
+    }));
+
     return {
-      data: raffles,
+      data: formattedRaffles,
       meta: {
         total,
         page: Number(page),
@@ -922,7 +944,10 @@ export class RafflesService {
     const [raffles, total] = await Promise.all([
       this.prisma.raffle.findMany({
         where: whereClause,
-        include: { host: { include: { user: true } } },
+        include: {
+          host: { include: { user: true } },
+          _count: { select: { tickets: true } },
+        },
         orderBy: { createdAt: 'desc' },
         skip,
         take: Number(limit),
@@ -930,10 +955,16 @@ export class RafflesService {
       this.prisma.raffle.count({ where: whereClause }),
     ]);
 
+    const formattedRaffles = raffles.map((r: any) => ({
+      ...r,
+      ticketsSold:
+        r._count?.tickets !== undefined ? r._count.tickets : (r.ticketsSold || 0),
+    }));
+
     const lastPage = Math.ceil(total / Number(limit)) || 1;
 
     return {
-      data: raffles,
+      data: formattedRaffles,
       meta: {
         total,
         page: Number(page),
@@ -1056,6 +1087,9 @@ export class RafflesService {
         ticketsSold: true,
         totalTickets: true,
         pricePerTicket: true,
+        _count: {
+          select: { tickets: true },
+        },
       },
     });
 
@@ -1064,7 +1098,8 @@ export class RafflesService {
     let totalCapacity = 0;
 
     for (const r of raffles) {
-      const sold = r.ticketsSold || 0;
+      const sold =
+        r._count?.tickets !== undefined ? r._count.tickets : (r.ticketsSold || 0);
       const price = r.pricePerTicket ? Number(r.pricePerTicket) : 0;
       ticketsSold += sold;
       totalEarned += sold * price;
@@ -1122,5 +1157,82 @@ export class RafflesService {
       totalWinners,
       verifiedDraws: `${verifiedDraws.toLocaleString('en-GB')}`,
     };
+  }
+
+  async getRafflePendingOrders(raffleId: string) {
+    const raffle = await this.prisma.raffle.findUnique({
+      where: { id: raffleId },
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        pricePerTicket: true,
+        totalTickets: true,
+      },
+    });
+
+    if (!raffle) {
+      throw new NotFoundException('Competition not found');
+    }
+
+    const pendingTransactions = await this.prisma.transaction.findMany({
+      where: {
+        status: 'PENDING',
+        type: 'TICKET_PURCHASE',
+        relatedEntityId: { contains: raffleId },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            address: true,
+            location: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return pendingTransactions.map((tx) => {
+      // Parse quantity for this specific raffle from relatedEntityId
+      let quantity = 1;
+      const serialized = tx.relatedEntityId || '';
+      const items = serialized.split(';').filter(Boolean);
+      for (const item of items) {
+        const [rId, q] = item.split(':');
+        if (rId === raffleId) {
+          quantity = parseInt(q || '1', 10);
+          break;
+        }
+      }
+
+      const buyerName =
+        tx.user?.firstName || tx.user?.lastName
+          ? `${tx.user.firstName || ''} ${tx.user.lastName || ''}`.trim()
+          : tx.user?.email || 'Guest User';
+
+      const amount = (quantity * Number(raffle.pricePerTicket)).toFixed(2);
+
+      return {
+        id: tx.id,
+        orderNumber: tx.gatewayTransactionId || tx.id,
+        raffleId: raffle.id,
+        raffleTitle: raffle.title,
+        quantity,
+        pricePerTicket: Number(raffle.pricePerTicket),
+        amount: Number(amount),
+        buyerName,
+        buyerEmail: tx.user?.email || 'N/A',
+        buyerPhone: tx.user?.phone || 'N/A',
+        buyerAddress: tx.user?.address || tx.user?.location || 'N/A',
+        paymentGateway: tx.paymentGateway || 'CASHFLOWS',
+        status: 'PENDING',
+        createdAt: tx.createdAt,
+      };
+    });
   }
 }

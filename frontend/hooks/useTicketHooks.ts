@@ -26,3 +26,40 @@ export const useMyTicketsQuery = () => {
     },
   });
 };
+
+export const useMyPendingOrdersQuery = () => {
+  return useQuery({
+    queryKey: ['my-pending-orders'],
+    queryFn: async () => {
+      const response = await api.get('/tickets/my-pending-orders');
+      return response.data;
+    },
+  });
+};
+
+export const usePayPendingOrderMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (transactionId: string) => {
+      const response = await api.post(`/tickets/pay-pending-order/${transactionId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-pending-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['my-tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['my-transactions'] });
+    },
+  });
+};
+
+export const useMyTransactionsQuery = () => {
+  return useQuery({
+    queryKey: ['my-transactions'],
+    queryFn: async () => {
+      const response = await api.get('/tickets/my-transactions');
+      return response.data;
+    },
+  });
+};
+

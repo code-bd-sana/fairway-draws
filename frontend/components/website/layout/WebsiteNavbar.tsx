@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useAuthUser } from '../../../hooks/useAuthHooks';
+import { useBasket } from '../../../features/basket/BasketContext';
 import { NAV_LINKS, SOCIAL_LINKS } from '../../../lib/constants';
 import { cn } from '../../../lib/utils';
 import FairwayDrawsLogo from '../shared/FairwayDrawsLogo';
@@ -16,6 +17,7 @@ export default function WebsiteNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { data: user } = useAuthUser();
+  const { itemCount } = useBasket();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -50,8 +52,35 @@ export default function WebsiteNavbar() {
             })}
           </nav>
 
-          {/* Auth Buttons */}
+          {/* Desktop Action & Auth Buttons */}
           <div className='hidden xl:flex items-center gap-4'>
+            {/* Basket Button */}
+            <Link
+              href='/basket'
+              className='relative flex items-center justify-center p-2 rounded-xl text-text-primary hover:text-text-brand hover:bg-black/5 transition-all duration-200 cursor-pointer'
+              aria-label={`Shopping Basket (${itemCount} items)`}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={2}
+                stroke='currentColor'
+                className='w-5 h-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z'
+                />
+              </svg>
+              {itemCount > 0 && (
+                <span className='absolute -top-1 -right-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-[#15803d] text-white px-1 text-[10px] font-bold shadow-xs'>
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+
             {user ? (
               <PrimaryButton href='/dashboard' className='px-5 py-2 text-xs'>
                 Dashboard
@@ -71,27 +100,55 @@ export default function WebsiteNavbar() {
             )}
           </div>
 
-          {/* Hamburger Mobile Menu Toggle */}
-          <button
-            onClick={toggleMobileMenu}
-            className='xl:hidden flex items-center justify-center p-2.5 rounded-xl btn-glossy-red text-white transition-all duration-200 cursor-pointer active:scale-95'
-            aria-label='Toggle Navigation Menu'
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={2.5}
-              stroke='currentColor'
-              className='w-6 h-6'
+          {/* Mobile Right Icons (Basket + Hamburger Toggle) */}
+          <div className='xl:hidden flex items-center gap-2.5'>
+            <Link
+              href='/basket'
+              className='relative flex items-center justify-center p-2 rounded-xl text-text-primary hover:text-text-brand transition-all duration-200 cursor-pointer bg-surface border border-border'
+              aria-label={`Shopping Basket (${itemCount} items)`}
             >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
-              />
-            </svg>
-          </button>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={2}
+                stroke='currentColor'
+                className='w-5 h-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z'
+                />
+              </svg>
+              {itemCount > 0 && (
+                <span className='absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#15803d] text-white px-1 text-[9px] font-bold shadow-xs'>
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+
+            <button
+              onClick={toggleMobileMenu}
+              className='flex items-center justify-center p-2.5 rounded-xl btn-glossy-red text-white transition-all duration-200 cursor-pointer active:scale-95'
+              aria-label='Toggle Navigation Menu'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={2.5}
+                stroke='currentColor'
+                className='w-6 h-6'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -136,6 +193,37 @@ export default function WebsiteNavbar() {
 
           {/* Links list */}
           <nav className='flex flex-col gap-4'>
+            <Link
+              href='/basket'
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                'flex items-center justify-between font-heading font-bold text-sm uppercase tracking-wider transition-colors duration-200 py-2 border-b border-divider/20',
+                pathname === '/basket' ? 'text-text-brand' : 'text-text-primary hover:text-text-brand',
+              )}
+            >
+              <span className='flex items-center gap-2'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={2}
+                  stroke='currentColor'
+                  className='w-4 h-4'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z'
+                  />
+                </svg>
+                Basket
+              </span>
+              {itemCount > 0 && (
+                <span className='bg-[#15803d] text-white text-[10px] font-bold px-2 py-0.5 rounded-full'>
+                  {itemCount}
+                </span>
+              )}
+            </Link>
             {NAV_LINKS.map((link) => {
               const isActive =
                 pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));

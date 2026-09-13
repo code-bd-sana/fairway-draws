@@ -236,6 +236,11 @@ export const raffleService = {
     return response.data;
   },
 
+  async getPendingOrders(raffleId: string): Promise<any[]> {
+    const response = await api.get(`/raffles/${raffleId}/pending-orders`);
+    return response.data;
+  },
+
   async adminDrawWinner(raffleId: string, winningTicketNumber?: number): Promise<any> {
     const response = await api.post(`/raffles/admin/${raffleId}/draw`, {
       winningTicketNumber,

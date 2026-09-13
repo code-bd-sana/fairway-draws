@@ -23,6 +23,7 @@ import {
 import type { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PurchaseTicketsDto } from './dto/purchase-tickets.dto';
+import { BasketCheckoutDto } from './dto/basket-checkout.dto';
 
 @ApiTags('Tickets')
 @Controller('api/v1/tickets')
@@ -42,6 +43,24 @@ export class TicketsController {
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
+  }
+
+  @Post('checkout')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('CLIENT', 'USER', 'HOST', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Checkout and purchase tickets for multiple competitions in basket',
+  })
+  @ApiResponse({ status: 201, description: 'Basket order successfully processed' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid basket payload or insufficient tickets',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async checkout(@Req() req: Request, @Body() body: BasketCheckoutDto) {
+    const userId = this.extractUserId(req);
+    return this.ticketsService.checkout(userId, body);
   }
 
   @Post('purchase/:raffleId')
@@ -83,5 +102,41 @@ export class TicketsController {
   async getMyTickets(@Req() req: Request) {
     const userId = this.extractUserId(req);
     return this.ticketsService.getUserTickets(userId);
+  }
+
+  @Get('my-pending-orders')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all unpaid pending orders for the current user' })
+  @ApiResponse({ status: 200, description: 'List of pending orders' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getMyPendingOrders(@Req() req: Request) {
+    const userId = this.extractUserId(req);
+    return this.ticketsService.getUserPendingOrders(userId);
+  }
+
+  @Post('pay-pending-order/:transactionId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Attempt payment for a pending order' })
+  @ApiParam({ name: 'transactionId', description: 'Transaction ID of the pending order' })
+  @ApiResponse({ status: 200, description: 'Redirect URL or confirmation for payment' })
+  @ApiResponse({ status: 400, description: 'Competition sold out or ended' })
+  async payPendingOrder(
+    @Req() req: Request,
+    @Param('transactionId') transactionId: string,
+  ) {
+    const userId = this.extractUserId(req);
+    return this.ticketsService.payPendingOrder(userId, transactionId);
+  }
+
+  @Get('my-transactions')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all transactions for the current user' })
+  @ApiResponse({ status: 200, description: 'List of user transactions' })
+  async getMyTransactions(@Req() req: Request) {
+    const userId = this.extractUserId(req);
+    return this.ticketsService.getUserTransactions(userId);
   }
 }

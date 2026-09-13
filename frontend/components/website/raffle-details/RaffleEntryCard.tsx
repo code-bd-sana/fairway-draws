@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { RaffleDetail } from "../../../types/raffle-details.types";
-import { usePurchaseTicketsMutation } from "../../../hooks/useTicketHooks";
 import { useAuth } from "../../../features/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import TicketPurchaseSuccessModal, { TicketPurchaseSuccessData } from "./TicketPurchaseSuccessModal";
@@ -10,6 +9,7 @@ import WinAnimationModal, { WinPrizeItem } from "../../ui/WinAnimationModal";
 import FreePostalEntryButton from "../legal/FreePostalEntryButton";
 import { paymentService } from "../../../services/payment.service";
 import { userService } from "../../../services/user.service";
+import { useBasket } from "../../../features/basket/BasketContext";
 import { toast } from "sonner";
 
 interface RaffleEntryCardProps {
@@ -25,9 +25,8 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const [timeLeft, setTimeLeft] = useState("");
 
   const { isAuthenticated } = useAuth();
+  const { addItem } = useBasket();
   const router = useRouter();
-  
-  const purchaseMutation = usePurchaseTicketsMutation(raffle.id);
 
   const {
     ticketPrice,
@@ -137,66 +136,56 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const handleDecrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   const handleIncrement = () => setQuantity(prev => prev + 1);
 
-  const handlePurchase = () => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-    
+  const handleAddToBasket = () => {
     if (quantity > remainingTickets) {
       setStatusMessage({ type: 'error', text: `Only ${remainingTickets} tickets left.` });
       return;
     }
-    
-    setStatusMessage(null);
-    purchaseMutation.mutate(quantity, {
-      onSuccess: (data) => {
-        if (data?.url) {
-          window.location.href = data.url;
-          return;
-        }
 
-        const formattedWins = (data.instantWins || []).map((iw: any) => {
-          const tk = (data.tickets || []).find((t: any) => t.id === iw.ticketId);
-          return {
-            id: iw.id,
-            ticketId: iw.ticketId,
-            prizeName: iw.prizeName,
-            ticketNumber: tk ? tk.ticketNumber : undefined,
-          };
-        });
-
-        if (data.instantWins && data.instantWins.length > 0) {
-          const instantPrizes: WinPrizeItem[] = data.instantWins.map((iw: any) => {
-            const tk = (data.tickets || []).find((t: any) => t.id === iw.ticketId);
-            return {
-              id: iw.id,
-              title: iw.prizeName || iw.title || "Instant Win Prize",
-              ticketNumber: tk ? tk.ticketNumber : (iw.ticketNumber || 0),
-              rrpValue: iw.rrpValue,
-              prizeImage: iw.prizeImage || iw.image,
-            };
-          });
-          setWinAnimationPrizes(instantPrizes);
-          setIsWinModalOpen(true);
-        }
-
-        setPurchaseSuccessData({
-          raffleTitle: raffle.title,
-          tickets: data.tickets || [],
-          instantWins: formattedWins,
-          totalAmount: totalPrice,
-        });
-
-        setQuantity(1);
+    addItem(
+      {
+        raffleId: raffle.id,
+        slug: raffle.slug || raffle.id,
+        title: raffle.title,
+        image: raffle.images?.[0] || '',
+        pricePerTicket: ticketPrice,
+        totalTickets,
+        ticketsSold: soldTickets,
+        category: raffle.category,
       },
-      onError: (error: any) => {
-        setStatusMessage({ 
-          type: 'error', 
-          text: error.response?.data?.message || 'Failed to purchase tickets' 
-        });
-      }
-    });
+      quantity,
+    );
+  };
+
+  const handlePurchase = () => {
+    if (quantity > remainingTickets) {
+      setStatusMessage({ type: 'error', text: `Only ${remainingTickets} tickets left.` });
+      return;
+    }
+
+    setStatusMessage(null);
+
+    // Add item to basket
+    addItem(
+      {
+        raffleId: raffle.id,
+        slug: raffle.slug || raffle.id,
+        title: raffle.title,
+        image: raffle.images?.[0] || '',
+        pricePerTicket: ticketPrice,
+        totalTickets,
+        ticketsSold: soldTickets,
+        category: raffle.category,
+      },
+      quantity,
+    );
+
+    // Direct user to checkout to fill shipping details before payment
+    if (!isAuthenticated) {
+      router.push('/login?redirect=/checkout');
+    } else {
+      router.push('/checkout');
+    }
   };
 
   const handleClaimWin = async () => {
@@ -301,17 +290,42 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           <span className="font-heading font-black text-lg text-text-primary">£{totalPrice.toFixed(2)}</span>
         </div>
 
-        <button 
-          onClick={handlePurchase}
-          disabled={purchaseMutation.isPending || remainingTickets === 0}
-          className={`w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center shadow-md active:scale-98 cursor-pointer ${
-            purchaseMutation.isPending || remainingTickets === 0
-              ? 'bg-elevated border border-border text-text-muted cursor-not-allowed'
-              : 'bg-primary hover:bg-primary-hover text-white'
-          }`}
-        >
-          {purchaseMutation.isPending ? 'Processing...' : `Enter Draw — £${totalPrice.toFixed(2)}`}
-        </button>
+        <div className="flex flex-col gap-2.5">
+          <button 
+            type="button"
+            onClick={handleAddToBasket}
+            disabled={remainingTickets === 0}
+            className="w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white shadow-xs active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+              strokeWidth={2.2}
+              stroke='currentColor'
+              className='w-4 h-4'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z'
+              />
+            </svg>
+            Add to Basket
+          </button>
+
+          <button 
+            onClick={handlePurchase}
+            disabled={remainingTickets === 0}
+            className={`w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center shadow-md active:scale-98 cursor-pointer ${
+              remainingTickets === 0
+                ? 'bg-elevated border border-border text-text-muted cursor-not-allowed'
+                : 'bg-primary hover:bg-primary-hover text-white'
+            }`}
+          >
+            Enter Draw Now — £{totalPrice.toFixed(2)}
+          </button>
+        </div>
 
         {/* UK-Compliant Free Postal Entry Route Button */}
         <FreePostalEntryButton raffleTitle={raffle.title} variant="button" />
