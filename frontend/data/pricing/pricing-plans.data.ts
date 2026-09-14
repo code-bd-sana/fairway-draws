@@ -27,7 +27,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     description: "Designed for active hosts seeking maximum visibility with 3 active competitions.",
     monthlyPrice: 29,
     yearlyPrice: 23,
-    commissionLabel: "15% commission",
+    commissionLabel: "10% commission",
     ctaLabel: "Get Started — Premium",
     isFeatured: true,
     badgeLabel: "MOST POPULAR",
@@ -49,7 +49,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     description: "The ultimate plan for professional brands and high-volume raffle hosts.",
     monthlyPrice: 79,
     yearlyPrice: 63,
-    commissionLabel: "15% commission",
+    commissionLabel: "10% commission",
     ctaLabel: "Get Started — Pro",
     features: [
       { id: "active-draws", label: "Unlimited active draws", included: true },

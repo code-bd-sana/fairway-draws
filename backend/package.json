@@ -22,7 +22,8 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
-    "admin:seed": "ts-node seed-demo.ts"
+    "admin:seed": "ts-node seed-demo.ts",
+    "create:admins": "ts-node prisma/create-admins.ts"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

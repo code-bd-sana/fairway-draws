@@ -21,7 +21,7 @@ export default function HostDashboardOverview() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}`,
-      change: "15% Platform Fee",
+      change: `${dashboardData?.kpiStats?.commissionRate ?? 15}% Platform Fee`,
       trend: "up" as const,
     },
     {

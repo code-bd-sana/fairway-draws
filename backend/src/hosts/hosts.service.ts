@@ -156,8 +156,36 @@ export class HostsService {
     return host;
   }
 
+  async getHostCommissionRate(hostId: string): Promise<number> {
+    const sub = await this.prisma.hostSubscription.findFirst({
+      where: {
+        OR: [
+          { hostId },
+          { host: { userId: hostId } },
+        ],
+        status: 'ACTIVE',
+      },
+      include: {
+        plan: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!sub || !sub.plan) {
+      return 15.0;
+    }
+
+    const planName = (sub.plan.name || '').toLowerCase();
+    if (planName.includes('premium') || planName.includes('pro')) {
+      return 10.0;
+    }
+
+    return 15.0;
+  }
+
   async getWalletStats(userId: string) {
     const host = await this.getHostProfileByUserId(userId);
+    const commissionRate = await this.getHostCommissionRate(host.id);
 
     // Sum pending withdrawals
     const pendingWithdrawals = await this.prisma.withdrawal.aggregate({
@@ -196,14 +224,14 @@ export class HostsService {
 
     const availableBalance = Number(host.walletBalance);
     const pendingClearance = Number(pendingWithdrawals._sum?.amount || 0);
-    const totalFeesPaid = Number(completedWithdrawals._sum?.amount || 0) * 0.15;
+    const totalFeesPaid = Number(completedWithdrawals._sum?.amount || 0) * (commissionRate / 100);
 
     return {
       availableBalance,
       pendingClearance,
       totalLifetimeEarnings,
       totalFeesPaid,
-      commissionRate: 15.0, // 15% Platform fee
+      commissionRate,
     };
   }
 
@@ -218,6 +246,10 @@ export class HostsService {
     const host = await this.getHostProfileByUserId(userId);
     const currentBalance = Number(host.walletBalance);
 
+    if (dto.payoutMethod !== 'BANK_TRANSFER') {
+      throw new BadRequestException('Payout method must be BANK_TRANSFER');
+    }
+
     if (dto.amount <= 0) {
       throw new BadRequestException('Withdrawal amount must be greater than 0');
     }
@@ -228,9 +260,9 @@ export class HostsService {
       );
     }
 
-    // 15% platform fee calculation
-    const feeAmount = dto.amount * 0.15;
-    const netAmount = dto.amount * 0.85;
+    const commissionRate = await this.getHostCommissionRate(host.id);
+    const feeAmount = dto.amount * (commissionRate / 100);
+    const netAmount = dto.amount - feeAmount;
 
     const result = await this.prisma.$transaction(async (tx) => {
       // Deduct requested amount from host's wallet balance
@@ -278,9 +310,9 @@ export class HostsService {
       withdrawal: {
         id: result.id,
         grossAmount: Number(result.amount),
-        feeAmount: Number(resObj.feeAmount || Number(result.amount) * 0.15),
-        feePercent: 15,
-        netAmount: Number(resObj.netAmount || Number(result.amount) * 0.85),
+        feeAmount: Number(resObj.feeAmount != null ? resObj.feeAmount : Number(result.amount) * (commissionRate / 100)),
+        feePercent: commissionRate,
+        netAmount: Number(resObj.netAmount != null ? resObj.netAmount : Number(result.amount) * ((100 - commissionRate) / 100)),
         payoutMethod: result.payoutMethod,
         status: result.status,
         createdAt: result.createdAt,
@@ -299,8 +331,11 @@ export class HostsService {
     return withdrawals.map((w) => {
       const wObj = w as any;
       const grossAmount = Number(w.amount);
-      const feeDeducted = Number(wObj.feeAmount || grossAmount * 0.15);
-      const netAmount = Number(wObj.netAmount || grossAmount * 0.85);
+      const feeDeducted = Number(wObj.feeAmount != null ? wObj.feeAmount : grossAmount * 0.15);
+      const netAmount = Number(wObj.netAmount != null ? wObj.netAmount : grossAmount - feeDeducted);
+      const feePercent = grossAmount > 0 && wObj.feeAmount != null
+        ? Math.round((Number(wObj.feeAmount) / grossAmount) * 100)
+        : 15;
 
       let parsedDetails = {};
       try {
@@ -318,7 +353,7 @@ export class HostsService {
         }),
         grossAmount,
         feeDeducted,
-        feePercent: 15,
+        feePercent,
         netAmount,
         method: w.payoutMethod || 'Bank Transfer',
         status:
@@ -356,7 +391,8 @@ export class HostsService {
       (sum, r) => sum + Number(r.pricePerTicket) * r.ticketsSold,
       0,
     );
-    const totalNetRevenue = totalGrossRevenue * 0.85; // 15% platform fee deducted
+    const commissionRate = await this.getHostCommissionRate(host.id);
+    const totalNetRevenue = totalGrossRevenue * ((100 - commissionRate) / 100);
 
     const totalWinnersCount = await this.prisma.winner.count({
       where: { raffle: { hostId: host.id } },
@@ -420,6 +456,7 @@ export class HostsService {
       kpiStats: {
         totalNetRevenue,
         totalGrossRevenue,
+        commissionRate,
         availableBalance: Number(host.walletBalance),
         activeCompetitionsCount: activeRaffles.length,
         totalCompetitionsCount: hostRaffles.length,
@@ -434,6 +471,9 @@ export class HostsService {
 
   async getSalesAnalytics(userId: string) {
     const host = await this.getHostProfileByUserId(userId);
+    const commissionRate = await this.getHostCommissionRate(host.id);
+    const netPercentage = 100 - commissionRate;
+    const netMultiplier = netPercentage / 100;
 
     const raffles = await this.prisma.raffle.findMany({
       where: { hostId: host.id },
@@ -450,7 +490,7 @@ export class HostsService {
       const price = raffle.pricePerTicket ? Number(raffle.pricePerTicket) : 0;
       const sold = raffle.ticketsSold || 0;
       const gross = sold * price;
-      const net = gross * 0.85;
+      const net = gross * netMultiplier;
 
       totalTicketsSold += sold;
       totalGrossRevenue += gross;
@@ -470,7 +510,7 @@ export class HostsService {
       };
     });
 
-    const totalNetRevenue = totalGrossRevenue * 0.85;
+    const totalNetRevenue = totalGrossRevenue * netMultiplier;
     const avgRevenuePerRaffle = totalCompetitions > 0 ? totalGrossRevenue / totalCompetitions : 0;
 
     // Fetch tickets for sales trend chart (last 7 days)
@@ -518,9 +558,13 @@ export class HostsService {
     const chartData = Array.from(chartMap.values());
 
     return {
+      commissionRate,
+      netPercentage,
       metrics: {
         totalGrossRevenue,
         totalNetRevenue,
+        commissionRate,
+        netPercentage,
         totalTicketsSold,
         activeCompetitions,
         totalCompetitions,

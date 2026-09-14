@@ -54,7 +54,7 @@ export const faqData: FaqItem[] = [
     id: "faq-8",
     question: "How much does it cost to become a host?",
     answer:
-      "Fairway Draws offers three host plans: Free at £0, Premium at £29 per month, and Pro at £79 per month. All plans are subject to a 15% commission on competition sales."
+      "Fairway Draws offers three host plans: Free at £0 (15% platform commission), Premium at £29 per month (10% platform commission), and Pro at £79 per month (10% platform commission)."
   },
 
   {
@@ -68,14 +68,14 @@ export const faqData: FaqItem[] = [
     id: "faq-10",
     question: "What is included in the Premium host plan?",
     answer:
-      "The Premium plan costs £29 per month and includes up to 3 active draws, host dashboard access, priority email support, 3 featured listing slots per month, priority payout and access to Instant Wins. A 15% commission applies."
+      "The Premium plan costs £29 per month and includes up to 3 active draws, host dashboard access, priority email support, 3 featured listing slots per month, priority payout and access to Instant Wins. A reduced 10% commission applies."
   },
 
   {
     id: "faq-11",
     question: "What is included in the Pro host plan?",
     answer:
-      "The Pro plan costs £79 per month and includes unlimited active draws, host dashboard access, 24/7 priority support, unlimited featured listing slots, priority payout, access to Instant Wins, custom branding, advanced analytics and a dedicated account manager. A 15% commission applies."
+      "The Pro plan costs £79 per month and includes unlimited active draws, host dashboard access, 24/7 priority support, unlimited featured listing slots, priority payout, access to Instant Wins, custom branding, advanced analytics and a dedicated account manager. A reduced 10% commission applies."
   },
 
   {

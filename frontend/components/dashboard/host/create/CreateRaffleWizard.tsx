@@ -69,6 +69,9 @@ export default function CreateRaffleWizard() {
   const createRaffle = useCreateRaffle();
   const uploadImage = useUploadRaffleImage();
 
+  const planName = (mySub?.plan?.name || "").toLowerCase();
+  const commissionRate = planName.includes("premium") || planName.includes("pro") ? 10 : 15;
+
   const updateForm = (data: Partial<RaffleFormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));
   };
@@ -242,7 +245,13 @@ export default function CreateRaffleWizard() {
           <CreateRaffleStep5 formData={formData} updateForm={updateForm} onNext={nextStep} onPrev={prevStep} />
         )}
         {currentStep === 6 && (
-          <CreateRaffleStep6 formData={formData} onPublish={handlePublish} onPrev={prevStep} isSubmitting={isSubmitting} />
+          <CreateRaffleStep6
+            formData={formData}
+            onPublish={handlePublish}
+            onPrev={prevStep}
+            isSubmitting={isSubmitting}
+            commissionRate={commissionRate}
+          />
         )}
       </div>
     </div>

@@ -7,6 +7,8 @@ interface SalesMetricsData {
   activeCompetitions: number;
   totalCompetitions: number;
   avgRevenuePerRaffle: number;
+  commissionRate?: number;
+  netPercentage?: number;
 }
 
 interface Props {
@@ -14,6 +16,9 @@ interface Props {
 }
 
 export default function SalesMetricsCards({ metrics }: Props) {
+  const commissionRate = metrics?.commissionRate ?? 15;
+  const netPercentage = metrics?.netPercentage ?? (100 - commissionRate);
+
   const cards = [
     {
       id: "gross",
@@ -25,9 +30,9 @@ export default function SalesMetricsCards({ metrics }: Props) {
     },
     {
       id: "net",
-      label: "Net Earnings (85%)",
+      label: `Net Earnings (${netPercentage}%)`,
       value: `£${(metrics?.totalNetRevenue || 0).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      subtitle: "After 15% platform fee",
+      subtitle: `After ${commissionRate}% platform fee`,
       badge: "Net Payout",
       badgeColor: "bg-success-bg border-[#BBF7D0] text-success-text",
     },

@@ -54,7 +54,10 @@ export default function CompetitionSalesPage() {
       <SalesChart data={salesData?.chartData || []} />
 
       {/* Competition Breakdown Table */}
-      <SalesBreakdownTable raffles={salesData?.raffles || []} />
+      <SalesBreakdownTable
+        raffles={salesData?.raffles || []}
+        netPercentage={salesData?.netPercentage ?? salesData?.metrics?.netPercentage ?? 85}
+      />
     </div>
   );
 }

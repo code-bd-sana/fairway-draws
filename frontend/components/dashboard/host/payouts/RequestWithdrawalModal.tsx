@@ -9,16 +9,17 @@ interface RequestWithdrawalModalProps {
   isOpen: boolean;
   onClose: () => void;
   availableBalance: number;
+  commissionRate?: number;
 }
 
 export default function RequestWithdrawalModal({
   isOpen,
   onClose,
   availableBalance,
+  commissionRate = 15,
 }: RequestWithdrawalModalProps) {
   const [mounted, setMounted] = useState(false);
   const [amount, setAmount] = useState<string>("");
-  const [payoutMethod, setPayoutMethod] = useState<"BANK_TRANSFER" | "PAYPAL">("BANK_TRANSFER");
 
   useEffect(() => {
     setMounted(true);
@@ -29,9 +30,6 @@ export default function RequestWithdrawalModal({
   const [bankName, setBankName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [sortCode, setSortCode] = useState("");
-  
-  // PayPal detail
-  const [paypalEmail, setPaypalEmail] = useState("");
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -41,8 +39,8 @@ export default function RequestWithdrawalModal({
   if (!isOpen || !mounted) return null;
 
   const numAmount = parseFloat(amount) || 0;
-  const feeAmount = numAmount * 0.15;
-  const netAmount = numAmount * 0.85;
+  const feeAmount = numAmount * (commissionRate / 100);
+  const netAmount = numAmount - feeAmount;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,37 +57,26 @@ export default function RequestWithdrawalModal({
       return;
     }
 
-    let payoutDetails: Record<string, any> = {};
-
-    if (payoutMethod === "BANK_TRANSFER") {
-      if (!accountHolderName.trim() || !bankName.trim() || !accountNumber.trim()) {
-        setErrorMessage("Please complete all required bank account fields.");
-        return;
-      }
-      payoutDetails = {
-        accountHolderName: accountHolderName.trim(),
-        bankName: bankName.trim(),
-        accountNumber: accountNumber.trim(),
-        sortCode: sortCode.trim(),
-      };
-    } else {
-      if (!paypalEmail.trim() || !paypalEmail.includes("@")) {
-        setErrorMessage("Please provide a valid PayPal email address.");
-        return;
-      }
-      payoutDetails = {
-        paypalEmail: paypalEmail.trim(),
-      };
+    if (!accountHolderName.trim() || !bankName.trim() || !accountNumber.trim()) {
+      setErrorMessage("Please complete all required bank account fields.");
+      return;
     }
+
+    const payoutDetails = {
+      accountHolderName: accountHolderName.trim(),
+      bankName: bankName.trim(),
+      accountNumber: accountNumber.trim(),
+      sortCode: sortCode.trim(),
+    };
 
     withdrawMutation.mutate(
       {
         amount: numAmount,
-        payoutMethod,
+        payoutMethod: "BANK_TRANSFER",
         payoutDetails,
       },
       {
-        onSuccess: (res) => {
+        onSuccess: () => {
           setSuccessMessage("Withdrawal request submitted successfully! Your payout is now in processing.");
           setTimeout(() => {
             setSuccessMessage(null);
@@ -170,14 +157,14 @@ export default function RequestWithdrawalModal({
             </div>
           </div>
 
-          {/* 15% Fee Breakdown Card */}
+          {/* Fee Breakdown Card */}
           <div className="bg-accent-bg border border-primary/30 rounded-xl p-4 space-y-2 text-xs font-sans">
             <div className="flex justify-between text-text-muted">
               <span>Requested Gross Amount:</span>
               <span className="font-bold text-text-primary">£{numAmount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-[#dc2626]">
-              <span>Platform Fee (15%):</span>
+              <span>Platform Fee ({commissionRate}%):</span>
               <span className="font-bold">-£{feeAmount.toFixed(2)}</span>
             </div>
             <div className="pt-2 border-t border-primary/20 flex justify-between text-sm font-bold">
@@ -186,106 +173,67 @@ export default function RequestWithdrawalModal({
             </div>
           </div>
 
-          {/* Payout Method Tabs */}
+          {/* Payout Method */}
           <div className="space-y-1.5">
             <label className="block text-[11px] font-sans font-bold text-text-muted uppercase tracking-wider">
-              Select Payout Method
+              Payout Method
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setPayoutMethod("BANK_TRANSFER")}
-                className={cn(
-                  "p-3.5 rounded-xl border font-sans text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
-                  payoutMethod === "BANK_TRANSFER"
-                    ? "bg-surface border-2 border-primary text-text-brand shadow-xs"
-                    : "bg-elevated border-border text-text-muted hover:text-text-primary"
-                )}
-              >
-                🏦 Bank Transfer
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPayoutMethod("PAYPAL")}
-                className={cn(
-                  "p-3.5 rounded-xl border font-sans text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
-                  payoutMethod === "PAYPAL"
-                    ? "bg-surface border-2 border-primary text-text-brand shadow-xs"
-                    : "bg-elevated border-border text-text-muted hover:text-text-primary"
-                )}
-              >
-                🅿️ PayPal
-              </button>
+            <div className="p-3.5 rounded-xl border-2 border-primary bg-surface text-text-brand shadow-xs font-sans text-xs font-bold flex items-center gap-2">
+              <span>🏦</span>
+              <span>Bank Transfer (Direct Settlement)</span>
             </div>
           </div>
 
-          {/* Conditional Fields based on method */}
-          {payoutMethod === "BANK_TRANSFER" ? (
-            <div className="space-y-3 pt-1">
+          {/* Bank Transfer Details */}
+          <div className="space-y-3 pt-1">
+            <div>
+              <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Account Holder Name *</label>
+              <input
+                type="text"
+                value={accountHolderName}
+                onChange={(e) => setAccountHolderName(e.target.value)}
+                placeholder="e.g. John Doe / Business Ltd"
+                className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Account Holder Name *</label>
+                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Bank Name *</label>
                 <input
                   type="text"
-                  value={accountHolderName}
-                  onChange={(e) => setAccountHolderName(e.target.value)}
-                  placeholder="e.g. John Doe / Business Ltd"
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                  placeholder="e.g. Barclays / HSBC"
                   className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
                   required
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Bank Name *</label>
-                  <input
-                    type="text"
-                    value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
-                    placeholder="e.g. Barclays / HSBC"
-                    className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Sort Code / Routing</label>
-                  <input
-                    type="text"
-                    value={sortCode}
-                    onChange={(e) => setSortCode(e.target.value)}
-                    placeholder="e.g. 12-34-56"
-                    className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Account Number / IBAN *</label>
+                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Sort Code / Routing</label>
                 <input
                   type="text"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  placeholder="e.g. 12345678 or GB82 WEST 1234 5678"
+                  value={sortCode}
+                  onChange={(e) => setSortCode(e.target.value)}
+                  placeholder="e.g. 12-34-56"
                   className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
-                  required
                 />
               </div>
             </div>
-          ) : (
-            <div className="space-y-3 pt-1">
-              <div>
-                <label className="block text-xs font-bold text-text-muted mb-1 font-sans">PayPal Email Address *</label>
-                <input
-                  type="email"
-                  value={paypalEmail}
-                  onChange={(e) => setPaypalEmail(e.target.value)}
-                  placeholder="your-paypal-email@domain.com"
-                  className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
-                  required
-                />
-              </div>
+
+            <div>
+              <label className="block text-xs font-bold text-text-muted mb-1 font-sans">Account Number / IBAN *</label>
+              <input
+                type="text"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                placeholder="e.g. 12345678 or GB82 WEST 1234 5678"
+                className="w-full h-10 px-3.5 bg-elevated border border-border-medium rounded-xl text-xs text-text-primary focus:outline-none focus:border-primary"
+                required
+              />
             </div>
-          )}
+          </div>
 
           {/* Footer Actions */}
           <div className="pt-4 flex items-center justify-end gap-3 border-t border-divider">

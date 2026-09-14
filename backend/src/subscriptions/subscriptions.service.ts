@@ -87,8 +87,57 @@ export class SubscriptionsService {
   }
 
   async getMyBillingHistory(hostId: string) {
+    const host = await this.prisma.hostProfile.findFirst({
+      where: {
+        OR: [{ userId: hostId }, { id: hostId }],
+      },
+    });
+
+    if (host) {
+      // Auto-reconcile active paid subscriptions that lack a recorded Transaction
+      const activePaidSubs = await this.prisma.hostSubscription.findMany({
+        where: {
+          hostId: host.id,
+          status: 'ACTIVE',
+          plan: {
+            price: { gt: 0 },
+          },
+        },
+        include: { plan: true },
+      });
+
+      for (const sub of activePaidSubs) {
+        const existingTx = await this.prisma.transaction.findFirst({
+          where: {
+            OR: [
+              { relatedEntityId: sub.id },
+              { userId: host.userId, type: 'SUBSCRIPTION_FEE', amount: sub.plan.price },
+            ],
+          },
+        });
+
+        if (!existingTx) {
+          await this.prisma.transaction.create({
+            data: {
+              userId: host.userId,
+              type: 'SUBSCRIPTION_FEE',
+              amount: sub.plan.price,
+              status: 'COMPLETED',
+              paymentGateway: 'CASHFLOWS',
+              relatedEntityId: sub.id,
+              gatewayTransactionId: `AUTO_REC_${sub.id.substring(0, 8)}`,
+              createdAt: sub.createdAt,
+            },
+          });
+        }
+      }
+    }
+
     return this.prisma.transaction.findMany({
-      where: { userId: hostId, type: 'SUBSCRIPTION_FEE' },
+      where: {
+        userId: host?.userId || hostId,
+        type: 'SUBSCRIPTION_FEE',
+      },
       orderBy: { createdAt: 'desc' },
     });
   }

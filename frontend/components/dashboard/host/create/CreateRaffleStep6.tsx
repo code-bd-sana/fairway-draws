@@ -7,14 +7,21 @@ interface Props {
   onPrev: () => void;
   onPublish: () => void;
   isSubmitting?: boolean;
+  commissionRate?: number;
 }
 
-export default function CreateRaffleStep6({ formData, onPrev, onPublish, isSubmitting = false }: Props) {
+export default function CreateRaffleStep6({
+  formData,
+  onPrev,
+  onPublish,
+  isSubmitting = false,
+  commissionRate = 15,
+}: Props) {
   // Calculate potential earnings
   const tickets = parseInt(formData.totalTickets) || 0;
   const price = parseFloat(formData.ticketPrice) || 0;
   const gross = tickets * price;
-  const platformFee = gross * 0.05; // 5% fee
+  const platformFee = gross * (commissionRate / 100);
   const net = gross - platformFee;
 
   return (
@@ -70,7 +77,7 @@ export default function CreateRaffleStep6({ formData, onPrev, onPublish, isSubmi
               <span className="font-heading font-bold text-base text-text-primary">£{price.toFixed(2)}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Est. Platform Fee (5%)</span>
+              <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-text-muted">Est. Platform Fee ({commissionRate}%)</span>
               <span className="font-heading font-bold text-base text-[#dc2626]">-£{platformFee.toFixed(2)}</span>
             </div>
             <div className="flex flex-col gap-1">

@@ -40,7 +40,7 @@ export default function PayoutsAndEarningsPage() {
             </span>
           </div>
           <p className="font-sans text-xs text-text-muted pl-7">
-            Every withdrawal deducts a standard <strong className="text-text-primary">15% platform fee</strong>. Net payouts are sent directly to your bank account or PayPal.
+            Every withdrawal deducts your tier platform fee (<strong className="text-text-primary">{walletStats?.commissionRate ?? 15}%</strong>). Net payouts are transferred directly to your UK bank account.
           </p>
         </div>
 
@@ -80,6 +80,7 @@ export default function PayoutsAndEarningsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         availableBalance={metrics.availableBalance}
+        commissionRate={walletStats?.commissionRate ?? 15}
       />
 
     </div>

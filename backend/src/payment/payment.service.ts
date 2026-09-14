@@ -496,7 +496,7 @@ export class PaymentService {
               data: { status: 'EXPIRED' },
             });
 
-            await this.prisma.hostSubscription.create({
+            const sub = await this.prisma.hostSubscription.create({
               data: {
                 hostId: host.id,
                 planId: plan.id,
@@ -505,6 +505,34 @@ export class PaymentService {
                 endDate,
               },
             });
+
+            // Idempotently create SUBSCRIPTION_FEE Transaction record
+            const existingTx = await this.prisma.transaction.findFirst({
+              where: {
+                OR: [
+                  { gatewayTransactionId: orderNumber },
+                  { relatedEntityId: sub.id },
+                ],
+                type: 'SUBSCRIPTION_FEE',
+              },
+            });
+
+            if (!existingTx) {
+              await this.prisma.transaction.create({
+                data: {
+                  userId: host.userId,
+                  type: 'SUBSCRIPTION_FEE',
+                  amount: plan.price,
+                  status: 'COMPLETED',
+                  paymentGateway: 'CASHFLOWS',
+                  gatewayTransactionId: orderNumber,
+                  relatedEntityId: sub.id,
+                },
+              });
+              this.logger.log(
+                `Created SUBSCRIPTION_FEE transaction for host ${host.id} on plan ${plan.name} via webhook`,
+              );
+            }
 
             this.logger.log(
               `Activated subscription for host ${host.id} with plan ${plan.name} via webhook`,
@@ -759,35 +787,74 @@ export class PaymentService {
         });
 
         if (plan && host) {
-          const startDate = new Date();
-          const endDate = new Date();
-          endDate.setDate(endDate.getDate() + plan.durationDays);
-
-          await this.prisma.hostSubscription.updateMany({
-            where: { hostId: host.id, status: 'ACTIVE' },
-            data: { status: 'EXPIRED' },
-          });
-
-          const sub = await this.prisma.hostSubscription.create({
-            data: {
-              hostId: host.id,
-              planId: plan.id,
-              status: 'ACTIVE',
-              startDate,
-              endDate,
+          const existingTx = await this.prisma.transaction.findFirst({
+            where: {
+              gatewayTransactionId: orderNumber,
+              type: 'SUBSCRIPTION_FEE',
             },
           });
+
+          let sub: any;
+          if (existingTx && existingTx.relatedEntityId) {
+            sub = await this.prisma.hostSubscription.findUnique({
+              where: { id: existingTx.relatedEntityId },
+            });
+          }
+
+          if (!sub) {
+            const startDate = new Date();
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + plan.durationDays);
+
+            await this.prisma.hostSubscription.updateMany({
+              where: { hostId: host.id, status: 'ACTIVE' },
+              data: { status: 'EXPIRED' },
+            });
+
+            sub = await this.prisma.hostSubscription.create({
+              data: {
+                hostId: host.id,
+                planId: plan.id,
+                status: 'ACTIVE',
+                startDate,
+                endDate,
+              },
+            });
+          }
+
+          let transaction = existingTx;
+          if (!transaction) {
+            transaction = await this.prisma.transaction.create({
+              data: {
+                userId: host.userId,
+                type: 'SUBSCRIPTION_FEE',
+                amount: plan.price,
+                status: 'COMPLETED',
+                paymentGateway: 'CASHFLOWS',
+                gatewayTransactionId: orderNumber,
+                relatedEntityId: sub.id,
+              },
+            });
+            this.logger.log(
+              `Created SUBSCRIPTION_FEE transaction ${transaction.id} for host ${host.id} via confirmation`,
+            );
+          }
 
           this.logger.log(`Confirmed subscription for host ${host.id} with plan ${plan.name}`);
           return {
             success: true,
             type: 'SUBSCRIPTION',
             subscription: sub,
+            transaction,
           };
         }
       }
     }
 
     return { success: true, message: 'Payment confirmation completed' };
+  }
+
+  async handleWebhookNotification(signature: string, payload: any) {
+    return this.handleWebhook(signature, payload);
   }
 }

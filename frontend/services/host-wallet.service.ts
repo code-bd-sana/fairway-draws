@@ -40,6 +40,7 @@ export interface HostDashboardOverviewData {
   kpiStats: {
     totalNetRevenue: number;
     totalGrossRevenue: number;
+    commissionRate?: number;
     availableBalance: number;
     activeCompetitionsCount: number;
     totalCompetitionsCount: number;
@@ -78,9 +79,13 @@ export interface HostDashboardOverviewData {
 }
 
 export interface HostSalesAnalyticsData {
+  commissionRate?: number;
+  netPercentage?: number;
   metrics: {
     totalGrossRevenue: number;
     totalNetRevenue: number;
+    commissionRate?: number;
+    netPercentage?: number;
     totalTicketsSold: number;
     activeCompetitions: number;
     totalCompetitions: number;
