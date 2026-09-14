@@ -73,7 +73,7 @@ export default function UserLoginForm() {
 
     try {
       await loginMutation.mutateAsync({
-        email: formData.email,
+        email: formData.email.trim(),
         password: formData.password,
       });
       // The mutation handles redirect on success
@@ -138,14 +138,14 @@ export default function UserLoginForm() {
               htmlFor="email"
               className="font-sans font-medium text-xs md:text-sm text-text-primary"
             >
-              Email Address
+              Email Address or Username
             </label>
             <input
-              type="email"
+              type="text"
               id="email"
               name="email"
-              autoComplete="email"
-              placeholder="you@example.com"
+              autoComplete="username"
+              placeholder="you@example.com or username"
               value={formData.email}
               onChange={handleInputChange}
               disabled={formState.isSubmitting}

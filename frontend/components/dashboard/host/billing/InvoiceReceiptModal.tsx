@@ -102,7 +102,7 @@ export default function InvoiceReceiptModal({
                 Official Golf Competitions &amp; Host Management
               </p>
               <p className="font-sans text-[11px] text-text-muted mt-0.5">
-                Fairway Draws Ltd &bull; 124 Golf Links Way &bull; support@fairwaydraws.com
+                Fairway Draws Ltd &bull; 124 Golf Links Way &bull; info@fairwaydraws.com
               </p>
             </div>
 

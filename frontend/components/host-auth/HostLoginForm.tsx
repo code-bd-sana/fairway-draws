@@ -61,7 +61,7 @@ export default function HostLoginForm() {
 
     try {
       await loginMutation.mutateAsync({
-        email: formData.email,
+        email: formData.email.trim(),
         password: formData.password,
       });
       // The mutation handles redirect to host overview on success

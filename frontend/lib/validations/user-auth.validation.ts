@@ -44,10 +44,11 @@ export function validateLoginForm(values: UserLoginFormValues): {
 } {
   const errors: { email?: string; password?: string } = {};
 
-  if (!values.email.trim()) {
-    errors.email = "Email address is required";
-  } else if (!isValidEmail(values.email)) {
-    errors.email = "Please enter a valid email address";
+  const trimmedEmail = values.email.trim();
+  if (!trimmedEmail) {
+    errors.email = "Email address or username is required";
+  } else if (!isValidEmail(trimmedEmail) && !/^[a-zA-Z0-9._-]+$/.test(trimmedEmail)) {
+    errors.email = "Please enter a valid email address or username";
   }
 
   if (!values.password) {
@@ -56,6 +57,7 @@ export function validateLoginForm(values: UserLoginFormValues): {
 
   return errors;
 }
+
 
 /**
  * Validates User Registration Form.

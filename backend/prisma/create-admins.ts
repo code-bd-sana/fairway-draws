@@ -30,6 +30,30 @@ const adminAccounts: AdminAccountConfig[] = [
     lastName: 'Clegg',
     password: process.env.KARA_ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'FairwayAdmin2026!',
   },
+  {
+    email: 'lewis.mcmanus@fairwaydraws.com',
+    firstName: 'Lewis',
+    lastName: 'McManus',
+    password: process.env.LEWIS_ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'FairwayAdmin2026!',
+  },
+  {
+    email: 'lewis@fairwaydraws.com',
+    firstName: 'Lewis',
+    lastName: 'McManus',
+    password: process.env.LEWIS_ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'FairwayAdmin2026!',
+  },
+  {
+    email: 'lewismcmanus@gmail.com',
+    firstName: 'Lewis',
+    lastName: 'McManus',
+    password: process.env.LEWIS_ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'FairwayAdmin2026!',
+  },
+  {
+    email: 'lewismcmanus@googlemail.com',
+    firstName: 'Lewis',
+    lastName: 'McManus',
+    password: process.env.LEWIS_ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'FairwayAdmin2026!',
+  },
 ];
 
 async function main() {
