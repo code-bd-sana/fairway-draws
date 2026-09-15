@@ -48,11 +48,20 @@ export default function LiveRafflesFilterBar({
         ]),
   ];
 
-  const isCategoryActive = (catValue: string) => {
-    if (catValue === "all") return !activeCategory || activeCategory === "all";
+  const isCategoryActive = (cat: { label: string; value: string }) => {
+    if (cat.value === "all") return !activeCategory || activeCategory === "all";
+    const act = activeCategory.toLowerCase();
+    const val = cat.value.toLowerCase();
+    const lbl = cat.label.toLowerCase();
     return (
-      activeCategory.toLowerCase() === catValue.toLowerCase() ||
-      activeCategory.toLowerCase().replace(/-/g, " ") === catValue.toLowerCase().replace(/-/g, " ")
+      act === val ||
+      act === lbl ||
+      act.replace(/-/g, " ") === val.replace(/-/g, " ") ||
+      act.replace(/-/g, " ") === lbl.replace(/-/g, " ") ||
+      (act.endsWith("s") && act.slice(0, -1) === val) ||
+      (val.endsWith("s") && val.slice(0, -1) === act) ||
+      (act.endsWith("s") && act.slice(0, -1) === lbl) ||
+      (lbl.endsWith("s") && lbl.slice(0, -1) === act)
     );
   };
 
@@ -84,7 +93,7 @@ export default function LiveRafflesFilterBar({
         {/* Category Pills (Horizontal scrolling list on small screens) */}
         <div className="overflow-x-auto -mx-5 px-5 lg:mx-0 lg:px-0 scrollbar-none flex items-center gap-2 select-none shrink-0 py-1">
           {categories.map((cat) => {
-            const isActive = isCategoryActive(cat.value);
+            const isActive = isCategoryActive(cat);
             return (
               <button
                 key={cat.value}

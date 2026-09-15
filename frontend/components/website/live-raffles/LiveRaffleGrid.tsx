@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { usePublicCategories } from "../../../hooks/useCategoryHooks";
 import { usePublicRaffles } from "../../../hooks/useRaffleHooks";
 import LiveRaffleCard from "./LiveRaffleCard";
 import LiveRafflesFilterBar from "./LiveRafflesFilterBar";
@@ -51,6 +52,39 @@ export default function LiveRaffleGrid() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
 
+  const { data: dbCategories } = usePublicCategories();
+
+  // Resolve activeCategory to canonical category name stored in DB
+  const resolvedCategory = React.useMemo(() => {
+    if (!activeCategory || activeCategory === "all") return undefined;
+    if (!dbCategories || dbCategories.length === 0) return activeCategory;
+
+    const act = activeCategory.toLowerCase().trim();
+    // 1. Direct match with name
+    const matchByName = dbCategories.find(
+      (c) => c.name.toLowerCase() === act
+    );
+    if (matchByName) return matchByName.name;
+
+    // 2. Match with slug
+    const matchBySlug = dbCategories.find(
+      (c) => c.slug?.toLowerCase() === act
+    );
+    if (matchBySlug) return matchBySlug.name;
+
+    // 3. Match singular/plural (e.g. Putters -> Putter, Irons -> Iron Sets)
+    const singular = act.endsWith("s") ? act.slice(0, -1) : act;
+    const matchBySingular = dbCategories.find(
+      (c) =>
+        c.name.toLowerCase() === singular ||
+        c.name.toLowerCase().startsWith(singular) ||
+        c.slug?.toLowerCase() === singular
+    );
+    if (matchBySingular) return matchBySingular.name;
+
+    return activeCategory;
+  }, [activeCategory, dbCategories]);
+
   // Handle Category Filter change & update URL query parameters optionally
   const handleCategoryChange = (category: string) => {
     setCurrentPage(1);
@@ -82,7 +116,7 @@ export default function LiveRaffleGrid() {
     search: searchQuery,
     page: currentPage,
     limit: 6,
-    category: activeCategory !== "all" ? activeCategory : undefined,
+    category: resolvedCategory,
     sort: sortBy,
   });
 

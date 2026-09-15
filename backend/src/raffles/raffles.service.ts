@@ -269,18 +269,78 @@ export class RafflesService {
 
     const andClauses: any[] = [];
 
-    // Category filter (supports exact name, slug, or space-separated matching)
+    // Category filter (supports exact name, slug, singular/plural, DB Category mapping)
     if (category && category !== 'All' && category !== 'all') {
       const cleanCategory = category.trim();
       const slugified = cleanCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       const spaceSeparated = cleanCategory.replace(/-/g, ' ');
+      const singular = cleanCategory.endsWith('s') ? cleanCategory.slice(0, -1) : cleanCategory;
+      const plural = cleanCategory.endsWith('s') ? cleanCategory : `${cleanCategory}s`;
+
+      const matchedCategories = await this.prisma.category.findMany({
+        where: {
+          OR: [
+            { name: { equals: cleanCategory, mode: 'insensitive' } },
+            { slug: { equals: cleanCategory, mode: 'insensitive' } },
+            { name: { equals: slugified, mode: 'insensitive' } },
+            { slug: { equals: slugified, mode: 'insensitive' } },
+            { name: { equals: spaceSeparated, mode: 'insensitive' } },
+            { slug: { equals: spaceSeparated, mode: 'insensitive' } },
+            { name: { equals: singular, mode: 'insensitive' } },
+            { slug: { equals: singular, mode: 'insensitive' } },
+            { name: { equals: plural, mode: 'insensitive' } },
+            { slug: { equals: plural, mode: 'insensitive' } },
+            { name: { contains: singular, mode: 'insensitive' } },
+            { slug: { contains: singular, mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      const possibleValues = new Set<string>([
+        cleanCategory,
+        slugified,
+        spaceSeparated,
+        singular,
+        plural,
+      ]);
+
+      for (const cat of matchedCategories) {
+        if (cat.name) {
+          possibleValues.add(cat.name);
+          possibleValues.add(cat.name.toLowerCase());
+          if (cat.name.endsWith('s')) {
+            possibleValues.add(cat.name.slice(0, -1));
+          } else {
+            possibleValues.add(`${cat.name}s`);
+          }
+        }
+        if (cat.slug) {
+          possibleValues.add(cat.slug);
+          possibleValues.add(cat.slug.toLowerCase());
+          possibleValues.add(cat.slug.replace(/-/g, ' '));
+          if (cat.slug.endsWith('s')) {
+            possibleValues.add(cat.slug.slice(0, -1));
+          } else {
+            possibleValues.add(`${cat.slug}s`);
+          }
+        }
+      }
+
+      const orConditions: any[] = [];
+      for (const val of Array.from(possibleValues)) {
+        if (!val || val.length < 2) continue;
+        orConditions.push({ category: { equals: val, mode: 'insensitive' } });
+        orConditions.push({ category: { contains: val, mode: 'insensitive' } });
+        orConditions.push({
+          AND: [
+            { category: null },
+            { title: { contains: val, mode: 'insensitive' } },
+          ],
+        });
+      }
 
       andClauses.push({
-        OR: [
-          { category: { equals: cleanCategory, mode: 'insensitive' } },
-          { category: { equals: slugified, mode: 'insensitive' } },
-          { category: { contains: spaceSeparated, mode: 'insensitive' } },
-        ],
+        OR: orConditions,
       });
     }
 
