@@ -219,6 +219,11 @@ export const raffleService = {
     return response.data;
   },
 
+  async rejectRaffle(id: string, reason?: string): Promise<Raffle> {
+    const response = await api.patch(`/raffles/admin/${id}/reject`, { reason });
+    return response.data;
+  },
+
   async getAdminAllRaffles(params?: { search?: string; page?: number; limit?: number; status?: string }): Promise<PaginatedResponse<Raffle>> {
     const response = await api.get('/raffles/admin/all', { params });
     return response.data;

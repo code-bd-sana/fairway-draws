@@ -695,6 +695,43 @@ export class RafflesService {
     });
   }
 
+  async reject(id: string, reason?: string) {
+    const raffle = await this.prisma.raffle.findUnique({
+      where: { id },
+      include: {
+        host: {
+          include: { user: true },
+        },
+      },
+    });
+    if (!raffle) throw new NotFoundException('Raffle not found');
+
+    const updated = await this.prisma.raffle.update({
+      where: { id },
+      data: { status: 'CANCELLED' },
+    });
+
+    if (raffle.host?.userId) {
+      await this.notificationsService.create({
+        userId: raffle.host.userId,
+        type: 'RAFFLE',
+        title: 'Competition Changes Requested',
+        message:
+          reason && reason.trim().length > 0
+            ? `Your competition "${raffle.title}" was not approved. Feedback: ${reason.trim()}`
+            : `Your competition "${raffle.title}" was not approved and requires changes before it can be published.`,
+        link: '/dashboard/host/competitions',
+        metadata: {
+          raffleId: raffle.id,
+          raffleTitle: raffle.title,
+          reason: reason?.trim() || null,
+        },
+      });
+    }
+
+    return updated;
+  }
+
   async drawWinner(raffleId: string, winningTicketNumber?: number) {
     const winner = await this.prisma.$transaction(async (tx) => {
       // 1. Get the raffle and check its status

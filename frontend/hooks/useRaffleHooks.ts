@@ -100,6 +100,19 @@ export const useApproveRaffle = () => {
   });
 };
 
+export const useRejectRaffle = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
+      raffleService.rejectRaffle(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminPendingRaffles'] });
+      queryClient.invalidateQueries({ queryKey: ['adminAllRaffles'] });
+      queryClient.invalidateQueries({ queryKey: ['publicRaffles'] });
+    },
+  });
+};
+
 export const useRaffleWinners = (raffleId: string) => {
   return useQuery({
     queryKey: ['raffleWinners', raffleId],

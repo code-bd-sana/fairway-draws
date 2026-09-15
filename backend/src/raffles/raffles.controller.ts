@@ -35,6 +35,7 @@ import { RafflesService } from './raffles.service';
 import { CreateRaffleDto } from './dto/create-raffle.dto';
 import { UpdateRaffleDto } from './dto/update-raffle.dto';
 import { DrawWinnerDto } from './dto/draw-winner.dto';
+import { RejectRaffleDto } from './dto/reject-raffle.dto';
 import {
   FindAllPublicRafflesQueryDto,
   FindHostRafflesQueryDto,
@@ -453,5 +454,22 @@ export class RafflesController {
   @ApiResponse({ status: 404, description: 'Raffle not found' })
   approve(@Param('id') id: string) {
     return this.rafflesService.approve(id);
+  }
+
+  @Patch('admin/:id/reject')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Reject a pending raffle with feedback' })
+  @ApiParam({ name: 'id', description: 'Raffle ID to reject' })
+  @ApiResponse({ status: 200, description: 'Raffle rejected successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Raffle not found' })
+  reject(
+    @Param('id') id: string,
+    @Body() body?: RejectRaffleDto,
+  ) {
+    return this.rafflesService.reject(id, body?.reason);
   }
 }
