@@ -1168,11 +1168,11 @@ export class RafflesService {
         value: `${drawsCompleted.toLocaleString('en-GB')}`,
         label: 'Draws Completed',
       },
-      {
-        id: 2,
-        value: `£${minimumEntry}`,
-        label: 'Minimum Entry',
-      },
+      // {
+      //   id: 2,
+      //   value: `£${minimumEntry}`,
+      //   label: 'Minimum Entry',
+      // },
       {
         id: 3,
         value: 'Verified',
