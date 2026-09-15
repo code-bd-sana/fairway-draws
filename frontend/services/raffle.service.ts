@@ -22,6 +22,7 @@ export interface Raffle {
   description: string;
   mainImage: string | null;
   prizeName: string | null;
+  mainPrizeValue?: string | number | null;
   pricePerTicket: string | number;
   totalTickets: number;
   ticketsSold: number;
@@ -69,6 +70,7 @@ export interface CreateRaffleData {
   title: string;
   description: string;
   prizeName?: string;
+  mainPrizeValue?: number | string;
   pricePerTicket: number | string;
   totalTickets: number;
   minTickets?: number;

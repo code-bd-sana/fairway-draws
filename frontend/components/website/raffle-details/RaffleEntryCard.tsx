@@ -47,6 +47,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
     totalTickets,
     soldTickets,
     endDate,
+    instantWinPrizes,
   } = raffle;
 
   useEffect(() => {
@@ -298,11 +299,17 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
       
       {/* Top Value Section */}
       <div className="flex flex-col gap-1 mb-6">
-        <span className="font-sans text-[10px] text-text-muted uppercase tracking-wider font-bold">Combined Prize Pool</span>
-        <span className="font-heading font-black text-[32px] text-text-brand leading-tight">£{totalPoolValue.toLocaleString()}</span>
-        <span className="font-sans text-[11px] text-text-muted">
-          Worth: £{(worthPrice || totalPoolValue).toLocaleString()}. Est. Valuation: £{((worthPrice || totalPoolValue) * 0.9).toLocaleString()}
+        <span className="font-sans text-[10px] text-text-muted uppercase tracking-wider font-bold">
+          {instantWinPrizes && instantWinPrizes.length > 0 ? "Combined Prize Pool" : "Main Prize Worth"}
         </span>
+        <span className="font-heading font-black text-[32px] text-text-brand leading-tight">
+          £{(totalPoolValue || worthPrice || 0).toLocaleString()}
+        </span>
+        {(worthPrice || totalPoolValue) > 0 && (
+          <span className="font-sans text-[11px] text-text-muted">
+            Declared Prize Value: £{(worthPrice || totalPoolValue).toLocaleString()}
+          </span>
+        )}
       </div>
 
       {/* Stats Rows */}

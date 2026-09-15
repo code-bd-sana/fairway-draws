@@ -32,7 +32,14 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
   const totalTickets = Number(r.totalTickets ?? 0) || 0;
   const soldTickets = Number(r.ticketsSold ?? r.soldTickets ?? 0) || 0;
 
-  const worthPrice = Number(r.worthPrice ?? (ticketPrice * totalTickets)) || 0;
+  const declaredPrizeValue =
+    r.mainPrizeValue !== undefined && r.mainPrizeValue !== null && r.mainPrizeValue !== ""
+      ? Number(r.mainPrizeValue)
+      : (r.worthPrice !== undefined && r.worthPrice !== null && r.worthPrice !== ""
+          ? Number(r.worthPrice)
+          : 0);
+
+  const worthPrice = declaredPrizeValue > 0 ? declaredPrizeValue : 0;
   const soldPercent = totalTickets > 0 ? Math.min(Math.round((soldTickets / totalTickets) * 100), 100) : 0;
   const badgeText = r.badgeText || (soldPercent >= 90 ? "ALMOST GONE" : "HOT");
 

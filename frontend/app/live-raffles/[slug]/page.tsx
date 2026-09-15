@@ -32,7 +32,19 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
     const json = await res.json();
     const draw = json.data || json; // Handle wrapped response
 
-    const worth = Number(draw.pricePerTicket) * draw.totalTickets;
+    const declaredMainPrize =
+      draw.mainPrizeValue !== undefined && draw.mainPrizeValue !== null && draw.mainPrizeValue !== ""
+        ? Number(draw.mainPrizeValue)
+        : (draw.worthPrice ? Number(draw.worthPrice) : 0);
+
+    const instantWinsTotal =
+      draw.instantWins?.reduce((sum: number, iw: any) => sum + (Number(iw.rrpValue) || 0), 0) || 0;
+
+    const totalPool = declaredMainPrize > 0
+      ? (declaredMainPrize + instantWinsTotal)
+      : (instantWinsTotal > 0 ? instantWinsTotal : 0);
+
+    const worth = declaredMainPrize > 0 ? declaredMainPrize : (totalPool > 0 ? totalPool : undefined);
 
     return {
       id: draw.id,
@@ -43,7 +55,9 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
       images: [draw.mainImage || "https://placehold.co/800x600/1a230a/8cb34a?text=No+Image"],
       ticketPrice: Number(draw.pricePerTicket),
       worthPrice: worth,
-      totalPoolValue: worth,
+      totalPoolValue: totalPool,
+      mainPrizeValue: declaredMainPrize > 0 ? declaredMainPrize : undefined,
+      prizeName: draw.prizeName || draw.title,
       minimumTickets: draw.minTickets ? Number(draw.minTickets) : 1,
       minTickets: draw.minTickets ? Number(draw.minTickets) : 1,
       maximumTicketsPerOrder: draw.maxTickets ? Number(draw.maxTickets) : undefined,
@@ -55,9 +69,9 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
       endDate: draw.endDate,
       description: draw.description || `Enter this premium draw for a chance to win the ${draw.title}! Premium gear, fast shipping, and live draw.`,
       highlights: [
-        `Main Prize: ${draw.title}`,
+        `Main Prize: ${draw.prizeName || draw.title}`,
         `Ticket Price: £${Number(draw.pricePerTicket).toFixed(2)}`,
-        draw.mainPrizeValue ? `Main Prize Value: £${Number(draw.mainPrizeValue).toLocaleString()}` : `Estimated Valuation: £${worth.toLocaleString()}`,
+        declaredMainPrize > 0 ? `Main Prize Value: £${declaredMainPrize.toLocaleString()}` : null,
         `Total Tickets: ${draw.totalTickets.toLocaleString()}`,
         draw.maxTickets ? `Max Per Person: ${Number(draw.maxTickets)} tickets` : null,
         `Fast Track Delivery: Fully tracked and insured shipping included.`,

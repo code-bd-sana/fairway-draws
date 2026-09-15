@@ -21,10 +21,19 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
     totalTickets,
     soldTickets,
     endDate,
-    worthPrice,
+    worthPrice: rawWorthPrice,
     instantWinsCount,
     isInstantWin,
   } = draw;
+
+  const declaredValue =
+    (draw as any).mainPrizeValue !== undefined &&
+    (draw as any).mainPrizeValue !== null &&
+    (draw as any).mainPrizeValue !== ""
+      ? Number((draw as any).mainPrizeValue)
+      : (rawWorthPrice ? Number(rawWorthPrice) : undefined);
+
+  const worthPrice = declaredValue && declaredValue > 0 ? declaredValue : undefined;
 
   const soldPercent = Math.min(Math.round((soldTickets / totalTickets) * 100), 100);
 

@@ -25,6 +25,7 @@ export default function EditRaffleForm({ raffleId }: Props) {
         category: (raffle as any).category || "Golf Drivers",
         description: raffle.description || "",
         prizeName: raffle.prizeName || "",
+        mainPrizeValue: (raffle as any).mainPrizeValue ?? "",
         totalTickets: raffle.totalTickets || "",
         pricePerTicket: raffle.pricePerTicket || "",
         minTickets: (raffle as any).minTickets ?? 1,
@@ -56,6 +57,11 @@ export default function EditRaffleForm({ raffleId }: Props) {
       // Convert numbers
       if (payload.totalTickets) payload.totalTickets = Number(payload.totalTickets);
       if (payload.pricePerTicket) payload.pricePerTicket = Number(payload.pricePerTicket);
+      if (payload.mainPrizeValue !== undefined && payload.mainPrizeValue !== "") {
+        payload.mainPrizeValue = Number(payload.mainPrizeValue);
+      } else {
+        payload.mainPrizeValue = null;
+      }
 
       payload.minTickets =
         payload.minTickets !== undefined && payload.minTickets !== ""
@@ -203,7 +209,28 @@ export default function EditRaffleForm({ raffleId }: Props) {
               2. Ticket Allocation &amp; Pricing
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Main Prize Value */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="mainPrizeValue" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                  Main Prize Value (£)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-heading font-bold text-xs text-text-brand">
+                    £
+                  </span>
+                  <input
+                    id="mainPrizeValue"
+                    type="number"
+                    step="0.01"
+                    value={formData.mainPrizeValue || ""}
+                    onChange={(e) => handleChange("mainPrizeValue", e.target.value)}
+                    placeholder="e.g. 1500.00"
+                    className="w-full h-[46px] bg-bg border border-border rounded-button pl-7 pr-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                  />
+                </div>
+              </div>
+
               {/* Total Tickets */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
@@ -212,7 +239,7 @@ export default function EditRaffleForm({ raffleId }: Props) {
                   </label>
                   {hasSoldTickets && (
                     <span className="font-sans text-[11px] font-bold text-red-500 select-none">
-                      🔒 Locked (tickets sold)
+                      🔒 Locked
                     </span>
                   )}
                 </div>
@@ -238,7 +265,7 @@ export default function EditRaffleForm({ raffleId }: Props) {
                   </label>
                   {hasSoldTickets && (
                     <span className="font-sans text-[11px] font-bold text-red-500 select-none">
-                      🔒 Locked (tickets sold)
+                      🔒 Locked
                     </span>
                   )}
                 </div>

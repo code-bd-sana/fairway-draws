@@ -17,6 +17,8 @@ export interface Draw {
   isFeatured?: boolean;
   category: string; // e.g. "drivers", "irons", "putters", "experiences", "apparel", "cash", "luxury"
   worthPrice?: number; // Valuation of the prize (e.g. 1200)
+  mainPrizeValue?: number; // Declared value of the main prize
+  prizeName?: string; // Declared name of main prize
   slug?: string; // Optional SEO-friendly URL slug (e.g. 'callaway-paradym-ai-smoke-driver')
   instantWinsCount?: number; // For Instant Win draws (e.g. 3)
   isInstantWin?: boolean; // Flag to separate standard draws from instant win draws

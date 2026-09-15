@@ -271,6 +271,11 @@ export default function AdminCompetitionsTable() {
                     <div className="flex flex-col gap-0.5">
                       <span className="font-heading font-bold text-xs text-text-primary truncate block max-w-[280px]">{comp.title}</span>
                       <span className="font-sans font-medium text-[11px] text-text-muted truncate block max-w-[280px]">{hostName} ({hostEmail})</span>
+                      {comp.mainPrizeValue && (
+                        <span className="font-sans font-semibold text-[10px] text-emerald-700">
+                          Main Prize: £{Number(comp.mainPrizeValue).toLocaleString()}
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td className="py-4 px-6">

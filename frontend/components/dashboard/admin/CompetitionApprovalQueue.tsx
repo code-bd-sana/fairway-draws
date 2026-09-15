@@ -109,20 +109,46 @@ export default function CompetitionApprovalQueue() {
 
               {/* Text Info */}
               <div className="flex flex-col gap-2 flex-1 min-w-0">
-                <h3 className="font-heading font-black text-lg text-text-primary">{item.title}</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-heading font-black text-lg text-text-primary">{item.title}</h3>
+                  {item.category && (
+                    <span className="px-2 py-0.5 rounded-full bg-accent-bg border border-primary/20 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
+                      {item.category}
+                    </span>
+                  )}
+                </div>
+                {item.prizeName && item.prizeName !== item.title && (
+                  <p className="font-sans text-xs font-semibold text-text-primary">
+                    <span className="text-text-muted">Main Prize: </span>
+                    {item.prizeName}
+                  </p>
+                )}
                 <p className="font-sans text-xs text-text-muted leading-relaxed max-w-[800px] line-clamp-3">
                   {item.description || 'No description provided.'}
                 </p>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  {item.mainPrizeValue !== undefined && item.mainPrizeValue !== null && item.mainPrizeValue !== '' && (
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] text-[#065f46] font-sans font-black text-[10px] uppercase tracking-wider shadow-xs">
+                      Main Prize Value: £{Number(item.mainPrizeValue).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  )}
                   <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
-                    Price: £{item.pricePerTicket} / ticket
+                    Price: £{Number(item.pricePerTicket).toFixed(2)} / ticket
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
                     Total: {item.totalTickets} tickets
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
+                    Per Person: Min {item.minTickets || 1} {item.maxTickets ? `| Max ${item.maxTickets}` : '| Unlimited'}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
                     Draw Date: {item.endDate ? new Date(item.endDate).toLocaleDateString() : 'TBD'}
                   </span>
+                  {item._count?.instantWins ? (
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#fef3c7] border border-[#fde68a] text-[#92400e] font-sans font-bold text-[10px] uppercase tracking-wider">
+                      ⚡ {item._count.instantWins} Instant Wins
+                    </span>
+                  ) : null}
                 </div>
               </div>
             </div>

@@ -19,6 +19,8 @@ export interface RaffleDetail {
   images: string[];
   ticketPrice: number;
   worthPrice?: number;
+  mainPrizeValue?: number;
+  prizeName?: string;
   totalPoolValue: number; // Value of main prize + instant wins
   minimumTickets?: number;
   minTickets?: number;

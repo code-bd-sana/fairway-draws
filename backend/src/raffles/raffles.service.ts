@@ -144,10 +144,17 @@ export class RafflesService {
         title: data.title,
         slug,
         description: data.description || '',
-        mainPrizeValue: data.mainPrizeValue
-          ? Number(data.mainPrizeValue)
-          : null,
-        pricePerTicket: data.ticketPrice || 0,
+        prizeName: data.prizeName || null,
+        mainPrizeValue:
+          data.mainPrizeValue !== undefined &&
+          data.mainPrizeValue !== null &&
+          data.mainPrizeValue !== ''
+            ? Number(data.mainPrizeValue)
+            : null,
+        pricePerTicket:
+          data.pricePerTicket !== undefined && data.pricePerTicket !== null
+            ? Number(data.pricePerTicket)
+            : Number(data.ticketPrice || 0),
         totalTickets,
         minTickets,
         maxTickets,
@@ -619,6 +626,13 @@ export class RafflesService {
           : null;
     }
 
+    if (updatePayload.mainPrizeValue !== undefined) {
+      updatePayload.mainPrizeValue =
+        updatePayload.mainPrizeValue !== null && updatePayload.mainPrizeValue !== ''
+          ? Number(updatePayload.mainPrizeValue)
+          : null;
+    }
+
     const effectiveMin =
       updatePayload.minTickets !== undefined
         ? updatePayload.minTickets
@@ -1043,7 +1057,10 @@ export class RafflesService {
   async getPendingApprovals() {
     return this.prisma.raffle.findMany({
       where: { status: 'PENDING_APPROVAL' },
-      include: { host: { include: { user: true } } },
+      include: {
+        host: { include: { user: true } },
+        _count: { select: { instantWins: true } },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }

@@ -40,6 +40,7 @@ export default function InstantWinsSection() {
             status: (r.status === 'ACTIVE' ? 'live' : 'ended') as "live" | "ended",
             category: r.category || 'general',
             slug: r.slug,
+            worthPrice: r.mainPrizeValue ? Number(r.mainPrizeValue) : undefined,
             instantWinsCount: r._count?.instantWins || 0,
             isInstantWin: (r._count?.instantWins || 0) > 0,
           }));
