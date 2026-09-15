@@ -66,18 +66,6 @@ export default function DashboardTopbar({ account, onMenuClick, title = "Dashboa
       </div>
 
       <div className="flex items-center gap-[16px]">
-        {/* Search Input */}
-        <div className="hidden md:flex items-center h-[42px] w-[280px] bg-elevated border border-border-medium rounded-xl px-[13px] transition-all focus-within:border-primary focus-within:bg-surface">
-          <svg className="w-4 h-4 text-text-muted shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search competitions, orders..."
-            className="bg-transparent border-none outline-none text-text-primary text-[13px] placeholder:text-text-muted/70 w-full ml-2 font-sans font-medium"
-          />
-        </div>
-
         {/* Notifications */}
         <div className="relative">
           <button
