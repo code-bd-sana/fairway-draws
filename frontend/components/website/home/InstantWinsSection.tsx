@@ -120,7 +120,7 @@ export default function InstantWinsSection() {
         {/* View All Button */}
         <div className="mt-12 text-center">
           <a
-            href="/competitions"
+            href="/live-raffles"
             className="inline-flex items-center justify-center font-sans font-bold text-sm px-8 py-3.5 rounded-button bg-surface border border-border text-text-primary transition-all duration-300 hover:border-border-medium hover:text-text-brand hover:shadow-glow focus:outline-none focus:ring-2 focus:ring-brand/50"
           >
             View All Competitions

@@ -193,7 +193,7 @@ export default function WebsiteNavbar() {
 
           {/* Links list */}
           <nav className='flex flex-col gap-4'>
-            <Link
+            {/* <Link
               href='/basket'
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
@@ -223,7 +223,7 @@ export default function WebsiteNavbar() {
                   {itemCount}
                 </span>
               )}
-            </Link>
+            </Link> */}
             {NAV_LINKS.map((link) => {
               const isActive =
                 pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));
