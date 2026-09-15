@@ -28,6 +28,25 @@ export class TicketsService {
       throw new BadRequestException('Quantity must be at least 1');
     }
 
+    const raffle = await this.prisma.raffle.findUnique({
+      where: { id: raffleId },
+      select: { pricePerTicket: true },
+    });
+
+    if (!raffle) {
+      throw new NotFoundException('Competition not found');
+    }
+
+    const price = Number(raffle.pricePerTicket || 0);
+    if (price <= 0) {
+      return this.allocateTicketsInDatabase(
+        userId,
+        raffleId,
+        quantity,
+        'FREE_ENTRY',
+      );
+    }
+
     const isTestPayment =
       process.env.USE_TEST_PAYMENT === 'true' ||
       process.env.USE_TEST_PAYMENT === '"true"';
@@ -128,6 +147,8 @@ export class TicketsService {
           gatewayTransactionId ||
           (paymentGateway === 'CASHFLOWS'
             ? `CF_${crypto.randomUUID()}`
+            : paymentGateway === 'FREE_ENTRY'
+            ? `FREE_${crypto.randomUUID()}`
             : `SIM_PAY_${crypto.randomUUID()}`);
 
         let transaction: any;
@@ -426,6 +447,15 @@ export class TicketsService {
 
     const totalAmount = (Number(raffle.pricePerTicket) * quantity).toFixed(2);
 
+    if (Number(totalAmount) <= 0) {
+      return this.allocateTicketsInDatabase(
+        userId,
+        raffleId,
+        quantity,
+        'FREE_ENTRY',
+      );
+    }
+
     // Create a PENDING transaction record upfront
     const pendingTransaction = await this.prisma.transaction.create({
       data: {
@@ -578,6 +608,27 @@ export class TicketsService {
         userId,
         dto.items,
         dto.shippingDetails,
+      );
+    }
+
+    // If all items in basket are £0 (free entry), allocate directly without Cashflows redirect
+    const raffleIds = dto.items.map((i) => i.raffleId);
+    const raffles = await this.prisma.raffle.findMany({
+      where: { id: { in: raffleIds } },
+      select: { id: true, pricePerTicket: true },
+    });
+    const priceMap = new Map(raffles.map((r) => [r.id, Number(r.pricePerTicket || 0)]));
+    const totalAmount = dto.items.reduce((sum, item) => {
+      const price = priceMap.get(item.raffleId) || 0;
+      return sum + price * item.quantity;
+    }, 0);
+
+    if (totalAmount <= 0) {
+      return this.allocateBasketTicketsInDatabase(
+        userId,
+        dto.items,
+        dto.shippingDetails,
+        'FREE_ENTRY',
       );
     }
 
@@ -753,7 +804,10 @@ export class TicketsService {
               status: 'COMPLETED',
               paymentGateway,
               gatewayTransactionId:
-                gatewayTransactionId || `SIM_BASKET_${crypto.randomUUID()}`,
+                gatewayTransactionId ||
+                (paymentGateway === 'FREE_ENTRY'
+                  ? `FREE_BSK_${crypto.randomUUID()}`
+                  : `SIM_BASKET_${crypto.randomUUID()}`),
               relatedEntityId:
                 items.length === 1 ? items[0].raffleId : 'BASKET',
             },
@@ -1052,6 +1106,15 @@ export class TicketsService {
 
       totalAmount += Number(raffle.pricePerTicket) * item.quantity;
       raffleTitles.push(`${item.quantity}x ${raffle.title}`);
+    }
+
+    if (totalAmount <= 0) {
+      return this.allocateBasketTicketsInDatabase(
+        userId,
+        items,
+        shippingDetails,
+        'FREE_ENTRY',
+      );
     }
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });

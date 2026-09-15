@@ -9,8 +9,10 @@ import WinAnimationModal, { WinPrizeItem } from "../../ui/WinAnimationModal";
 import FreePostalEntryButton from "../legal/FreePostalEntryButton";
 import { paymentService } from "../../../services/payment.service";
 import { userService } from "../../../services/user.service";
+import { ticketService } from "../../../services/ticket.service";
 import { useBasket } from "../../../features/basket/BasketContext";
 import { useMyTicketsQuery } from "../../../hooks/useTicketHooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface RaffleEntryCardProps {
@@ -21,6 +23,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const { isAuthenticated } = useAuth();
   const { addItem, clearBasket } = useBasket();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const minAllowed = raffle.minTickets || raffle.minimumTickets || 1;
   const maxPerPerson = raffle.maxTickets || raffle.maximumTicketsPerOrder;
@@ -38,6 +41,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const [purchaseSuccessData, setPurchaseSuccessData] = useState<TicketPurchaseSuccessData | null>(null);
   const [winAnimationPrizes, setWinAnimationPrizes] = useState<WinPrizeItem[]>([]);
   const [isWinModalOpen, setIsWinModalOpen] = useState(false);
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
 
   const {
@@ -227,7 +231,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
     );
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     if (isPersonalLimitReached) {
       setStatusMessage({
         type: 'error',
@@ -255,6 +259,55 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
     }
 
     setStatusMessage(null);
+
+    // If ticket price is £0, the user won't be redirected to Cashflows.
+    // They get the ticket directly by clicking the buy button.
+    if (ticketPrice === 0) {
+      if (!isAuthenticated) {
+        router.push(`/login?redirect=/live-raffles/${raffle.slug || raffle.id}`);
+        return;
+      }
+
+      setIsPurchasing(true);
+      try {
+        const res: any = await ticketService.purchaseTickets(raffle.id, quantity);
+
+        queryClient.invalidateQueries({ queryKey: ['my-tickets'] });
+        queryClient.invalidateQueries({ queryKey: ['raffle', raffle.slug || raffle.id] });
+        queryClient.invalidateQueries({ queryKey: ['raffles'] });
+
+        toast.success(
+          quantity === 1
+            ? "Free ticket acquired successfully! Good luck!"
+            : `${quantity} free tickets acquired successfully! Good luck!`
+        );
+
+        if (res?.instantWins && res.instantWins.length > 0) {
+          setWinAnimationPrizes(res.instantWins);
+          setIsWinModalOpen(true);
+        } else if (res?.tickets && res.tickets.length > 0) {
+          setPurchaseSuccessData({
+            raffleTitle: raffle.title,
+            tickets: res.tickets.map((t: any) => ({
+              id: t.id,
+              ticketNumber: t.ticketNumber,
+            })),
+            instantWins: res.instantWins || [],
+          });
+        }
+      } catch (err: any) {
+        console.error("Free ticket acquisition error:", err);
+        const msg =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to acquire free ticket. Please try again.";
+        setStatusMessage({ type: 'error', text: msg });
+        toast.error(msg);
+      } finally {
+        setIsPurchasing(false);
+      }
+      return;
+    }
 
     // Add item to basket
     addItem(
@@ -408,7 +461,9 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span className="font-sans text-xs font-semibold text-text-muted">Total ({quantity} tickets)</span>
-          <span className="font-heading font-black text-lg text-text-primary">£{totalPrice.toFixed(2)}</span>
+          <span className="font-heading font-black text-lg text-text-primary">
+            {ticketPrice === 0 ? "FREE" : `£${totalPrice.toFixed(2)}`}
+          </span>
         </div>
 
         {isPersonalLimitReached && (
@@ -418,44 +473,59 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         )}
 
         <div className="flex flex-col gap-2.5">
-          <button 
-            type="button"
-            onClick={handleAddToBasket}
-            disabled={remainingTickets === 0 || isPersonalLimitReached}
-            className="w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white shadow-xs active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={2.2}
-              stroke='currentColor'
-              className='w-4 h-4'
+          {ticketPrice > 0 && (
+            <button 
+              type="button"
+              onClick={handleAddToBasket}
+              disabled={remainingTickets === 0 || isPersonalLimitReached || isPurchasing}
+              className="w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white shadow-xs active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z'
-              />
-            </svg>
-            Add to Basket
-          </button>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={2.2}
+                stroke='currentColor'
+                className='w-4 h-4'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z'
+                />
+              </svg>
+              Add to Basket
+            </button>
+          )}
 
           <button 
             onClick={handlePurchase}
-            disabled={remainingTickets === 0 || isPersonalLimitReached}
+            disabled={remainingTickets === 0 || isPersonalLimitReached || isPurchasing}
             className={`w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center shadow-md active:scale-98 cursor-pointer ${
-              remainingTickets === 0 || isPersonalLimitReached
+              remainingTickets === 0 || isPersonalLimitReached || isPurchasing
                 ? 'bg-elevated border border-border text-text-muted cursor-not-allowed'
                 : 'bg-primary hover:bg-primary-hover text-white'
             }`}
           >
-            {isPersonalLimitReached ? 'Limit Reached' : `Enter Draw Now — £${totalPrice.toFixed(2)}`}
+            {isPurchasing ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Claiming Free Entry...</span>
+              </div>
+            ) : isPersonalLimitReached ? (
+              'Limit Reached'
+            ) : ticketPrice === 0 ? (
+              'Claim Free Entry'
+            ) : (
+              `Enter Draw Now — £${totalPrice.toFixed(2)}`
+            )}
           </button>
         </div>
 
         {/* UK-Compliant Free Postal Entry Route Button */}
-        <FreePostalEntryButton raffleTitle={raffle.title} variant="button" />
+        {ticketPrice > 0 && (
+          <FreePostalEntryButton raffleTitle={raffle.title} variant="button" />
+        )}
 
         {statusMessage && (
           <div className={`p-3 rounded-xl text-xs font-sans text-center font-medium ${

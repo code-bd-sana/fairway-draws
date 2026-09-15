@@ -567,6 +567,8 @@ export default function CheckoutPage() {
                     </div>
                   ) : formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18 ? (
                     <span>Entry Refused (Must be 18+)</span>
+                  ) : totalPrice === 0 ? (
+                    <span>Claim Free Entry</span>
                   ) : (
                     <span>Confirm & Pay — £{totalPrice.toFixed(2)}</span>
                   )}
@@ -583,49 +585,56 @@ export default function CheckoutPage() {
                   </h3>
                   <Link
                     href="/basket"
-                    className="text-[11px] font-sans text-text-brand hover:underline"
+                    className="font-sans text-xs text-text-brand hover:underline font-bold"
                   >
                     Edit Basket
                   </Link>
                 </div>
 
-                {/* Items preview list */}
-                <div className="flex flex-col divide-y divide-divider/40 max-h-72 overflow-y-auto pr-1">
+                {/* Items in basket */}
+                <div className="flex flex-col divide-y divide-divider max-h-[300px] overflow-y-auto">
                   {items.map((item) => (
-                    <div key={item.raffleId} className="py-3 flex items-center gap-3">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-bg shrink-0 border border-divider">
-                        <Image
-                          src={item.image || "https://placehold.co/400x300/1a230a/8cb34a?text=Draw"}
-                          alt={item.title}
-                          fill
-                          unoptimized
-                          className="object-cover"
-                        />
+                    <div key={item.raffleId} className="py-3 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-accent-bg shrink-0 border border-border">
+                          <Image
+                            src={
+                              item.image ||
+                              "https://placehold.co/400x300/1a230a/8cb34a?text=Competition"
+                            }
+                            alt={item.title}
+                            fill
+                            unoptimized
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-heading font-bold text-xs text-text-primary truncate">
+                            {item.title}
+                          </span>
+                          <span className="font-sans text-[11px] text-text-muted">
+                            {item.quantity} × £{item.pricePerTicket.toFixed(2)}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-heading font-bold text-xs text-text-primary line-clamp-1">
-                          {item.title}
-                        </p>
-                        <p className="font-sans text-[11px] text-text-muted">
-                          {item.quantity} {item.quantity === 1 ? "ticket" : "tickets"} × £{item.pricePerTicket.toFixed(2)}
-                        </p>
-                      </div>
-                      <span className="font-heading font-black text-xs text-text-primary shrink-0">
-                        £{(item.quantity * item.pricePerTicket).toFixed(2)}
+                      <span className="font-heading font-bold text-xs text-text-primary shrink-0">
+                        £{(item.pricePerTicket * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                {/* Price Breakdown */}
-                <div className="pt-3 border-t border-divider flex flex-col gap-2.5 text-xs font-sans">
-                  <div className="flex items-center justify-between text-text-muted">
-                    <span>Total Entries</span>
-                    <span className="font-semibold text-text-primary">{totalTickets}</span>
+                {/* Pricing summary */}
+                <div className="pt-3 border-t border-divider flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs font-sans">
+                    <span className="text-text-muted">Subtotal</span>
+                    <span className="font-semibold text-text-primary">
+                      £{totalPrice.toFixed(2)}
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between text-text-muted">
-                    <span>Tracked Delivery</span>
-                    <span className="font-bold text-[#15803d]">FREE</span>
+                  <div className="flex items-center justify-between text-xs font-sans">
+                    <span className="text-text-muted">Transaction Fee</span>
+                    <span className="font-semibold text-[#15803d]">FREE</span>
                   </div>
                   <div className="pt-3 border-t border-divider flex items-center justify-between">
                     <span className="font-heading font-bold text-sm text-text-primary uppercase">
@@ -653,6 +662,8 @@ export default function CheckoutPage() {
                       ? "Processing..."
                       : formData.dateOfBirth && calculateAge(formData.dateOfBirth) < 18
                       ? "Entry Refused (Must be 18+)"
+                      : totalPrice === 0
+                      ? "Claim Free Entry"
                       : `Confirm & Pay — £${totalPrice.toFixed(2)}`}
                   </button>
                 </div>
@@ -660,7 +671,11 @@ export default function CheckoutPage() {
                 <div className="pt-4 border-t border-divider text-[10px] text-text-muted flex flex-col gap-1.5">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[#15803d] font-bold">🔒</span>
-                    <span>256-Bit SSL Encrypted & Cashflows Protected Checkout</span>
+                    <span>
+                      {totalPrice === 0
+                        ? "100% Free Entry — No Payment Gateway Required"
+                        : "256-Bit SSL Encrypted & Cashflows Protected Checkout"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[#15803d] font-bold">🎯</span>
