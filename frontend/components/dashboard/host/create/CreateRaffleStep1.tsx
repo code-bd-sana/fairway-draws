@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RaffleFormData } from "./CreateRaffleWizard";
+import { usePublicCategories } from "../../../../hooks/useCategoryHooks";
 
 interface Props {
   formData: RaffleFormData;
@@ -7,7 +8,7 @@ interface Props {
   onNext: () => void;
 }
 
-const categories = [
+const DEFAULT_CATEGORIES = [
   "Golf Drivers",
   "Golf Irons",
   "Golf Putters",
@@ -17,6 +18,18 @@ const categories = [
 ];
 
 export default function CreateRaffleStep1({ formData, updateForm, onNext }: Props) {
+  const { data: dbCategories } = usePublicCategories();
+
+  const categoryOptions = (dbCategories && dbCategories.length > 0)
+    ? dbCategories.map((c) => c.name)
+    : DEFAULT_CATEGORIES;
+
+  useEffect(() => {
+    if (!formData.category && categoryOptions.length > 0) {
+      updateForm({ category: categoryOptions[0] });
+    }
+  }, [categoryOptions, formData.category, updateForm]);
+
   return (
     <div className="flex flex-col w-full animate-in fade-in zoom-in-95 duration-200">
       <div className="flex flex-col gap-2 mb-8">
@@ -54,7 +67,7 @@ export default function CreateRaffleStep1({ formData, updateForm, onNext }: Prop
               onChange={(e) => updateForm({ category: e.target.value })}
               className="w-full h-[48px] px-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all appearance-none cursor-pointer"
             >
-              {categories.map((cat) => (
+              {categoryOptions.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>

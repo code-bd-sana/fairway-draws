@@ -58,7 +58,15 @@ export default function InstantWinsSection() {
   // Filter draws
   const filteredDraws = activeCategory === "all"
     ? draws
-    : draws.filter((draw) => draw.category === activeCategory);
+    : draws.filter((draw) => {
+        const cat = (draw.category || "").toLowerCase();
+        const target = activeCategory.toLowerCase();
+        return (
+          cat === target ||
+          cat.replace(/[^a-z0-9]+/g, "-") === target ||
+          cat.replace(/[^a-z0-9]+/g, " ") === target.replace(/-/g, " ")
+        );
+      });
 
   return (
     <section id="instant-wins" className="py-20 bg-bg border-t border-divider">

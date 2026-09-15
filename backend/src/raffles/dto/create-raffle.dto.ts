@@ -49,6 +49,14 @@ export class CreateRaffleDto {
   title: string;
 
   @ApiPropertyOptional({
+    example: 'Golf Drivers',
+    description: 'Category of the competition',
+  })
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @ApiPropertyOptional({
     example: 'Win a brand new custom TaylorMade Qi10 Max Driver!',
     description: 'Raffle description',
   })

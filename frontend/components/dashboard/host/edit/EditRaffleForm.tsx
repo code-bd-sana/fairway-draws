@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useGetRaffleById, useUpdateRaffle } from "../../../../hooks/useRaffleHooks";
+import { usePublicCategories } from "../../../../hooks/useCategoryHooks";
 import { cn } from "../../../../lib/utils";
 import { toast } from "sonner";
 
@@ -11,10 +12,24 @@ interface Props {
   raffleId: string;
 }
 
+const DEFAULT_CATEGORIES = [
+  "Golf Drivers",
+  "Golf Irons",
+  "Golf Putters",
+  "Golf Bags & Apparel",
+  "Rangefinders & Tech",
+  "Experiences & Bundles",
+];
+
 export default function EditRaffleForm({ raffleId }: Props) {
   const router = useRouter();
   const { data: raffle, isLoading } = useGetRaffleById(raffleId);
+  const { data: dbCategories } = usePublicCategories();
   const updateMutation = useUpdateRaffle();
+
+  const categoryOptions = (dbCategories && dbCategories.length > 0)
+    ? dbCategories.map((c) => c.name)
+    : DEFAULT_CATEGORIES;
 
   const [formData, setFormData] = useState<any>({});
 
@@ -170,6 +185,25 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 placeholder="e.g. Brand New TaylorMade Qi10 Driver"
                 className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
               />
+            </div>
+
+            {/* Category */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="category" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                Category *
+              </label>
+              <select
+                id="category"
+                value={formData.category || (categoryOptions[0] ?? "Golf Drivers")}
+                onChange={(e) => handleChange("category", e.target.value)}
+                className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
+              >
+                {categoryOptions.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Prize Name */}

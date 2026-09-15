@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { usePublicCategories } from "../../../hooks/useCategoryHooks";
 import { cn } from "../../../lib/utils";
 
 interface LiveRafflesFilterBarProps {
@@ -31,15 +32,29 @@ export default function LiveRafflesFilterBar({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const { data: dbCategories } = usePublicCategories();
+
   const categories = [
     { label: "All", value: "all" },
-    { label: "Drivers", value: "drivers" },
-    { label: "Irons & Wedges", value: "irons" },
-    { label: "Putters", value: "putters" },
-    { label: "Experiences", value: "experiences" },
-    { label: "Apparel & Bags", value: "apparel" },
-    { label: "Cash Prizes", value: "cash" },
+    ...(dbCategories && dbCategories.length > 0
+      ? dbCategories.map((c) => ({ label: c.name, value: c.slug || c.name }))
+      : [
+          { label: "Drivers", value: "drivers" },
+          { label: "Irons & Wedges", value: "irons" },
+          { label: "Putters", value: "putters" },
+          { label: "Experiences", value: "experiences" },
+          { label: "Apparel & Bags", value: "apparel" },
+          { label: "Cash Prizes", value: "cash" },
+        ]),
   ];
+
+  const isCategoryActive = (catValue: string) => {
+    if (catValue === "all") return !activeCategory || activeCategory === "all";
+    return (
+      activeCategory.toLowerCase() === catValue.toLowerCase() ||
+      activeCategory.toLowerCase().replace(/-/g, " ") === catValue.toLowerCase().replace(/-/g, " ")
+    );
+  };
 
   const sortOptions = [
     { label: "Featured", value: "featured" },
@@ -68,20 +83,23 @@ export default function LiveRafflesFilterBar({
         
         {/* Category Pills (Horizontal scrolling list on small screens) */}
         <div className="overflow-x-auto -mx-5 px-5 lg:mx-0 lg:px-0 scrollbar-none flex items-center gap-2 select-none shrink-0 py-1">
-          {categories.map((cat) => (
-            <button
-              key={cat.value}
-              onClick={() => setActiveCategory(cat.value)}
-              className={cn(
-                "font-sans font-medium text-xs px-4 py-2 rounded-badge border shrink-0 transition-all duration-200 cursor-pointer select-none",
-                activeCategory === cat.value
-                  ? "border-[#0b4d35] bg-[#0b4d35] font-semibold text-white shadow-[0_5px_12px_rgba(11,77,53,.24)]"
-                  : "border-[#bbd3b8] bg-[#eff6ec] text-[#426256] hover:border-[#0b4d35]/45 hover:text-[#0b4d35]"
-              )}
-            >
-              {cat.label}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isActive = isCategoryActive(cat.value);
+            return (
+              <button
+                key={cat.value}
+                onClick={() => setActiveCategory(cat.value)}
+                className={cn(
+                  "font-sans font-medium text-xs px-4 py-2 rounded-badge border shrink-0 transition-all duration-200 cursor-pointer select-none",
+                  isActive
+                    ? "border-[#0b4d35] bg-[#0b4d35] font-semibold text-white shadow-[0_5px_12px_rgba(11,77,53,.24)]"
+                    : "border-[#bbd3b8] bg-[#eff6ec] text-[#426256] hover:border-[#0b4d35]/45 hover:text-[#0b4d35]"
+                )}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Search, Sort & Layout Controls Row */}

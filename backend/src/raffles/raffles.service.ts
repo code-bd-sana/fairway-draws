@@ -143,6 +143,7 @@ export class RafflesService {
         hostId: hostProfile.id,
         title: data.title,
         slug,
+        category: data.category || null,
         description: data.description || '',
         prizeName: data.prizeName || null,
         mainPrizeValue:
@@ -266,9 +267,21 @@ export class RafflesService {
       },
     };
 
-    // Category filter
+    const andClauses: any[] = [];
+
+    // Category filter (supports exact name, slug, or space-separated matching)
     if (category && category !== 'All' && category !== 'all') {
-      whereClause.category = category;
+      const cleanCategory = category.trim();
+      const slugified = cleanCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const spaceSeparated = cleanCategory.replace(/-/g, ' ');
+
+      andClauses.push({
+        OR: [
+          { category: { equals: cleanCategory, mode: 'insensitive' } },
+          { category: { equals: slugified, mode: 'insensitive' } },
+          { category: { contains: spaceSeparated, mode: 'insensitive' } },
+        ],
+      });
     }
 
     // Instant Win filter
@@ -289,20 +302,26 @@ export class RafflesService {
     }
 
     if (search) {
-      whereClause.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { host: { businessName: { contains: search, mode: 'insensitive' } } },
-        {
-          host: {
-            user: { firstName: { contains: search, mode: 'insensitive' } },
+      andClauses.push({
+        OR: [
+          { title: { contains: search, mode: 'insensitive' } },
+          { host: { businessName: { contains: search, mode: 'insensitive' } } },
+          {
+            host: {
+              user: { firstName: { contains: search, mode: 'insensitive' } },
+            },
           },
-        },
-        {
-          host: {
-            user: { lastName: { contains: search, mode: 'insensitive' } },
+          {
+            host: {
+              user: { lastName: { contains: search, mode: 'insensitive' } },
+            },
           },
-        },
-      ];
+        ],
+      });
+    }
+
+    if (andClauses.length > 0) {
+      whereClause.AND = andClauses;
     }
 
     // Sort logic
