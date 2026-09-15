@@ -10,6 +10,7 @@ import FreePostalEntryButton from "../legal/FreePostalEntryButton";
 import { paymentService } from "../../../services/payment.service";
 import { userService } from "../../../services/user.service";
 import { useBasket } from "../../../features/basket/BasketContext";
+import { useMyTicketsQuery } from "../../../hooks/useTicketHooks";
 import { toast } from "sonner";
 
 interface RaffleEntryCardProps {
@@ -17,16 +18,27 @@ interface RaffleEntryCardProps {
 }
 
 export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
-  const [quantity, setQuantity] = useState(1);
+  const { isAuthenticated } = useAuth();
+  const { addItem, clearBasket } = useBasket();
+  const router = useRouter();
+
+  const minAllowed = raffle.minTickets || raffle.minimumTickets || 1;
+  const maxPerPerson = raffle.maxTickets || raffle.maximumTicketsPerOrder;
+
+  const { data: myTickets = [] } = useMyTicketsQuery();
+  const userOwnedTickets =
+    isAuthenticated && Array.isArray(myTickets)
+      ? myTickets.filter(
+          (t: any) => t.raffleId === raffle.id || t.raffle?.id === raffle.id,
+        ).length
+      : 0;
+
+  const [quantity, setQuantity] = useState(minAllowed);
   const [statusMessage, setStatusMessage] = useState<{type: 'success'|'error'|'info', text: string} | null>(null);
   const [purchaseSuccessData, setPurchaseSuccessData] = useState<TicketPurchaseSuccessData | null>(null);
   const [winAnimationPrizes, setWinAnimationPrizes] = useState<WinPrizeItem[]>([]);
   const [isWinModalOpen, setIsWinModalOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
-
-  const { isAuthenticated } = useAuth();
-  const { addItem, clearBasket } = useBasket();
-  const router = useRouter();
 
   const {
     ticketPrice,
@@ -137,15 +149,63 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
   const soldPercent = Math.min(Math.round((soldTickets / totalTickets) * 100), 100);
   const remainingTickets = Math.max(totalTickets - soldTickets, 0);
+
+  const maxRemainingForPerson =
+    maxPerPerson !== undefined && maxPerPerson !== null
+      ? Math.max(0, maxPerPerson - userOwnedTickets)
+      : remainingTickets;
+
+  const effectiveMax = Math.min(remainingTickets, maxRemainingForPerson);
+  const isPersonalLimitReached =
+    maxPerPerson !== undefined &&
+    maxPerPerson !== null &&
+    userOwnedTickets >= maxPerPerson;
+
+  useEffect(() => {
+    setQuantity((prev) => {
+      if (effectiveMax <= 0) return 1;
+      if (prev < minAllowed) return Math.min(minAllowed, effectiveMax);
+      if (prev > effectiveMax) return effectiveMax;
+      return prev;
+    });
+  }, [minAllowed, effectiveMax]);
+
   const totalPrice = quantity * ticketPrice;
 
-  const handleQuickPick = (val: number) => setQuantity(val);
-  const handleDecrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
-  const handleIncrement = () => setQuantity(prev => prev + 1);
+  const handleQuickPick = (val: number) => {
+    if (effectiveMax <= 0) return;
+    const clamped = Math.max(minAllowed, Math.min(val, effectiveMax));
+    setQuantity(clamped);
+  };
+  const handleDecrement = () =>
+    setQuantity((prev) => (prev > minAllowed ? prev - 1 : minAllowed));
+  const handleIncrement = () =>
+    setQuantity((prev) => (prev < effectiveMax ? prev + 1 : prev));
 
   const handleAddToBasket = () => {
+    if (isPersonalLimitReached) {
+      setStatusMessage({
+        type: 'error',
+        text: `You have reached the maximum allowed limit of ${maxPerPerson} tickets for this competition.`,
+      });
+      return;
+    }
+    if (quantity < minAllowed) {
+      setStatusMessage({
+        type: 'error',
+        text: `Minimum ${minAllowed} tickets required for this competition.`,
+      });
+      return;
+    }
     if (quantity > remainingTickets) {
       setStatusMessage({ type: 'error', text: `Only ${remainingTickets} tickets left.` });
+      return;
+    }
+    if (quantity > effectiveMax) {
+      setStatusMessage({
+        type: 'error',
+        text: `You can only purchase up to ${effectiveMax} tickets before reaching your limit of ${maxPerPerson}.`,
+      });
       return;
     }
 
@@ -159,14 +219,37 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         totalTickets,
         ticketsSold: soldTickets,
         category: raffle.category,
+        minTickets: raffle.minTickets,
+        maxTickets: raffle.maxTickets,
       },
       quantity,
     );
   };
 
   const handlePurchase = () => {
+    if (isPersonalLimitReached) {
+      setStatusMessage({
+        type: 'error',
+        text: `You have reached the maximum allowed limit of ${maxPerPerson} tickets for this competition.`,
+      });
+      return;
+    }
+    if (quantity < minAllowed) {
+      setStatusMessage({
+        type: 'error',
+        text: `Minimum ${minAllowed} tickets required for this competition.`,
+      });
+      return;
+    }
     if (quantity > remainingTickets) {
       setStatusMessage({ type: 'error', text: `Only ${remainingTickets} tickets left.` });
+      return;
+    }
+    if (quantity > effectiveMax) {
+      setStatusMessage({
+        type: 'error',
+        text: `You can only purchase up to ${effectiveMax} tickets before reaching your limit of ${maxPerPerson}.`,
+      });
       return;
     }
 
@@ -183,6 +266,8 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         totalTickets,
         ticketsSold: soldTickets,
         category: raffle.category,
+        minTickets: raffle.minTickets,
+        maxTickets: raffle.maxTickets,
       },
       quantity,
     );
@@ -236,6 +321,20 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           <span className="font-sans text-xs font-semibold text-text-muted">Tickets</span>
           <span className="font-heading font-bold text-xs text-text-primary">{soldTickets.toLocaleString()} / {totalTickets.toLocaleString()}</span>
         </div>
+        {minAllowed > 1 && (
+          <div className="flex items-center justify-between pb-3 border-b border-divider">
+            <span className="font-sans text-xs font-semibold text-text-muted">Min Entry</span>
+            <span className="font-heading font-bold text-xs text-text-primary">{minAllowed} tickets</span>
+          </div>
+        )}
+        {maxPerPerson !== undefined && maxPerPerson !== null && (
+          <div className="flex items-center justify-between pb-3 border-b border-divider">
+            <span className="font-sans text-xs font-semibold text-text-muted">Max Per Person</span>
+            <span className="font-heading font-bold text-xs text-text-primary">
+              {maxPerPerson} tickets {isAuthenticated && userOwnedTickets > 0 ? `(${userOwnedTickets} owned)` : ''}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Progress Bar */}
@@ -256,25 +355,32 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         <span className="font-sans text-xs font-bold text-text-primary">Number of tickets</span>
         
         <div className="grid grid-cols-4 gap-2">
-          {[1, 5, 10, 20].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleQuickPick(num)}
-              className={`h-9 rounded-xl font-heading font-bold text-xs transition-all cursor-pointer ${
-                quantity === num 
-                  ? "bg-primary text-white border border-primary shadow-xs" 
-                  : "bg-surface border border-border text-text-muted hover:border-border-medium hover:text-text-primary"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
+          {[1, 5, 10, 20].map((num) => {
+            const isOutOfRange = (num < minAllowed && minAllowed > 1) || (effectiveMax > 0 && num > effectiveMax);
+            return (
+              <button
+                key={num}
+                onClick={() => handleQuickPick(num)}
+                disabled={effectiveMax <= 0 || isPersonalLimitReached}
+                className={`h-9 rounded-xl font-heading font-bold text-xs transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                  quantity === num 
+                    ? "bg-primary text-white border border-primary shadow-xs" 
+                    : isOutOfRange
+                    ? "bg-surface/50 border border-divider text-text-muted/50 hover:border-border-medium"
+                    : "bg-surface border border-border text-text-muted hover:border-border-medium hover:text-text-primary"
+                }`}
+              >
+                {num}
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex items-center h-11 bg-elevated border border-border-medium rounded-xl overflow-hidden mt-1">
           <button 
             onClick={handleDecrement}
-            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer"
+            disabled={quantity <= minAllowed || effectiveMax <= 0 || isPersonalLimitReached}
+            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             -
           </button>
@@ -283,7 +389,8 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           </div>
           <button 
             onClick={handleIncrement}
-            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer"
+            disabled={quantity >= effectiveMax || remainingTickets === 0 || isPersonalLimitReached}
+            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             +
           </button>
@@ -297,11 +404,17 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           <span className="font-heading font-black text-lg text-text-primary">£{totalPrice.toFixed(2)}</span>
         </div>
 
+        {isPersonalLimitReached && (
+          <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
+            Personal Limit Reached: You hold {userOwnedTickets} / {maxPerPerson} tickets
+          </div>
+        )}
+
         <div className="flex flex-col gap-2.5">
           <button 
             type="button"
             onClick={handleAddToBasket}
-            disabled={remainingTickets === 0}
+            disabled={remainingTickets === 0 || isPersonalLimitReached}
             className="w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white shadow-xs active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
@@ -323,14 +436,14 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
           <button 
             onClick={handlePurchase}
-            disabled={remainingTickets === 0}
+            disabled={remainingTickets === 0 || isPersonalLimitReached}
             className={`w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center shadow-md active:scale-98 cursor-pointer ${
-              remainingTickets === 0
+              remainingTickets === 0 || isPersonalLimitReached
                 ? 'bg-elevated border border-border text-text-muted cursor-not-allowed'
                 : 'bg-primary hover:bg-primary-hover text-white'
             }`}
           >
-            Enter Draw Now — £{totalPrice.toFixed(2)}
+            {isPersonalLimitReached ? 'Limit Reached' : `Enter Draw Now — £${totalPrice.toFixed(2)}`}
           </button>
         </div>
 

@@ -68,6 +68,25 @@ export class TicketsService {
           throw new BadRequestException('This competition is not active');
         }
 
+        const minTickets = raffle.minTickets || 1;
+        if (quantity < minTickets) {
+          throw new BadRequestException(
+            `Minimum ticket purchase for "${raffle.title}" is ${minTickets} ticket(s)`,
+          );
+        }
+
+        if (raffle.maxTickets) {
+          const userExistingCount = await tx.ticket.count({
+            where: { raffleId, userId },
+          });
+          if (userExistingCount + quantity > raffle.maxTickets) {
+            const allowed = Math.max(0, raffle.maxTickets - userExistingCount);
+            throw new BadRequestException(
+              `Maximum ticket limit is ${raffle.maxTickets} per person for "${raffle.title}". You already hold ${userExistingCount} ticket(s). You can purchase up to ${allowed} more.`,
+            );
+          }
+        }
+
         // 2. Determine available ticket numbers based on real database tickets
         const existingTickets = await tx.ticket.findMany({
           where: { raffleId },
@@ -369,6 +388,25 @@ export class TicketsService {
       throw new BadRequestException('This competition is not active');
     }
 
+    const minTickets = raffle.minTickets || 1;
+    if (quantity < minTickets) {
+      throw new BadRequestException(
+        `Minimum ticket purchase for "${raffle.title}" is ${minTickets} ticket(s)`,
+      );
+    }
+
+    if (raffle.maxTickets) {
+      const userExistingCount = await this.prisma.ticket.count({
+        where: { raffleId, userId },
+      });
+      if (userExistingCount + quantity > raffle.maxTickets) {
+        const allowed = Math.max(0, raffle.maxTickets - userExistingCount);
+        throw new BadRequestException(
+          `Maximum ticket limit is ${raffle.maxTickets} per person for "${raffle.title}". You already hold ${userExistingCount} ticket(s). You can purchase up to ${allowed} more.`,
+        );
+      }
+    }
+
     // Determine actual tickets sold from real database tickets
     const existingTicketsCount = await this.prisma.ticket.count({
       where: { raffleId },
@@ -626,6 +664,25 @@ export class TicketsService {
 
           if (raffle.status !== 'ACTIVE') {
             throw new BadRequestException(`Competition "${raffle.title}" is not active`);
+          }
+
+          const minTickets = raffle.minTickets || 1;
+          if (item.quantity < minTickets) {
+            throw new BadRequestException(
+              `Minimum ticket purchase for "${raffle.title}" is ${minTickets} ticket(s)`,
+            );
+          }
+
+          if (raffle.maxTickets) {
+            const userExistingCount = await tx.ticket.count({
+              where: { raffleId: raffle.id, userId },
+            });
+            if (userExistingCount + item.quantity > raffle.maxTickets) {
+              const allowed = Math.max(0, raffle.maxTickets - userExistingCount);
+              throw new BadRequestException(
+                `Maximum ticket limit is ${raffle.maxTickets} per person for "${raffle.title}". You already hold ${userExistingCount} ticket(s). You can purchase up to ${allowed} more.`,
+              );
+            }
           }
 
           // Available ticket numbers based on real database tickets
@@ -967,6 +1024,25 @@ export class TicketsService {
       }
       if (raffle.status !== 'ACTIVE') {
         throw new BadRequestException(`Competition "${raffle.title}" is not active`);
+      }
+
+      const minTickets = raffle.minTickets || 1;
+      if (item.quantity < minTickets) {
+        throw new BadRequestException(
+          `Minimum ticket purchase for "${raffle.title}" is ${minTickets} ticket(s)`,
+        );
+      }
+
+      if (raffle.maxTickets) {
+        const userExistingCount = await this.prisma.ticket.count({
+          where: { raffleId: raffle.id, userId },
+        });
+        if (userExistingCount + item.quantity > raffle.maxTickets) {
+          const allowed = Math.max(0, raffle.maxTickets - userExistingCount);
+          throw new BadRequestException(
+            `Maximum ticket limit is ${raffle.maxTickets} per person for "${raffle.title}". You already hold ${userExistingCount} ticket(s). You can purchase up to ${allowed} more.`,
+          );
+        }
       }
       if (raffle.ticketsSold + item.quantity > raffle.totalTickets) {
         throw new BadRequestException(

@@ -9,6 +9,8 @@ import {
   IsDateString,
   ValidateNested,
   IsArray,
+  IsInt,
+  Min,
 } from 'class-validator';
 
 export class InstantWinPrizeDto {
@@ -74,6 +76,24 @@ export class CreateRaffleDto {
   @IsNumber()
   @IsNotEmpty()
   totalTickets: number;
+
+  @ApiPropertyOptional({
+    example: 1,
+    description: 'Minimum tickets an entrant must purchase per order (optional, default 1)',
+  })
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  minTickets?: number;
+
+  @ApiPropertyOptional({
+    example: 50,
+    description: 'Maximum tickets an entrant can purchase in total (optional)',
+  })
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  maxTickets?: number;
 
   @ApiProperty({
     example: '2026-07-20T12:00:00.000Z',

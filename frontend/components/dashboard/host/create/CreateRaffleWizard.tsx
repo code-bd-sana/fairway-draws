@@ -24,6 +24,7 @@ export interface RaffleFormData {
   totalTickets: string;
   ticketPrice: string;
   minTickets: string;
+  maxTickets: string;
   // Step 3
   coverImage: string | null; // URL or mock path
   gallery: string[];
@@ -46,6 +47,7 @@ const initialData: RaffleFormData = {
   totalTickets: "",
   ticketPrice: "",
   minTickets: "1",
+  maxTickets: "",
   coverImage: null,
   gallery: [],
   hasInstantWins: false,
@@ -110,12 +112,30 @@ export default function CreateRaffleWizard() {
       }
 
       // 2. Create Raffle
+      const minTicketsNum = formData.minTickets ? Math.max(1, Number(formData.minTickets)) : 1;
+      const maxTicketsNum = formData.maxTickets && formData.maxTickets.trim() !== "" ? Number(formData.maxTickets) : undefined;
+
+      if (maxTicketsNum !== undefined) {
+        if (maxTicketsNum < minTicketsNum) {
+          toast.error("Maximum tickets per person must be greater than or equal to minimum tickets.");
+          setIsSubmitting(false);
+          return;
+        }
+        if (maxTicketsNum > (Number(formData.totalTickets) || 0)) {
+          toast.error("Maximum tickets per person cannot exceed total tickets.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const created = await createRaffle.mutateAsync({
         title: formData.title,
         description: formData.description,
         mainPrizeValue: formData.mainPrizeValue ? Number(formData.mainPrizeValue) : undefined,
         pricePerTicket: Number(formData.ticketPrice) || 0,
         totalTickets: Number(formData.totalTickets) || 0,
+        minTickets: minTicketsNum,
+        maxTickets: maxTicketsNum,
         startDate: formData.startDate,
         endDate: formData.endDate,
         isAutoDraw: formData.isAutoDraw,

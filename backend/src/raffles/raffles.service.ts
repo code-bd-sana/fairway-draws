@@ -111,6 +111,33 @@ export class RafflesService {
 
     const totalTickets = Number(data.totalTickets) || 0;
 
+    const minTickets =
+      data.minTickets !== undefined &&
+      data.minTickets !== null &&
+      data.minTickets !== ''
+        ? Math.max(1, Number(data.minTickets))
+        : 1;
+
+    const maxTickets =
+      data.maxTickets !== undefined &&
+      data.maxTickets !== null &&
+      data.maxTickets !== ''
+        ? Number(data.maxTickets)
+        : null;
+
+    if (maxTickets !== null) {
+      if (maxTickets < minTickets) {
+        throw new BadRequestException(
+          'Maximum tickets per person must be greater than or equal to minimum tickets',
+        );
+      }
+      if (maxTickets > totalTickets) {
+        throw new BadRequestException(
+          'Maximum tickets per person cannot exceed total tickets',
+        );
+      }
+    }
+
     const raffle = await this.prisma.raffle.create({
       data: {
         hostId: hostProfile.id,
@@ -122,6 +149,8 @@ export class RafflesService {
           : null,
         pricePerTicket: data.ticketPrice || 0,
         totalTickets,
+        minTickets,
+        maxTickets,
         startDate,
         endDate,
         status: 'PENDING_APPROVAL', // Requires admin approval
@@ -574,6 +603,46 @@ export class RafflesService {
 
     if (updatePayload.totalTickets !== undefined && updatePayload.totalTickets !== null) {
       updatePayload.totalTickets = Number(updatePayload.totalTickets);
+    }
+
+    if (updatePayload.minTickets !== undefined) {
+      updatePayload.minTickets =
+        updatePayload.minTickets !== null && updatePayload.minTickets !== ''
+          ? Math.max(1, Number(updatePayload.minTickets))
+          : 1;
+    }
+
+    if (updatePayload.maxTickets !== undefined) {
+      updatePayload.maxTickets =
+        updatePayload.maxTickets !== null && updatePayload.maxTickets !== ''
+          ? Number(updatePayload.maxTickets)
+          : null;
+    }
+
+    const effectiveMin =
+      updatePayload.minTickets !== undefined
+        ? updatePayload.minTickets
+        : (raffle.minTickets || 1);
+    const effectiveMax =
+      updatePayload.maxTickets !== undefined
+        ? updatePayload.maxTickets
+        : raffle.maxTickets;
+    const effectiveTotal =
+      updatePayload.totalTickets !== undefined
+        ? updatePayload.totalTickets
+        : raffle.totalTickets;
+
+    if (effectiveMax !== null && effectiveMax !== undefined) {
+      if (effectiveMax < effectiveMin) {
+        throw new BadRequestException(
+          'Maximum tickets per person must be greater than or equal to minimum tickets',
+        );
+      }
+      if (effectiveMax > effectiveTotal) {
+        throw new BadRequestException(
+          'Maximum tickets per person cannot exceed total tickets',
+        );
+      }
     }
 
     return this.prisma.raffle.update({

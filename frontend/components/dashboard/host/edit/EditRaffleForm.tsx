@@ -27,6 +27,8 @@ export default function EditRaffleForm({ raffleId }: Props) {
         prizeName: raffle.prizeName || "",
         totalTickets: raffle.totalTickets || "",
         pricePerTicket: raffle.pricePerTicket || "",
+        minTickets: (raffle as any).minTickets ?? 1,
+        maxTickets: (raffle as any).maxTickets ?? "",
         startDate: raffle.startDate ? new Date(raffle.startDate).toISOString().slice(0, 16) : "",
         endDate: raffle.endDate ? new Date(raffle.endDate).toISOString().slice(0, 16) : "",
         isAutoDraw: raffle.isAutoDraw ?? true,
@@ -54,6 +56,28 @@ export default function EditRaffleForm({ raffleId }: Props) {
       // Convert numbers
       if (payload.totalTickets) payload.totalTickets = Number(payload.totalTickets);
       if (payload.pricePerTicket) payload.pricePerTicket = Number(payload.pricePerTicket);
+
+      payload.minTickets =
+        payload.minTickets !== undefined && payload.minTickets !== ""
+          ? Math.max(1, Number(payload.minTickets))
+          : 1;
+
+      payload.maxTickets =
+        payload.maxTickets !== undefined && payload.maxTickets !== ""
+          ? Number(payload.maxTickets)
+          : null;
+
+      if (payload.maxTickets !== null) {
+        if (payload.maxTickets < payload.minTickets) {
+          toast.error("Maximum tickets per person must be greater than or equal to minimum tickets.");
+          return;
+        }
+        const effectiveTotal = payload.totalTickets || raffle?.totalTickets;
+        if (effectiveTotal && payload.maxTickets > effectiveTotal) {
+          toast.error("Maximum tickets per person cannot exceed total tickets.");
+          return;
+        }
+      }
 
       await updateMutation.mutateAsync({ id: raffleId, data: payload });
       toast.success("Competition updated successfully!");
@@ -231,6 +255,47 @@ export default function EditRaffleForm({ raffleId }: Props) {
                     hasSoldTickets && "opacity-60 bg-surface/60 cursor-not-allowed border-divider"
                   )}
                 />
+              </div>
+            </div>
+
+            {/* Ticket Limits (Min & Max Per Person) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              {/* Minimum Tickets */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="minTickets" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                  Minimum Tickets Per Person (Optional)
+                </label>
+                <input
+                  id="minTickets"
+                  type="number"
+                  min="1"
+                  value={formData.minTickets ?? 1}
+                  onChange={(e) => handleChange("minTickets", e.target.value)}
+                  placeholder="e.g. 1"
+                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                />
+                <span className="font-sans text-[11px] text-text-muted">
+                  Minimum tickets an entrant must buy per order (default: 1).
+                </span>
+              </div>
+
+              {/* Maximum Tickets */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="maxTickets" className="font-sans font-medium text-xs md:text-sm text-text-primary">
+                  Maximum Tickets Per Person (Optional)
+                </label>
+                <input
+                  id="maxTickets"
+                  type="number"
+                  min="1"
+                  value={formData.maxTickets ?? ""}
+                  onChange={(e) => handleChange("maxTickets", e.target.value)}
+                  placeholder="e.g. 50"
+                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                />
+                <span className="font-sans text-[11px] text-text-muted">
+                  Cap the total tickets any single person can buy across all orders.
+                </span>
               </div>
             </div>
           </div>

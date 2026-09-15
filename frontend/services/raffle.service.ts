@@ -28,6 +28,8 @@ export interface Raffle {
   startDate: string;
   endDate: string;
   status: 'DRAFT' | 'PENDING_APPROVAL' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
+  minTickets?: number;
+  maxTickets?: number;
   isAutoDraw?: boolean;
   autoDrawDate?: boolean;
   autoDrawSoldOut?: boolean;
@@ -69,6 +71,8 @@ export interface CreateRaffleData {
   prizeName?: string;
   pricePerTicket: number | string;
   totalTickets: number;
+  minTickets?: number;
+  maxTickets?: number;
   startDate: string;
   endDate: string;
   isAutoDraw?: boolean;

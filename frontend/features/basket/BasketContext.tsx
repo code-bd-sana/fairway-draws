@@ -13,6 +13,8 @@ export interface BasketItem {
   totalTickets: number;
   ticketsSold: number;
   category?: string;
+  minTickets?: number;
+  maxTickets?: number;
 }
 
 interface BasketContextType {
@@ -90,27 +92,42 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
 
     setItems((prev) => {
       const remaining = Math.max(0, item.totalTickets - item.ticketsSold);
+      const minTickets = item.minTickets && item.minTickets > 0 ? item.minTickets : 1;
+      const maxTickets = item.maxTickets && item.maxTickets > 0 ? item.maxTickets : Infinity;
+      const effectiveCap = Math.min(remaining, maxTickets);
+
       const existingIndex = prev.findIndex((i) => i.raffleId === item.raffleId);
 
       if (existingIndex > -1) {
         const currentQty = prev[existingIndex].quantity;
-        const newQty = Math.min(currentQty + quantity, remaining);
+        const targetQty = currentQty + quantity;
+        const newQty = Math.min(targetQty, effectiveCap);
 
-        if (newQty === currentQty && remaining <= currentQty) {
-          toast.error(`Only ${remaining} tickets remaining for "${item.title}"`);
+        if (newQty <= currentQty && effectiveCap <= currentQty) {
+          if (maxTickets < remaining && currentQty >= maxTickets) {
+            toast.error(`Maximum ticket limit of ${maxTickets} reached for "${item.title}"`);
+          } else {
+            toast.error(`Only ${remaining} tickets remaining for "${item.title}"`);
+          }
           return prev;
         }
 
         const updated = [...prev];
         updated[existingIndex] = {
           ...prev[existingIndex],
+          ...item,
           quantity: newQty,
         };
         toast.success(`Updated basket: ${newQty} tickets for "${item.title}"`);
         return updated;
       }
 
-      const initialQty = Math.min(quantity, remaining);
+      if (quantity < minTickets) {
+        toast.error(`Minimum ${minTickets} tickets required for "${item.title}"`);
+        return prev;
+      }
+
+      const initialQty = Math.min(quantity, effectiveCap);
       if (initialQty <= 0) {
         toast.error(`"${item.title}" is currently sold out.`);
         return prev;
@@ -140,9 +157,22 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
       return prev.map((item) => {
         if (item.raffleId !== raffleId) return item;
         const remaining = Math.max(0, item.totalTickets - item.ticketsSold);
-        const clampedQty = Math.min(quantity, remaining);
+        const minTickets = item.minTickets && item.minTickets > 0 ? item.minTickets : 1;
+        const maxTickets = item.maxTickets && item.maxTickets > 0 ? item.maxTickets : Infinity;
+        const effectiveCap = Math.min(remaining, maxTickets);
+
+        if (quantity < minTickets) {
+          toast.error(`Minimum ${minTickets} tickets required for "${item.title}"`);
+          return item;
+        }
+
+        const clampedQty = Math.min(quantity, effectiveCap);
         if (clampedQty < quantity) {
-          toast.error(`Only ${remaining} tickets left for "${item.title}"`);
+          if (maxTickets < remaining && clampedQty === maxTickets) {
+            toast.error(`Maximum ticket limit is ${maxTickets} for "${item.title}"`);
+          } else {
+            toast.error(`Only ${remaining} tickets left for "${item.title}"`);
+          }
         }
         return {
           ...item,

@@ -125,8 +125,13 @@ export default function BasketPage() {
                         <p className="font-sans text-xs text-text-muted mt-0.5">
                           £{item.pricePerTicket.toFixed(2)} per ticket
                         </p>
+                        {item.maxTickets && (
+                          <span className="font-sans text-[10px] text-text-muted block mt-0.5">
+                            Max {item.maxTickets} tickets per person
+                          </span>
+                        )}
                         {remaining < 20 && (
-                          <span className="font-sans text-[10px] text-amber-700 font-semibold">
+                          <span className="font-sans text-[10px] text-amber-700 font-semibold block">
                             Only {remaining} left!
                           </span>
                         )}
@@ -138,7 +143,8 @@ export default function BasketPage() {
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.raffleId, item.quantity - 1)}
-                            className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer"
+                            disabled={item.quantity <= (item.minTickets && item.minTickets > 0 ? item.minTickets : 1)}
+                            className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                             aria-label="Decrease quantity"
                           >
                             -
@@ -149,7 +155,7 @@ export default function BasketPage() {
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.raffleId, item.quantity + 1)}
-                            disabled={item.quantity >= remaining}
+                            disabled={item.quantity >= Math.min(remaining, item.maxTickets && item.maxTickets > 0 ? item.maxTickets : Infinity)}
                             className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                             aria-label="Increase quantity"
                           >
