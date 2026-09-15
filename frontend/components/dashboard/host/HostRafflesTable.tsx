@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useHostRaffles, useDeleteRaffle, useDrawWinner } from "../../../hooks/useRaffleHooks";
+import { useMySubscription } from "../../../hooks/useSubscriptionHooks";
 import { cn } from "../../../lib/utils";
 import { Pagination } from "../../ui/Pagination";
 import { toast } from "sonner";
@@ -19,6 +20,10 @@ export default function HostRafflesTable() {
   const [selectedCompForDelete, setSelectedCompForDelete] = useState<RaffleDeleteTarget | null>(null);
   const [viewingTicketsRaffle, setViewingTicketsRaffle] = useState<any | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const { data: mySub } = useMySubscription();
+  const planName = (mySub?.plan?.name || "").toLowerCase();
+  const commissionRate = planName.includes("premium") || planName.includes("pro") ? 10 : 15;
 
   const { data: response, isLoading } = useHostRaffles({ page, limit: 10, status: activeFilter });
   const raffles = response?.data || [];
@@ -228,11 +233,11 @@ export default function HostRafflesTable() {
                       </span>
                       <div className="flex items-center gap-3">
                         <span className="font-heading font-black text-2xl text-[#dc2626]">
-                          - £{((Number(raffle.pricePerTicket) * raffle.ticketsSold) * 0.05).toFixed(2)}
+                          - £{((Number(raffle.pricePerTicket) * raffle.ticketsSold) * (commissionRate / 100)).toFixed(2)}
                         </span>
                         <div className="h-6 px-2.5 bg-accent-bg border border-primary/30 rounded-full flex items-center justify-center">
                           <span className="font-sans font-bold text-[10px] text-text-brand uppercase">
-                            5% (Standard)
+                            {commissionRate}% Platform Fee
                           </span>
                         </div>
                       </div>
@@ -247,7 +252,7 @@ export default function HostRafflesTable() {
                       </span>
                       <div className="flex flex-col relative w-full">
                         <span className="font-heading font-black text-2xl text-text-brand">
-                          £{((Number(raffle.pricePerTicket) * raffle.ticketsSold) * 0.95).toFixed(2)}
+                          £{((Number(raffle.pricePerTicket) * raffle.ticketsSold) * ((100 - commissionRate) / 100)).toFixed(2)}
                         </span>
                         <span className="font-sans font-medium text-[11px] text-text-muted mt-0.5">
                           Paid out directly on completion

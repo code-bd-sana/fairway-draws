@@ -322,6 +322,7 @@ export class HostsService {
 
   async getWithdrawalsHistory(userId: string) {
     const host = await this.getHostProfileByUserId(userId);
+    const commissionRate = await this.getHostCommissionRate(host.id);
 
     const withdrawals = await this.prisma.withdrawal.findMany({
       where: { hostId: host.id },
@@ -331,11 +332,11 @@ export class HostsService {
     return withdrawals.map((w) => {
       const wObj = w as any;
       const grossAmount = Number(w.amount);
-      const feeDeducted = Number(wObj.feeAmount != null ? wObj.feeAmount : grossAmount * 0.15);
+      const feeDeducted = Number(wObj.feeAmount != null ? wObj.feeAmount : grossAmount * (commissionRate / 100));
       const netAmount = Number(wObj.netAmount != null ? wObj.netAmount : grossAmount - feeDeducted);
       const feePercent = grossAmount > 0 && wObj.feeAmount != null
         ? Math.round((Number(wObj.feeAmount) / grossAmount) * 100)
-        : 15;
+        : commissionRate;
 
       let parsedDetails = {};
       try {

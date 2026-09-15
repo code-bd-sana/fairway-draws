@@ -58,7 +58,7 @@ export default function WithdrawalsTable({ withdrawals: propWithdrawals, isLoadi
           <tr className="border-b border-divider bg-elevated">
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider">HOST BUSINESS</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">REQUESTED GROSS</th>
-            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">FEE (15%)</th>
+            <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">PLATFORM FEE</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">NET PAYOUT</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">PAYMENT METHOD</th>
             <th className="py-3.5 px-6 font-sans text-[10px] font-bold text-text-muted uppercase tracking-wider text-center">REQUEST DATE</th>

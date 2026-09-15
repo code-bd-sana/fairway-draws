@@ -65,10 +65,10 @@ export default function WithdrawalsStatsCards({ withdrawals = [], isLoading }: W
         </div>
       </div>
 
-      {/* Platform Commission Earned (15%) */}
+      {/* Platform Commission Earned */}
       <div className="bg-surface border border-border rounded-card p-6 flex flex-col justify-between shadow-card">
         <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
-          Platform Commission (15%)
+          Platform Commission Earned
         </span>
         <div className="flex flex-col gap-1 mt-2">
           <span className="font-heading font-black text-3xl lg:text-4xl text-text-brand leading-none">
