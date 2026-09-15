@@ -1,36 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { useQuery } from "@tanstack/react-query";
 import { useAdminOverviewStats } from "../../../hooks/useAdminHooks";
-
-const REVENUE_DATA = [
-  { name: 'Jan', value: 30000 },
-  { name: 'Feb', value: 45000 },
-  { name: 'Mar', value: 42000 },
-  { name: 'Apr', value: 65000 },
-  { name: 'May', value: 60000 },
-  { name: 'Jun', value: 75000 },
-  { name: 'Jul', value: 85000 },
-  { name: 'Aug', value: 82000 },
-  { name: 'Sep', value: 95000 },
-  { name: 'Oct', value: 90000 },
-  { name: 'Nov', value: 105000 },
-  { name: 'Dec', value: 98000 },
-];
-
-const GROWTH_DATA = [
-  { name: 'Jan', Users: 120, Hosts: 40 },
-  { name: 'Feb', Users: 150, Hosts: 50 },
-  { name: 'Mar', Users: 180, Hosts: 60 },
-  { name: 'Apr', Users: 240, Hosts: 75 },
-  { name: 'May', Users: 280, Hosts: 90 },
-  { name: 'Jun', Users: 350, Hosts: 120 },
-];
+import { adminService } from "../../../services/admin.service";
 
 export default function AdminDashboardPage() {
+  const [timeFilter, setTimeFilter] = useState("1M");
   const { data: overview, isLoading } = useAdminOverviewStats();
+  const { data: reports, isLoading: isReportsLoading } = useQuery({
+    queryKey: ['adminReports', timeFilter],
+    queryFn: () => adminService.getReports(timeFilter),
+  });
+
+  const revenueData = reports?.revenueTrend || [];
+  const growthData = reports?.growthData || [];
+  const topHosts = overview?.topHosts || [];
 
   return (
     <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1660px] mx-auto w-full animate-fadeIn">
@@ -137,11 +124,12 @@ export default function AdminDashboardPage() {
             
             {/* Chart Filters */}
             <div className="flex items-center gap-1 bg-elevated border border-border-medium rounded-xl p-1">
-              {['7D', '1M', '6M', '1Y'].map((filter, i) => (
+              {['7D', '1M', '6M', '1Y'].map((filter) => (
                 <button 
                   key={filter} 
+                  onClick={() => setTimeFilter(filter)}
                   className={`px-3 py-1 rounded-lg font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
-                    i === 3 ? 'bg-primary text-white shadow-xs' : 'text-text-muted hover:text-text-primary'
+                    timeFilter === filter ? 'bg-primary text-white shadow-xs' : 'text-text-muted hover:text-text-primary'
                   }`}
                 >
                   {filter}
@@ -151,34 +139,45 @@ export default function AdminDashboardPage() {
           </div>
           
           <div className="w-full h-[240px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={REVENUE_DATA} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0b4d35" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#0b4d35" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
-                  dy={10}
-                />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
-                  tickFormatter={(val) => `£${val / 1000}k`}
-                />
-                <RechartsTooltip 
-                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2EADF', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
-                  itemStyle={{ color: '#101811', fontWeight: 600 }}
-                />
-                <Area type="monotone" dataKey="value" stroke="#0b4d35" strokeWidth={2.5} fillOpacity={1} fill="url(#colorValue)" />
-              </AreaChart>
-            </ResponsiveContainer>
+            {isReportsLoading ? (
+              <div className="w-full h-full flex items-center justify-center text-text-muted font-sans text-xs">
+                Loading revenue data...
+              </div>
+            ) : revenueData.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center text-text-muted font-sans text-xs">
+                No revenue recorded for this period.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0b4d35" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#0b4d35" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
+                    tickFormatter={(val) => `£${val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val}`}
+                  />
+                  <RechartsTooltip 
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2EADF', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
+                    itemStyle={{ color: '#101811', fontWeight: 600 }}
+                    formatter={(val: any) => [`£${Number(val || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Revenue']}
+                  />
+                  <Area type="monotone" dataKey="value" stroke="#0b4d35" strokeWidth={2.5} fillOpacity={1} fill="url(#colorValue)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
@@ -246,28 +245,39 @@ export default function AdminDashboardPage() {
           </div>
           
           <div className="w-full h-[220px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={GROWTH_DATA} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
-                  dy={10}
-                />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
-                />
-                <RechartsTooltip 
-                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2EADF', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
-                  itemStyle={{ color: '#101811', fontWeight: 600 }}
-                  cursor={{ fill: '#F1F5EE' }}
-                />
-                <Bar dataKey="Users" fill="#0b4d35" radius={[6, 6, 0, 0]} barSize={24} />
-              </BarChart>
-            </ResponsiveContainer>
+            {isReportsLoading ? (
+              <div className="w-full h-full flex items-center justify-center text-text-muted font-sans text-xs">
+                Loading growth data...
+              </div>
+            ) : growthData.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center text-text-muted font-sans text-xs">
+                No growth data recorded for this period.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={growthData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#717D6E', fontSize: 10, fontFamily: 'sans-serif' }}
+                  />
+                  <RechartsTooltip 
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2EADF', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
+                    itemStyle={{ color: '#101811', fontWeight: 600 }}
+                    cursor={{ fill: '#F1F5EE' }}
+                  />
+                  <Bar dataKey="Users" fill="#0b4d35" radius={[6, 6, 0, 0]} barSize={16} />
+                  <Bar dataKey="Hosts" fill="#8cb34a" radius={[6, 6, 0, 0]} barSize={16} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
@@ -277,34 +287,34 @@ export default function AdminDashboardPage() {
             <h3 className="font-heading font-black text-lg text-text-primary uppercase tracking-tight">
               Top Hosts This Month
             </h3>
-            <button className="font-sans font-bold text-xs text-text-brand hover:underline transition-all cursor-pointer">
+            <Link href="/dashboard/admin/hosts" className="font-sans font-bold text-xs text-text-brand hover:underline transition-all cursor-pointer">
               View All →
-            </button>
+            </Link>
           </div>
           
           <div className="flex flex-col gap-3">
-            {[
-              { rank: 1, name: "Fairway Pro Shop", revenue: "£14,200", initials: "FP" },
-              { rank: 2, name: "Links & Fairways Club", revenue: "£11,800", initials: "LF" },
-              { rank: 3, name: "St Andrews Pro Golf", revenue: "£9,200", initials: "SA" },
-              { rank: 4, name: "Custom Club Studio", revenue: "£7,800", initials: "CC" },
-              { rank: 5, name: "The Surrey Golf Club", revenue: "£5,400", initials: "SG" },
-            ].map((host) => (
-              <div key={host.rank} className="flex items-center justify-between py-1.5 border-b border-divider last:border-b-0">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono font-bold text-xs text-text-muted w-4 text-right">
-                    {host.rank}
-                  </span>
-                  <div className="w-8 h-8 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
-                    <span className="font-sans font-bold text-xs text-text-brand">{host.initials}</span>
+            {isLoading ? (
+              <div className="py-8 text-center text-text-muted font-sans text-xs animate-pulse">Loading top hosts...</div>
+            ) : topHosts.length === 0 ? (
+              <div className="py-8 text-center text-text-muted font-sans text-xs">No host sales recorded yet.</div>
+            ) : (
+              topHosts.map((host) => (
+                <div key={host.id || host.rank} className="flex items-center justify-between py-1.5 border-b border-divider last:border-b-0">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono font-bold text-xs text-text-muted w-4 text-right">
+                      {host.rank}
+                    </span>
+                    <div className="w-8 h-8 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
+                      <span className="font-sans font-bold text-xs text-text-brand">{host.initials}</span>
+                    </div>
+                    <span className="font-heading font-bold text-xs text-text-primary">{host.name}</span>
                   </div>
-                  <span className="font-heading font-bold text-xs text-text-primary">{host.name}</span>
+                  <span className="font-heading font-black text-xs text-text-brand">
+                    {host.revenue}
+                  </span>
                 </div>
-                <span className="font-heading font-black text-xs text-text-brand">
-                  {host.revenue}
-                </span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 

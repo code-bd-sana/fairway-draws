@@ -89,7 +89,7 @@ export default async function HostProfilePage({ params }: PageProps) {
                 memberSince={host.memberSince || 2026}
               />
               
-              <HostProfileTabs name={name} bio={host.bio} raffles={host.raffles} />
+              <HostProfileTabs name={name} bio={host.bio} location={host.location} raffles={host.raffles} />
             </div>
 
           </div>

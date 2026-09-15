@@ -114,7 +114,7 @@ export class HostsService {
       isVerified: host.isVerified,
       isBlocked: host.user.isBlocked,
       drawsHosted: host._count.raffles,
-      rating: 5.0, // Mocked
+      rating: null,
       memberSince: host.createdAt.getFullYear(),
       raffles: host.raffles.map((raffle) => {
         // Format endDate as "Ends in Xd Yh" or a clean date string
@@ -600,15 +600,6 @@ export class HostsService {
       const percentage = totalGrossRevenue > 0 ? Math.round((value / totalGrossRevenue) * 100) : 0;
       return { name, value, percentage };
     });
-
-    if (categorySales.length === 0) {
-      categorySales.push(
-        { name: 'Golf Drivers', value: 0, percentage: 40 },
-        { name: 'Golf Irons', value: 0, percentage: 30 },
-        { name: 'Golf Putters', value: 0, percentage: 20 },
-        { name: 'Accessories', value: 0, percentage: 10 },
-      );
-    }
 
     // 2. Calculate Top 5 Performing Raffles
     const sortedRaffles = [...raffles].sort((a, b) => {

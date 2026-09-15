@@ -8,12 +8,14 @@ interface HostProfileTabsProps {
   raffles?: any[];
   name?: string;
   bio?: string;
+  location?: string;
 }
 
 export default function HostProfileTabs({
   raffles = [],
   name = "Host",
   bio = "",
+  location = "",
 }: HostProfileTabsProps) {
   const [activeTab, setActiveTab] = useState<"active" | "past" | "reviews" | "about">("active");
 
@@ -187,9 +189,15 @@ export default function HostProfileTabs({
               <h3 className="font-heading font-black text-xl text-[#0e1e17] mb-3 uppercase tracking-tight">
                 About {name}
               </h3>
-              <p className="font-sans text-sm text-[#334e43] leading-relaxed mb-6">
+              <p className="font-sans text-sm text-[#334e43] leading-relaxed mb-4">
                 {bio || `${name} is an officially verified host on Fairway Draws, delivering premium golf equipment competitions, transparent audited draws, and instant win opportunities.`}
               </p>
+              {location && (
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#5e766c] mb-6">
+                  <span>📍</span>
+                  <span>Based in {location}</span>
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#EFF4ED]">
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-[#F8FAF6] border border-[#E2EADF]">
                   <span className="text-xl">🛡️</span>

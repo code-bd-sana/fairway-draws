@@ -135,6 +135,13 @@ export interface AdminDashboardOverview {
       icon: string;
     }[];
   };
+  topHosts?: {
+    rank: number;
+    id: string;
+    name: string;
+    revenue: string;
+    initials: string;
+  }[];
   recentActivity: {
     text: string;
     time: string;
@@ -145,6 +152,7 @@ export interface AdminDashboardOverview {
 
 export interface AdminReportsData {
   revenueTrend: { name: string; value: number }[];
+  growthData?: { name: string; Users: number; Hosts: number }[];
   categorySales: { name: string; value: number; color: string }[];
   popularCompetitions: { name: string; value: number }[];
   userGrowth: { name: string; users: number }[];

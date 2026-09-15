@@ -112,6 +112,49 @@ export class AdminDashboardService {
         alert: act.alert,
       }));
 
+    // Query hosts with raffles to compute dynamic Top Hosts
+    const allHosts = await this.prisma.hostProfile.findMany({
+      include: {
+        raffles: {
+          select: {
+            ticketsSold: true,
+            pricePerTicket: true,
+          },
+        },
+      },
+    });
+
+    const topHosts = allHosts
+      .map((h) => {
+        const revenue = h.raffles.reduce(
+          (acc, r) => acc + (r.ticketsSold || 0) * (r.pricePerTicket ? Number(r.pricePerTicket) : 0),
+          0,
+        );
+        const initials =
+          h.businessName
+            .split(' ')
+            .map((w) => w[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase() || 'HP';
+        return {
+          id: h.id,
+          name: h.businessName,
+          revenue: `£${revenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          rawRevenue: revenue,
+          initials,
+        };
+      })
+      .sort((a, b) => b.rawRevenue - a.rawRevenue)
+      .slice(0, 5)
+      .map((h, index) => ({
+        rank: index + 1,
+        id: h.id,
+        name: h.name,
+        revenue: h.revenue,
+        initials: h.initials,
+      }));
+
     return {
       stats: {
         totalUsers,
@@ -119,6 +162,7 @@ export class AdminDashboardService {
         liveRaffles,
         totalRevenue,
       },
+      topHosts,
       awaitingReview: {
         count: awaitingReviewCount,
         list: awaitingReviewList.map((raffle) => ({
@@ -510,30 +554,11 @@ export class AdminDashboardService {
       return { name, value: percent, color };
     });
 
-    if (categorySales.length === 0) {
-      categorySales = [
-        { name: 'Drivers & Woods', value: 45, color: '#0B4D35' },
-        { name: 'Apparel', value: 25, color: '#15803D' },
-        { name: 'Gear & Bags', value: 20, color: '#16A34A' },
-        { name: 'Accessories', value: 10, color: '#4ADE80' },
-      ];
-    }
-
     // 3. Most Popular Competitions
-    let popularCompetitions = raffles.slice(0, 5).map((r) => ({
+    const popularCompetitions = raffles.slice(0, 5).map((r) => ({
       name: r.title,
       value: r.ticketsSold,
     }));
-
-    if (popularCompetitions.length === 0) {
-      popularCompetitions = [
-        { name: 'Callaway Paradym Driver', value: 420 },
-        { name: 'Taylormade Qi10 Iron Set', value: 345 },
-        { name: 'Titleist Pro V1 Golf Bundle', value: 250 },
-        { name: 'Garmin Approach S70 Watch', value: 200 },
-        { name: 'Bushnell Pro X3 Rangefinder', value: 150 },
-      ];
-    }
 
     // 4. User Growth Over Time
     const userGrowthMap = new Map<string, number>();
@@ -550,8 +575,31 @@ export class AdminDashboardService {
       userGrowth.push({ name: month, users: cumulativeUsers });
     });
 
-    if (userGrowth.length === 0) {
-      userGrowth.push({ name: now.toLocaleDateString('en-US', { month: 'short' }), users: users.length });
+    // Monthly User & Host Growth (last 6 months) for Growth Chart
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const growthData: { name: string; Users: number; Hosts: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const mIdx = d.getMonth();
+      const mYear = d.getFullYear();
+      const mLabel = monthNames[mIdx];
+
+      const userCount = users.filter((u) => {
+        const ud = new Date(u.createdAt);
+        return ud.getMonth() === mIdx && ud.getFullYear() === mYear;
+      }).length;
+
+      const hostCount = hosts.filter((h) => {
+        const hd = new Date(h.createdAt);
+        return hd.getMonth() === mIdx && hd.getFullYear() === mYear;
+      }).length;
+
+      growthData.push({
+        name: mLabel,
+        Users: userCount,
+        Hosts: hostCount,
+      });
     }
 
     // 5. Host Performance
@@ -564,48 +612,32 @@ export class AdminDashboardService {
     });
 
     const maxTickets = Math.max(...hostPerformanceData.map((h) => h.ticketsSold), 1);
-    let hostPerformance = hostPerformanceData.slice(0, 5).map((h) => ({
+    const hostPerformance = hostPerformanceData.slice(0, 5).map((h) => ({
       name: h.name,
-      percent: Math.min(100, Math.max(10, Math.round((h.ticketsSold / maxTickets) * 100))),
+      percent: Math.min(100, Math.max(0, Math.round((h.ticketsSold / maxTickets) * 100))),
     }));
 
-    if (hostPerformance.length === 0) {
-      hostPerformance = [
-        { name: 'Fairway Elite', percent: 90 },
-        { name: 'Golf World UK', percent: 75 },
-        { name: 'Pro Tour Gear', percent: 65 },
-        { name: 'Scottish Links', percent: 55 },
-        { name: 'Strike Golf', percent: 45 },
-      ];
-    }
-
-    // 6. Geographic Distribution
+    // 6. Geographic Distribution (only actual provided user locations)
     const locationCounts = new Map<string, number>();
+    let totalWithLoc = 0;
     allUsersWithLocation.forEach((u) => {
-      const loc = u.location ? u.location.trim() : 'England';
-      locationCounts.set(loc, (locationCounts.get(loc) || 0) + 1);
+      if (u.location && u.location.trim()) {
+        const loc = u.location.trim();
+        locationCounts.set(loc, (locationCounts.get(loc) || 0) + 1);
+        totalWithLoc++;
+      }
     });
 
-    const totalUsersCount = allUsersWithLocation.length || 1;
-    let geographicDistribution = Array.from(locationCounts.entries())
+    const geographicDistribution = Array.from(locationCounts.entries())
       .slice(0, 5)
       .map(([name, count]) => ({
         name,
-        value: Math.round((count / totalUsersCount) * 100),
+        value: totalWithLoc > 0 ? Math.round((count / totalWithLoc) * 100) : 0,
       }));
-
-    if (geographicDistribution.length === 0) {
-      geographicDistribution = [
-        { name: 'England', value: 55 },
-        { name: 'Scotland', value: 18 },
-        { name: 'Wales', value: 12 },
-        { name: 'N. Ireland', value: 8 },
-        { name: 'Other', value: 7 },
-      ];
-    }
 
     return {
       revenueTrend,
+      growthData,
       categorySales,
       popularCompetitions,
       userGrowth,

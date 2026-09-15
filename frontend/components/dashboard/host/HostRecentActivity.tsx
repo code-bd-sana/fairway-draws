@@ -1,5 +1,4 @@
 import React from "react";
-import { hostRecentActivities } from "../../../data/dashboard/host-dashboard.data";
 import type { HostRecentActivity as IHostRecentActivity } from "../../../types/host-dashboard.types";
 
 const ActivityIcon = ({ type }: { type: IHostRecentActivity["type"] }) => {

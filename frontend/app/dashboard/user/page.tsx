@@ -4,6 +4,14 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer
+} from "recharts";
 import { useAuthUser } from "@/hooks/useAuthHooks";
 import { useMyWinnersQuery } from "@/hooks/useUserHooks";
 import { useMyTicketsQuery, useMyTransactionsQuery } from "@/hooks/useTicketHooks";
@@ -77,6 +85,107 @@ export default function UserDashboardPage() {
       return sum + price;
     }, 0);
   }, [transactions, allTickets]);
+
+  const spendChartData = useMemo(() => {
+    const now = new Date();
+    const completedTx = transactions.filter(
+      (t: any) => !t.status || t.status.toUpperCase() === "COMPLETED" || t.status.toUpperCase() === "PAID"
+    );
+
+    if (timeframe === "7D") {
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const days = [];
+      const map = new Map<string, number>();
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const key = `${dayNames[d.getDay()]} ${d.getDate()}`;
+        days.push(key);
+        map.set(key, 0);
+      }
+
+      completedTx.forEach((t: any) => {
+        const txDate = new Date(t.date || t.createdAt);
+        const diffDays = Math.floor((now.getTime() - txDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays >= 0 && diffDays < 7) {
+          const key = `${dayNames[txDate.getDay()]} ${txDate.getDate()}`;
+          const amt = parseFloat(String(t.amount || "0").replace(/[^0-9.-]+/g, "")) || 0;
+          if (map.has(key)) {
+            map.set(key, (map.get(key) || 0) + amt);
+          }
+        }
+      });
+
+      return days.map((name) => ({ name, spend: Number((map.get(name) || 0).toFixed(2)) }));
+    }
+
+    if (timeframe === "1M") {
+      const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      const map = new Map<string, number>();
+      weeks.forEach((w) => map.set(w, 0));
+
+      completedTx.forEach((t: any) => {
+        const txDate = new Date(t.date || t.createdAt);
+        const diffDays = Math.floor((now.getTime() - txDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays >= 0 && diffDays < 30) {
+          const weekIdx = Math.min(3, Math.floor((29 - diffDays) / 7.5));
+          const key = weeks[weekIdx];
+          const amt = parseFloat(String(t.amount || "0").replace(/[^0-9.-]+/g, "")) || 0;
+          map.set(key, (map.get(key) || 0) + amt);
+        }
+      });
+
+      return weeks.map((name) => ({ name, spend: Number((map.get(name) || 0).toFixed(2)) }));
+    }
+
+    if (timeframe === "3M") {
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const months = [];
+      const map = new Map<string, number>();
+
+      for (let i = 2; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = monthNames[d.getMonth()];
+        months.push(key);
+        map.set(key, 0);
+      }
+
+      completedTx.forEach((t: any) => {
+        const txDate = new Date(t.date || t.createdAt);
+        const key = monthNames[txDate.getMonth()];
+        if (map.has(key)) {
+          const amt = parseFloat(String(t.amount || "0").replace(/[^0-9.-]+/g, "")) || 0;
+          map.set(key, (map.get(key) || 0) + amt);
+        }
+      });
+
+      return months.map((name) => ({ name, spend: Number((map.get(name) || 0).toFixed(2)) }));
+    }
+
+    // "1Y"
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = [];
+    const map = new Map<string, number>();
+
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = monthNames[d.getMonth()];
+      months.push(key);
+      map.set(key, 0);
+    }
+
+    completedTx.forEach((t: any) => {
+      const txDate = new Date(t.date || t.createdAt);
+      const key = monthNames[txDate.getMonth()];
+      if (map.has(key)) {
+        const amt = parseFloat(String(t.amount || "0").replace(/[^0-9.-]+/g, "")) || 0;
+        map.set(key, (map.get(key) || 0) + amt);
+      }
+    });
+
+    return months.map((name) => ({ name, spend: Number((map.get(name) || 0).toFixed(2)) }));
+  }, [transactions, timeframe]);
 
   const firstName = user?.firstName || "Player";
 
@@ -180,7 +289,7 @@ export default function UserDashboardPage() {
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className="font-heading font-black text-2xl lg:text-3xl text-text-primary leading-none">
-                  £{totalLifetimeSpent.toFixed(2)}
+                  £{spendChartData.reduce((acc, curr) => acc + curr.spend, 0).toFixed(2)}
                 </span>
                 <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0]">
                   <span className="font-sans text-[11px] font-bold text-success-text">
@@ -189,7 +298,7 @@ export default function UserDashboardPage() {
                 </div>
               </div>
               <span className="font-sans text-xs text-text-muted mt-1">
-                Ticket Spend Overview
+                Ticket Spend ({timeframe}) • Lifetime: £{totalLifetimeSpent.toFixed(2)}
               </span>
             </div>
 
@@ -210,41 +319,59 @@ export default function UserDashboardPage() {
             </div>
           </div>
 
-          <div className="mt-8 flex-1 w-full relative min-h-[180px]">
-            {/* Area Chart Graphic */}
-            <svg
-              className="absolute inset-0 w-full h-full text-primary opacity-10"
-              preserveAspectRatio="none"
-              viewBox="0 0 100 100"
-              fill="currentColor"
-            >
-              <path d="M0 100 V 50 Q 15 70 25 40 T 50 60 T 75 30 T 100 45 V 100 Z" />
-            </svg>
-            <svg
-              className="absolute inset-0 w-full h-full"
-              preserveAspectRatio="none"
-              viewBox="0 0 100 100"
-              fill="none"
-              stroke="#0b4d35"
-              strokeWidth="2.5"
-              vectorEffect="non-scaling-stroke"
-            >
-              <path d="M0 50 Q 15 70 25 40 T 50 60 T 75 30 T 100 45" />
-            </svg>
-
-            {/* X-axis labels */}
-            <div className="absolute bottom-0 w-full flex justify-between px-4">
-              {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"].map(
-                (month, i) => (
-                  <span
-                    key={i}
-                    className="font-sans font-semibold text-[10px] text-text-muted"
-                  >
-                    {month}
-                  </span>
-                )
-              )}
-            </div>
+          <div className="mt-6 flex-1 w-full relative min-h-[220px]">
+            {isTransactionsLoading ? (
+              <div className="w-full h-full min-h-[200px] flex items-center justify-center text-text-muted font-sans text-xs animate-pulse">
+                Loading spend overview...
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={spendChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorUserSpend" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0b4d35" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#0b4d35" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: "#717D6E", fontSize: 11, fontFamily: "sans-serif" }} 
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: "#717D6E", fontSize: 11, fontFamily: "sans-serif" }}
+                    tickFormatter={(val) => `£${val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val}`}
+                  />
+                  <RechartsTooltip
+                    cursor={{ stroke: "#E2EADF", strokeWidth: 1, strokeDasharray: "4 4" }}
+                    contentStyle={{ 
+                      backgroundColor: "#FFFFFF", 
+                      borderColor: "#E2EADF", 
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                      fontFamily: "sans-serif"
+                    }}
+                    itemStyle={{ color: "#0b4d35", fontWeight: "bold" }}
+                    formatter={(val: any) => [
+                      `£${Number(val || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 
+                      "Ticket Spend"
+                    ]}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="spend" 
+                    stroke="#0b4d35" 
+                    strokeWidth={2.5}
+                    fillOpacity={1} 
+                    fill="url(#colorUserSpend)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
       </div>

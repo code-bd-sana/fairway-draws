@@ -5,7 +5,6 @@ import PayoutMetricsCards from "../../../../components/dashboard/host/payouts/Pa
 import PayoutHistoryTable from "../../../../components/dashboard/host/payouts/PayoutHistoryTable";
 import RequestWithdrawalModal from "../../../../components/dashboard/host/payouts/RequestWithdrawalModal";
 import { useHostWalletStats, useHostWithdrawalHistory } from "../../../../hooks/useHostWalletHooks";
-import { mockPayoutMetrics, mockPayoutHistory } from "../../../../data/dashboard/host-dashboard.data";
 
 export default function PayoutsAndEarningsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,17 +12,14 @@ export default function PayoutsAndEarningsPage() {
   const { data: walletStats, isLoading: isLoadingStats } = useHostWalletStats();
   const { data: historyData, isLoading: isLoadingHistory } = useHostWithdrawalHistory();
 
-  // Merge real data with fallback defaults
-  const metrics = walletStats
-    ? {
-        availableBalance: walletStats.availableBalance,
-        pendingClearance: walletStats.pendingClearance,
-        totalLifetimeEarnings: walletStats.totalLifetimeEarnings,
-        totalFeesPaid: walletStats.totalFeesPaid,
-      }
-    : mockPayoutMetrics;
+  const metrics = {
+    availableBalance: walletStats?.availableBalance ?? 0,
+    pendingClearance: walletStats?.pendingClearance ?? 0,
+    totalLifetimeEarnings: walletStats?.totalLifetimeEarnings ?? 0,
+    totalFeesPaid: walletStats?.totalFeesPaid ?? 0,
+  };
 
-  const history = historyData || mockPayoutHistory;
+  const history = historyData || [];
 
   return (
     <div className="flex-1 w-full px-[20px] lg:px-[40px] py-[24px] lg:py-[32px] flex flex-col gap-[24px] animate-in fade-in zoom-in-95 duration-300">
