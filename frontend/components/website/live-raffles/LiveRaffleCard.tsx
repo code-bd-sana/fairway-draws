@@ -148,18 +148,27 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
   // Human readable category mapping
   const categoryLabels: Record<string, string> = {
     drivers: "Drivers",
-    irons: "Irons & Wedges",
+    "golf drivers": "Golf Drivers",
+    irons: "Iron Sets",
+    "iron sets": "Iron Sets",
+    "golf irons": "Golf Irons",
     putters: "Putters",
+    putter: "Putter",
+    "golf putters": "Golf Putters",
     experiences: "Experiences",
     apparel: "Apparel & Bags",
+    "golf bags & apparel": "Golf Bags & Apparel",
     tech: "Rangefinders & Tech",
+    "rangefinders & tech": "Rangefinders & Tech",
     accessories: "Accessories",
     cash: "Cash Prizes",
     bundles: "Bundles",
     luxury: "Luxury",
+    "pga-lessons": "PGA Lessons",
+    "pga lessons": "PGA Lessons",
   };
 
-  const categoryLabel = categoryLabels[category] || category;
+  const categoryLabel = categoryLabels[category.toLowerCase()] || categoryLabels[category] || category;
 
   if (viewMode === "list") {
     return (
@@ -178,9 +187,9 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
           {/* Badges on Top of Image */}
           <div className="absolute inset-x-3 top-3 flex items-start justify-between pointer-events-none">
-            {(hostName || hostLocation) ? (
+            {hostName ? (
               <div className="max-w-[160px] truncate rounded-full border border-white/65 bg-[#073826]/88 px-2.5 py-1 text-[10px] font-semibold text-white shadow-md backdrop-blur-sm">
-                {hostLocation ? `📍 ${hostLocation}` : `By ${hostName}`}
+                By {hostName}
               </div>
             ) : <div />}
 
@@ -291,9 +300,9 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
         {/* Floating Badges */}
         <div className="absolute inset-x-3 top-3 flex items-start justify-between pointer-events-none">
-          {(hostName || hostLocation) ? (
+          {hostName ? (
             <div className="max-w-[160px] truncate rounded-full border border-white/65 bg-[#073826]/88 px-2.5 py-1 text-[10px] font-semibold text-white shadow-md backdrop-blur-sm">
-              {hostLocation ? `📍 ${hostLocation}` : `By ${hostName}`}
+              By {hostName}
             </div>
           ) : <div />}
 
