@@ -22,10 +22,18 @@ export class SubscriptionsService {
     if (!host) return null;
 
     let sub = await this.prisma.hostSubscription.findFirst({
-      where: { hostId: host.id },
+      where: { hostId: host.id, status: 'ACTIVE' },
       include: { plan: true },
       orderBy: { createdAt: 'desc' },
     });
+
+    if (!sub) {
+      sub = await this.prisma.hostSubscription.findFirst({
+        where: { hostId: host.id },
+        include: { plan: true },
+        orderBy: { createdAt: 'desc' },
+      });
+    }
 
     if (!sub) {
       let freePlan = await this.prisma.subscriptionPlan.findFirst({
