@@ -27,11 +27,7 @@ export const heroData: HeroData = {
       value: "2,400",
       label: "Draws Completed",
     },
-    {
-      id: "hero-stat-2",
-      value: "£1",
-      label: "Minimum Entry",
-    },
+
     {
       id: "hero-stat-3",
       value: "Verified",

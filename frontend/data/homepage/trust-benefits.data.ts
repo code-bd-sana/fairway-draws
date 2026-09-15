@@ -23,11 +23,7 @@ export const trustStatsData: StatItem[] = [
     value: "12,000",
     label: "Happy Winners",
   },
-  {
-    id: "trust-stat-4",
-    value: "£1.00",
-    label: "Minimum Entry",
-  },
+
 ];
 
 export const trustBenefitsData: TrustBenefit[] = [
