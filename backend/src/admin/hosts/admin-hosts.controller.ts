@@ -54,6 +54,17 @@ export class AdminHostsController {
     return this.adminHostsService.getStats();
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a single host details by ID (Admin only)' })
+  @ApiParam({ name: 'id', description: 'The unique ID of the host profile' })
+  @ApiResponse({ status: 200, description: 'Host details object' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Host profile not found' })
+  async getHostById(@Param('id') id: string) {
+    return this.adminHostsService.getHostById(id);
+  }
+
   @Patch(':id/approve')
   @ApiOperation({ summary: 'Approve a host profile (Admin only)' })
   @ApiParam({ name: 'id', description: 'The unique ID of the host profile' })

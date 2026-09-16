@@ -11,7 +11,7 @@ export default function HostsStatsCards() {
   });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       
       {/* Total Hosts */}
       <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
@@ -42,6 +42,23 @@ export default function HostsStatsCards() {
           <div className="flex items-center gap-1.5 mt-2">
             <div className="px-2.5 py-0.5 rounded-full bg-success-bg border border-[#BBF7D0] flex items-center justify-center">
               <span className="font-sans font-bold text-[10px] text-success-text">Operational</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pending Approval Hosts */}
+      <div className="bg-surface border border-border rounded-card p-6 flex flex-col gap-2 shadow-card">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-text-muted">
+          Pending Approval
+        </span>
+        <div className="flex flex-col gap-1 mt-1">
+          <span className="font-heading font-black text-3xl lg:text-4xl text-amber-500 leading-none">
+            {isLoading ? '...' : stats?.pendingHosts || 0}
+          </span>
+          <div className="flex items-center gap-1.5 mt-2">
+            <div className="px-2.5 py-0.5 rounded-full bg-[#FEF3C7] border border-[#FDE68A] flex items-center justify-center">
+              <span className="font-sans font-bold text-[10px] text-[#D97706]">Requires Review</span>
             </div>
           </div>
         </div>

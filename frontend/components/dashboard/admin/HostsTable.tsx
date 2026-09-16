@@ -101,19 +101,20 @@ export default function HostsTable() {
     document.body.removeChild(link);
   };
 
-  const handleReview = (host: HostData) => {
-    // Construct detailed data for the modal based on the selected row
-    setSelectedHost({
-      id: host.id,
-      brandName: host.businessName || "N/A",
-      email: host.email,
-      bio: "N/A", // This could be fetched from host profile if available
-      contact: "N/A", // This could be fetched from host profile if available
-      payoutMethod: "N/A",
-      social: "N/A",
-      isVerified: host.isVerified,
-    });
+  const handleReview = async (host: HostData) => {
+    // Immediately open modal with all host table details
+    setSelectedHost(host);
     setIsModalOpen(true);
+
+    // Fetch full enriched host details in background (recent raffles, full subscriptions)
+    try {
+      const detailedHost = await adminService.getHostById(host.id);
+      if (detailedHost) {
+        setSelectedHost(detailedHost);
+      }
+    } catch (e) {
+      // Keep existing host data
+    }
   };
 
   const getStatusPill = (isBlocked: boolean) => {
@@ -241,13 +242,36 @@ export default function HostsTable() {
               data?.hosts?.map((host: HostData, i: number) => (
                 <tr key={host.id} className={`${i !== data.hosts.length - 1 ? 'border-b border-divider' : ''} hover:bg-elevated/40 transition-colors`}>
                   <td className="py-4 px-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs">
-                        <span className="font-sans font-bold text-xs text-text-brand">
+                    <div 
+                      onClick={() => handleReview(host)}
+                      className="flex items-center gap-3 cursor-pointer group w-fit"
+                      title="Click to view host details"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-accent-bg border border-primary/30 flex items-center justify-center shrink-0 shadow-xs overflow-hidden relative">
+                        {host.avatarUrl ? (
+                          <img
+                            src={host.avatarUrl}
+                            alt={host.businessName || "Host logo"}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        ) : null}
+                        <span className={`font-sans font-bold text-xs text-text-brand ${host.avatarUrl ? 'absolute -z-10' : ''}`}>
                           {host.businessName?.substring(0, 2).toUpperCase() || 'NA'}
                         </span>
                       </div>
-                      <span className="font-heading font-bold text-xs text-text-primary">{host.businessName || 'N/A'}</span>
+                      <div className="flex flex-col">
+                        <span className="font-heading font-bold text-xs text-text-primary group-hover:text-primary transition-colors">
+                          {host.businessName || 'N/A'}
+                        </span>
+                        {host.slug && (
+                          <span className="font-sans text-[10px] text-text-muted">
+                            @{host.slug}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td className="py-4 px-6">

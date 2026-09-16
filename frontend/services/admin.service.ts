@@ -38,13 +38,49 @@ export interface HostData {
   id: string;
   userId: string;
   businessName: string;
-  email: string;
+  slug?: string | null;
+  bio?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  walletBalance: number;
+  revenue: number;
   isBlocked: boolean;
   isVerified: boolean;
-  plan: string;
-  raffles: number;
-  revenue: number;
   createdAt: string;
+
+  // User profile details
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  avatarUrl?: string | null;
+  location?: string | null;
+  isEmailVerified?: boolean;
+  userCreatedAt?: string | null;
+
+  // Plan & Subscription
+  plan: string;
+  subscription?: {
+    id: string;
+    planName: string;
+    price: number;
+    durationDays: number;
+    maxActiveRaffles: number | null;
+    status: string;
+    startDate: string;
+    endDate: string;
+  } | null;
+
+  // Stats & Competitions
+  raffles: number;
+  recentRaffles?: Array<{
+    id: string;
+    title: string;
+    status: string;
+    pricePerTicket: number;
+    totalTickets: number;
+    ticketsSold: number;
+    createdAt: string;
+  }>;
 }
 
 export interface GetHostsResponse {
@@ -179,6 +215,11 @@ export const adminService = {
 
   async getHosts(params: { page?: number; limit?: number; search?: string; status?: string }): Promise<GetHostsResponse> {
     const { data } = await api.get('/admin/hosts', { params });
+    return data;
+  },
+
+  async getHostById(hostId: string): Promise<HostData> {
+    const { data } = await api.get(`/admin/hosts/${hostId}`);
     return data;
   },
 

@@ -36,8 +36,17 @@ export class AdminHostsService {
         include: {
           user: {
             select: {
+              id: true,
               email: true,
+              firstName: true,
+              lastName: true,
+              avatarUrl: true,
+              location: true,
+              phone: true,
+              address: true,
+              isEmailVerified: true,
               isBlocked: true,
+              createdAt: true,
             },
           },
           subscriptions: {
@@ -55,25 +64,51 @@ export class AdminHostsService {
     ]);
 
     const formattedHosts = hosts.map((host) => {
-      // For revenue, using walletBalance for simplicity right now
       const revenue = Number(host.walletBalance) || 0;
-
-      const activePlan =
-        host.subscriptions.length > 0
-          ? host.subscriptions[0].plan.name
-          : 'Free';
+      const activeSubscription =
+        host.subscriptions.length > 0 ? host.subscriptions[0] : null;
+      const activePlan = activeSubscription?.plan?.name || 'Free';
 
       return {
         id: host.id,
         userId: host.userId,
         businessName: host.businessName,
-        email: host.user.email,
-        isBlocked: host.user.isBlocked,
-        isVerified: host.isVerified,
-        plan: !host.isVerified ? 'Pending Approval' : activePlan,
-        raffles: host._count.raffles,
+        slug: host.slug || null,
+        bio: host.bio || null,
+        phone: host.phone || host.user?.phone || null,
+        address: host.address || host.user?.address || null,
+        walletBalance: revenue,
         revenue: revenue,
+        isVerified: host.isVerified,
         createdAt: host.createdAt,
+
+        // User profile details
+        email: host.user?.email || '',
+        firstName: host.user?.firstName || null,
+        lastName: host.user?.lastName || null,
+        avatarUrl: host.user?.avatarUrl || null,
+        location: host.user?.location || null,
+        isBlocked: host.user?.isBlocked ?? false,
+        isEmailVerified: host.user?.isEmailVerified ?? false,
+        userCreatedAt: host.user?.createdAt || null,
+
+        // Subscription details
+        plan: !host.isVerified ? 'Pending Approval' : activePlan,
+        subscription: activeSubscription
+          ? {
+              id: activeSubscription.id,
+              planName: activeSubscription.plan.name,
+              price: Number(activeSubscription.plan.price) || 0,
+              durationDays: activeSubscription.plan.durationDays,
+              maxActiveRaffles: activeSubscription.plan.maxActiveRaffles,
+              status: activeSubscription.status,
+              startDate: activeSubscription.startDate,
+              endDate: activeSubscription.endDate,
+            }
+          : null,
+
+        // Stats
+        raffles: host._count.raffles,
       };
     });
 
@@ -83,6 +118,103 @@ export class AdminHostsService {
       page,
       limit,
       totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getHostById(id: string) {
+    const host = await this.prisma.hostProfile.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+            location: true,
+            phone: true,
+            address: true,
+            isEmailVerified: true,
+            isBlocked: true,
+            createdAt: true,
+          },
+        },
+        subscriptions: {
+          include: { plan: true },
+          orderBy: { createdAt: 'desc' },
+        },
+        raffles: {
+          select: {
+            id: true,
+            title: true,
+            status: true,
+            pricePerTicket: true,
+            totalTickets: true,
+            ticketsSold: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+        _count: {
+          select: { raffles: true },
+        },
+      },
+    });
+
+    if (!host) {
+      throw new NotFoundException('Host profile not found');
+    }
+
+    const revenue = Number(host.walletBalance) || 0;
+    const activeSubscription =
+      host.subscriptions.find((s) => s.status === 'ACTIVE') ||
+      host.subscriptions[0] ||
+      null;
+    const activePlan = activeSubscription?.plan?.name || 'Free';
+
+    return {
+      id: host.id,
+      userId: host.userId,
+      businessName: host.businessName,
+      slug: host.slug || null,
+      bio: host.bio || null,
+      phone: host.phone || host.user?.phone || null,
+      address: host.address || host.user?.address || null,
+      walletBalance: revenue,
+      revenue: revenue,
+      isVerified: host.isVerified,
+      createdAt: host.createdAt,
+
+      // User details
+      email: host.user?.email || '',
+      firstName: host.user?.firstName || null,
+      lastName: host.user?.lastName || null,
+      avatarUrl: host.user?.avatarUrl || null,
+      location: host.user?.location || null,
+      isBlocked: host.user?.isBlocked ?? false,
+      isEmailVerified: host.user?.isEmailVerified ?? false,
+      userCreatedAt: host.user?.createdAt || null,
+
+      // Subscription
+      plan: !host.isVerified ? 'Pending Approval' : activePlan,
+      subscription: activeSubscription
+        ? {
+            id: activeSubscription.id,
+            planName: activeSubscription.plan.name,
+            price: Number(activeSubscription.plan.price) || 0,
+            durationDays: activeSubscription.plan.durationDays,
+            maxActiveRaffles: activeSubscription.plan.maxActiveRaffles,
+            status: activeSubscription.status,
+            startDate: activeSubscription.startDate,
+            endDate: activeSubscription.endDate,
+          }
+        : null,
+
+      // Stats & raffles
+      raffles: host._count.raffles,
+      recentRaffles: host.raffles || [],
     };
   }
 
@@ -110,10 +242,26 @@ export class AdminHostsService {
       throw new NotFoundException('Host profile not found');
     }
 
-    return this.prisma.hostProfile.update({
+    const updated = await this.prisma.hostProfile.update({
       where: { id },
       data: { isVerified: true },
     });
+
+    try {
+      await this.prisma.notification.create({
+        data: {
+          userId: hostProfile.userId,
+          type: 'SYSTEM',
+          title: 'Host Application Approved!',
+          message: `Congratulations! Your host operator application for "${hostProfile.businessName}" has been approved. You can now create competitions and launch draws.`,
+          link: '/dashboard/host',
+        },
+      });
+    } catch (e) {
+      // Non-blocking notification
+    }
+
+    return updated;
   }
 
   async rejectHost(id: string) {
