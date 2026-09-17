@@ -37,6 +37,17 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
       : 0;
 
   const [quantity, setQuantity] = useState(minAllowed);
+  const [inputQuantity, setInputQuantity] = useState<string>(String(minAllowed));
+  const [prevQuantity, setPrevQuantity] = useState<number>(minAllowed);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  if (quantity !== prevQuantity) {
+    setPrevQuantity(quantity);
+    if (!isInputFocused) {
+      setInputQuantity(String(quantity));
+    }
+  }
+
   const [statusMessage, setStatusMessage] = useState<{type: 'success'|'error'|'info', text: string} | null>(null);
   const [purchaseSuccessData, setPurchaseSuccessData] = useState<TicketPurchaseSuccessData | null>(null);
   const [winAnimationPrizes, setWinAnimationPrizes] = useState<WinPrizeItem[]>([]);
@@ -181,11 +192,60 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
     if (effectiveMax <= 0) return;
     const clamped = Math.max(minAllowed, Math.min(val, effectiveMax));
     setQuantity(clamped);
+    setInputQuantity(String(clamped));
   };
-  const handleDecrement = () =>
-    setQuantity((prev) => (prev > minAllowed ? prev - 1 : minAllowed));
-  const handleIncrement = () =>
-    setQuantity((prev) => (prev < effectiveMax ? prev + 1 : prev));
+  const handleDecrement = () => {
+    const parsed = parseInt(inputQuantity, 10);
+    const base = isNaN(parsed) ? quantity : parsed;
+    const next = Math.max(base - 1, minAllowed);
+    setInputQuantity(String(next));
+    setQuantity(next);
+  };
+  const handleIncrement = () => {
+    const parsed = parseInt(inputQuantity, 10);
+    const base = isNaN(parsed) ? quantity : parsed;
+    const next = Math.min(base + 1, effectiveMax);
+    setInputQuantity(String(next));
+    setQuantity(next);
+  };
+
+  const handleQuantityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.trim();
+    if (raw !== "" && !/^\d+$/.test(raw)) return;
+    setInputQuantity(raw);
+    if (raw !== "") {
+      const parsed = parseInt(raw, 10);
+      if (!isNaN(parsed) && parsed >= minAllowed && parsed <= effectiveMax) {
+        setQuantity(parsed);
+      }
+    }
+  };
+
+  const commitQuantityInput = () => {
+    setIsInputFocused(false);
+    const parsed = parseInt(inputQuantity, 10);
+    if (isNaN(parsed) || parsed < minAllowed) {
+      if (!isNaN(parsed) && parsed < minAllowed && parsed > 0) {
+        setStatusMessage({
+          type: "error",
+          text: `Minimum ${minAllowed} tickets required for this competition.`,
+        });
+      }
+      setInputQuantity(String(quantity));
+      return;
+    }
+    if (parsed > effectiveMax) {
+      setStatusMessage({
+        type: "error",
+        text: `You can only select up to ${effectiveMax} tickets.`,
+      });
+      setInputQuantity(String(effectiveMax));
+      setQuantity(effectiveMax);
+      return;
+    }
+    setInputQuantity(String(parsed));
+    setQuantity(parsed);
+  };
 
   const handleAddToBasket = () => {
     if (isPersonalLimitReached) {
@@ -438,19 +498,41 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
         <div className="flex items-center h-11 bg-elevated border border-border-medium rounded-xl overflow-hidden mt-1">
           <button 
+            type="button"
             onClick={handleDecrement}
             disabled={quantity <= minAllowed || effectiveMax <= 0 || isPersonalLimitReached}
-            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none"
+            aria-label="Decrease quantity"
           >
             -
           </button>
-          <div className="flex-1 h-full flex items-center justify-center font-heading font-bold text-sm text-text-primary border-x border-border-medium">
-            {quantity}
-          </div>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={inputQuantity}
+            onChange={handleQuantityInputChange}
+            onFocus={(e) => {
+              setIsInputFocused(true);
+              e.target.select();
+            }}
+            onBlur={commitQuantityInput}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.currentTarget.blur();
+              }
+            }}
+            disabled={effectiveMax <= 0 || isPersonalLimitReached}
+            className="flex-1 h-full text-center font-heading font-bold text-sm text-text-primary border-x border-border-medium bg-transparent focus:outline-none focus:bg-accent-bg/40 transition-colors tabular-nums disabled:opacity-40 disabled:cursor-not-allowed"
+            aria-label="Ticket quantity"
+          />
           <button 
+            type="button"
             onClick={handleIncrement}
             disabled={quantity >= effectiveMax || remainingTickets === 0 || isPersonalLimitReached}
-            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-11 h-full flex items-center justify-center bg-surface hover:bg-accent-bg text-text-primary font-bold transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none"
+            aria-label="Increase quantity"
           >
             +
           </button>

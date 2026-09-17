@@ -1,11 +1,183 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import WebsiteNavbar from "../../components/website/layout/WebsiteNavbar";
 import WebsiteFooter from "../../components/website/layout/WebsiteFooter";
-import { useBasket } from "../../features/basket/BasketContext";
+import { useBasket, BasketItem } from "../../features/basket/BasketContext";
+import { toast } from "sonner";
+
+interface BasketQuantityControlProps {
+  item: BasketItem;
+  remaining: number;
+  updateQuantity: (raffleId: string, quantity: number) => void;
+}
+
+function BasketQuantityControl({
+  item,
+  remaining,
+  updateQuantity,
+}: BasketQuantityControlProps) {
+  const minAllowed = item.minTickets && item.minTickets > 0 ? item.minTickets : 1;
+  const maxPerPerson = item.maxTickets && item.maxTickets > 0 ? item.maxTickets : Infinity;
+  const maxAllowed = Math.min(remaining, maxPerPerson);
+
+  const [inputValue, setInputValue] = useState<string>(String(item.quantity));
+  const [prevQuantity, setPrevQuantity] = useState<number>(item.quantity);
+  const [isFocused, setIsFocused] = useState(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sync internal state with context quantity when not focused/typing
+  if (item.quantity !== prevQuantity) {
+    setPrevQuantity(item.quantity);
+    if (!isFocused) {
+      setInputValue(String(item.quantity));
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const commitValue = (valToCommit: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+
+    const parsed = parseInt(valToCommit, 10);
+
+    if (isNaN(parsed) || parsed < minAllowed) {
+      if (!isNaN(parsed) && parsed < minAllowed && parsed > 0) {
+        toast.error(`Minimum ${minAllowed} tickets required for "${item.title}"`);
+      }
+      setInputValue(String(item.quantity));
+      return;
+    }
+
+    if (parsed > maxAllowed) {
+      if (item.maxTickets && maxAllowed === item.maxTickets) {
+        toast.error(`Maximum ticket limit is ${item.maxTickets} for "${item.title}"`);
+      } else {
+        toast.error(`Only ${remaining} tickets left for "${item.title}"`);
+      }
+      setInputValue(String(maxAllowed));
+      if (item.quantity !== maxAllowed) {
+        updateQuantity(item.raffleId, maxAllowed);
+      }
+      return;
+    }
+
+    setInputValue(String(parsed));
+    if (item.quantity !== parsed) {
+      updateQuantity(item.raffleId, parsed);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.trim();
+    // Allow empty string or digits only
+    if (raw !== "" && !/^\d+$/.test(raw)) return;
+
+    setInputValue(raw);
+
+    // If valid number within bounds, auto-commit with debounce so total updates smoothly
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    if (raw !== "") {
+      const parsed = parseInt(raw, 10);
+      if (!isNaN(parsed) && parsed >= minAllowed && parsed <= maxAllowed) {
+        debounceTimerRef.current = setTimeout(() => {
+          if (parsed !== item.quantity) {
+            updateQuantity(item.raffleId, parsed);
+          }
+        }, 500);
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    commitValue(inputValue);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.blur();
+    }
+  };
+
+  const handleIncrement = () => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    const parsed = parseInt(inputValue, 10);
+    const base = isNaN(parsed) ? item.quantity : parsed;
+    const next = Math.min(base + 1, maxAllowed);
+    setInputValue(String(next));
+    updateQuantity(item.raffleId, next);
+  };
+
+  const handleDecrement = () => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    const parsed = parseInt(inputValue, 10);
+    const base = isNaN(parsed) ? item.quantity : parsed;
+    const next = Math.max(base - 1, minAllowed);
+    setInputValue(String(next));
+    updateQuantity(item.raffleId, next);
+  };
+
+  const currentNum = parseInt(inputValue, 10);
+  const effectiveQty = isNaN(currentNum) ? item.quantity : currentNum;
+  const isDecrementDisabled = effectiveQty <= minAllowed;
+  const isIncrementDisabled = effectiveQty >= maxAllowed;
+
+  return (
+    <div className="flex items-center border border-border-medium rounded-xl overflow-hidden h-9 bg-surface">
+      <button
+        type="button"
+        onClick={handleDecrement}
+        disabled={isDecrementDisabled}
+        className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed select-none"
+        aria-label="Decrease quantity"
+      >
+        -
+      </button>
+
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={inputValue}
+        onChange={handleChange}
+        onFocus={(e) => {
+          setIsFocused(true);
+          e.target.select();
+        }}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        className="w-12 sm:w-14 h-full text-center font-heading font-bold text-xs text-text-primary border-x border-border-medium bg-transparent focus:outline-none focus:bg-elevated/60 transition-colors tabular-nums"
+        aria-label={`Quantity for ${item.title}`}
+      />
+
+      <button
+        type="button"
+        onClick={handleIncrement}
+        disabled={isIncrementDisabled}
+        className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed select-none"
+        aria-label="Increase quantity"
+      >
+        +
+      </button>
+    </div>
+  );
+}
 
 export default function BasketPage() {
   const {
@@ -139,29 +311,11 @@ export default function BasketPage() {
 
                       {/* Quantity Selector */}
                       <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                        <div className="flex items-center border border-border-medium rounded-xl overflow-hidden h-9 bg-surface">
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(item.raffleId, item.quantity - 1)}
-                            disabled={item.quantity <= (item.minTickets && item.minTickets > 0 ? item.minTickets : 1)}
-                            className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                            aria-label="Decrease quantity"
-                          >
-                            -
-                          </button>
-                          <span className="w-10 h-full flex items-center justify-center font-heading font-bold text-xs text-text-primary border-x border-border-medium">
-                            {item.quantity}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(item.raffleId, item.quantity + 1)}
-                            disabled={item.quantity >= Math.min(remaining, item.maxTickets && item.maxTickets > 0 ? item.maxTickets : Infinity)}
-                            className="w-8 h-full flex items-center justify-center text-text-primary font-bold hover:bg-elevated transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                            aria-label="Increase quantity"
-                          >
-                            +
-                          </button>
-                        </div>
+                        <BasketQuantityControl
+                          item={item}
+                          remaining={remaining}
+                          updateQuantity={updateQuantity}
+                        />
 
                         {/* Price Subtotal */}
                         <div className="text-right min-w-[70px]">
