@@ -11,6 +11,7 @@ import { useAuthUser } from "../../hooks/useAuthHooks";
 import { ticketService } from "../../services/ticket.service";
 import { userService } from "../../services/user.service";
 import { toast } from "sonner";
+import DobCalendarPicker from "../../components/ui/DobCalendarPicker";
 
 interface FormErrors {
   firstName?: string;
@@ -107,12 +108,13 @@ export default function CheckoutPage() {
   }, [isInitialized, items.length, router, isSubmitting]);
 
   // Auto-save Date of Birth to user profile on blur if 18+
-  const handleDobBlur = async () => {
-    if (!user || !formData.dateOfBirth) return;
-    const age = calculateAge(formData.dateOfBirth);
+  const handleDobBlur = async (dobOverride?: string) => {
+    const dobToSave = dobOverride || formData.dateOfBirth;
+    if (!user || !dobToSave) return;
+    const age = calculateAge(dobToSave);
     if (age >= 18) {
       try {
-        await userService.updateProfile({ dateOfBirth: formData.dateOfBirth });
+        await userService.updateProfile({ dateOfBirth: dobToSave });
       } catch (err) {
         console.error("Auto-save DOB error:", err);
       }
@@ -415,16 +417,19 @@ export default function CheckoutPage() {
                         </span>
                       )}
                     </div>
-                    <input
-                      type="date"
+                    <DobCalendarPicker
                       name="dateOfBirth"
                       value={formData.dateOfBirth}
-                      onChange={handleChange}
-                      onBlur={handleDobBlur}
-                      max={new Date().toISOString().split("T")[0]}
-                      className={`h-11 px-3.5 rounded-xl border bg-elevated text-xs font-sans text-text-primary outline-none focus:border-primary transition-all ${
-                        errors.dateOfBirth ? "border-red-500 bg-red-50/20" : "border-border-medium"
-                      }`}
+                      onChange={(val) => {
+                        setFormData((prev) => ({ ...prev, dateOfBirth: val }));
+                        if (errors.dateOfBirth) {
+                          setErrors((prev) => ({ ...prev, dateOfBirth: undefined }));
+                        }
+                        if (serverError) setServerError(null);
+                      }}
+                      onBlur={(val) => handleDobBlur(val)}
+                      hasError={!!errors.dateOfBirth}
+                      maxDate={new Date().toISOString().split("T")[0]}
                     />
                     {errors.dateOfBirth ? (
                       <span className="text-[10px] text-red-500 font-bold">{errors.dateOfBirth}</span>
