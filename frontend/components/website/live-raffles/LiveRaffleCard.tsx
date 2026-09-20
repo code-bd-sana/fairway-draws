@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Draw } from "../../../types/draw.types";
 import { formatCurrency } from "../../../lib/utils";
 import { cn } from "../../../lib/utils";
+import { formatUkDateTime, formatUkDate } from "../../../lib/uk-time";
 
 interface LiveRaffleCardProps {
   raffle: Draw;
@@ -51,7 +52,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
   const rawEndDate = r.endDate;
   const isValidDate = rawEndDate && !isNaN(new Date(rawEndDate).getTime());
   const formattedEndDate = isValidDate
-    ? new Date(rawEndDate).toLocaleDateString()
+    ? formatUkDateTime(rawEndDate)
     : (typeof rawEndDate === "string" ? rawEndDate : "Closing Soon");
 
   const [timeLeft, setTimeLeft] = useState<string>(() => {
@@ -67,7 +68,17 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
     }
 
     const calculateTime = () => {
-      const diff = new Date(rawEndDate).getTime() - new Date().getTime();
+      const now = Date.now();
+      const startMs = r.startDate ? new Date(r.startDate).getTime() : 0;
+      if (startMs > now) {
+        const startDiff = startMs - now;
+        const sd = Math.floor(startDiff / (1000 * 60 * 60 * 24));
+        const sh = Math.floor((startDiff / (1000 * 60 * 60)) % 24);
+        const sm = Math.floor((startDiff / 1000 / 60) % 60);
+        return sd > 0 ? `Starts in ${sd}d ${sh}h` : `Starts in ${sh}h ${sm}m`;
+      }
+
+      const diff = new Date(rawEndDate).getTime() - now;
       if (diff <= 0) return "Ended";
       const d = Math.floor(diff / (1000 * 60 * 60 * 24));
       const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -81,7 +92,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
     setTimeLeft(calculateTime());
     const interval = setInterval(() => setTimeLeft(calculateTime()), 1000);
     return () => clearInterval(interval);
-  }, [rawEndDate, isValidDate]);
+  }, [rawEndDate, isValidDate, r.startDate]);
 
   // SVG Icons matching Figma design
   const fireIcon = (

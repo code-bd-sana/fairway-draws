@@ -22,31 +22,62 @@ export default function CreateRaffleStep5({ formData, updateForm, onNext, onPrev
       </div>
 
       <div className="flex flex-col gap-6">
+        {/* UK Time Info Banner */}
+        <div className="flex items-center justify-between p-3.5 bg-accent-bg/60 border border-primary/25 rounded-xl text-xs text-text-primary">
+          <div className="flex items-center gap-2">
+            <span className="text-base">🇬🇧</span>
+            <div>
+              <span className="font-heading font-bold text-text-brand uppercase tracking-wider">
+                UK Timezone Notice
+              </span>
+              <p className="font-sans text-[11px] text-text-muted mt-0.5">
+                All competition schedules operate strictly on UK Time (GMT/BST). Entrants anywhere will see countdowns aligned with this UK time.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Start Date */}
           <div className="flex flex-col gap-2">
-            <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
-              Start Date &amp; Time
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
+                Start Date &amp; Time (UK Time)
+              </label>
+              <span className="text-[10px] font-bold text-primary uppercase bg-primary/10 px-2 py-0.5 rounded-md">
+                UK GMT/BST
+              </span>
+            </div>
             <input
               type="datetime-local"
               value={formData.startDate}
               onChange={(e) => updateForm({ startDate: e.target.value })}
               className="h-[48px] px-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all [color-scheme:light]"
             />
+            <span className="font-sans text-[11px] text-text-muted">
+              The competition will only appear on the public website once this UK start time is reached.
+            </span>
           </div>
 
           {/* End Date */}
           <div className="flex flex-col gap-2">
-            <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
-              Draw Date &amp; Time
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="font-sans font-bold text-xs uppercase tracking-wider text-text-muted">
+                Draw Date &amp; Time (UK Time)
+              </label>
+              <span className="text-[10px] font-bold text-primary uppercase bg-primary/10 px-2 py-0.5 rounded-md">
+                UK GMT/BST
+              </span>
+            </div>
             <input
               type="datetime-local"
               value={formData.endDate}
               onChange={(e) => updateForm({ endDate: e.target.value })}
               className="h-[48px] px-4 bg-elevated border border-border-medium rounded-xl font-sans font-medium text-sm text-text-primary outline-none focus:border-primary focus:bg-surface transition-all [color-scheme:light]"
             />
+            <span className="font-sans text-[11px] text-text-muted">
+              Ticket sales close and winner is drawn at this UK time.
+            </span>
           </div>
         </div>
 

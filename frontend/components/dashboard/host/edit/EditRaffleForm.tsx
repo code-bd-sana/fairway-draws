@@ -7,6 +7,7 @@ import { useGetRaffleById, useUpdateRaffle } from "../../../../hooks/useRaffleHo
 import { usePublicCategories } from "../../../../hooks/useCategoryHooks";
 import { cn } from "../../../../lib/utils";
 import { toast } from "sonner";
+import { parseUkDateTimeToUtc, formatUtcToUkInputString } from "../../../../lib/uk-time";
 
 interface Props {
   raffleId: string;
@@ -45,8 +46,8 @@ export default function EditRaffleForm({ raffleId }: Props) {
         pricePerTicket: raffle.pricePerTicket || "",
         minTickets: (raffle as any).minTickets ?? 1,
         maxTickets: (raffle as any).maxTickets ?? "",
-        startDate: raffle.startDate ? new Date(raffle.startDate).toISOString().slice(0, 16) : "",
-        endDate: raffle.endDate ? new Date(raffle.endDate).toISOString().slice(0, 16) : "",
+        startDate: formatUtcToUkInputString(raffle.startDate),
+        endDate: formatUtcToUkInputString(raffle.endDate),
         isAutoDraw: raffle.isAutoDraw ?? true,
         autoDrawDate: raffle.autoDrawDate ?? true,
         autoDrawSoldOut: raffle.autoDrawSoldOut ?? false,
@@ -65,9 +66,27 @@ export default function EditRaffleForm({ raffleId }: Props) {
     try {
       const payload = { ...formData };
       
-      // Convert dates back to ISO string
-      if (payload.startDate) payload.startDate = new Date(payload.startDate).toISOString();
-      if (payload.endDate) payload.endDate = new Date(payload.endDate).toISOString();
+      // Convert dates from UK local input to UTC ISO string
+      if (payload.startDate) {
+        const utcStart = parseUkDateTimeToUtc(payload.startDate);
+        if (!utcStart || isNaN(utcStart.getTime())) {
+          toast.error("Please enter a valid start date & time (UK Time).");
+          return;
+        }
+        payload.startDate = utcStart.toISOString();
+      }
+      if (payload.endDate) {
+        const utcEnd = parseUkDateTimeToUtc(payload.endDate);
+        if (!utcEnd || isNaN(utcEnd.getTime())) {
+          toast.error("Please enter a valid draw date & time (UK Time).");
+          return;
+        }
+        payload.endDate = utcEnd.toISOString();
+      }
+      if (payload.startDate && payload.endDate && new Date(payload.endDate) <= new Date(payload.startDate)) {
+        toast.error("Draw date must be strictly after the start date (UK Time).");
+        return;
+      }
       
       // Convert numbers
       if (payload.totalTickets) payload.totalTickets = Number(payload.totalTickets);
@@ -363,37 +382,50 @@ export default function EditRaffleForm({ raffleId }: Props) {
 
           {/* Section 3: Dates & Schedule */}
           <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
-            <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
-              3. Competition Schedule
-            </h2>
+            <div className="flex items-center justify-between border-b border-divider/60 pb-2">
+              <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider">
+                3. Competition Schedule
+              </h2>
+              <span className="text-[10px] font-bold text-primary uppercase bg-primary/10 px-2.5 py-0.5 rounded-full">
+                UK Time (GMT/BST)
+              </span>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Start Date */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="startDate" className="font-sans font-medium text-xs md:text-sm text-text-primary">
-                  Start Date &amp; Time
+                <label htmlFor="startDate" className="font-sans font-medium text-xs md:text-sm text-text-primary flex items-center justify-between">
+                  <span>Start Date &amp; Time (UK Time)</span>
+                  <span className="text-[11px] text-text-muted">UK GMT/BST</span>
                 </label>
                 <input
                   id="startDate"
                   type="datetime-local"
                   value={formData.startDate || ""}
                   onChange={(e) => handleChange("startDate", e.target.value)}
-                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
+                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer [color-scheme:light]"
                 />
+                <span className="font-sans text-[11px] text-text-muted">
+                  Hidden on public site until this UK start time is reached.
+                </span>
               </div>
 
               {/* End / Draw Date */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="endDate" className="font-sans font-medium text-xs md:text-sm text-text-primary">
-                  End / Draw Date &amp; Time
+                <label htmlFor="endDate" className="font-sans font-medium text-xs md:text-sm text-text-primary flex items-center justify-between">
+                  <span>End / Draw Date &amp; Time (UK Time)</span>
+                  <span className="text-[11px] text-text-muted">UK GMT/BST</span>
                 </label>
                 <input
                   id="endDate"
                   type="datetime-local"
                   value={formData.endDate || ""}
                   onChange={(e) => handleChange("endDate", e.target.value)}
-                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
+                  className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer [color-scheme:light]"
                 />
+                <span className="font-sans text-[11px] text-text-muted">
+                  Draw closes and winner is drawn at this UK time.
+                </span>
               </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ import RaffleDetailsEmptyState from "../../../components/website/raffle-details/
 import FreePostalEntryButton from "../../../components/website/legal/FreePostalEntryButton";
 import { RaffleDetail } from "../../../types/raffle-details.types";
 import { cn } from "../../../lib/utils";
+import { formatUkDateTime } from "../../../lib/uk-time";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -63,7 +64,7 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
       totalTickets: draw.totalTickets,
       soldTickets: draw.ticketsSold || 0,
       remainingTickets: Math.max(draw.totalTickets - (draw.ticketsSold || 0), 0),
-      drawEndDate: new Date(draw.endDate).toLocaleDateString(),
+      drawEndDate: formatUkDateTime(draw.endDate),
       endDate: draw.endDate,
       description: draw.description || `Enter this premium draw for a chance to win the ${draw.title}! Premium gear, fast shipping, and live draw.`,
       highlights: [

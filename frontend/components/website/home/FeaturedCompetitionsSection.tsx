@@ -6,6 +6,7 @@ import SectionHeader from "../shared/SectionHeader";
 import DrawCard from "../shared/DrawCard";
 import { cn } from "../../../lib/utils";
 import { raffleService } from "../../../services/raffle.service";
+import { formatUkDate } from "../../../lib/uk-time";
 import type { Draw } from "../../../types/draw.types";
 
 /**
@@ -25,7 +26,7 @@ export default function FeaturedCompetitionsSection() {
             id: r.id, title: r.title, description: r.description,
             image: r.mainImage || '', ticketPrice: Number(r.pricePerTicket),
             totalTickets: r.totalTickets, soldTickets: r.ticketsSold,
-            endDate: new Date(r.endDate).toLocaleDateString(),
+            endDate: formatUkDate(r.endDate),
             status: (r.status === 'ACTIVE' ? 'live' : 'ended') as 'live' | 'ended',
             category: r.category || 'general', slug: r.slug,
             worthPrice: r.mainPrizeValue ? Number(r.mainPrizeValue) : undefined,

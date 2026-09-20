@@ -9,6 +9,7 @@ import { Pagination } from "../../ui/Pagination";
 import { toast } from "sonner";
 import ConfirmDeleteRaffleModal, { RaffleDeleteTarget } from "../shared/ConfirmDeleteRaffleModal";
 import ViewSoldTicketsModal from "../shared/ViewSoldTicketsModal";
+import { formatUkDateTime } from "../../../lib/uk-time";
 
 const filters = ["All", "Live", "Pending Review", "Ended", "Drafts"];
 
@@ -196,14 +197,20 @@ export default function HostRafflesTable() {
                       raffle.status === "CANCELLED" && "bg-[#FEE2E2] border-[#FECACA] text-[#DC2626]"
                     )}>
                       <span>
-                        {raffle.status === "ACTIVE" ? "Live" : raffle.status === "PENDING_APPROVAL" ? "Pending Review" : raffle.status}
+                        {raffle.status === "ACTIVE"
+                          ? (raffle.startDate && new Date(raffle.startDate) > new Date()
+                            ? "Upcoming (Scheduled)"
+                            : "Live")
+                          : raffle.status === "PENDING_APPROVAL"
+                            ? "Pending Review"
+                            : raffle.status}
                       </span>
                     </div>
                   </div>
                   
                   <div className="hidden md:flex justify-end min-w-0">
                     <span className="font-sans font-medium text-xs text-text-muted truncate">
-                      {new Date(raffle.endDate).toLocaleDateString()}
+                      {formatUkDateTime(raffle.endDate)}
                     </span>
                   </div>
                 </div>

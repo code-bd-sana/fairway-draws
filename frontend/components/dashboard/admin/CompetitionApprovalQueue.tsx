@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useAdminPendingRaffles, useApproveRaffle } from "../../../hooks/useRaffleHooks";
 import RejectCompetitionModal from "./RejectCompetitionModal";
+import { formatUkDateTime } from "../../../lib/uk-time";
 
 export default function CompetitionApprovalQueue() {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -141,8 +142,13 @@ export default function CompetitionApprovalQueue() {
                   <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
                     Per Person: Min {item.minTickets || 1} {item.maxTickets ? `| Max ${item.maxTickets}` : '| Unlimited'}
                   </span>
+                  {item.startDate && (
+                    <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
+                      Starts (UK): {formatUkDateTime(item.startDate)}
+                    </span>
+                  )}
                   <span className="px-2.5 py-0.5 rounded-full bg-accent-bg border border-primary/30 text-text-brand font-sans font-bold text-[10px] uppercase tracking-wider">
-                    Draw Date: {item.endDate ? new Date(item.endDate).toLocaleDateString() : 'TBD'}
+                    Draws (UK): {item.endDate ? formatUkDateTime(item.endDate) : 'TBD'}
                   </span>
                   {item._count?.instantWins ? (
                     <span className="px-2.5 py-0.5 rounded-full bg-[#fef3c7] border border-[#fde68a] text-[#92400e] font-sans font-bold text-[10px] uppercase tracking-wider">

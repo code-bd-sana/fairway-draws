@@ -14,6 +14,7 @@ import { useBasket } from "../../../features/basket/BasketContext";
 import { useMyTicketsQuery } from "../../../hooks/useTicketHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { formatUkDateTime } from "../../../lib/uk-time";
 
 interface RaffleEntryCardProps {
   raffle: RaffleDetail;
@@ -427,11 +428,19 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
       {/* Stats Rows */}
       <div className="flex flex-col gap-3 mb-6">
-        <div className="flex items-center justify-between pb-3 border-b border-divider">
-          <span className="font-sans text-xs font-semibold text-text-muted">End Date</span>
-          <span className="font-heading font-bold text-xs text-text-brand tabular-nums tracking-wider animate-pulse">
-            {timeLeft || "Ended"}
-          </span>
+        <div className="flex flex-col gap-1 pb-3 border-b border-divider">
+          <div className="flex items-center justify-between">
+            <span className="font-sans text-xs font-semibold text-text-muted">Draw Closing</span>
+            <span className="font-heading font-bold text-xs text-text-brand tabular-nums tracking-wider animate-pulse">
+              {timeLeft || "Ended"}
+            </span>
+          </div>
+          {endDate && (
+            <div className="flex items-center justify-between text-[11px] text-text-muted">
+              <span>Draw Date (UK):</span>
+              <span className="font-medium text-text-primary">{formatUkDateTime(endDate)}</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center justify-between pb-3 border-b border-divider">
           <span className="font-sans text-xs font-semibold text-text-muted">Ticket Price</span>

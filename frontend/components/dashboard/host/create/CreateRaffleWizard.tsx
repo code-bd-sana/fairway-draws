@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useMySubscription } from "../../../../hooks/useSubscriptionHooks";
 import { useCreateRaffle, useUploadRaffleImage, useHostRaffles } from "../../../../hooks/useRaffleHooks";
 import { extractApiError } from "../../../../lib/utils";
+import { parseUkDateTimeToUtc } from "../../../../lib/uk-time";
 
 export interface RaffleFormData {
   // Step 1
@@ -128,6 +129,27 @@ export default function CreateRaffleWizard() {
         }
       }
 
+      if (!formData.startDate || !formData.endDate) {
+        toast.error("Please provide both start date and draw date (UK Time).");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const utcStart = parseUkDateTimeToUtc(formData.startDate);
+      const utcEnd = parseUkDateTimeToUtc(formData.endDate);
+
+      if (!utcStart || isNaN(utcStart.getTime()) || !utcEnd || isNaN(utcEnd.getTime())) {
+        toast.error("Please provide valid schedule dates (UK Time).");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (utcEnd <= utcStart) {
+        toast.error("Draw date must be strictly after the start date (UK Time).");
+        setIsSubmitting(false);
+        return;
+      }
+
       const created = await createRaffle.mutateAsync({
         title: formData.title,
         category: formData.category,
@@ -137,8 +159,8 @@ export default function CreateRaffleWizard() {
         totalTickets: Number(formData.totalTickets) || 0,
         minTickets: minTicketsNum,
         maxTickets: maxTicketsNum,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
+        startDate: utcStart.toISOString(),
+        endDate: utcEnd.toISOString(),
         isAutoDraw: formData.isAutoDraw,
         autoDrawDate: formData.autoDrawDate,
         autoDrawSoldOut: formData.autoDrawSoldOut,

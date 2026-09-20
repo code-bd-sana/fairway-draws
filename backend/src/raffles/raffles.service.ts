@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
+import { parseUkDateTimeToUtc } from '../common/utils/uk-time.util';
 
 @Injectable()
 export class RafflesService {
@@ -106,8 +107,18 @@ export class RafflesService {
     const uniqueStr = Math.random().toString(36).substring(2, 8);
     const slug = `${baseSlug}-${uniqueStr}`;
 
-    const startDate = new Date(data.startDate);
-    const endDate = new Date(data.endDate);
+    const startDate = parseUkDateTimeToUtc(data.startDate);
+    const endDate = parseUkDateTimeToUtc(data.endDate);
+
+    if (!startDate || isNaN(startDate.getTime())) {
+      throw new BadRequestException('A valid start date & time is required (UK Time)');
+    }
+    if (!endDate || isNaN(endDate.getTime())) {
+      throw new BadRequestException('A valid end date & time is required (UK Time)');
+    }
+    if (endDate <= startDate) {
+      throw new BadRequestException('End date & time must be strictly after the start date & time');
+    }
 
     const totalTickets = Number(data.totalTickets) || 0;
 
@@ -351,14 +362,16 @@ export class RafflesService {
       };
     }
 
-    // Status filter
-    if (statusFilter === 'Live') {
+    // Status filter - defaults to 'Live' for public visitors so unstarted raffles are strictly excluded
+    if (!statusFilter || statusFilter === 'Live') {
       whereClause.startDate = { lte: now };
       whereClause.endDate = { gte: now };
     } else if (statusFilter === 'Upcoming') {
       whereClause.startDate = { gt: now };
     } else if (statusFilter === 'Past') {
       whereClause.endDate = { lt: now };
+    } else if (statusFilter === 'All' || statusFilter === 'all') {
+      // Explicitly show all without date bounds
     }
 
     if (search) {
@@ -576,6 +589,10 @@ export class RafflesService {
       },
     });
     if (!raffle) throw new NotFoundException('Raffle not found or is unavailable');
+
+    if (raffle.status === 'ACTIVE' && new Date(raffle.startDate) > new Date()) {
+      throw new NotFoundException('This competition has not started yet');
+    }
     return {
       ...raffle,
       ticketsSold:
@@ -736,6 +753,28 @@ export class RafflesService {
           'Maximum tickets per person cannot exceed total tickets',
         );
       }
+    }
+
+    if (updatePayload.startDate !== undefined) {
+      const parsedStart = parseUkDateTimeToUtc(updatePayload.startDate);
+      if (!parsedStart || isNaN(parsedStart.getTime())) {
+        throw new BadRequestException('A valid start date & time is required (UK Time)');
+      }
+      updatePayload.startDate = parsedStart;
+    }
+
+    if (updatePayload.endDate !== undefined) {
+      const parsedEnd = parseUkDateTimeToUtc(updatePayload.endDate);
+      if (!parsedEnd || isNaN(parsedEnd.getTime())) {
+        throw new BadRequestException('A valid end date & time is required (UK Time)');
+      }
+      updatePayload.endDate = parsedEnd;
+    }
+
+    const checkStart = updatePayload.startDate || raffle.startDate;
+    const checkEnd = updatePayload.endDate || raffle.endDate;
+    if (checkStart && checkEnd && new Date(checkEnd) <= new Date(checkStart)) {
+      throw new BadRequestException('End date & time must be strictly after the start date & time');
     }
 
     return this.prisma.raffle.update({
@@ -1308,12 +1347,15 @@ export class RafflesService {
     const liveCount = await this.prisma.raffle.count({
       where: {
         status: 'ACTIVE',
+        startDate: { lte: now },
+        endDate: { gte: now },
       },
     });
 
     const closingTodayCount = await this.prisma.raffle.count({
       where: {
         status: 'ACTIVE',
+        startDate: { lte: now },
         endDate: {
           gte: startOfToday,
           lte: endOfToday,
@@ -1324,6 +1366,8 @@ export class RafflesService {
     const activeRaffles = await this.prisma.raffle.findMany({
       where: {
         status: 'ACTIVE',
+        startDate: { lte: now },
+        endDate: { gte: now },
       },
       select: {
         mainPrizeValue: true,

@@ -77,6 +77,8 @@ describe('Raffle min/max ticket limits', () => {
           ticketPrice: 5,
           minTickets: 20,
           maxTickets: 10,
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 86400000),
         }),
       ).rejects.toThrow(
         new BadRequestException(
@@ -95,6 +97,8 @@ describe('Raffle min/max ticket limits', () => {
           ticketPrice: 5,
           minTickets: 5,
           maxTickets: 150,
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 86400000),
         }),
       ).rejects.toThrow(
         new BadRequestException(

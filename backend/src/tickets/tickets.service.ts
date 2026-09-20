@@ -87,6 +87,14 @@ export class TicketsService {
           throw new BadRequestException('This competition is not active');
         }
 
+        const now = new Date();
+        if (raffle.startDate && new Date(raffle.startDate) > now) {
+          throw new BadRequestException('This competition has not started yet');
+        }
+        if (raffle.endDate && new Date(raffle.endDate) <= now) {
+          throw new BadRequestException('This competition has already closed');
+        }
+
         const minTickets = raffle.minTickets || 1;
         if (quantity < minTickets) {
           throw new BadRequestException(
@@ -409,6 +417,14 @@ export class TicketsService {
       throw new BadRequestException('This competition is not active');
     }
 
+    const now = new Date();
+    if (raffle.startDate && new Date(raffle.startDate) > now) {
+      throw new BadRequestException('This competition has not started yet');
+    }
+    if (raffle.endDate && new Date(raffle.endDate) <= now) {
+      throw new BadRequestException('This competition has already closed');
+    }
+
     const minTickets = raffle.minTickets || 1;
     if (quantity < minTickets) {
       throw new BadRequestException(
@@ -715,6 +731,14 @@ export class TicketsService {
 
           if (raffle.status !== 'ACTIVE') {
             throw new BadRequestException(`Competition "${raffle.title}" is not active`);
+          }
+
+          const now = new Date();
+          if (raffle.startDate && new Date(raffle.startDate) > now) {
+            throw new BadRequestException(`Competition "${raffle.title}" has not started yet`);
+          }
+          if (raffle.endDate && new Date(raffle.endDate) <= now) {
+            throw new BadRequestException(`Competition "${raffle.title}" has already closed`);
           }
 
           const minTickets = raffle.minTickets || 1;
@@ -1080,6 +1104,14 @@ export class TicketsService {
         throw new BadRequestException(`Competition "${raffle.title}" is not active`);
       }
 
+      const now = new Date();
+      if (raffle.startDate && new Date(raffle.startDate) > now) {
+        throw new BadRequestException(`Competition "${raffle.title}" has not started yet`);
+      }
+      if (raffle.endDate && new Date(raffle.endDate) <= now) {
+        throw new BadRequestException(`Competition "${raffle.title}" has already closed`);
+      }
+
       const minTickets = raffle.minTickets || 1;
       if (item.quantity < minTickets) {
         throw new BadRequestException(
@@ -1305,6 +1337,7 @@ export class TicketsService {
             slug: true,
             mainImage: true,
             status: true,
+            startDate: true,
             endDate: true,
             totalTickets: true,
             pricePerTicket: true,
@@ -1317,8 +1350,13 @@ export class TicketsService {
         if (raffle) {
           const actualSold = raffle._count?.tickets ?? 0;
           const isSoldOut = actualSold >= raffle.totalTickets;
+          const now = new Date();
+          const isNotStarted =
+            raffle.startDate && new Date(raffle.startDate) > now;
           const isExpired =
-            raffle.status !== 'ACTIVE' || new Date(raffle.endDate) <= new Date();
+            raffle.status !== 'ACTIVE' ||
+            isNotStarted ||
+            new Date(raffle.endDate) <= now;
           const remainingTickets = Math.max(0, raffle.totalTickets - actualSold);
 
           if (isSoldOut || isExpired || remainingTickets < quantity) {
@@ -1391,6 +1429,18 @@ export class TicketsService {
       if (raffle.status !== 'ACTIVE') {
         throw new BadRequestException(
           `Competition "${raffle.title}" has ended or is no longer active.`,
+        );
+      }
+
+      const now = new Date();
+      if (raffle.startDate && new Date(raffle.startDate) > now) {
+        throw new BadRequestException(
+          `Competition "${raffle.title}" has not started yet.`,
+        );
+      }
+      if (raffle.endDate && new Date(raffle.endDate) <= now) {
+        throw new BadRequestException(
+          `Competition "${raffle.title}" has already closed.`,
         );
       }
 
