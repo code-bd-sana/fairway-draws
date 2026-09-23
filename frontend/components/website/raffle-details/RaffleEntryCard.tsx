@@ -29,7 +29,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const minAllowed = raffle.minTickets || raffle.minimumTickets || 1;
   const maxPerPerson = raffle.maxTickets || raffle.maximumTicketsPerOrder;
 
-  const { data: myTickets = [] } = useMyTicketsQuery();
+  const { data: myTickets = [] } = useMyTicketsQuery(isAuthenticated);
   const userOwnedTickets =
     isAuthenticated && Array.isArray(myTickets)
       ? myTickets.filter(

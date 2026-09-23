@@ -17,13 +17,15 @@ export const usePurchaseTicketsMutation = (raffleId: string) => {
   });
 };
 
-export const useMyTicketsQuery = () => {
+export const useMyTicketsQuery = (enabled: boolean = true) => {
   return useQuery({
     queryKey: ['my-tickets'],
     queryFn: async () => {
       const response = await api.get('/tickets/my-tickets');
       return response.data;
     },
+    enabled,
+    retry: false,
   });
 };
 
