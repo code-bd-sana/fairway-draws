@@ -20,16 +20,18 @@ interface PageProps {
 async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
   try {
     const apiUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api/v1';
-    const res = await fetch(`${apiUrl}/raffles/public/${slug}`, {
+    const cleanSlug = typeof slug === 'string' ? slug.trim() : String(slug);
+    const res = await fetch(`${apiUrl}/raffles/public/${encodeURIComponent(cleanSlug)}`, {
       cache: 'no-store' // or next: { revalidate: 60 }
     });
     if (!res.ok) {
-      console.error(`getRaffle failed for slug "${slug}" at ${apiUrl}/raffles/public/${slug}: status ${res.status}`);
+      console.error(`getRaffle failed for slug "${slug}" at ${apiUrl}/raffles/public/${cleanSlug}: status ${res.status}`);
       return undefined;
     }
 
     const json = await res.json();
     const draw = json.data || json; // Handle wrapped response
+    if (!draw || !draw.id) return undefined;
 
     const declaredMainPrize =
       draw.mainPrizeValue !== undefined && draw.mainPrizeValue !== null && draw.mainPrizeValue !== ""
@@ -37,7 +39,9 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
         : (draw.worthPrice ? Number(draw.worthPrice) : 0);
 
     const instantWinsTotal =
-      draw.instantWins?.reduce((sum: number, iw: any) => sum + (Number(iw.rrpValue) || 0), 0) || 0;
+      Array.isArray(draw.instantWins)
+        ? draw.instantWins.reduce((sum: number, iw: any) => sum + (Number(iw.rrpValue) || 0), 0)
+        : 0;
 
     const totalPool = declaredMainPrize > 0
       ? (declaredMainPrize + instantWinsTotal)
@@ -46,21 +50,30 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
     const worth = declaredMainPrize > 0 ? declaredMainPrize : (totalPool > 0 ? totalPool : undefined);
 
     const now = Date.now();
+    const endMs = draw.endDate ? new Date(draw.endDate).getTime() : NaN;
     const isPast =
       draw.status === "ENDED" ||
       draw.status === "COMPLETED" ||
       draw.status === "CANCELLED" ||
-      (draw.endDate && new Date(draw.endDate).getTime() <= now) ||
-      (draw.totalTickets > 0 && (draw.ticketsSold || 0) >= draw.totalTickets);
+      draw.status === "ended" ||
+      (!isNaN(endMs) && endMs <= now) ||
+      (Number(draw.totalTickets || 0) > 0 && (Number(draw.ticketsSold || 0)) >= Number(draw.totalTickets));
+
+    const catStr =
+      typeof draw.category === "object" && draw.category !== null
+        ? (draw.category.name || draw.category.slug || "Drivers")
+        : (typeof draw.category === "string" ? draw.category : "Drivers");
 
     return {
       id: draw.id,
-      title: draw.title,
+      title: draw.title || "Golf Competition",
       slug: draw.slug || draw.id,
-      category: draw.category || "Drivers",
+      category: catStr,
       status: isPast ? "ended" : (draw.status === "ACTIVE" ? "live" : "ending_soon"),
-      images: [draw.mainImage || "https://placehold.co/800x600/1a230a/8cb34a?text=No+Image"],
-      ticketPrice: Number(draw.pricePerTicket),
+      images: Array.isArray(draw.images) && draw.images.length > 0
+        ? draw.images
+        : [draw.mainImage || "https://placehold.co/800x600/1a230a/8cb34a?text=No+Image"],
+      ticketPrice: Number(draw.pricePerTicket || 0),
       worthPrice: worth,
       totalPoolValue: totalPool,
       mainPrizeValue: declaredMainPrize > 0 ? declaredMainPrize : undefined,
@@ -69,17 +82,17 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
       minTickets: draw.minTickets ? Number(draw.minTickets) : 1,
       maximumTicketsPerOrder: draw.maxTickets ? Number(draw.maxTickets) : undefined,
       maxTickets: draw.maxTickets ? Number(draw.maxTickets) : undefined,
-      totalTickets: draw.totalTickets,
-      soldTickets: draw.ticketsSold || 0,
-      remainingTickets: Math.max(draw.totalTickets - (draw.ticketsSold || 0), 0),
-      drawEndDate: formatUkDateTime(draw.endDate),
+      totalTickets: Number(draw.totalTickets || 0),
+      soldTickets: Number(draw.ticketsSold || 0),
+      remainingTickets: Math.max(Number(draw.totalTickets || 0) - Number(draw.ticketsSold || 0), 0),
+      drawEndDate: draw.endDate ? formatUkDateTime(draw.endDate) : "Closing Soon",
       endDate: draw.endDate,
-      description: draw.description || `Enter this premium draw for a chance to win the ${draw.title}! Premium gear, fast shipping, and live draw.`,
+      description: draw.description || `Enter this premium draw for a chance to win the ${draw.title || 'competition'}! Premium gear, fast shipping, and live draw.`,
       highlights: [
-        `Main Prize: ${draw.prizeName || draw.title}`,
-        `Ticket Price: £${Number(draw.pricePerTicket).toFixed(2)}`,
+        `Main Prize: ${draw.prizeName || draw.title || 'Competition Prize'}`,
+        `Ticket Price: £${Number(draw.pricePerTicket || 0).toFixed(2)}`,
         declaredMainPrize > 0 ? `Main Prize Value: £${declaredMainPrize.toLocaleString()}` : null,
-        `Total Tickets: ${draw.totalTickets.toLocaleString()}`,
+        `Total Tickets: ${Number(draw.totalTickets || 0).toLocaleString()}`,
         draw.maxTickets ? `Max Per Person: ${Number(draw.maxTickets)} tickets` : null,
         `Fast Track Delivery: Fully tracked and insured shipping included.`,
       ].filter(Boolean) as string[],
@@ -92,13 +105,13 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
         "By entering you agree to be bound by these terms and conditions.",
         "Free postal entry: send your name and address on a postcard to: Fairway Draws, PO Box 99, Manchester, M1 1AA."
       ],
-      instantWinPrizes: draw.instantWins?.map((iw: any) => ({
+      instantWinPrizes: Array.isArray(draw.instantWins) ? draw.instantWins.map((iw: any) => ({
         id: iw.id,
         title: iw.prizeName,
         image: iw.image,
         ticketNumber: iw.ticketNumber,
         isClaimed: iw.isClaimed
-      })) || [],
+      })) : [],
       isFeatured: false,
       hostId: draw.hostId || draw.host?.id,
       hostUserId: draw.host?.userId || draw.host?.user?.id,
@@ -107,9 +120,10 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
       hostSlug: draw.host?.slug || draw.host?.id,
       hostDrawsCount: 1,
       hostVerified: true,
-      isAutoDraw: draw.isAutoDraw,
+      isAutoDraw: Boolean(draw.isAutoDraw),
     };
   } catch (e) {
+    console.error("Error in getRaffle:", e);
     return undefined;
   }
 }

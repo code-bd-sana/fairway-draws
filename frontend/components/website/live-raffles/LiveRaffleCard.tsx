@@ -44,7 +44,10 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
   const soldPercent = totalTickets > 0 ? Math.min(Math.round((soldTickets / totalTickets) * 100), 100) : 0;
   const badgeText = r.badgeText || (soldPercent >= 90 ? "ALMOST GONE" : "HOT");
 
-  const category = r.category || "drivers";
+  const rawCategory = r.category;
+  const category = typeof rawCategory === 'object' && rawCategory !== null
+    ? (rawCategory.slug || rawCategory.name || 'drivers')
+    : (typeof rawCategory === 'string' ? rawCategory : 'drivers');
 
   const hostName = host?.businessName || (host?.user?.firstName ? `${host.user.firstName} ${host.user.lastName || ''}`.trim() : "");
   const hostLocation = host?.user?.location || host?.address || "";
@@ -156,7 +159,6 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
     }
   };
 
-  // Human readable category mapping
   const categoryLabels: Record<string, string> = {
     drivers: "Drivers",
     "golf drivers": "Golf Drivers",
@@ -179,15 +181,23 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
     "pga lessons": "PGA Lessons",
   };
 
-  const categoryLabel = categoryLabels[category.toLowerCase()] || categoryLabels[category] || category;
+  const categoryLabel =
+    typeof category === "string"
+      ? (categoryLabels[category.toLowerCase()] || categoryLabels[category] || category)
+      : "Competition";
 
-  const isExpired = Boolean(isValidDate && new Date(rawEndDate).getTime() <= Date.now());
-  const isEnded =
-    r.status === "ENDED" ||
-    r.status === "COMPLETED" ||
-    r.status === "CANCELLED" ||
-    isExpired ||
-    (totalTickets > 0 && soldTickets >= totalTickets);
+  const isExpired = Boolean(
+    rawEndDate &&
+    (rawEndDate === "Draw Closed" ||
+     rawEndDate === "Ended" ||
+     (!isNaN(new Date(rawEndDate).getTime()) && new Date(rawEndDate).getTime() <= Date.now()))
+  );
+  const isStatusEnded =
+    r.status?.toLowerCase() === "ended" ||
+    r.status?.toLowerCase() === "completed" ||
+    r.status?.toLowerCase() === "cancelled";
+  const isSoldOut = totalTickets > 0 && soldTickets >= totalTickets;
+  const isEnded = isStatusEnded || isExpired || isSoldOut;
 
   if (viewMode === "list") {
     return (

@@ -164,11 +164,19 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   }, [endDate]);
 
 
-  const isExpired = Boolean(endDate && new Date(endDate).getTime() <= Date.now());
-  const isEnded =
-    raffle.status === "ended" ||
-    isExpired ||
-    (totalTickets > 0 && soldTickets >= totalTickets);
+  const rawEnd = endDate;
+  const isExpired = Boolean(
+    rawEnd &&
+    (rawEnd === "Draw Closed" ||
+     rawEnd === "Ended" ||
+     (!isNaN(new Date(rawEnd).getTime()) && new Date(rawEnd).getTime() <= Date.now()))
+  );
+  const isStatusEnded =
+    raffle.status?.toLowerCase() === "ended" ||
+    raffle.status?.toLowerCase() === "completed" ||
+    raffle.status?.toLowerCase() === "cancelled";
+  const isSoldOut = totalTickets > 0 && soldTickets >= totalTickets;
+  const isEnded = isStatusEnded || isExpired || isSoldOut;
 
   const soldPercent = totalTickets > 0 ? Math.min(Math.round((soldTickets / totalTickets) * 100), 100) : 0;
   const remainingTickets = Math.max(totalTickets - soldTickets, 0);
@@ -586,19 +594,19 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           </span>
         </div>
 
-        {isExpired && (
+        {(isExpired || isStatusEnded) && (
           <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA]">
-            🔒 Competition Closed: The draw date for this competition has passed.
+            🔒 Competition Closed: This competition has ended and entries are closed.
           </div>
         )}
 
-        {!isExpired && remainingTickets === 0 && (
+        {!isExpired && !isStatusEnded && isSoldOut && (
           <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
             🎟️ Sold Out: All tickets for this competition have been allocated.
           </div>
         )}
 
-        {isPersonalLimitReached && (
+        {!isEnded && isPersonalLimitReached && (
           <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
             Personal Limit Reached: You hold {userOwnedTickets} / {maxPerPerson} tickets
           </div>
@@ -644,16 +652,16 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 <span>Claiming Free Entry...</span>
               </div>
-            ) : isExpired ? (
+            ) : (isExpired || isStatusEnded) ? (
               'Competition Closed'
-            ) : remainingTickets === 0 ? (
+            ) : isSoldOut ? (
               'Sold Out'
             ) : isPersonalLimitReached ? (
               'Limit Reached'
             ) : ticketPrice === 0 ? (
               'Claim Free Entry'
             ) : (
-              `Enter Draw Now — £${totalPrice.toFixed(2)}`
+              `Enter Draw Now — £${Number(totalPrice || 0).toFixed(2)}`
             )}
           </button>
         </div>

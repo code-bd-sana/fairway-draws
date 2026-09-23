@@ -27,12 +27,21 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
     isInstantWin,
   } = draw;
 
+  const statusLower = (draw.status || "").toLowerCase();
+  const rawEnd = (draw as any).rawEndDate || endDate;
+  const isEndPassed = Boolean(
+    rawEnd &&
+    (rawEnd === "Draw Closed" ||
+     rawEnd === "Ended" ||
+     (!isNaN(new Date(rawEnd).getTime()) && new Date(rawEnd).getTime() <= Date.now()))
+  );
   const isEnded =
-    draw.status === "ended" ||
-    draw.status === "sold_out" ||
+    statusLower === "ended" ||
+    statusLower === "completed" ||
+    statusLower === "cancelled" ||
+    statusLower === "sold_out" ||
     (totalTickets > 0 && soldTickets >= totalTickets) ||
-    endDate === "Draw Closed" ||
-    endDate === "Ended";
+    isEndPassed;
 
   const declaredValue =
     (draw as any).mainPrizeValue !== undefined &&
