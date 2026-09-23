@@ -119,6 +119,7 @@ export class HostsService {
       raffles: host.raffles.map((raffle) => {
         // Format endDate as "Ends in Xd Yh" or a clean date string
         const end = new Date(raffle.endDate);
+        const isPast = end.getTime() <= Date.now() || raffle.status === 'ENDED' || raffle.status === 'COMPLETED' || raffle.status === 'CANCELLED';
         const formattedEndDate = end.toLocaleDateString('en-GB', {
           day: 'numeric',
           month: 'short',
@@ -136,8 +137,9 @@ export class HostsService {
             : 0,
           totalTickets: raffle.totalTickets,
           soldTickets: raffle.ticketsSold,
-          endDate: `Ends ${formattedEndDate}`,
-          status: raffle.status, // ACTIVE, ENDED, etc.
+          rawEndDate: raffle.endDate,
+          endDate: isPast ? 'Draw Closed' : `Ends ${formattedEndDate}`,
+          status: isPast ? 'ENDED' : raffle.status, // ACTIVE, ENDED, etc.
           category: (raffle as any).category?.slug || 'drivers',
           isInstantWin: raffle.instantWins?.length > 0,
           instantWinsCount: raffle.instantWins?.length || 0,

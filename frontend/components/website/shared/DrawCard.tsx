@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Draw } from "../../../types/draw.types";
 import { formatCurrency } from "../../../lib/utils";
 import PrimaryButton from "./PrimaryButton";
@@ -26,6 +27,13 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
     isInstantWin,
   } = draw;
 
+  const isEnded =
+    draw.status === "ended" ||
+    draw.status === "sold_out" ||
+    (totalTickets > 0 && soldTickets >= totalTickets) ||
+    endDate === "Draw Closed" ||
+    endDate === "Ended";
+
   const declaredValue =
     (draw as any).mainPrizeValue !== undefined &&
     (draw as any).mainPrizeValue !== null &&
@@ -35,7 +43,7 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
 
   const worthPrice = declaredValue && declaredValue > 0 ? declaredValue : undefined;
 
-  const soldPercent = Math.min(Math.round((soldTickets / totalTickets) * 100), 100);
+  const soldPercent = totalTickets > 0 ? Math.min(Math.round((soldTickets / totalTickets) * 100), 100) : 0;
 
   // Render a clock SVG icon
   const clockIcon = (
@@ -91,6 +99,11 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
               WORTH {formatCurrency(worthPrice, 0)}
             </div>
           )}
+          {isEnded && (
+            <div className="absolute top-4 right-4 bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] px-3 py-1 rounded-badge text-[11px] font-bold tracking-wider uppercase shadow-xs">
+              Draw Closed
+            </div>
+          )}
         </div>
 
         {/* Card Content */}
@@ -136,13 +149,22 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
                 {formatCurrency(ticketPrice)}
               </span>
             </div>
-            <PrimaryButton
-              href={`/live-raffles/${draw.slug || draw.id}`}
-              icon={arrowIcon}
-              className="px-8 py-3.5 text-sm"
-            >
-              Enter Now
-            </PrimaryButton>
+            {isEnded ? (
+              <Link
+                href={`/live-raffles/${draw.slug || draw.id}`}
+                className="px-8 py-3.5 text-sm font-sans font-bold uppercase rounded-button bg-elevated border border-border text-text-muted hover:text-text-primary text-center transition-all"
+              >
+                Draw Closed
+              </Link>
+            ) : (
+              <PrimaryButton
+                href={`/live-raffles/${draw.slug || draw.id}`}
+                icon={arrowIcon}
+                className="px-8 py-3.5 text-sm"
+              >
+                Enter Now
+              </PrimaryButton>
+            )}
           </div>
         </div>
       </div>
@@ -163,6 +185,11 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
             className="object-cover opacity-75"
             unoptimized
           />
+          {isEnded && (
+            <div className="absolute top-3 right-3 bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] px-2.5 py-0.5 rounded-badge text-[10px] font-bold tracking-wider uppercase shadow-xs">
+              Draw Closed
+            </div>
+          )}
         </div>
 
         {/* Card Content */}
@@ -192,7 +219,7 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
           {/* Countdown timer */}
           <div className="flex items-center gap-1.5 text-xs text-text-muted mb-5 bg-bg/50 px-2.5 py-1.5 rounded-button border border-divider w-fit">
             {clockIcon}
-            <span>{endDate}</span>
+            <span>{isEnded ? "Draw Closed" : endDate}</span>
           </div>
 
           {/* Pricing & CTA Row */}
@@ -206,13 +233,22 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
               </span>
             </div>
             
-            <PrimaryButton
-              href={`/live-raffles/${draw.slug || draw.id}`}
-              className="px-4 py-2 text-xs"
-              icon={arrowIcon}
-            >
-              Enter Draw
-            </PrimaryButton>
+            {isEnded ? (
+              <Link
+                href={`/live-raffles/${draw.slug || draw.id}`}
+                className="px-4 py-2 text-xs font-sans font-bold uppercase rounded-button bg-elevated border border-border text-text-muted hover:text-text-primary text-center transition-all"
+              >
+                Draw Closed
+              </Link>
+            ) : (
+              <PrimaryButton
+                href={`/live-raffles/${draw.slug || draw.id}`}
+                className="px-4 py-2 text-xs"
+                icon={arrowIcon}
+              >
+                Enter Draw
+              </PrimaryButton>
+            )}
           </div>
         </div>
       </div>
@@ -235,6 +271,11 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
         {worthPrice && (
           <div className="absolute top-4 left-4 bg-bg/80 backdrop-blur-sm border border-border px-2.5 py-1 rounded-badge text-[10px] font-semibold text-text-brand tracking-wide">
             WORTH {formatCurrency(worthPrice, 0)}
+          </div>
+        )}
+        {isEnded && (
+          <div className="absolute top-4 right-4 bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] px-2.5 py-1 rounded-badge text-[10px] font-bold tracking-wider uppercase shadow-xs">
+            Draw Closed
           </div>
         )}
       </div>
@@ -268,7 +309,7 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
         {/* Countdown timer */}
         <div className="flex items-center gap-1.5 text-xs text-text-muted mb-5 bg-bg/50 px-2.5 py-1.5 rounded-button border border-divider w-fit">
           {clockIcon}
-          <span>{endDate}</span>
+          <span>{isEnded ? "Draw Closed" : endDate}</span>
         </div>
 
         {/* Pricing & CTA Row */}
@@ -282,13 +323,22 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
             </span>
           </div>
           
-          <PrimaryButton
-            href={`/live-raffles/${draw.slug || draw.id}`}
-            className="px-4 py-2 text-xs"
-            icon={arrowIcon}
-          >
-            Enter Draw
-          </PrimaryButton>
+          {isEnded ? (
+            <Link
+              href={`/live-raffles/${draw.slug || draw.id}`}
+              className="px-4 py-2 text-xs font-sans font-bold uppercase rounded-button bg-elevated border border-border text-text-muted hover:text-text-primary text-center transition-all"
+            >
+              Draw Closed
+            </Link>
+          ) : (
+            <PrimaryButton
+              href={`/live-raffles/${draw.slug || draw.id}`}
+              className="px-4 py-2 text-xs"
+              icon={arrowIcon}
+            >
+              Enter Draw
+            </PrimaryButton>
+          )}
         </div>
       </div>
     </div>

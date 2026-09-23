@@ -164,7 +164,13 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   }, [endDate]);
 
 
-  const soldPercent = Math.min(Math.round((soldTickets / totalTickets) * 100), 100);
+  const isExpired = Boolean(endDate && new Date(endDate).getTime() <= Date.now());
+  const isEnded =
+    raffle.status === "ended" ||
+    isExpired ||
+    (totalTickets > 0 && soldTickets >= totalTickets);
+
+  const soldPercent = totalTickets > 0 ? Math.min(Math.round((soldTickets / totalTickets) * 100), 100) : 0;
   const remainingTickets = Math.max(totalTickets - soldTickets, 0);
 
   const maxRemainingForPerson =
@@ -172,8 +178,9 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
       ? Math.max(0, maxPerPerson - userOwnedTickets)
       : remainingTickets;
 
-  const effectiveMax = Math.min(remainingTickets, maxRemainingForPerson);
+  const effectiveMax = isEnded ? 0 : Math.min(remainingTickets, maxRemainingForPerson);
   const isPersonalLimitReached =
+    !isEnded &&
     maxPerPerson !== undefined &&
     maxPerPerson !== null &&
     userOwnedTickets >= maxPerPerson;
@@ -190,12 +197,13 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   const totalPrice = quantity * ticketPrice;
 
   const handleQuickPick = (val: number) => {
-    if (effectiveMax <= 0) return;
+    if (effectiveMax <= 0 || isEnded) return;
     const clamped = Math.max(minAllowed, Math.min(val, effectiveMax));
     setQuantity(clamped);
     setInputQuantity(String(clamped));
   };
   const handleDecrement = () => {
+    if (isEnded) return;
     const parsed = parseInt(inputQuantity, 10);
     const base = isNaN(parsed) ? quantity : parsed;
     const next = Math.max(base - 1, minAllowed);
@@ -203,6 +211,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
     setQuantity(next);
   };
   const handleIncrement = () => {
+    if (isEnded) return;
     const parsed = parseInt(inputQuantity, 10);
     const base = isNaN(parsed) ? quantity : parsed;
     const next = Math.min(base + 1, effectiveMax);
@@ -211,6 +220,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   };
 
   const handleQuantityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isEnded) return;
     const raw = e.target.value.trim();
     if (raw !== "" && !/^\d+$/.test(raw)) return;
     setInputQuantity(raw);
@@ -224,6 +234,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
   const commitQuantityInput = () => {
     setIsInputFocused(false);
+    if (isEnded) return;
     const parsed = parseInt(inputQuantity, 10);
     if (isNaN(parsed) || parsed < minAllowed) {
       if (!isNaN(parsed) && parsed < minAllowed && parsed > 0) {
@@ -249,6 +260,15 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   };
 
   const handleAddToBasket = () => {
+    if (isEnded) {
+      setStatusMessage({
+        type: 'error',
+        text: isExpired
+          ? 'This competition has already closed. Ticket purchases are no longer accepted.'
+          : 'This competition is sold out.',
+      });
+      return;
+    }
     if (isPersonalLimitReached) {
       setStatusMessage({
         type: 'error',
@@ -293,6 +313,15 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
   };
 
   const handlePurchase = async () => {
+    if (isEnded) {
+      setStatusMessage({
+        type: 'error',
+        text: isExpired
+          ? 'This competition has already closed. Ticket purchases are no longer accepted.'
+          : 'This competition is sold out.',
+      });
+      return;
+    }
     if (isPersonalLimitReached) {
       setStatusMessage({
         type: 'error',
@@ -557,6 +586,18 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
           </span>
         </div>
 
+        {isExpired && (
+          <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA]">
+            🔒 Competition Closed: The draw date for this competition has passed.
+          </div>
+        )}
+
+        {!isExpired && remainingTickets === 0 && (
+          <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
+            🎟️ Sold Out: All tickets for this competition have been allocated.
+          </div>
+        )}
+
         {isPersonalLimitReached && (
           <div className="p-3 rounded-xl text-xs font-sans text-center font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
             Personal Limit Reached: You hold {userOwnedTickets} / {maxPerPerson} tickets
@@ -564,11 +605,11 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         )}
 
         <div className="flex flex-col gap-2.5">
-          {ticketPrice > 0 && (
+          {ticketPrice > 0 && !isEnded && (
             <button 
               type="button"
               onClick={handleAddToBasket}
-              disabled={remainingTickets === 0 || isPersonalLimitReached || isPurchasing}
+              disabled={isEnded || isPersonalLimitReached || isPurchasing}
               className="w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white shadow-xs active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg
@@ -591,9 +632,9 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
 
           <button 
             onClick={handlePurchase}
-            disabled={remainingTickets === 0 || isPersonalLimitReached || isPurchasing}
+            disabled={isEnded || isPersonalLimitReached || isPurchasing}
             className={`w-full h-12 rounded-xl font-heading font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center shadow-md active:scale-98 cursor-pointer ${
-              remainingTickets === 0 || isPersonalLimitReached || isPurchasing
+              isEnded || isPersonalLimitReached || isPurchasing
                 ? 'bg-elevated border border-border text-text-muted cursor-not-allowed'
                 : 'bg-primary hover:bg-primary-hover text-white'
             }`}
@@ -603,6 +644,10 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 <span>Claiming Free Entry...</span>
               </div>
+            ) : isExpired ? (
+              'Competition Closed'
+            ) : remainingTickets === 0 ? (
+              'Sold Out'
             ) : isPersonalLimitReached ? (
               'Limit Reached'
             ) : ticketPrice === 0 ? (
@@ -614,7 +659,7 @@ export default function RaffleEntryCard({ raffle }: RaffleEntryCardProps) {
         </div>
 
         {/* UK-Compliant Free Postal Entry Route Button */}
-        {ticketPrice > 0 && (
+        {ticketPrice > 0 && !isEnded && (
           <FreePostalEntryButton raffleTitle={raffle.title} variant="button" />
         )}
 

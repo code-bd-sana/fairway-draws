@@ -19,26 +19,66 @@ export default function HostProfileTabs({
 }: HostProfileTabsProps) {
   const [activeTab, setActiveTab] = useState<"active" | "past" | "reviews" | "about">("active");
 
-  const formatDraw = (r: any): any => ({
-    id: r.id,
-    title: r.title,
-    description: r.description,
-    image: r.mainImage || r.image || "",
-    ticketPrice: Number(r.pricePerTicket ?? r.ticketPrice ?? 0),
-    totalTickets: Number(r.totalTickets ?? 0),
-    soldTickets: Number(r.ticketsSold ?? r.soldTickets ?? 0),
-    endDate: r.endDate ? new Date(r.endDate).toLocaleDateString() : "Closing Soon",
-    status: r.status === "ACTIVE" ? "live" : "ended",
-    category: r.category || "general",
-    slug: r.slug || r.id,
-    worthPrice: r.mainPrizeValue ? Number(r.mainPrizeValue) : r.worthPrice ? Number(r.worthPrice) : undefined,
-    mainPrizeValue: r.mainPrizeValue ? Number(r.mainPrizeValue) : undefined,
-    instantWinsCount: r._count?.instantWins || 0,
-    isInstantWin: (r._count?.instantWins || 0) > 0,
-  });
+  const isPastRaffle = (r: any) => {
+    if (r.status === "ENDED" || r.status === "COMPLETED" || r.status === "CANCELLED") {
+      return true;
+    }
+    const end = r.rawEndDate || r.endDate;
+    if (end) {
+      const parsed = new Date(end);
+      if (!isNaN(parsed.getTime()) && parsed.getTime() <= Date.now()) {
+        return true;
+      }
+    }
+    const total = Number(r.totalTickets ?? 0);
+    const sold = Number(r.ticketsSold ?? r.soldTickets ?? 0);
+    if (total > 0 && sold >= total) {
+      return true;
+    }
+    return false;
+  };
 
-  const liveDraws = raffles.filter((r) => r.status === "ACTIVE").map(formatDraw);
-  const pastDraws = raffles.filter((r) => r.status === "ENDED" || r.status === "COMPLETED").map(formatDraw);
+  const formatDraw = (r: any): any => {
+    const isPast = isPastRaffle(r);
+    return {
+      id: r.id,
+      title: r.title,
+      description: r.description,
+      image: r.mainImage || r.image || "",
+      ticketPrice: Number(r.pricePerTicket ?? r.ticketPrice ?? 0),
+      totalTickets: Number(r.totalTickets ?? 0),
+      soldTickets: Number(r.ticketsSold ?? r.soldTickets ?? 0),
+      endDate: isPast
+        ? "Draw Closed"
+        : r.endDate
+        ? new Date(r.endDate).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
+        : "Closing Soon",
+      status: isPast ? "ended" : "live",
+      category: r.category || "general",
+      slug: r.slug || r.id,
+      worthPrice: r.mainPrizeValue
+        ? Number(r.mainPrizeValue)
+        : r.worthPrice
+        ? Number(r.worthPrice)
+        : undefined,
+      mainPrizeValue: r.mainPrizeValue ? Number(r.mainPrizeValue) : undefined,
+      instantWinsCount:
+        r._count?.instantWins ||
+        (Array.isArray(r.instantWins) ? r.instantWins.length : 0) ||
+        0,
+      isInstantWin:
+        (r._count?.instantWins ||
+          (Array.isArray(r.instantWins) ? r.instantWins.length : 0) ||
+          0) > 0,
+    };
+  };
+
+  const liveDraws = raffles.filter((r) => r.status === "ACTIVE" && !isPastRaffle(r)).map(formatDraw);
+  const pastDraws = raffles.filter((r) => isPastRaffle(r)).map(formatDraw);
 
   return (
     <div className="flex flex-col mt-4">

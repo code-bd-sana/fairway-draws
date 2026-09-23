@@ -181,6 +181,14 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
   const categoryLabel = categoryLabels[category.toLowerCase()] || categoryLabels[category] || category;
 
+  const isExpired = Boolean(isValidDate && new Date(rawEndDate).getTime() <= Date.now());
+  const isEnded =
+    r.status === "ENDED" ||
+    r.status === "COMPLETED" ||
+    r.status === "CANCELLED" ||
+    isExpired ||
+    (totalTickets > 0 && soldTickets >= totalTickets);
+
   if (viewMode === "list") {
     return (
       <div className="group flex w-full flex-col overflow-hidden rounded-[20px] border border-[#c5d9c1] bg-[#f0f6ed] shadow-[0_10px_28px_rgba(11,77,53,.1)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0b4d35]/35 hover:shadow-[0_18px_34px_rgba(11,77,53,.16)] sm:flex-row">
@@ -212,7 +220,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
           <div className="absolute inset-x-3 bottom-3 flex items-end justify-center pointer-events-none">
             <div className="flex items-center gap-1.5 rounded-lg border border-white/40 bg-[#073826]/88 px-3 py-1.5 shadow-md backdrop-blur-sm">
               {clockIcon}
-              <span className="text-[11px] font-bold tracking-wide text-white">{timeLeft}</span>
+              <span className="text-[11px] font-bold tracking-wide text-white">{isEnded ? "Draw Closed" : timeLeft}</span>
             </div>
           </div>
         </div>
@@ -236,6 +244,11 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
                   {isAutoDraw && (
                     <div className="inline-flex items-center gap-1 border border-[#8cb34a]/30 bg-[#1a230a] px-2 py-0.5 rounded-badge text-[9px] font-semibold text-[#8cb34a] tracking-wider">
                       AUTO DRAW
+                    </div>
+                  )}
+                  {isEnded && (
+                    <div className="inline-flex items-center gap-1 border border-[#FECACA] bg-[#FEE2E2] px-2 py-0.5 rounded-badge text-[9px] font-semibold text-[#DC2626] tracking-wider">
+                      CLOSED
                     </div>
                   )}
                 </div>
@@ -274,7 +287,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
             <div className="flex w-full items-center gap-2 rounded-lg border border-[#dce8da] bg-[#f8faf6] px-3.5 py-2">
               {clockIcon}
               <div className="flex gap-1 text-[11px]">
-                <span className="text-text-muted">Closes on</span>
+                <span className="text-text-muted">{isEnded ? "Closed on" : "Closes on"}</span>
                 <span className="font-semibold text-text-primary">{formattedEndDate}</span>
               </div>
             </div>
@@ -282,12 +295,21 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
 
           {/* Bottom: CTA */}
           <div className="pt-2">
-            <Link
-              href={`/live-raffles/${slug || id}`}
-              className="btn-glossy-red block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider text-white uppercase transition-all duration-200 hover:scale-[1.01]"
-            >
-              Enter Draw →
-            </Link>
+            {isEnded ? (
+              <Link
+                href={`/live-raffles/${slug || id}`}
+                className="block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider uppercase bg-elevated border border-border text-text-muted hover:text-text-primary transition-all duration-200"
+              >
+                Draw Closed
+              </Link>
+            ) : (
+              <Link
+                href={`/live-raffles/${slug || id}`}
+                className="btn-glossy-red block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider text-white uppercase transition-all duration-200 hover:scale-[1.01]"
+              >
+                Enter Draw →
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -325,7 +347,7 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
         <div className="absolute inset-x-3 bottom-3 flex items-end justify-center pointer-events-none">
           <div className="flex items-center gap-1.5 rounded-lg border border-white/40 bg-[#073826]/88 px-3 py-1.5 shadow-md backdrop-blur-sm">
             {clockIcon}
-            <span className="text-[11px] font-bold tracking-wide text-white">{timeLeft}</span>
+            <span className="text-[11px] font-bold tracking-wide text-white">{isEnded ? "Draw Closed" : timeLeft}</span>
           </div>
         </div>
       </div>
@@ -353,6 +375,11 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
             {isAutoDraw && (
               <div className="inline-flex items-center gap-1 border border-[#8cb34a]/30 bg-[#1a230a] px-2 py-0.5 rounded-badge text-[9px] font-semibold text-[#8cb34a] tracking-wider">
                 AUTO DRAW
+              </div>
+            )}
+            {isEnded && (
+              <div className="inline-flex items-center gap-1 border border-[#FECACA] bg-[#FEE2E2] px-2 py-0.5 rounded-badge text-[9px] font-semibold text-[#DC2626] tracking-wider">
+                CLOSED
               </div>
             )}
           </div>
@@ -384,18 +411,27 @@ export default function LiveRaffleCard({ raffle, viewMode = "grid" }: LiveRaffle
           {/* Closes in Countdown Block */}
           <div className="mb-4 flex items-center gap-1.5 rounded-lg border border-[#dce8da] bg-[#f8faf6] px-3 py-2 text-xs">
             {clockIcon}
-            <span className="text-[#5a752a]">Closes in</span>
+            <span className="text-[#5a752a]">{isEnded ? "Closed on" : "Closes in"}</span>
             <span className="font-semibold text-text-primary">{formattedEndDate}</span>
           </div>
         </div>
 
         {/* Enter Draw CTA Button */}
-        <Link
-          href={`/live-raffles/${slug || id}`}
+        {isEnded ? (
+          <Link
+            href={`/live-raffles/${slug || id}`}
+            className="block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider uppercase bg-elevated border border-border text-text-muted hover:text-text-primary transition-all duration-200"
+          >
+            Draw Closed
+          </Link>
+        ) : (
+          <Link
+            href={`/live-raffles/${slug || id}`}
             className="btn-glossy-red block w-full rounded-xl px-4 py-2.5 text-center font-heading text-xs font-bold tracking-wider text-white uppercase transition-all duration-200 hover:scale-[1.01]"
-        >
-          Enter Draw →
-        </Link>
+          >
+            Enter Draw →
+          </Link>
+        )}
       </div>
     </div>
   );

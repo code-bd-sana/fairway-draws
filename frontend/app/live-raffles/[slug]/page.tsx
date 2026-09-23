@@ -45,12 +45,20 @@ async function getRaffle(slug: string): Promise<RaffleDetail | undefined> {
 
     const worth = declaredMainPrize > 0 ? declaredMainPrize : (totalPool > 0 ? totalPool : undefined);
 
+    const now = Date.now();
+    const isPast =
+      draw.status === "ENDED" ||
+      draw.status === "COMPLETED" ||
+      draw.status === "CANCELLED" ||
+      (draw.endDate && new Date(draw.endDate).getTime() <= now) ||
+      (draw.totalTickets > 0 && (draw.ticketsSold || 0) >= draw.totalTickets);
+
     return {
       id: draw.id,
       title: draw.title,
       slug: draw.slug || draw.id,
       category: draw.category || "Drivers",
-      status: draw.status === "ACTIVE" ? "live" : "ending_soon",
+      status: isPast ? "ended" : (draw.status === "ACTIVE" ? "live" : "ending_soon"),
       images: [draw.mainImage || "https://placehold.co/800x600/1a230a/8cb34a?text=No+Image"],
       ticketPrice: Number(draw.pricePerTicket),
       worthPrice: worth,
@@ -188,7 +196,11 @@ export default async function LiveRaffleDetailPage({ params }: PageProps) {
                   </h1>
 
                   <div className="flex flex-wrap items-center gap-2.5">
-                    {raffle.status === 'live' ? (
+                    {raffle.status === 'ended' ? (
+                      <span className="bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626] px-3 py-1 rounded-full text-xs font-sans font-bold uppercase tracking-wider shadow-xs">
+                        DRAW CLOSED
+                      </span>
+                    ) : raffle.status === 'live' ? (
                       <span className="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] px-3 py-1 rounded-full text-xs font-sans font-bold uppercase tracking-wider shadow-xs">
                         LIVE
                       </span>
