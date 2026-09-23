@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { raffleService } from "../../../services/raffle.service";
 
 export interface SoldTicket {
@@ -36,6 +37,7 @@ export default function ManualWinnerSelectModal({
   onSuccess,
   isAdmin = true,
 }: ManualWinnerSelectModalProps) {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"manual" | "random">("manual");
   const [ticketInput, setTicketInput] = useState<string>("");
   const [selectedTicket, setSelectedTicket] = useState<SoldTicket | null>(null);
@@ -47,6 +49,61 @@ export default function ManualWinnerSelectModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [winnerResult, setWinnerResult] = useState<any | null>(null);
+
+  // Fetch sold tickets when modal opens
+  useEffect(() => {
+    if (!isOpen || !raffle?.id) {
+      setSoldTickets([]);
+      setSelectedTicket(null);
+      setTicketInput("");
+      setErrorMessage(null);
+      setWinnerResult(null);
+      return;
+    }
+
+    let isMounted = true;
+    setIsLoadingTickets(true);
+    setErrorMessage(null);
+
+    raffleService
+      .getSoldTickets(raffle.id)
+      .then((data) => {
+        if (!isMounted) return;
+        const mapped: SoldTicket[] = (data || []).map((t: any) => ({
+          id: t.id,
+          ticketNumber: Number(t.ticketNumber),
+          userId: t.userId || t.user?.id || "",
+          userName:
+            t.userName ||
+            t.buyerName ||
+            (t.user
+              ? `${t.user.firstName || ""} ${t.user.lastName || ""}`.trim()
+              : "") ||
+            "Entrant",
+          userEmail: t.userEmail || t.user?.email || "N/A",
+          avatarUrl: t.avatarUrl || t.user?.avatarUrl,
+          createdAt: t.createdAt,
+        }));
+        setSoldTickets(mapped);
+      })
+      .catch((err: any) => {
+        if (!isMounted) return;
+        setErrorMessage(
+          err?.response?.data?.message ||
+            err.message ||
+            "Failed to load sold tickets for this competition."
+        );
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoadingTickets(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, raffle?.id]);
 
   // Lock scroll when modal is open
   useEffect(() => {
@@ -97,6 +154,13 @@ export default function ManualWinnerSelectModal({
     try {
       const data = await raffleService.adminDrawWinner(raffle.id, winningTicketNum);
       setWinnerResult(data);
+      queryClient.invalidateQueries({ queryKey: ["adminRaffles"] });
+      queryClient.invalidateQueries({ queryKey: ["adminAllRaffles"] });
+      queryClient.invalidateQueries({ queryKey: ["raffleSoldTickets", raffle.id] });
+      queryClient.invalidateQueries({ queryKey: ["raffleWinners", raffle.id] });
+      queryClient.invalidateQueries({ queryKey: ["raffle", raffle.id] });
+      queryClient.invalidateQueries({ queryKey: ["publicRaffles"] });
+      queryClient.invalidateQueries({ queryKey: ["hostRaffles"] });
       if (onSuccess) onSuccess();
     } catch (err: any) {
       setErrorMessage(err?.response?.data?.message || err.message || "An error occurred while drawing winner.");
