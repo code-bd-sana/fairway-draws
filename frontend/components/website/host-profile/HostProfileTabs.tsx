@@ -48,6 +48,7 @@ export default function HostProfileTabs({
       ticketPrice: Number(r.pricePerTicket ?? r.ticketPrice ?? 0),
       totalTickets: Number(r.totalTickets ?? 0),
       soldTickets: Number(r.ticketsSold ?? r.soldTickets ?? 0),
+      rawEndDate: r.endDate,
       endDate: isPast
         ? "Draw Closed"
         : r.endDate

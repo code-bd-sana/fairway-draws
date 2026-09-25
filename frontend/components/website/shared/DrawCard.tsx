@@ -10,6 +10,40 @@ interface DrawCardProps {
   variant?: "grid" | "featured" | "instant";
 }
 
+function checkIsEndPassed(rawEnd?: string, endDate?: string): boolean {
+  if (rawEnd) {
+    if (rawEnd === "Draw Closed" || rawEnd === "Ended") {
+      return true;
+    }
+    const parsedTime = new Date(rawEnd).getTime();
+    if (!isNaN(parsedTime)) {
+      return parsedTime <= Date.now();
+    }
+  }
+
+  if (endDate) {
+    if (endDate === "Draw Closed" || endDate === "Ended") {
+      return true;
+    }
+    if (endDate.includes("T") || endDate.includes(":")) {
+      const parsedTime = new Date(endDate).getTime();
+      if (!isNaN(parsedTime)) {
+        return parsedTime <= Date.now();
+      }
+    } else {
+      // Date-only string like "25 Sep 2026": do not expire until end of day (23:59:59.999)
+      const parsedDate = new Date(endDate);
+      if (!isNaN(parsedDate.getTime())) {
+        const endOfDay = new Date(parsedDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        return endOfDay.getTime() <= Date.now();
+      }
+    }
+  }
+
+  return false;
+}
+
 /**
  * Reusable Card component for Competitions, Live Draws, and Instant Wins.
  */
@@ -28,19 +62,16 @@ export default function DrawCard({ draw, variant = "grid" }: DrawCardProps) {
   } = draw;
 
   const statusLower = (draw.status || "").toLowerCase();
-  const rawEnd = (draw as any).rawEndDate || endDate;
-  const isEndPassed = Boolean(
-    rawEnd &&
-    (rawEnd === "Draw Closed" ||
-     rawEnd === "Ended" ||
-     (!isNaN(new Date(rawEnd).getTime()) && new Date(rawEnd).getTime() <= Date.now()))
-  );
+  const rawEnd = draw.rawEndDate || (draw as any).rawEndDate;
+  const isEndPassed = checkIsEndPassed(rawEnd, endDate);
+
+  const isSoldOut = totalTickets > 0 && soldTickets >= totalTickets;
   const isEnded =
     statusLower === "ended" ||
     statusLower === "completed" ||
     statusLower === "cancelled" ||
     statusLower === "sold_out" ||
-    (totalTickets > 0 && soldTickets >= totalTickets) ||
+    isSoldOut ||
     isEndPassed;
 
   const declaredValue =

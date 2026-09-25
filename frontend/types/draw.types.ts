@@ -13,6 +13,7 @@ export interface Draw {
   totalTickets: number;
   soldTickets: number;
   endDate: string; // String format for display (e.g., "Ends in 3d 14h" or ISO Date string)
+  rawEndDate?: string;
   status: DrawStatus;
   isFeatured?: boolean;
   category: string; // e.g. "drivers", "irons", "putters", "experiences", "apparel", "cash", "luxury"

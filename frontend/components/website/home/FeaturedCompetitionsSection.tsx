@@ -27,6 +27,7 @@ export default function FeaturedCompetitionsSection() {
             image: r.mainImage || '', ticketPrice: Number(r.pricePerTicket),
             totalTickets: r.totalTickets, soldTickets: r.ticketsSold,
             endDate: formatUkDate(r.endDate),
+            rawEndDate: r.endDate,
             status: (r.status === 'ACTIVE' ? 'live' : 'ended') as 'live' | 'ended',
             category: r.category || 'general', slug: r.slug,
             worthPrice: r.mainPrizeValue ? Number(r.mainPrizeValue) : undefined,

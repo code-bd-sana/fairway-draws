@@ -38,6 +38,7 @@ export default function InstantWinsSection() {
             totalTickets: r.totalTickets,
             soldTickets: r.ticketsSold,
             endDate: formatUkDate(r.endDate),
+            rawEndDate: r.endDate,
             status: (r.status === 'ACTIVE' ? 'live' : 'ended') as "live" | "ended",
             category: r.category || 'general',
             slug: r.slug,
