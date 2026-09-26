@@ -163,20 +163,20 @@ export default function EditRaffleForm({ raffleId }: Props) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-divider">
           <div>
             <h1 className="font-heading font-black text-2xl md:text-3xl text-text-primary uppercase tracking-tight">
-              Edit Competition
+              Edit Competition {raffle?.title ? <span className="text-text-muted font-normal text-lg md:text-xl block sm:inline sm:ml-2">({raffle.title})</span> : null}
             </h1>
             <p className="font-sans text-xs md:text-sm text-text-secondary mt-1">
               Update competition details and draw settings for your entrants.
             </p>
           </div>
-          {hasSoldTickets && (
+          {/* {hasSoldTickets && (
             <div className="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-badge flex items-center gap-2 select-none shrink-0 w-fit">
               <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
               <span className="font-sans font-semibold text-xs text-amber-700 dark:text-amber-400">
                 Tickets Sold ({raffle.ticketsSold}) — Ticket counts &amp; pricing locked
               </span>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -187,11 +187,11 @@ export default function EditRaffleForm({ raffleId }: Props) {
           {/* Section 1: Basic Information */}
           <div className="flex flex-col gap-4">
             <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
-              1. Basic Competition Details
+              1. Competition Description
             </h2>
 
-            {/* Title */}
-            <div className="flex flex-col gap-1.5">
+            {/* Title - Commented out per client request (host cannot change title) */}
+            {/* <div className="flex flex-col gap-1.5">
               <label htmlFor="title" className="font-sans font-medium text-xs md:text-sm text-text-primary">
                 Competition Title *
               </label>
@@ -204,10 +204,10 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 placeholder="e.g. Brand New TaylorMade Qi10 Driver"
                 className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
               />
-            </div>
+            </div> */}
 
-            {/* Category */}
-            <div className="flex flex-col gap-1.5">
+            {/* Category - Commented out per client request */}
+            {/* <div className="flex flex-col gap-1.5">
               <label htmlFor="category" className="font-sans font-medium text-xs md:text-sm text-text-primary">
                 Category *
               </label>
@@ -223,10 +223,10 @@ export default function EditRaffleForm({ raffleId }: Props) {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
-            {/* Prize Name */}
-            <div className="flex flex-col gap-1.5">
+            {/* Prize Name - Commented out per client request */}
+            {/* <div className="flex flex-col gap-1.5">
               <label htmlFor="prizeName" className="font-sans font-medium text-xs md:text-sm text-text-primary">
                 Main Prize Name
               </label>
@@ -238,7 +238,7 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 placeholder="e.g. TaylorMade Qi10 Driver Stiff Shaft"
                 className="w-full h-[46px] bg-bg border border-border rounded-button px-4 font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
               />
-            </div>
+            </div> */}
 
             {/* Description */}
             <div className="flex flex-col gap-1.5">
@@ -249,21 +249,20 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 id="description"
                 value={formData.description || ""}
                 onChange={(e) => handleChange("description", e.target.value)}
-                rows={4}
+                rows={5}
                 placeholder="Describe the prize specs, condition, and terms..."
                 className="w-full p-4 bg-bg border border-border rounded-button font-sans text-xs md:text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none"
               />
             </div>
           </div>
 
-          {/* Section 2: Tickets & Pricing */}
-          <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
+          {/* Section 2: Tickets & Pricing - Commented out per client request (Cannot change ticket number and price) */}
+          {/* <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
             <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
               2. Ticket Allocation &amp; Pricing
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Main Prize Value */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="mainPrizeValue" className="font-sans font-medium text-xs md:text-sm text-text-primary">
                   Main Prize Value (£)
@@ -284,7 +283,6 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 </div>
               </div>
 
-              {/* Total Tickets */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="totalTickets" className="font-sans font-medium text-xs md:text-sm text-text-primary">
@@ -310,7 +308,6 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 />
               </div>
 
-              {/* Price Per Ticket */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="pricePerTicket" className="font-sans font-medium text-xs md:text-sm text-text-primary">
@@ -338,9 +335,7 @@ export default function EditRaffleForm({ raffleId }: Props) {
               </div>
             </div>
 
-            {/* Ticket Limits (Min & Max Per Person) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              {/* Minimum Tickets */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="minTickets" className="font-sans font-medium text-xs md:text-sm text-text-primary">
                   Minimum Tickets Per Person (Optional)
@@ -359,7 +354,6 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 </span>
               </div>
 
-              {/* Maximum Tickets */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="maxTickets" className="font-sans font-medium text-xs md:text-sm text-text-primary">
                   Maximum Tickets Per Person (Optional)
@@ -378,10 +372,10 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          {/* Section 3: Dates & Schedule */}
-          <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
+          {/* Section 3: Dates & Schedule - Commented out per client request (Cannot change times) */}
+          {/* <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
             <div className="flex items-center justify-between border-b border-divider/60 pb-2">
               <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider">
                 3. Competition Schedule
@@ -392,7 +386,6 @@ export default function EditRaffleForm({ raffleId }: Props) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Start Date */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="startDate" className="font-sans font-medium text-xs md:text-sm text-text-primary flex items-center justify-between">
                   <span>Start Date &amp; Time (UK Time)</span>
@@ -410,7 +403,6 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 </span>
               </div>
 
-              {/* End / Draw Date */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="endDate" className="font-sans font-medium text-xs md:text-sm text-text-primary flex items-center justify-between">
                   <span>End / Draw Date &amp; Time (UK Time)</span>
@@ -428,12 +420,12 @@ export default function EditRaffleForm({ raffleId }: Props) {
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Section 4: Draw Mechanism */}
           <div className="flex flex-col gap-4 pt-4 border-t border-divider/60">
             <h2 className="font-heading font-bold text-sm text-text-brand uppercase tracking-wider border-b border-divider/60 pb-2">
-              4. Winner Selection Strategy
+              2. Winner Selection Strategy
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 select-none">
@@ -456,9 +448,14 @@ export default function EditRaffleForm({ raffleId }: Props) {
                   className="mt-1 w-4 h-4 text-primary focus:ring-primary accent-[#0b4d35] cursor-pointer"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-heading font-bold text-xs md:text-sm text-text-primary uppercase tracking-wide">
-                    Live Draw
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-heading font-bold text-xs md:text-sm text-text-primary uppercase tracking-wide">
+                      Live Draw
+                    </span>
+                    <span className="bg-primary/10 text-primary border border-primary/20 font-sans font-bold text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      Recommended
+                    </span>
+                  </div>
                   <span className="font-sans text-[11px] md:text-xs text-text-secondary leading-normal">
                     You will manually trigger the random draw from your host portal (e.g. live stream).
                   </span>
