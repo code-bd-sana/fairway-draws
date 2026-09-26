@@ -106,9 +106,14 @@ export default function CreateRaffleStep5({ formData, updateForm, onNext, onPrev
                   className="mt-0.5 w-4 h-4 text-primary focus:ring-primary accent-[#0b4d35] cursor-pointer"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-heading font-bold text-sm text-text-primary uppercase">
-                    Live Draw
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-heading font-bold text-sm text-text-primary uppercase">
+                      Live Draw
+                    </span>
+                    <span className="bg-primary/10 text-primary border border-primary/20 font-sans font-bold text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      Recommended
+                    </span>
+                  </div>
                   <span className="font-sans text-xs text-text-muted">
                     You will manually trigger the draw from your dashboard (e.g., live streaming on social media).
                   </span>
