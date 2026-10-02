@@ -31,10 +31,10 @@ export const useCancelSubscriptionMutation = () => {
   });
 };
 
-export const useAllSubscriptionsAdmin = () => {
+export const useAllSubscriptionsAdmin = (params?: { page?: number; limit?: number; search?: string }) => {
   return useQuery({
-    queryKey: ['adminSubscriptions'],
-    queryFn: subscriptionService.getAllSubscriptionsForAdmin,
+    queryKey: ['adminSubscriptions', params],
+    queryFn: () => subscriptionService.getAllSubscriptionsForAdmin(params),
   });
 };
 

@@ -25,7 +25,7 @@ export default function PlanDistributionChart() {
   }, [stats]);
 
   return (
-    <div className="bg-surface border border-border rounded-card p-4 sm:p-6 flex flex-col h-full min-h-[320px] sm:min-h-[360px] shadow-card">
+    <div className="bg-surface border border-border rounded-card p-4 sm:p-6 flex flex-col w-full self-start shadow-card">
       <span className="font-heading font-black text-base text-text-primary uppercase tracking-tight mb-4 sm:mb-6">
         Plan Distribution
       </span>

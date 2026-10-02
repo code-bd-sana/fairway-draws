@@ -36,6 +36,14 @@ export interface AdminSubscriptionStats {
   }[];
 }
 
+export interface AdminSubscriptionsResponse {
+  subscriptions: any[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export const subscriptionService = {
   async getPlans(): Promise<SubscriptionPlan[]> {
     const response = await api.get('/subscriptions/plans');
@@ -57,8 +65,21 @@ export const subscriptionService = {
     return response.data;
   },
 
-  async getAllSubscriptionsForAdmin(): Promise<any[]> {
-    const response = await api.get('/subscriptions/admin');
+  async getAllSubscriptionsForAdmin(params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<AdminSubscriptionsResponse> {
+    const response = await api.get('/subscriptions/admin', { params });
+    if (Array.isArray(response.data)) {
+      return {
+        subscriptions: response.data,
+        total: response.data.length,
+        page: 1,
+        limit: response.data.length,
+        totalPages: 1,
+      };
+    }
     return response.data;
   },
 

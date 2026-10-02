@@ -20,7 +20,7 @@ export default function AdminSubscriptionsManagementPage() {
       <SubscriptionStatsCards />
 
       {/* Middle Layout: Donut Chart & Table */}
-      <div className="grid grid-cols-1 xl:grid-cols-[400px_1fr] gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-[400px_1fr] items-start gap-6">
         <PlanDistributionChart />
         <SubscriptionTable />
       </div>

@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Req,
+  Query,
   UseGuards,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
+  ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
 import { SubscriptionsService } from './subscriptions.service';
@@ -110,12 +112,25 @@ export class SubscriptionsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all subscriptions for admin' })
-  @ApiResponse({ status: 200, description: 'List of all subscriptions' })
+  @ApiOperation({ summary: 'Get paginated subscriptions for admin' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiResponse({ status: 200, description: 'Paginated list of subscriptions' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - admin only access' })
-  async getAllSubscriptions() {
-    return this.subscriptionsService.getAllSubscriptions();
+  async getAllSubscriptions(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+  ) {
+    const pageNumber = page ? Math.max(1, parseInt(page, 10)) : 1;
+    const limitNumber = limit ? Math.max(1, parseInt(limit, 10)) : 10;
+    return this.subscriptionsService.getAllSubscriptions(
+      pageNumber,
+      limitNumber,
+      search,
+    );
   }
 
   @Get('admin/stats')

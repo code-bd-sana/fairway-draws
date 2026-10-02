@@ -4,6 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SubscriptionsService {
@@ -150,26 +151,69 @@ export class SubscriptionsService {
     });
   }
 
-  async getAllSubscriptions() {
-    const subscriptions = await this.prisma.hostSubscription.findMany({
-      include: {
-        plan: true,
-        host: {
-          include: { user: true },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+  async getAllSubscriptions(page = 1, limit = 10, search?: string) {
+    const skip = (page - 1) * limit;
 
-    return Promise.all(
-      subscriptions.map(async (sub) => {
-        const transaction = await this.prisma.transaction.findFirst({
-          where: { relatedEntityId: sub.id, type: 'SUBSCRIPTION_FEE' },
-          orderBy: { createdAt: 'desc' },
-        });
-        return { ...sub, transaction };
+    const where: Prisma.HostSubscriptionWhereInput = {};
+
+    if (search && search.trim()) {
+      const q = search.trim();
+      where.OR = [
+        { host: { businessName: { contains: q, mode: 'insensitive' } } },
+        { host: { user: { firstName: { contains: q, mode: 'insensitive' } } } },
+        { host: { user: { lastName: { contains: q, mode: 'insensitive' } } } },
+        { host: { user: { email: { contains: q, mode: 'insensitive' } } } },
+        { plan: { name: { contains: q, mode: 'insensitive' } } },
+      ];
+    }
+
+    const [subscriptions, total] = await Promise.all([
+      this.prisma.hostSubscription.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          plan: true,
+          host: {
+            include: { user: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
       }),
-    );
+      this.prisma.hostSubscription.count({ where }),
+    ]);
+
+    // Efficient single-query lookup for transactions to prevent N+1 queries
+    const subIds = subscriptions.map((s) => s.id);
+    const transactions = subIds.length > 0
+      ? await this.prisma.transaction.findMany({
+          where: {
+            relatedEntityId: { in: subIds },
+            type: 'SUBSCRIPTION_FEE',
+          },
+          orderBy: { createdAt: 'desc' },
+        })
+      : [];
+
+    const txMap = new Map<string, (typeof transactions)[0]>();
+    for (const tx of transactions) {
+      if (tx.relatedEntityId && !txMap.has(tx.relatedEntityId)) {
+        txMap.set(tx.relatedEntityId, tx);
+      }
+    }
+
+    const formattedSubscriptions = subscriptions.map((sub) => ({
+      ...sub,
+      transaction: txMap.get(sub.id) || null,
+    }));
+
+    return {
+      subscriptions: formattedSubscriptions,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
 
   async getAdminStats() {
