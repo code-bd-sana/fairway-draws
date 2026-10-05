@@ -584,7 +584,9 @@ export class RafflesService {
       },
       include: {
         host: { include: { user: true } },
-        instantWins: true,
+        instantWins: {
+          orderBy: { ticketNumber: 'asc' },
+        },
         _count: { select: { tickets: true } },
       },
     });

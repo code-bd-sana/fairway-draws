@@ -3,9 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { RaffleDetail, RaffleTabId, RaffleTab } from "../../../types/raffle-details.types";
-import { formatCurrency } from "../../../lib/utils";
 import { cn } from "../../../lib/utils";
-import { useAuth } from "../../../features/auth/AuthContext";
 
 interface RaffleDetailsTabsProps {
   raffle: RaffleDetail;
@@ -13,7 +11,6 @@ interface RaffleDetailsTabsProps {
 
 export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
   const [activeTab, setActiveTab] = useState<RaffleTabId>("details");
-  const { user } = useAuth();
 
   const tabs: RaffleTab[] = [
     { id: "details", label: "Description" },
@@ -22,24 +19,17 @@ export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
   ];
 
   const checkIcon = (
-    <div className="w-5 h-5 rounded-full bg-[#1A230A] border border-[#43581E] flex items-center justify-center shrink-0">
-      <svg className="w-3 h-3 text-[#8CB34A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+    <div className="w-6 h-6 rounded-full bg-accent-bg border border-primary/20 flex items-center justify-center shrink-0">
+      <svg className="w-3.5 h-3.5 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
     </div>
   );
 
-  const isAuthorizedToViewInstantWins = Boolean(
-    user && (
-      user.role === 'ADMIN' ||
-      (user.role === 'HOST' && (
-        (raffle.hostUserId && user.id === raffle.hostUserId) ||
-        (raffle.hostId && user.hostProfile?.id === raffle.hostId) ||
-        (raffle.hostName && user.hostProfile?.businessName === raffle.hostName)
-      )) ||
-      (raffle.hostUserId && user.id === raffle.hostUserId)
-    )
-  );
+  const instantWins = raffle.instantWinPrizes || [];
+  const sortedInstantWins = [...instantWins].sort((a, b) => a.ticketNumber - b.ticketNumber);
+  const availableCount = instantWins.filter((p) => !p.isClaimed).length;
+  const wonCount = instantWins.filter((p) => p.isClaimed).length;
 
   return (
     <div className="w-full flex flex-col font-sans mt-2 bg-surface border border-border rounded-card p-6 shadow-card">
@@ -137,39 +127,80 @@ export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
         )}
       </div>
 
-      {/* Instant Win Prizes (Only visible to Admin and creator Host) */}
-      {isAuthorizedToViewInstantWins && raffle.instantWinPrizes.length > 0 && (
-        <div className="mt-6 bg-elevated border border-border-medium rounded-xl p-5 flex flex-col gap-3.5">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-base">🎁</span>
-            <h3 className="font-heading font-bold text-xs uppercase tracking-wider text-text-primary">Instant Win Prizes</h3>
+      {/* Instant Win Prizes (Fairway Draws Theme) */}
+      {sortedInstantWins.length > 0 && (
+        <div className="mt-6 bg-elevated/60 border border-border-medium rounded-xl p-5 md:p-6 flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-2 pb-3 border-b border-border">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎁</span>
+              <h3 className="font-heading font-bold text-sm md:text-base text-text-primary">
+                Instant Win Prizes
+              </h3>
+            </div>
+            <div className="flex items-center gap-2 text-xs font-sans">
+              <span className="text-[#15803D] bg-[#DCFCE7] border border-[#BBF7D0] px-2.5 py-0.5 rounded-full font-bold">
+                {availableCount} Available
+              </span>
+              <span className="text-text-muted">•</span>
+              <span className="text-[#B45309] bg-[#FEF3C7] border border-[#FDE68A] px-2.5 py-0.5 rounded-full font-bold">
+                {wonCount} Won
+              </span>
+            </div>
           </div>
           <div className="flex flex-col gap-2.5">
-            {raffle.instantWinPrizes.map((prize) => (
-              <div key={prize.id} className="flex items-center justify-between p-3.5 bg-surface border border-border rounded-xl">
-                <div className="flex items-center gap-3">
-                  {prize.image ? (
-                    <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-elevated border border-border-medium">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={prize.image} alt={prize.title} className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    checkIcon
+            {sortedInstantWins.map((prize) => {
+              const isWon = Boolean(prize.isClaimed);
+              return (
+                <div
+                  key={prize.id}
+                  className={cn(
+                    "flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-all duration-150",
+                    isWon
+                      ? "bg-surface/60 border-border/80 opacity-80"
+                      : "bg-surface border-border hover:border-primary/40 shadow-xs"
                   )}
-                  <div className="flex flex-col">
-                    <span className="font-sans font-semibold text-xs text-text-primary">{prize.title}</span>
-                    <span className="font-sans text-[11px] text-text-muted">
-                      Ticket #{prize.ticketNumber}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    {prize.image ? (
+                      <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-accent-bg border border-primary/20">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={prize.image} alt={prize.title} className="w-full h-full object-cover" />
+                      </div>
+                    ) : isWon ? (
+                      <div className="w-6 h-6 rounded-full bg-[#FEE2E2] border border-[#FECACA] flex items-center justify-center shrink-0">
+                        <svg className="w-3.5 h-3.5 text-[#DC2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.01-6.166 2.49 1.196a2.25 2.25 0 0 1 1.258 2.016v.831a2.25 2.25 0 0 1-2.25 2.25H8.25a2.25 2.25 0 0 1-2.25-2.25v-.831a2.25 2.25 0 0 1 1.258-2.016l2.49-1.196m5.01-6.166V3a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75v1.084m4.5 0a9 9 0 0 1-4.5 0" />
+                        </svg>
+                      </div>
+                    ) : (
+                      checkIcon
+                    )}
+                    <div className="flex flex-col gap-1 min-w-0">
+                      <span className="font-heading font-bold text-xs sm:text-sm text-text-primary truncate">
+                        {prize.title}
+                      </span>
+                      <div>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-elevated border border-border-medium font-mono text-[11px] font-bold text-text-secondary">
+                          Ticket #{prize.ticketNumber}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 text-right shrink-0">
+                    <span
+                      className={cn(
+                        "font-sans font-bold text-[11px] uppercase tracking-wider px-3 py-1 rounded-full shadow-2xs",
+                        isWon
+                          ? "bg-[#FEE2E2] border border-[#FECACA] text-[#DC2626]"
+                          : "bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D]"
+                      )}
+                    >
+                      {isWon ? "Won" : "Available"}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-right">
-                  <span className={cn("font-sans font-bold text-[10px] uppercase px-2.5 py-1 rounded-full shadow-xs", prize.isClaimed ? "bg-elevated border border-border text-text-muted" : "bg-accent-bg border border-primary/30 text-text-brand")}>
-                    {prize.isClaimed ? "Claimed" : "Available"}
-                  </span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
