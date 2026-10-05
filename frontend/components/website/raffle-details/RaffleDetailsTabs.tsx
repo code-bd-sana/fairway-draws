@@ -91,18 +91,20 @@ export default function RaffleDetailsTabs({ raffle }: RaffleDetailsTabsProps) {
                 <p className="text-xs text-text-muted mt-0.5">Pay securely via card or gateway. Free postal entry also available — see T&Cs.</p>
               </div>
             </div>
+            {sortedInstantWins.length > 0 && (
+              <div className="flex gap-3.5 items-start">
+                <div className="bg-accent-bg border border-primary/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-heading font-bold text-text-brand text-xs">
+                  3
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-text-primary text-xs">Instant win check</h4>
+                  <p className="text-xs text-text-muted mt-0.5">Your ticket numbers are checked against instant win outcomes automatically. If you win, you&apos;ll know straight away.</p>
+                </div>
+              </div>
+            )}
             <div className="flex gap-3.5 items-start">
               <div className="bg-accent-bg border border-primary/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-heading font-bold text-text-brand text-xs">
-                3
-              </div>
-              <div>
-                <h4 className="font-heading font-bold text-text-primary text-xs">Instant win check</h4>
-                <p className="text-xs text-text-muted mt-0.5">Your ticket numbers are checked against instant win outcomes automatically. If you win, you&apos;ll know straight away.</p>
-              </div>
-            </div>
-            <div className="flex gap-3.5 items-start">
-              <div className="bg-accent-bg border border-primary/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-heading font-bold text-text-brand text-xs">
-                4
+                {sortedInstantWins.length > 0 ? "4" : "3"}
               </div>
               <div>
                 <h4 className="font-heading font-bold text-text-primary text-xs">Watch the live draw</h4>
