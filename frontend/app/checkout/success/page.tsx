@@ -53,42 +53,83 @@ function CheckoutSuccessContent() {
       setOrderRef(orderNumber);
     }
 
-    // Call payment confirmation
-    paymentService
-      .confirmPayment({
-        orderNumber: orderNumber || undefined,
-        paymentJobRef: paymentJobRef || undefined,
-      })
-      .then((res) => {
-        setOrderData(res);
-        setIsLoading(false);
-
-        // Check for instant wins
-        if (res.instantWins && res.instantWins.length > 0) {
-          const instantPrizes: WinPrizeItem[] = res.instantWins.map((iw: any) => {
-            const tk = (res.tickets || []).find((t: any) => t.id === iw.ticketId);
-            return {
-              id: iw.id,
-              title: iw.prizeName || iw.title || "Instant Win Prize",
-              ticketNumber: tk ? tk.ticketNumber : (iw.ticketNumber || 0),
-              rrpValue: iw.rrpValue,
-              prizeImage: iw.prizeImage || iw.image,
-            };
-          });
-
-          setWinAnimationPrizes(instantPrizes);
+    // Helper to verify unclaimed instant wins from DB
+    const checkUnclaimedWins = async (fallbackPrizes: WinPrizeItem[] = [], shouldOpenModal: boolean = false) => {
+      try {
+        const unclaimed = await userService.getUnclaimedInstantWins();
+        if (unclaimed && unclaimed.length > 0) {
+          const formatted: WinPrizeItem[] = unclaimed.map((win) => ({
+            id: win.id,
+            title: win.prizeName || win.title || "Instant Win Prize",
+            ticketNumber: win.ticketNumber,
+            rrpValue: win.rrpValue,
+            prizeImage: win.prizeImage,
+            raffleTitle: win.raffleTitle || win.raffle?.title,
+          }));
+          setWinAnimationPrizes(formatted);
+          setIsWinModalOpen(true);
+        } else if (fallbackPrizes.length > 0) {
+          setWinAnimationPrizes(fallbackPrizes);
+          setIsWinModalOpen(true);
+        } else if (shouldOpenModal) {
+          setWinAnimationPrizes([]);
           setIsWinModalOpen(true);
         }
-      })
-      .catch((err) => {
-        console.error("Order confirmation error:", err);
-        // Even if already confirmed, set completed state
-        setOrderData({
-          success: true,
-          message: "Payment processed successfully.",
+      } catch (err) {
+        if (fallbackPrizes.length > 0) {
+          setWinAnimationPrizes(fallbackPrizes);
+          setIsWinModalOpen(true);
+        } else if (shouldOpenModal) {
+          setWinAnimationPrizes([]);
+          setIsWinModalOpen(true);
+        }
+      }
+    };
+
+    // Call payment confirmation
+    if (orderNumber || paymentJobRef) {
+      paymentService
+        .confirmPayment({
+          orderNumber: orderNumber || undefined,
+          paymentJobRef: paymentJobRef || undefined,
+        })
+        .then(async (res) => {
+          setOrderData(res);
+          setIsLoading(false);
+
+          let paymentInstantPrizes: WinPrizeItem[] = [];
+          if (res.instantWins && res.instantWins.length > 0) {
+            paymentInstantPrizes = res.instantWins.map((iw: any) => {
+              const tk = (res.tickets || []).find((t: any) => t.id === iw.ticketId);
+              return {
+                id: iw.id,
+                title: iw.prizeName || iw.title || "Instant Win Prize",
+                ticketNumber: tk ? tk.ticketNumber : (iw.ticketNumber || 0),
+                rrpValue: iw.rrpValue,
+                prizeImage: iw.prizeImage || iw.image,
+                raffleTitle: iw.raffleTitle,
+              };
+            });
+          }
+
+          // Always launch the animation modal on fresh payment completion to scan tickets!
+          await checkUnclaimedWins(paymentInstantPrizes, true);
+        })
+        .catch(async (err) => {
+          console.error("Order confirmation error:", err);
+          // Even if already confirmed, set completed state
+          setOrderData({
+            success: true,
+            message: "Payment processed successfully.",
+          });
+          setIsLoading(false);
+          await checkUnclaimedWins([], true);
         });
-        setIsLoading(false);
-      });
+    } else {
+      // Direct visit or page refresh: Always run the ticket checking slot animation!
+      setIsLoading(false);
+      checkUnclaimedWins([], true);
+    }
   }, [searchParams, clearBasket]);
 
   const handleClaimWin = async () => {
@@ -264,12 +305,13 @@ function CheckoutSuccessContent() {
         </div>
       )}
 
-      {/* Win Animation Modal (Slot Machine Reveal) */}
+      {/* Win Animation Modal (Slot Machine Reveal / Claim Flow) */}
       <WinAnimationModal
         isOpen={isWinModalOpen}
         onClose={() => setIsWinModalOpen(false)}
         onClaim={handleClaimWin}
         prizes={winAnimationPrizes}
+        userTickets={tickets}
       />
     </div>
   );

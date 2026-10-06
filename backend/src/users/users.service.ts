@@ -316,6 +316,7 @@ export class UsersService {
         winType: w.winType,
         prizeName,
         title: prizeName, // for frontend compatibility
+        raffleTitle: w.raffle.title,
         prizeImage: prizeImage || null,
         rrpValue: instantWinDetails?.rrpValue
           ? Number(instantWinDetails.rrpValue)

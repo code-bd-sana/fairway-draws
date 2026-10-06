@@ -638,11 +638,20 @@ export class PaymentService {
         const existingTickets = await this.prisma.ticket.findMany({
           where: { transactionId: existingTx.id },
         });
+        const ticketIds = existingTickets.map((t) => t.id);
+        const existingInstantWins = await this.prisma.winner.findMany({
+          where: {
+            ticketId: { in: ticketIds },
+            winType: 'INSTANT_WIN',
+          },
+        });
         return {
           success: true,
           type: 'TICKET_PURCHASE',
           transaction: existingTx,
           createdTickets: existingTickets,
+          tickets: existingTickets,
+          instantWins: existingInstantWins,
         };
       }
 
@@ -712,11 +721,19 @@ export class PaymentService {
             const existingTickets = await this.prisma.ticket.findMany({
               where: { transactionId: pendingTx.id },
             });
+            const ticketIds = existingTickets.map((t) => t.id);
+            const existingInstantWins = await this.prisma.winner.findMany({
+              where: {
+                ticketId: { in: ticketIds },
+                winType: 'INSTANT_WIN',
+              },
+            });
             return {
               success: true,
               type: 'TICKET_PURCHASE',
               transaction: pendingTx,
               tickets: existingTickets,
+              instantWins: existingInstantWins,
             };
           }
 

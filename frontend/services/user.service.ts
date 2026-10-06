@@ -37,6 +37,7 @@ export interface UnclaimedInstantWin {
   winType: 'INSTANT_WIN';
   prizeName: string;
   title: string;
+  raffleTitle?: string;
   prizeImage: string | null;
   rrpValue: number | null;
   ticketNumber: number;

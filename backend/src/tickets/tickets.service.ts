@@ -226,12 +226,20 @@ export class TicketsService {
                 winType: 'INSTANT_WIN',
                 prizeName: updatedInstantWin.prizeName,
                 deliveryStatus: 'PENDING',
+                isClaimed: false,
               },
             });
 
             instantWinsData.push(updatedInstantWin);
             userInstantWins.push({
               ...winner,
+              raffleTitle: raffle.title,
+              ticketNumber: ticket.ticketNumber,
+              title: updatedInstantWin.prizeName,
+              prizeName: updatedInstantWin.prizeName,
+              prizeImage: updatedInstantWin.image,
+              image: updatedInstantWin.image,
+              rrpValue: updatedInstantWin.rrpValue ? Number(updatedInstantWin.rrpValue) : null,
               instantWin: updatedInstantWin,
               ticket,
             });
