@@ -1454,41 +1454,29 @@ export class RafflesService {
   }
 
   async getPublicWinnerStats() {
-    const totalWinners = await this.prisma.winner.count();
+    const [mainDrawWinners, instantWinners] = await Promise.all([
+      this.prisma.winner.count({
+        where: { winType: 'MAIN_DRAW' },
+      }),
+      this.prisma.winner.count({
+        where: { winType: 'INSTANT_WIN' },
+      }),
+    ]);
 
-    // For "Verified Draws", we can count raffles with status 'ENDED' or 'COMPLETED'
-    // Since 'ENDED' is the status in the enum
+    const totalWinners = mainDrawWinners + instantWinners;
+    // Total prizes awarded across all winners
+    const prizesAwarded = totalWinners;
+
+    // Backward compatibility for verifiedDraws
     const verifiedDraws = await this.prisma.raffle.count({
       where: { status: 'ENDED' },
     });
 
-    // For "Prizes Awarded" value, since we don't have a specific monetary value field,
-    // we'll calculate the total potential revenue of all ENDED draws as a proxy,
-    // or we can sum totalTickets * pricePerTicket of ENDED draws.
-    const endedRaffles = await this.prisma.raffle.findMany({
-      where: { status: 'ENDED' },
-      select: { mainPrizeValue: true, totalTickets: true, pricePerTicket: true },
-    });
-
-    let totalValue = 0;
-    endedRaffles.forEach((r) => {
-      if (r.mainPrizeValue && Number(r.mainPrizeValue) > 0) {
-        totalValue += Number(r.mainPrizeValue);
-      } else {
-        totalValue += r.totalTickets * Number(r.pricePerTicket);
-      }
-    });
-
-    // Formatting currency for UK (£)
-    const formattedValue = new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      maximumFractionDigits: 0,
-    }).format(totalValue);
-
     return {
-      prizesAwarded: formattedValue,
+      prizesAwarded,
       totalWinners,
+      mainDrawWinners,
+      instantWinners,
       verifiedDraws: `${verifiedDraws.toLocaleString('en-GB')}`,
     };
   }
