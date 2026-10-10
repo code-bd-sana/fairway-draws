@@ -6,7 +6,7 @@ export interface VerifiedHost {
   description?: string;
   category?: string;
   competitionCount: number;
-  averageRating?: number;
+  averageRating?: number | null;
   totalReviews?: number;
   isVerified: boolean;
   isBlocked?: boolean;

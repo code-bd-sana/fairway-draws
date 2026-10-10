@@ -214,6 +214,7 @@ export class UsersService {
             createdAt: true,
           },
         },
+        review: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -270,6 +271,15 @@ export class UsersService {
               rrpValue: instantWinDetails.rrpValue
                 ? Number(instantWinDetails.rrpValue)
                 : null,
+            }
+          : null,
+        review: w.review
+          ? {
+              id: w.review.id,
+              rating: w.review.rating,
+              comment: w.review.comment,
+              status: w.review.status,
+              createdAt: w.review.createdAt,
             }
           : null,
       };

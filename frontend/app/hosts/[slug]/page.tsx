@@ -85,11 +85,18 @@ export default async function HostProfilePage({ params }: PageProps) {
                 bio={host.bio || "Fairway Draws verified host"}
                 isVerified={host.isVerified}
                 drawsHosted={host.drawsHosted || 0}
-                rating={host.rating || 5.0}
+                rating={host.rating ?? null}
+                totalReviews={host.totalReviews || 0}
                 memberSince={host.memberSince || 2026}
               />
               
-              <HostProfileTabs name={name} bio={host.bio} location={host.location} raffles={host.raffles} />
+              <HostProfileTabs
+                hostId={host.id}
+                name={name}
+                bio={host.bio}
+                location={host.location}
+                raffles={host.raffles}
+              />
             </div>
 
           </div>

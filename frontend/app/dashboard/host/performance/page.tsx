@@ -5,6 +5,7 @@ import RevenueTrendChart from "../../../../components/dashboard/host/performance
 import CategorySalesChart from "../../../../components/dashboard/host/performance/CategorySalesChart";
 import TopRafflesList from "../../../../components/dashboard/host/performance/TopRafflesList";
 import DemographicsList from "../../../../components/dashboard/host/performance/DemographicsList";
+import HostReviewsSection from "../../../../components/dashboard/host/performance/HostReviewsSection";
 import { useHostPerformanceAnalytics } from "../../../../hooks/useHostWalletHooks";
 import { cn } from "../../../../lib/utils";
 
@@ -87,6 +88,11 @@ export default function PerformanceStatsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TopRafflesList data={perfData?.topRaffles || []} />
         <DemographicsList data={perfData?.demographics || []} />
+      </div>
+
+      {/* Verified Reviews & Ratings Row */}
+      <div className="pt-4 border-t border-border">
+        <HostReviewsSection />
       </div>
 
     </div>

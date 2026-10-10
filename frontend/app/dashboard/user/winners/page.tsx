@@ -6,11 +6,13 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { useMyWinnersQuery } from "@/hooks/useUserHooks";
 import { UserWinner } from "@/services/user.service";
+import ReviewModal from "@/components/website/host-reviews/ReviewModal";
 
 export default function UserWinnersPage() {
   const { data: winners, isLoading, isError } = useMyWinnersQuery();
   const [filter, setFilter] = useState<"ALL" | "INSTANT_WIN" | "MAIN_DRAW">("ALL");
   const [search, setSearch] = useState("");
+  const [selectedWinnerForReview, setSelectedWinnerForReview] = useState<UserWinner | null>(null);
 
   const allWinners = winners || [];
 
@@ -337,11 +339,51 @@ export default function UserWinnersPage() {
                         : "Claim Processing"}
                     </div>
                   </div>
+
+                  {/* Verified Winner Review Section */}
+                  <div className="pt-3 border-t border-divider mt-1 flex items-center justify-between gap-3">
+                    {win.review ? (
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 border border-amber-500/30">
+                            Reviewed ★{win.review.rating}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setSelectedWinnerForReview(win)}
+                          className="font-sans text-xs font-semibold text-text-brand hover:underline cursor-pointer"
+                        >
+                          Edit Review
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setSelectedWinnerForReview(win)}
+                        className="w-full py-2.5 px-4 rounded-xl font-heading font-bold text-xs uppercase tracking-wider bg-surface border border-primary/40 text-text-brand hover:bg-accent-bg transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                      >
+                        <span className="text-amber-500">★</span>
+                        Leave Review
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
+      )}
+
+      {/* Review Modal */}
+      {selectedWinnerForReview && (
+        <ReviewModal
+          isOpen={Boolean(selectedWinnerForReview)}
+          onClose={() => setSelectedWinnerForReview(null)}
+          winnerId={selectedWinnerForReview.id}
+          prizeName={selectedWinnerForReview.prizeName}
+          competitionTitle={selectedWinnerForReview.raffle.title}
+          hostName={selectedWinnerForReview.raffle.hostBusinessName}
+          existingReview={selectedWinnerForReview.review}
+        />
       )}
     </div>
   );

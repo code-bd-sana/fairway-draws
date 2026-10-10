@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import DrawCard from "../shared/DrawCard";
+import HostReviewList from "../host-reviews/HostReviewList";
 
 interface HostProfileTabsProps {
+  hostId?: string;
   raffles?: any[];
   name?: string;
   bio?: string;
@@ -12,6 +14,7 @@ interface HostProfileTabsProps {
 }
 
 export default function HostProfileTabs({
+  hostId = "",
   raffles = [],
   name = "Host",
   bio = "",
@@ -206,21 +209,7 @@ export default function HostProfileTabs({
 
         {activeTab === "reviews" && (
           <div className="animate-in fade-in duration-300">
-            <div className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border border-[#CBD8C8] bg-white shadow-sm my-2">
-              <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-3xl mb-4 text-amber-500 shadow-inner">
-                ⭐
-              </div>
-              <h3 className="font-heading font-black text-xl sm:text-2xl text-[#0e1e17] mb-2 uppercase tracking-tight">
-                Host Ratings & Reviews
-              </h3>
-              <p className="font-sans text-sm text-[#5e766c] max-w-md leading-relaxed mb-4">
-                Verified ticket buyers can leave feedback after completing draws with <strong className="text-[#0e1e17]">{name}</strong>.
-              </p>
-              <div className="inline-flex items-center gap-2 bg-[#ECF5EE] border border-[#CBD8C8] px-4 py-2 rounded-xl">
-                <span className="text-amber-500 font-bold text-lg">★ 5.0</span>
-                <span className="text-xs font-semibold text-[#0b4d35]">Verified Host Standard</span>
-              </div>
-            </div>
+            <HostReviewList hostId={hostId} hostName={name} />
           </div>
         )}
 

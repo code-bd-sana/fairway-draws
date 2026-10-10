@@ -28,6 +28,13 @@ export interface UserWinner {
     image: string | null;
     rrpValue: number | null;
   } | null;
+  review?: {
+    id: string;
+    rating: number;
+    comment: string | null;
+    status: string;
+    createdAt: string;
+  } | null;
 }
 
 export interface UnclaimedInstantWin {

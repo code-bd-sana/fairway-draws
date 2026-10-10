@@ -36,25 +36,42 @@ export class HostsService {
             },
           },
         },
+        reviews: {
+          where: {
+            status: 'APPROVED',
+          },
+          select: {
+            rating: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    return hosts.map((host) => ({
-      id: host.id,
-      slug: host.slug || host.id,
-      name: host.businessName,
-      logo: host.user.avatarUrl,
-      description: host.bio || null,
-      category: null,
-      competitionCount: host._count.raffles,
-      averageRating: 5.0, // Mocked for now
-      totalReviews: 12, // Mocked for now
-      isVerified: host.isVerified,
-      isBlocked: host.user.isBlocked,
-    }));
+    return hosts.map((host) => {
+      const reviewCount = host.reviews?.length || 0;
+      let averageRating: number | null = null;
+      if (reviewCount > 0) {
+        const sum = host.reviews.reduce((acc, r) => acc + r.rating, 0);
+        averageRating = Number((sum / reviewCount).toFixed(1));
+      }
+
+      return {
+        id: host.id,
+        slug: host.slug || host.id,
+        name: host.businessName,
+        logo: host.user.avatarUrl,
+        description: host.bio || null,
+        category: null,
+        competitionCount: host._count.raffles,
+        averageRating, // Real dynamically calculated average, null if 0 reviews
+        totalReviews: reviewCount, // 0 if no reviews
+        isVerified: host.isVerified,
+        isBlocked: host.user.isBlocked,
+      };
+    });
   }
 
   async findOnePublic(slug: string) {
@@ -98,11 +115,26 @@ export class HostsService {
             },
           },
         },
+        reviews: {
+          where: {
+            status: 'APPROVED',
+          },
+          select: {
+            rating: true,
+          },
+        },
       },
     });
 
     if (!host) {
       throw new NotFoundException('Host not found or is unavailable');
+    }
+
+    const reviewCount = host.reviews?.length || 0;
+    let averageRating: number | null = null;
+    if (reviewCount > 0) {
+      const sum = host.reviews.reduce((acc, r) => acc + r.rating, 0);
+      averageRating = Number((sum / reviewCount).toFixed(1));
     }
 
     return {
@@ -114,7 +146,8 @@ export class HostsService {
       isVerified: host.isVerified,
       isBlocked: host.user.isBlocked,
       drawsHosted: host._count.raffles,
-      rating: null,
+      rating: averageRating,
+      totalReviews: reviewCount,
       memberSince: host.createdAt.getFullYear(),
       raffles: host.raffles.map((raffle) => {
         // Format endDate as "Ends in Xd Yh" or a clean date string
