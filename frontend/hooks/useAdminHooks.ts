@@ -96,3 +96,44 @@ export const useUpdateWithdrawalStatusMutation = () => {
     },
   });
 };
+
+export const useAdminTicketAssignmentCompetitions = (params?: { search?: string; hostId?: string }) => {
+  return useQuery({
+    queryKey: ['adminTicketAssignmentCompetitions', params],
+    queryFn: () => adminService.getTicketAssignmentCompetitions(params),
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useAdminTicketAssignmentCompetition = (id?: string) => {
+  return useQuery({
+    queryKey: ['adminTicketAssignmentCompetition', id],
+    queryFn: () => adminService.getTicketAssignmentCompetitionById(id!),
+    enabled: Boolean(id),
+    staleTime: 10 * 1000,
+  });
+};
+
+export const useAdminTicketAssignmentHistory = (params?: { page?: number; limit?: number; search?: string; raffleId?: string }) => {
+  return useQuery({
+    queryKey: ['adminTicketAssignmentHistory', params],
+    queryFn: () => adminService.getTicketAssignmentHistory(params),
+    staleTime: 15 * 1000,
+  });
+};
+
+export const useAdminAssignTicketsMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: adminService.assignTickets,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminTicketAssignmentCompetitions'] });
+      queryClient.invalidateQueries({ queryKey: ['adminTicketAssignmentCompetition'] });
+      queryClient.invalidateQueries({ queryKey: ['adminTicketAssignmentHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['adminOverviewStats'] });
+      queryClient.invalidateQueries({ queryKey: ['my-tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['my-transactions'] });
+    },
+  });
+};

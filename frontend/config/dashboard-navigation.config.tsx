@@ -180,6 +180,12 @@ export const dashboardNavigation: DashboardNavItem[] = [
     roles: ["admin"],
   },
   {
+    label: "Manual Ticket Assign",
+    href: "/dashboard/admin/ticket-assignment",
+    icon: Icons.Competitions,
+    roles: ["admin"],
+  },
+  {
     label: "Draw Management",
     href: "/dashboard/admin/draws",
     icon: Icons.Trophy,

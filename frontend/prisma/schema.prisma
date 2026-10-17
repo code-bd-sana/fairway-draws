@@ -140,9 +140,10 @@ model Transaction {
   type                 String   @db.VarChar(50) // TICKET_PURCHASE, SUBSCRIPTION_FEE, HOST_WITHDRAWAL
   amount               Decimal  @db.Decimal(10, 2)
   status               String   @default("COMPLETED") @db.VarChar(50) // PENDING, COMPLETED, FAILED, REFUNDED
-  paymentGateway       String?  @map("payment_gateway") @db.VarChar(50) // STRIPE, PAYPAL
+  paymentGateway       String?  @map("payment_gateway") @db.VarChar(50) // STRIPE, PAYPAL, ADMIN_MANUAL
   gatewayTransactionId String?  @map("gateway_transaction_id") @db.VarChar(255)
   relatedEntityId      String?  @map("related_entity_id") @db.VarChar(255) // Polymorphic ID
+  adminNotes           String?  @map("admin_notes") @db.Text
   createdAt            DateTime @default(now()) @map("created_at")
 
   user    User     @relation(fields: [userId], references: [id])
@@ -247,5 +248,24 @@ model Review {
   @@index([userId])
   @@index([raffleId])
   @@map("reviews")
+}
+
+model AuditLog {
+  id              String   @id @default(uuid()) @db.VarChar(255)
+  adminId         String   @map("admin_id") @db.VarChar(255)
+  action          String   @db.VarChar(100)
+  targetRaffleId  String?  @map("target_raffle_id") @db.VarChar(255)
+  recipientUserId String?  @map("recipient_user_id") @db.VarChar(255)
+  ticketNumbers   Json?    @map("ticket_numbers")
+  totalAmount     Decimal? @map("total_amount") @db.Decimal(10, 2)
+  details         Json?
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([adminId])
+  @@index([action])
+  @@index([targetRaffleId])
+  @@index([recipientUserId])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 

@@ -10,6 +10,8 @@ export interface Ticket {
   purchaseDate: string;
   pricePaid: string;
   status: "live" | "drawn-won" | "drawn-lost" | "instant-win";
+  isAdminAssigned?: boolean;
+  paymentGateway?: string;
   raw?: any; // The raw backend ticket data for the modal
 }
 
@@ -106,9 +108,19 @@ export default function TicketsTable({ tickets }: TicketsTableProps) {
 
                     {/* Price Paid */}
                     <div className="col-span-1">
-                      <span className="font-sans font-bold text-xs text-emerald-700 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full inline-block">
-                        {ticket.pricePaid}
-                      </span>
+                      {ticket.isAdminAssigned || ticket.raw?.transaction?.paymentGateway === "ADMIN_MANUAL" ? (
+                        <span
+                          className="inline-flex items-center gap-1 font-heading font-black text-[10px] text-purple-700 dark:text-purple-300 bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 rounded-full whitespace-nowrap shadow-2xs"
+                          title="Complimentary ticket manually assigned by Fairway Draws administration"
+                        >
+                          <span>🛡️</span>
+                          <span>Admin Assigned</span>
+                        </span>
+                      ) : (
+                        <span className="font-sans font-bold text-xs text-emerald-700 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full inline-block">
+                          {ticket.pricePaid}
+                        </span>
+                      )}
                     </div>
 
                     {/* Status */}

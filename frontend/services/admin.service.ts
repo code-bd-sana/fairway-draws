@@ -277,4 +277,211 @@ export const adminService = {
     const { data } = await api.patch(`/admin/withdrawals/${id}/status`, { status, adminNotes });
     return data;
   },
+
+  // Manual Ticket Assignment
+  async getTicketAssignmentCompetitions(params?: { search?: string; hostId?: string }): Promise<AssignmentCompetitionSummary[]> {
+    const { data } = await api.get('/admin/ticket-assignment/competitions', { params });
+    return data;
+  },
+
+  async getTicketAssignmentCompetitionById(id: string): Promise<AssignmentCompetitionDetail> {
+    const { data } = await api.get(`/admin/ticket-assignment/competitions/${id}`);
+    return data;
+  },
+
+  async searchTicketAssignmentUsers(q?: string): Promise<AssignmentUser[]> {
+    const { data } = await api.get('/admin/ticket-assignment/users/search', { params: { q } });
+    return data;
+  },
+
+  async assignTickets(payload: AssignTicketsPayload): Promise<AssignTicketsResponse> {
+    const { data } = await api.post('/admin/ticket-assignment/assign', payload);
+    return data;
+  },
+
+  async getTicketAssignmentHistory(params?: { page?: number; limit?: number; search?: string; raffleId?: string }): Promise<AssignmentHistoryResponse> {
+    const { data } = await api.get('/admin/ticket-assignment/history', { params });
+    return data;
+  },
 };
+
+export interface AssignmentCompetitionSummary {
+  id: string;
+  title: string;
+  slug?: string;
+  mainImage?: string;
+  pricePerTicket: number;
+  totalTickets: number;
+  ticketsSold: number;
+  remainingTickets: number;
+  status: string;
+  startDate?: string;
+  endDate?: string;
+  host: {
+    id: string;
+    businessName: string;
+    user?: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      email: string;
+      avatarUrl: string | null;
+    };
+  };
+  instantWinsCount: {
+    total: number;
+    unclaimed: number;
+    claimed: number;
+  };
+}
+
+export interface AssignmentSoldTicket {
+  id: string;
+  ticketNumber: number;
+  purchaseDate: string;
+  buyer: {
+    id?: string;
+    name: string;
+    email?: string;
+    avatarUrl?: string | null;
+  };
+  paymentGateway: string;
+  transactionId?: string;
+  gatewayTransactionId?: string;
+  adminNotes?: string | null;
+  isInstantWin: boolean;
+  instantWinPrize?: string | null;
+}
+
+export interface AssignmentInstantWin {
+  id: string;
+  ticketNumber: number;
+  prizeName: string;
+  rrpValue: number | null;
+  image?: string | null;
+  isClaimed: boolean;
+}
+
+export interface AssignmentCompetitionDetail {
+  id: string;
+  title: string;
+  slug?: string;
+  mainImage?: string;
+  description?: string;
+  pricePerTicket: number;
+  totalTickets: number;
+  ticketsSold: number;
+  remainingTickets: number;
+  status: string;
+  startDate?: string;
+  endDate?: string;
+  isAutoDraw?: boolean;
+  autoDrawSoldOut?: boolean;
+  host: {
+    id: string;
+    businessName: string;
+    walletBalance: number;
+    user?: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      email: string;
+      avatarUrl: string | null;
+    };
+  };
+  instantWins: AssignmentInstantWin[];
+  soldTickets: AssignmentSoldTicket[];
+}
+
+export interface AssignmentUser {
+  id: string;
+  name: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email: string;
+  role: string;
+  avatar?: string | null;
+}
+
+export interface AssignTicketsPayload {
+  raffleId: string;
+  userId: string;
+  ticketNumbers?: number[];
+  quantity?: number;
+  adminNotes?: string;
+}
+
+export interface AssignTicketsResponse {
+  success: boolean;
+  message: string;
+  recipient: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  competition: {
+    id: string;
+    title: string;
+    pricePerTicket: number;
+    totalTickets: number;
+    ticketsSold: number;
+  };
+  transaction: {
+    id: string;
+    gatewayTransactionId: string;
+    amount: number;
+    status: string;
+    paymentGateway: string;
+    adminNotes?: string | null;
+    createdAt: string;
+  };
+  assignedNumbers: number[];
+  ticketsCount: number;
+  totalFinancialValue: number;
+  hostWalletCredited: number;
+  instantWins: Array<{
+    winnerId?: string;
+    ticketNumber: number;
+    prizeName: string;
+    rrpValue?: number | null;
+    image?: string | null;
+  }>;
+  auditLogId?: string;
+}
+
+export interface AssignmentHistoryItem {
+  id: string;
+  gatewayTransactionId: string;
+  date: string;
+  totalAmount: number;
+  adminNotes?: string | null;
+  paymentGateway: string;
+  status: string;
+  recipient: {
+    id?: string;
+    name: string;
+    email?: string;
+    avatarUrl?: string | null;
+  };
+  competition?: {
+    id: string;
+    title: string;
+    slug?: string;
+    mainImage?: string;
+    pricePerTicket: number;
+  } | null;
+  assignedNumbers: number[];
+  ticketsCount: number;
+  instantWinsCount: number;
+  instantWins: any[];
+}
+
+export interface AssignmentHistoryResponse {
+  history: AssignmentHistoryItem[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

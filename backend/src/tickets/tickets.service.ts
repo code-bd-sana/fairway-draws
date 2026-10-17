@@ -403,6 +403,13 @@ export class TicketsService {
           },
         },
         winners: true,
+        transaction: {
+          select: {
+            id: true,
+            paymentGateway: true,
+            adminNotes: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -1634,6 +1641,8 @@ export class TicketsService {
           : `Order #${(t.gatewayTransactionId || t.id).slice(0, 16)}`,
       amount: `£${Number(t.amount).toFixed(2)}`,
       paymentMethod: t.paymentGateway || 'CASHFLOWS',
+      paymentGateway: t.paymentGateway,
+      adminNotes: t.adminNotes,
       status: t.status.toLowerCase(),
       ticketsCount: t.tickets?.length || 0,
     }));
