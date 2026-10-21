@@ -54,7 +54,7 @@ export class AdminWithdrawalsService {
 
   async updateStatus(
     id: string,
-    status: 'APPROVED' | 'COMPLETED' | 'REJECTED',
+    status?: 'APPROVED' | 'COMPLETED' | 'REJECTED',
     adminNotes?: string,
   ) {
     const withdrawal = await this.prisma.withdrawal.findUnique({
@@ -66,13 +66,18 @@ export class AdminWithdrawalsService {
       throw new NotFoundException('Withdrawal request not found');
     }
 
-    if (withdrawal.status === status) {
+    const targetStatus = status || (withdrawal.status as 'APPROVED' | 'COMPLETED' | 'REJECTED');
+
+    if (
+      withdrawal.status === targetStatus &&
+      (adminNotes === undefined || adminNotes === withdrawal.adminNotes)
+    ) {
       return withdrawal;
     }
 
     return this.prisma.$transaction(async (tx) => {
       // If rejected and previously PENDING, refund host's wallet
-      if (status === 'REJECTED' && withdrawal.status === 'PENDING') {
+      if (targetStatus === 'REJECTED' && withdrawal.status === 'PENDING') {
         await tx.hostProfile.update({
           where: { id: withdrawal.hostId },
           data: {
@@ -86,8 +91,8 @@ export class AdminWithdrawalsService {
       const updated = await tx.withdrawal.update({
         where: { id },
         data: {
-          status,
-          adminNotes: adminNotes || withdrawal.adminNotes,
+          status: targetStatus,
+          adminNotes: adminNotes !== undefined ? adminNotes : withdrawal.adminNotes,
         },
       });
 

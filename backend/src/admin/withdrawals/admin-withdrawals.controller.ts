@@ -25,7 +25,7 @@ export class AdminWithdrawalsController {
   @ApiResponse({ status: 200, description: 'Withdrawal status updated' })
   updateStatus(
     @Param('id') id: string,
-    @Body() body: { status: 'APPROVED' | 'COMPLETED' | 'REJECTED'; adminNotes?: string },
+    @Body() body: { status?: 'APPROVED' | 'COMPLETED' | 'REJECTED'; adminNotes?: string },
   ) {
     return this.adminWithdrawalsService.updateStatus(id, body.status, body.adminNotes);
   }

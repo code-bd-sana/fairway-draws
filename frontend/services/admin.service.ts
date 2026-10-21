@@ -273,7 +273,7 @@ export const adminService = {
     return data;
   },
 
-  async updateWithdrawalStatus(id: string, status: 'APPROVED' | 'COMPLETED' | 'REJECTED', adminNotes?: string): Promise<any> {
+  async updateWithdrawalStatus(id: string, status?: 'APPROVED' | 'COMPLETED' | 'REJECTED', adminNotes?: string): Promise<any> {
     const { data } = await api.patch(`/admin/withdrawals/${id}/status`, { status, adminNotes });
     return data;
   },

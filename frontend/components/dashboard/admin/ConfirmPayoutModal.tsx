@@ -35,11 +35,19 @@ export default function ConfirmPayoutModal({
 }: ConfirmPayoutModalProps) {
   const [mounted, setMounted] = useState(false);
   const [adminNotes, setAdminNotes] = useState("");
+  const [isEditingNote, setIsEditingNote] = useState(false);
   const updateStatusMutation = useUpdateWithdrawalStatusMutation();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (payout) {
+      setAdminNotes(payout.adminNotes || "");
+      setIsEditingNote(false);
+    }
+  }, [payout, isOpen]);
 
   if (!isOpen || !payout || !mounted) return null;
 
@@ -60,6 +68,20 @@ export default function ConfirmPayoutModal({
       {
         onSuccess: () => {
           onClose();
+        },
+      }
+    );
+  };
+
+  const handleSaveNoteOnly = () => {
+    updateStatusMutation.mutate(
+      {
+        id: payout.id,
+        adminNotes: adminNotes.trim(),
+      },
+      {
+        onSuccess: () => {
+          setIsEditingNote(false);
         },
       }
     );
@@ -161,10 +183,75 @@ export default function ConfirmPayoutModal({
           {renderPayoutAccountInfo()}
         </div>
 
-        {/* Optional Admin Note */}
-        {actionType !== "VIEW" && (
+        {/* Admin Notes Section */}
+        {actionType === "VIEW" ? (
+          <div className="bg-elevated border border-border-medium rounded-xl p-4 mb-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-sans font-bold text-[10px] text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                Admin Notes / Accounting Reference
+              </span>
+              {!isEditingNote && (
+                <button
+                  type="button"
+                  onClick={() => setIsEditingNote(true)}
+                  className="text-[11px] font-bold text-text-brand hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                  {payout.adminNotes ? "Edit Note" : "Add Note"}
+                </button>
+              )}
+            </div>
+
+            {isEditingNote ? (
+              <div className="flex flex-col gap-2">
+                <textarea
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  placeholder="Enter accounting transaction ID, bank reference, or payment note..."
+                  rows={3}
+                  className="w-full p-3 bg-surface border border-border rounded-xl text-xs text-text-primary focus:border-primary outline-none"
+                />
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAdminNotes(payout.adminNotes || "");
+                      setIsEditingNote(false);
+                    }}
+                    className="px-3 py-1.5 rounded-lg border border-border text-xs font-bold text-text-muted hover:text-text-primary cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveNoteOnly}
+                    disabled={updateStatusMutation.isPending}
+                    className="px-4 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold uppercase tracking-wider cursor-pointer active:scale-98 disabled:opacity-50"
+                  >
+                    {updateStatusMutation.isPending ? "Saving..." : "Save Note"}
+                  </button>
+                </div>
+              </div>
+            ) : payout.adminNotes ? (
+              <div className="bg-surface border border-border rounded-lg p-3 text-xs text-text-primary whitespace-pre-wrap font-sans">
+                {payout.adminNotes}
+              </div>
+            ) : (
+              <p className="font-sans text-xs text-text-muted italic">
+                No admin notes or reference recorded yet.
+              </p>
+            )}
+          </div>
+        ) : (
           <div className="mb-6 flex flex-col gap-1.5">
-            <label className="block font-sans text-xs font-bold text-text-muted">Admin Notes / Reference (Optional)</label>
+            <label className="block font-sans text-xs font-bold text-text-muted">
+              Admin Notes / Accounting Reference (Optional)
+            </label>
             <textarea
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
